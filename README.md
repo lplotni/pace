@@ -1,2 +1,3 @@
 # pace
-Run registration and management application
+Pace is a registration and management application for running events and competitions.
+

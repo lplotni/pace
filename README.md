@@ -1,5 +1,7 @@
 # pace
-Pace is a registration and management application for running events and competitions.i
+Pace is a registration and management application for running events and competitions.
+
+[![Build Status](https://snap-ci.com/lplotni/pace/branch/master/build_image)](https://snap-ci.com/lplotni/pace/branch/master)
 
 ## Dev Setup
 Pace is currently based on [express.js](http://expressjs.com/) and [node](https://nodejs.org), therefore you will need both on

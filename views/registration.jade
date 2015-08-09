@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    form#registrationForm(method='POST', action='/registration')
+        .name
+            label(for='firstName') Vorname:
+            input#firstName(type='text', name='firstName', required=true)
+            label(for='lastName') Nachname:
+            input#lastName(type='text', name='lastName', required=true)
+        button(type='submit') Absenden

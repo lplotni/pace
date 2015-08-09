@@ -28,3 +28,5 @@ node_modules
 
 # Vagrant box
 .vagrant/
+#Ignoring the idea folder
+.idea/

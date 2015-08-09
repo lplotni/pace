@@ -10,6 +10,11 @@ The list of our issues/features can be found on our [trello board](https://trell
 Pace is currently based on [express.js](http://expressjs.com/) and [node](https://nodejs.org), therefore you will need both on
 your machine. To install node, go either to https://nodejs.org/ or if you are using a mac & brew use the following cmd: `brew install node`. To get all the other dependencies and be able to start **pace** locally, just navigate to the pace folder and run `npm install`
 
+#### Setting up the local PostgreSQL
+In the `postgres` directory you will find a vagrant file defining the box which
+contains the db, one can use for the dev setup. It requires **Vagrant** to be
+present on your machine, for more information about the installation process go [here](https://www.vagrantup.com/). Or if you have **brew cask** on your machine, just do the following: `brew cask install vagrant`.
+
 #### Starting
 Just run `gulp` and open http://localhost:3000 in your browser.
 

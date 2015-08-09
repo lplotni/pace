@@ -2,15 +2,33 @@ var express = require('express');
 var router = express.Router();
 var _ = require('lodash');
 
+var pg = require('pg');
+var client = new pg.Client("tcp://vagrant@localhost/vagrant");
+
 /* GET registrationRoute listing. */
 router.get('/', function(req, res) {
-  res.render('registration', {});
+  res.render('registration/registration', {});
 });
 
 router.post('/', function(req, res) {
     try{
-        extractParticipant(req);
+        var participant = extractParticipant(req);
         //store in DB
+        client.connect(function(){
+            client.query(
+                "insert into participants (first_name, last_name, email) values($1, $2, $3)",[participant.firstName, participant.lastName, participant.email],
+                function (err, res) {
+                    console.log('Executed');
+                    if (! err) {
+                        console.log("result:" , res);
+                        client.end();
+                        return "inserted";
+                    }
+                }
+            )
+        });
+
+        res.render('registration/success', {name: participant.firstName +' '+ participant.lastName, link: ''});
     } catch (err) {
         res.send(err.message);
     }

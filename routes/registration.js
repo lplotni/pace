@@ -3,7 +3,7 @@ var router = express.Router();
 var _ = require('lodash');
 
 var pg = require('pg');
-var client = new pg.Client("tcp://vagrant@localhost/vagrant");
+var connectionString = process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
 
 /* GET registrationRoute listing. */
 router.get('/', function(req, res) {
@@ -14,9 +14,9 @@ router.post('/', function(req, res) {
     try{
         var participant = extractParticipant(req);
         //store in DB
-        client.connect(function(){
+        pg.connect(connectionString,function(err,client,done){
             client.query(
-                "insert into participants (first_name, last_name, email) values($1, $2, $3)",[participant.firstName, participant.lastName, participant.email],
+                "insert into participants (firstname, lastname, email) values($1, $2, $3)",[participant.firstname, participant.lastname, participant.email],
                 function (err, res) {
                     console.log('Executed');
                     if (! err) {
@@ -28,14 +28,14 @@ router.post('/', function(req, res) {
             )
         });
 
-        res.render('registration/success', {name: participant.firstName +' '+ participant.lastName, link: ''});
+        res.render('registration/success', {name: participant.firstname +' '+ participant.lastname, link: ''});
     } catch (err) {
         res.send(err.message);
     }
 });
 
 function invalidData(body) {
-    return _.isUndefined(body.firstName) || _.isUndefined(body.lastName) || _.isUndefined(body.email);
+    return _.isUndefined(body.firstname) || _.isUndefined(body.lastname) || _.isUndefined(body.email);
 }
 var extractParticipant = function (req) {
 
@@ -45,8 +45,8 @@ var extractParticipant = function (req) {
     }
 
     return {
-        firstName: body.firstName,
-        lastName: body.lastName,
+        firstname: body.firstname,
+        lastname: body.lastname,
         email: body.email
     };
 };

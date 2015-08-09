@@ -1,0 +1,6 @@
+extends ../layout
+
+block content
+    ul
+        each p in participants
+            li= p.firstname +' '+ p.lastname

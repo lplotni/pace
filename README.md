@@ -15,7 +15,7 @@ In the `postgres` directory you will find a vagrant file defining the box which
 contains the db, one can use for the dev setup. It requires **Vagrant** to be
 present on your machine, for more information about the installation process go [here](https://www.vagrantup.com/). Or if you have **brew cask** on your machine, just do the following: `brew cask install vagrant`.
 
-To create the **Participants** table in your db, just run `node models/database.js`
+To create the **Participants** table in your db, just run `gulp create-db`
 To look at the db in your terminal, just connect to the vagrant box (from the postgres directory) via `vagrant ssh` and type psql.
 
 #### Starting

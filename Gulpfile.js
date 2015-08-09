@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var jasmine = require('gulp-jasmine');
 var jshint = require('gulp-jshint');
+var shell = require('gulp-shell');
 
 gulp.task('lint', function() {
   return gulp.src(['app.js','./routes/*.js'])
@@ -22,6 +23,8 @@ gulp.task('express', function() {
 gulp.task('test', function(){
   return gulp.src('spec/*.js').pipe(jasmine());
 });
+
+gulp.task('create-db', shell.task(['node models/database.js']));
 
 gulp.task('default', ['express'], function() {
 });

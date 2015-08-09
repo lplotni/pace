@@ -1,12 +1,15 @@
 extends ../layout
 
 block content
+    h2 Registrierung
     form#registrationForm(method='POST', action='/registration')
         .name
-            label(for='firstname') Vorname:
-            input#firstname(type='text', name='firstname', required=true)
-            label(for='lastname') Nachname:
-            input#lastname(type='text', name='lastname', required=true)
+            .item
+                label(for='firstname') Vorname:
+                input#firstname(type='text', name='firstname', required=true)
+            .item
+                label(for='lastname') Nachname:
+                input#lastname(type='text', name='lastname', required=true)
         .email
             label(for='email') Email:
             input#email(type='email', name='email', required=true)

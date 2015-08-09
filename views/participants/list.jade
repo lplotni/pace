@@ -1,6 +1,7 @@
 extends ../layout
 
 block content
+    h2 Registrierte Teilnehmer:
     ul
         each p in participants
             li= p.firstname +' '+ p.lastname

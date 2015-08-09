@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var _ = require('lodash');
 
 /* GET registrationRoute listing. */
 router.get('/', function(req, res) {
@@ -7,22 +8,32 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function(req, res) {
-    console.log(req.body);
+    try{
+        extractParticipant(req);
+        //store in DB
+    } catch (err) {
+        res.send(err.message);
+    }
 });
 
-var parseRegistrationForm = function (req) {
+function invalidData(body) {
+    return _.isUndefined(body.firstName) || _.isUndefined(body.lastName) || _.isUndefined(body.email);
+}
+var extractParticipant = function (req) {
 
     var body = req.body;
-    var firstName = body.firstName;
-
-    if(firstName === undefined){
-        throw new TypeError("First name not found");
+    if(invalidData(body)){
+        throw new TypeError("Required attributes are not present");
     }
 
-    return firstName;
+    return {
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email
+    };
 };
 
 module.exports = {
     router: router,
-    parseFunction: parseRegistrationForm
+    extractParticipant: extractParticipant
 };

@@ -21,7 +21,11 @@ gulp.task('express', function() {
 });
 
 gulp.task('test', function(){
-  return gulp.src('spec/*.js').pipe(jasmine());
+ return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js']).pipe(jasmine());
+});
+
+gulp.task('testIntegration', function (){
+ return gulp.src('spec/**/*IT*.js').pipe(jasmine());
 });
 
 gulp.task('create-db', shell.task(['node models/database.js']));

@@ -1,5 +1,5 @@
 var pg = require('pg');
-var connectionString = process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
+var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
 var client = new pg.Client(connectionString);
 client.connect(
     function (err) {

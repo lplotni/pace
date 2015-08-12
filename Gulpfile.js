@@ -24,7 +24,7 @@ gulp.task('test', function(){
  return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js']).pipe(jasmine());
 });
 
-gulp.task('testIntegration', function (){
+gulp.task('test-integration', function (){
  return gulp.src('spec/**/*IT*.js').pipe(jasmine());
 });
 

@@ -1,5 +1,5 @@
 var pg = require('pg');
-var connectionString = process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
+var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
 
 function getAll(tempCallback) {
     var participants = [];

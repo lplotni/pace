@@ -10,7 +10,7 @@ router.get('/', function (req, res) {
 
     var participants = [];
     pg.connect(connectionString,function (err, client, done) {
-            var query = client.query('select * from participants');
+            var query = client.query('select * from participants order by firstname');
 
             // Stream results back one row at a time
             query.on('row', function (row) {

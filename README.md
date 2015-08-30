@@ -22,9 +22,11 @@ To look at the db in your terminal, just connect to the vagrant box (from the po
 Just run `gulp` and open http://localhost:3000 in your browser.
 
 #### Running tests
-For unit tests: `gulp test`
+For **unit** tests: `gulp test`
 
-For integration tests: `gulp create-db test-integration` (and if your dev DB is already set up: `gulp test-integration`):
+For **integration** tests: `gulp create-db test-integration` (and if your dev DB is already set up: `gulp test-integration`):   
+
+For **functional** tests: `gulp expresss test-functional` (and if the app is already running: `gulp test-functional`):   
 
 #### Running jshint
 Here you go: `gulp lint`

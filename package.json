@@ -14,12 +14,16 @@
     "lodash": "^3.10.1",
     "morgan": "~1.0.0",
     "pg": "^4.4.1",
+    "q": "^1.4.1",
     "static-favicon": "~1.0.0"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-jasmine": "^2.0.1",
     "gulp-jshint": "^1.11.2",
-    "gulp-shell": "^0.4.2"
+    "gulp-shell": "^0.4.2",
+    "gulp-util": "^3.0.6",
+    "selenium-standalone": "^4.5.3",
+    "webdriverio": "^3.1.0"
   }
 }

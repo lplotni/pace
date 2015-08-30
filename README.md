@@ -26,7 +26,7 @@ For **unit** tests: `gulp test`
 
 For **integration** tests: `gulp create-db test-integration` (and if your dev DB is already set up: `gulp test-integration`):   
 
-For **functional** tests: `gulp expresss test-functional` (and if the app is already running: `gulp test-functional`):   
+For **functional** tests: `gulp test-functional` 
 
 #### Running jshint
 Here you go: `gulp lint`

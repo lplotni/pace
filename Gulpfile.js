@@ -12,16 +12,21 @@ gulp.task('lint', function() {
     .pipe(jshint.reporter('default', { verbose: true }));
 });
 
-gulp.task('express', function() {
-  var debug = require('debug')('generated');
-  var app = require('./app.js');
+function express() {
+    var deferred = Q.defer();
+    var app = require('./app.js');
 
-  app.set('port', process.env.PORT || 3000);
+    app.set('port', process.env.PORT || 3000);
 
-  var server = app.listen(app.get('port'), function() {
-    gutil.log('Express server listening on port ' + server.address().port);
-  });
-});
+    var server = app.listen(app.get('port'), function() {
+        gutil.log('Express server listening on port ' + server.address().port);
+        deferred.resolve(server);
+    });
+
+    return deferred.promise;
+}
+
+gulp.task('express', express);
 
 gulp.task('test', function(){
  return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*Journey.js']).pipe(jasmine());
@@ -70,16 +75,20 @@ function startSelenium() {
 gulp.task('test-functional', function () {
     var deferred = Q.defer();
 
-    startSelenium().then(function(selenium) {
-        testFunctional().then(function() {
-            gutil.log('Done: Killing', gutil.colors.magenta('selenium'));
-            selenium.kill();
-            deferred.resolve();
-        }).fail(function(err) {
-            gutil.log('Error: Killing', gutil.colors.magenta('selenium'));
-            selenium.kill();
-            deferred.reject(err);
-        });
+    function cleanUp(selenium, server) {
+        gutil.log('Clean-up: ', gutil.colors.magenta('selenium'), gutil.colors.magenta('express'));
+        selenium.kill();
+        server.close(deferred.resolve);
+    }
+
+    express().then(function (server) {
+        startSelenium().then(function(selenium) {
+            testFunctional().then(function() {
+                cleanUp(selenium, server);
+            }).fail(function() {
+                cleanUp(selenium, server);
+            });
+        })
     });
 
     return deferred.promise;

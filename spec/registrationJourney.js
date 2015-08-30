@@ -15,7 +15,6 @@ describe('regisitration journey', function () {
             .remote(options);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-        console.log('using url: ',paceUrl);
     });
 
     afterEach(function() {

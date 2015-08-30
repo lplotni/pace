@@ -1,7 +1,7 @@
 describe('regisitration journey', function () {
     var client;
-
     var paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
+    var originalTimeout;
 
     beforeEach(function () {
         var webdriverio = require('webdriverio');
@@ -13,6 +13,13 @@ describe('regisitration journey', function () {
 
         client = webdriverio
             .remote(options);
+        originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+        console.log('using url: ',paceUrl);
+    });
+
+    afterEach(function() {
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
     it('allows to register via the registration page', function (done) {

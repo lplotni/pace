@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var _ = require('lodash');
@@ -25,7 +28,7 @@ router.post('/', function(req, res) {
                         return "inserted";
                     }
                 }
-            )
+            );
         });
 
         res.render('registration/success', {name: participant.firstname +' '+ participant.lastname, link: ''});

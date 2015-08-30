@@ -6,16 +6,10 @@ var selenium = require('selenium-standalone');
 var gutil= require('gulp-util');
 var Q= require('q');
 
-gulp.task('lint', function() {
-  return gulp.src(['app.js','./routes/*.js'])
-    .pipe(jshint())
-    .pipe(jshint.reporter('default', { verbose: true }));
-});
 
 function express() {
     var deferred = Q.defer();
     var app = require('./app.js');
-
     app.set('port', process.env.PORT || 3000);
 
     var server = app.listen(app.get('port'), function() {
@@ -24,6 +18,32 @@ function express() {
     });
 
     return deferred.promise;
+
+}
+
+function testFunctional() {
+    var deferred = Q.defer();
+    var stream = gulp.src('spec/**/*Journey.js').pipe(jasmine());
+
+    stream.on('data', function () {});
+
+    stream.on('error', deferred.reject);
+    stream.on('end', deferred.resolve);
+    return deferred.promise;
+
+}
+
+function startSelenium() {
+    var deferred = Q.defer();
+    selenium.start(function (err, child) {
+        if (err) {
+            deferred.reject(err);
+        }
+        selenium.child = child;
+        deferred.resolve(selenium.child);
+    });
+    return deferred.promise;
+
 }
 
 gulp.task('express', express);
@@ -46,31 +66,6 @@ gulp.task('selenium-install', function (done) {
         done();
     })
 });
-
-function testFunctional() {
-    var deferred = Q.defer();
-
-    var stream = gulp.src('spec/**/*Journey.js').pipe(jasmine());
-
-    stream.on('data', function () {});
-    stream.on('error', deferred.reject);
-    stream.on('end', deferred.resolve);
-
-    return deferred.promise;
-}
-
-function startSelenium() {
-    var deferred = Q.defer();
-    selenium.start(function (err, child) {
-        if (err) {
-            deferred.reject(err);
-        }
-        selenium.child = child;
-        deferred.resolve(selenium.child);
-    });
-
-    return deferred.promise;
-}
 
 gulp.task('test-functional', function () {
     var deferred = Q.defer();
@@ -95,5 +90,11 @@ gulp.task('test-functional', function () {
 });
 
 gulp.task('create-db', shell.task(['node models/database.js']));
+
+gulp.task('lint', function() {
+    return gulp.src(['app.js','./spec/*.js', './service/*.js','./routes/*.js'])
+        .pipe(jshint())
+        .pipe(jshint.reporter('default', { verbose: true }));
+});
 
 gulp.task('default', ['express']);

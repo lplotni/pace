@@ -1,3 +1,6 @@
+/* jshint node: true */
+/* global describe, beforeEach, afterEach, it, jasmine, expect */
+'use strict';
 describe('regisitration journey', function () {
     var client;
     var paceUrl = process.env.PACE_URL || 'http://localhost:3000/';

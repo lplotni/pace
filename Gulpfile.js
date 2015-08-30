@@ -24,7 +24,7 @@ gulp.task('express', function() {
 });
 
 gulp.task('test', function(){
- return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*FT*.js']).pipe(jasmine());
+ return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*Journey.js']).pipe(jasmine());
 });
 
 gulp.task('test-integration', function (){
@@ -45,7 +45,7 @@ gulp.task('selenium-install', function (done) {
 function testFunctional() {
     var deferred = Q.defer();
 
-    var stream = gulp.src('spec/**/*FT*.js').pipe(jasmine());
+    var stream = gulp.src('spec/**/*Journey.js').pipe(jasmine());
 
     stream.on('data', function () {});
     stream.on('error', deferred.reject);

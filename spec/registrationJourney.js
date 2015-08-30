@@ -1,6 +1,8 @@
 describe('regisitration journey', function () {
     var client;
 
+    var paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
+
     beforeEach(function () {
         var webdriverio = require('webdriverio');
         var options = {
@@ -16,7 +18,7 @@ describe('regisitration journey', function () {
     it('allows to register via the registration page', function (done) {
 
         client.init()
-            .url('http://localhost:3000/')
+            .url(paceUrl)
             .click('a#registration')
             .isVisible('form#registrationForm')
             .then(function (isVisible) {

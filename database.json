@@ -1,0 +1,3 @@
+{
+  "dev": "postgres://vagrant@localhost/dbname"
+}

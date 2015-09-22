@@ -92,7 +92,7 @@ gulp.task('test-functional', function () {
 gulp.task('create-db', shell.task(['node models/database.js']));
 
 gulp.task('lint', function() {
-    return gulp.src(['app.js','./spec/*.js', './service/*.js','./routes/*.js'])
+    return gulp.src(['app.js','./spec/**/*.js', './service/*.js','./routes/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default', { verbose: true }));
 });

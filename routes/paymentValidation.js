@@ -2,51 +2,29 @@
 'use strict';
 
 var router = require('express').Router();
-
-var pg = require('pg');
-var connectionString = process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
+var participants = require('../service/participants');
 
 router.get('/', function (req, res) {
     res.render('paymentValidation/paymentValidation', {});
 });
 
 router.post('/', function(req, res) {
-    try{
-        var paymentToken = req.body.paymenttoken;
-        var participantDetails;
+    var paymentToken = req.body.paymenttoken;
 
-        pg.connect(connectionString,function(err,client){
-
-            var query = client.query(
-              "SELECT firstname, lastname FROM participants WHERE paymenttoken = $1", [paymentToken]);
-
-            query.on('row', function(row) {
-                participantDetails = {
-                    name : row.lastname + ", " + row.firstname,
-                    amount: '10'
-                };
+    participants.getByToken(paymentToken, function(result) {
+        if(result.error) {
+            return res.render('paymentValidation/paymentValidation', {
+                token: paymentToken,
+                error: result.error
             });
-
-            query.on('end', function(result) {
-                client.end();
-                if (result.rowCount > 0) {
-                    return res.render('paymentValidation/paymentValidation', {
-                        token: paymentToken,
-                        name: participantDetails.name,
-                        amount: participantDetails.amount
-                    });
-                } else {
-                    return res.render('paymentValidation/paymentValidation', {
-                        token: paymentToken,
-                        error: 'Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.'
-                    });
-                }
+        } else {
+            return res.render('paymentValidation/paymentValidation', {
+                token: paymentToken,
+                name: result.name,
+                amount: result.amount
             });
-        });
-
-    } catch (err) {
-        res.send(err.message);
-    }
+        }
+    });
 });
 
 module.exports = router;

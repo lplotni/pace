@@ -64,8 +64,53 @@ function save(participant) {
     return deferred.promise;
 }
 
+function getByToken(paymentToken, callback) {
+  pg.connect(connectionString,function(err,client){
+    var participantDetails;
+
+    var query = client.query(
+      "SELECT firstname, lastname FROM participants WHERE paymenttoken = $1", [paymentToken]);
+
+    query.on('row', function(row) {
+      participantDetails = {
+        name : row.lastname + ", " + row.firstname,
+        amount: '10'
+      };
+    });
+
+    return query.on('end', function(result) {
+      client.end();
+      if (result.rowCount > 0) {
+        callback(participantDetails);
+      } else {
+        callback({error: 'Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.'});
+      }
+    });
+  });
+}
+
+function create(firstname, lastname, email, paymentToken, callback) {
+  pg.connect(connectionString,function(err,client){
+    client.query(
+      "insert into participants (firstname, lastname, email, paymenttoken) values($1, $2, $3, $4)",[firstname, lastname, email, paymentToken],
+      function (err, res) {
+        console.log('Executed');
+        if (! err) {
+          console.log("result:" , res);
+          client.end();
+          callback();
+          return "inserted";
+        }
+      }
+    );
+  });
+}
+
 module.exports = {
     getRegistered: getRegistered,
     getConfirmed: getConfirmed,
-    save: save
+    save: save,
+    getAll: getAll,
+    create: create,
+    getByToken: getByToken
 };

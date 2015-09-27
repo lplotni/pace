@@ -57,4 +57,28 @@ describe('participants service', function () {
                 done();
             });
     });
+  });
+
+  describe('getByToken', function() {
+
+    it('should return the name and amount to pay for the payment token', function (done) {
+      var paymentToken = 'some token';
+      participants.create('Mark', 'Mueller', 'm.mueller@example.com', paymentToken, function() {});
+
+      participants.getByToken(paymentToken, function(data) {
+        console.log("data: ", data);
+        expect(data).toEqual({ name: 'Mueller, Mark', amount: '10' });
+        done();
+      });
+    });
+
+    it('should return an error message for an incorrect payment token', function (done) {
+      var paymentToken = 'some token not in the DB';
+      participants.getByToken(paymentToken, function(data) {
+        expect(data).toEqual({ error: 'Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.' });
+        done();
+      });
+    });
+
+  });
 });

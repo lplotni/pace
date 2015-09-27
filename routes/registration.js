@@ -19,7 +19,7 @@ router.post('/', function(req, res) {
         //store in DB
         pg.connect(connectionString,function(err,client,done){
             client.query(
-                "insert into participants (firstname, lastname, email) values($1, $2, $3)",[participant.firstname, participant.lastname, participant.email],
+                "insert into participants (firstname, lastname, email, paymenttoken) values($1, $2, $3, $4)",[participant.firstname, participant.lastname, participant.email, createUniqueToken()],
                 function (err, res) {
                     console.log('Executed');
                     if (! err) {
@@ -52,6 +52,10 @@ var extractParticipant = function (req) {
         lastname: body.lastname,
         email: body.email
     };
+};
+
+var createUniqueToken = function() {
+    return Math.random().toString(32).substring(2);
 };
 
 module.exports = {

@@ -8,6 +8,7 @@
   "dependencies": {
     "body-parser": "~1.0.0",
     "cookie-parser": "~1.0.1",
+    "db-migrate": "~0.9.22",
     "debug": "~0.7.4",
     "express": "~4.2.0",
     "jade": "~1.3.0",

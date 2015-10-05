@@ -13,16 +13,28 @@ describe('participants service', function () {
         var jasmineDone = done;
 
         pg.connect(connectionString, function (err, client, done) {
-                client.query('delete from participants', function () {
+                if (err) {
+                    console.error('DB connection problem: ', err);
                     done();
                     jasmineDone();
-                });
+                } else {
+                    var query = client.query('delete from participants');
+                    query.on('end', function () {
+                        done();
+                        jasmineDone();
+                    });
+                    query.on('error', function (error) {
+                        console.error('DB statement problem: ', error);
+                        done();
+                        jasmineDone();
+                    })
+                }
             }
         );
 
     });
 
-    afterAll(function(done) {
+    afterAll(function (done) {
         pg.end();
         done();
     });

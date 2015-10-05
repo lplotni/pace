@@ -7,10 +7,11 @@ var Q = require('q');
 var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
 
 function getAll(payment_status) {
-    if (payment_status != undefined){
-      var querystring='select * from participants where has_payed='+payment_status+' order by firstname,lastname';
+    var querystring='';
+    if (payment_status !== undefined){
+      querystring='select * from participants where has_payed='+payment_status+' order by firstname,lastname';
     } else {
-      var querystring='select * from participants order by firstname,lastname';
+      querystring='select * from participants order by firstname,lastname';
     }
     var participants = [];
     var deferred = Q.defer();

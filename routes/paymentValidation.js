@@ -11,20 +11,20 @@ router.get('/', function (req, res) {
 router.post('/', function(req, res) {
     var paymentToken = req.body.paymenttoken;
 
-    participants.getByToken(paymentToken, function(result) {
-        if(result.error) {
-            return res.render('paymentValidation/paymentValidation', {
-                token: paymentToken,
-                error: result.error
-            });
-        } else {
-            return res.render('paymentValidation/paymentValidation', {
-                token: paymentToken,
-                name: result.name,
-                amount: result.amount
-            });
-        }
-    });
+    participants.getByToken(paymentToken)
+      .then(function (result) {
+          return res.render('paymentValidation/paymentValidation', {
+              token: paymentToken,
+              name: result.name,
+              amount: result.amount
+          });
+      })
+      .catch(function (result) {
+          return res.render('paymentValidation/paymentValidation', {
+              token: paymentToken,
+              error: result.error
+          });
+      });
 });
 
 module.exports = router;

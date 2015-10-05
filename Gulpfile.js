@@ -89,7 +89,7 @@ gulp.task('test-functional', function () {
     return deferred.promise;
 });
 
-gulp.task('create-db', shell.task(['node models/database.js']));
+gulp.task('create-db', shell.task(['db-migrate up']));
 
 gulp.task('lint', function() {
     return gulp.src(['app.js','./spec/**/*.js', './service/*.js','./routes/*.js'])

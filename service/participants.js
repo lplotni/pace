@@ -6,12 +6,18 @@ var Q = require('q');
 
 var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
 
-function getAll() {
+function getAll(payment_status) {
+    if (payment_status != undefined){
+      var querystring='select * from participants where has_payed='+payment_status+' order by firstname,lastname';
+    } else {
+      var querystring='select * from participants order by firstname,lastname';
+    }
     var participants = [];
     var deferred = Q.defer();
 
     pg.connect(connectionString, function (err, client, done) {
-            var query = client.query('select * from participants order by firstname,lastname');
+            console.log(querystring);
+            var query = client.query(querystring);
             query.on('row', function (row) {
                 participants.push(row);
             });

@@ -1,4 +1,4 @@
 {
   "dev": "postgres://vagrant@localhost/pace",
-  "ci": {"ENV": "DATABASE_URL"}
+  "ci": {"ENV": "SNAP_DB_PG_URL_ALT"}
 }

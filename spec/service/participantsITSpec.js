@@ -48,7 +48,7 @@ describe('participants service', function () {
         };
 
         participants.save(aParticipant)
-            .then(participants.getAll)
+            .then(participants.getRegistered)
             .then(function (data) {
                 expect(data.length).toBe(1);
                 expect(data[0].firstname).toBe(aParticipant.firstname);

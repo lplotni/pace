@@ -2,13 +2,14 @@
 'use strict';
 
 var pg = require('pg');
+var _ = require('lodash');
 var Q = require('q');
 
 var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
 
-function getAll(payment_status) {
+function getAllWithPaymentStatus(payment_status) {
     var querystring='';
-    if (payment_status !== undefined){
+    if (payment_status){
       querystring='select * from participants where has_payed='+payment_status+' order by firstname,lastname';
     } else {
       querystring='select * from participants order by firstname,lastname';
@@ -17,7 +18,6 @@ function getAll(payment_status) {
     var deferred = Q.defer();
 
     pg.connect(connectionString, function (err, client, done) {
-            console.log(querystring);
             var query = client.query(querystring);
             query.on('row', function (row) {
                 participants.push(row);
@@ -35,6 +35,14 @@ function getAll(payment_status) {
     );
 
     return deferred.promise;
+}
+
+function getRegistered() {
+    return getAllWithPaymentStatus(false);
+}
+
+function getConfirmed() {
+   return getAllWithPaymentStatus(true);
 }
 
 function save(participant) {
@@ -57,6 +65,7 @@ function save(participant) {
 }
 
 module.exports = {
-    getAll: getAll,
+    getRegistered: getRegistered,
+    getConfirmed: getConfirmed,
     save: save
 };

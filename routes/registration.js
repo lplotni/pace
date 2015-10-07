@@ -8,26 +8,28 @@ var _ = require('lodash');
 var pg = require('pg');
 var connectionString = process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
 
+var participants = require('../service/participants');
 /* GET registrationRoute listing. */
 router.get('/', function(req, res) {
-  res.render('registration/registration', {});
+    res.render('registration/registration', {});
 });
 
 router.post('/', function(req, res) {
     try{
         var participant = extractParticipant(req);
+
         //store in DB
-        pg.connect(connectionString,function(err,client,done){
+        pg.connect(connectionString,function(err,client){
             client.query(
-                "insert into participants (firstname, lastname, email) values($1, $2, $3)",[participant.firstname, participant.lastname, participant.email],
-                function (err, res) {
-                    console.log('Executed');
-                    if (! err) {
-                        console.log("result:" , res);
-                        client.end();
-                        return "inserted";
-                    }
-                }
+              "insert into participants (firstname, lastname, email, paymenttoken) values($1, $2, $3, $4)",[participant.firstname, participant.lastname, participant.email, createUniqueToken()],
+              function (err, res) {
+                  console.log('Executed');
+                  if (! err) {
+                      console.log("result:" , res);
+                      client.end();
+                      return "inserted";
+                  }
+              }
             );
         });
 
@@ -52,6 +54,10 @@ var extractParticipant = function (req) {
         lastname: body.lastname,
         email: body.email
     };
+};
+
+var createUniqueToken = function() {
+    return Math.random().toString(32).substring(2);
 };
 
 module.exports = {

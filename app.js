@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRoute);
 app.use('/registration', registrationRoute);
 app.use('/participants', participantsRoute);
-app.use('/paymentValidation', paymentValidationRoute);
+app.use('/payment_validation', paymentValidationRoute);
 
 
 /// catch 404 and forward to error handler

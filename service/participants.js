@@ -70,12 +70,13 @@ function getByToken(paymentToken) {
 
   pg.connect(connectionString, function(err, client, done){
     var query = client.query(
-      "SELECT firstname, lastname FROM participants WHERE paymenttoken = $1", [paymentToken]);
+      "SELECT id, firstname, lastname FROM participants WHERE paymenttoken = $1", [paymentToken]);
 
     query.on('row', function(row) {
       participantDetails = {
         name : row.lastname + ", " + row.firstname,
-        amount: '10'
+        amount: '10',
+        id: row.id
       };
     });
 
@@ -97,9 +98,61 @@ function getByToken(paymentToken) {
   return deferred.promise;
 }
 
+function getIdFor(participant) {
+  var deferred = Q.defer();
+  var participant_id;
+
+  pg.connect(connectionString, function(err, client, done){
+    var query = client.query(
+      "SELECT id FROM participants WHERE firstname = $1 AND lastname = $2 AND email = $3",
+      [participant.firstname, participant.lastname, participant.email]);
+
+    query.on('row', function(row) {
+      participant_id = row.id;
+    });
+
+    query.on('error', function() {
+      done();
+      deferred.reject();
+    });
+
+    query.on('end', function(result) {
+      done();
+      if (result.rowCount > 0) {
+        deferred.resolve(participant_id);
+      } else {
+        deferred.reject("No participant found with these details");
+      }
+    });
+  });
+
+  return deferred.promise;
+}
+
+function confirmParticipant(participantId) {
+  var deferred = Q.defer();
+  pg.connect(connectionString, function (err, client, done) {
+    var query = "update participants SET has_payed = true WHERE id = " + participantId;
+    client.query(query,
+      function (err, res) {
+        done();
+        if (!err) {
+          res.rowCount > 0 ? deferred.resolve() : deferred.reject();
+        } else {
+          deferred.reject(err);
+        }
+      }
+    );
+  });
+
+  return deferred.promise;
+}
+
 module.exports = {
   getRegistered: getRegistered,
   getConfirmed: getConfirmed,
   save: save,
-  getByToken: getByToken
+  getByToken: getByToken,
+  getIdFor: getIdFor,
+  confirmParticipant: confirmParticipant
 };

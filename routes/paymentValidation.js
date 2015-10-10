@@ -16,7 +16,8 @@ router.post('/', function(req, res) {
           return res.render('paymentValidation/paymentValidation', {
               token: paymentToken,
               name: result.name,
-              amount: result.amount
+              amount: result.amount,
+              id: result.id
           });
       })
       .catch(function (result) {
@@ -25,6 +26,20 @@ router.post('/', function(req, res) {
               error: result.error
           });
       });
+});
+
+router.post('/confirm', function(req, res) {
+  participants.confirmParticipant(req.body.participantid)
+    .then(function() {
+      res.render('paymentValidation/paymentValidation', {
+        success_message: "Der Teilnehmer wurde bestätigt"
+      });
+    })
+    .catch(function() {
+      res.render('paymentValidation/paymentValidation', {
+        error: "Fehler: Der Teilnehmer konnte nicht bestätigt werden"
+      });
+    });
 });
 
 module.exports = router;

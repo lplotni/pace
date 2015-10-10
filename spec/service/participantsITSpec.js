@@ -59,9 +59,8 @@ describe('participants service', function () {
       });
   });
 
-  describe('getByToken', function() {
-
-    it('should return the name and amount to pay for the payment token', function (done) {
+  describe('getIdFor', function() {
+    it('should return the database id by fistname, lastname and email', function (done) {
       var aParticipant = {
         firstname: 'Mark',
         lastname: 'Mueller',
@@ -71,23 +70,65 @@ describe('participants service', function () {
 
       participants.save(aParticipant, paymentToken)
         .then(function() {
-          participants.getByToken(paymentToken)
-            .then(function(data) {
-              expect(data).toEqual({ name: 'Mueller, Mark', amount: '10' });
+          participants.getIdFor(aParticipant)
+            .then(function(participantId) {
+              expect(participantId).toBeDefined()
               done();
             });
         });
     });
 
-    it('should return an error message for an incorrect payment token', function (done) {
-      var paymentToken = 'some token not in the DB';
+    it('should return an error if the id is invalid', function (done) {
+      var wrongId = '999';
 
-      participants.getByToken(paymentToken)
+      participants.getIdFor(wrongId)
         .catch(function(data) {
-          expect(data).toEqual({ error: 'Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.' });
+          expect(data).toEqual("No participant found with these details");
           done();
         });
+    });
 
+  });
+
+  describe('confirmParticipant', function() {
+    it('should mark the participant as payed', function (done) {
+      var aParticipant = {
+        firstname: 'Mark',
+        lastname: 'Mueller',
+        email: 'm.mueller@example.com'
+      };
+      var paymentToken = 'a token';
+
+      participants.save(aParticipant, paymentToken)
+        .then(function() {
+          participants.getIdFor(aParticipant)
+            .then(function (participantId) {
+              participants.confirmParticipant(participantId)
+                .then(function () {
+                  // confirmation was successful
+                  done();
+                });
+            });
+        });
+    });
+
+    it('should give error if ID is invalid', function (done) {
+      var aParticipant = {
+        firstname: 'Mark',
+        lastname: 'Mueller',
+        email: 'm.mueller@example.com'
+      };
+      var paymentToken = 'a token';
+      var wrongId = '999';
+
+      participants.save(aParticipant, paymentToken)
+        .then(function() {
+          participants.confirmParticipant(wrongId)
+            .catch(function() {
+              done();
+            });
+        });
     });
   });
+
 });

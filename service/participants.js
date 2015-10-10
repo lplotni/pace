@@ -47,9 +47,10 @@ function getConfirmed() {
 
 function save(participant, paymentToken) {
     var deferred = Q.defer();
+
     pg.connect(connectionString, function (err, client, done) {
         client.query(
-            "insert into participants (firstname, lastname, email, paymenttoken) values($1, $2, $3, $4)", [participant.firstname, participant.lastname, participant.email, paymentToken],
+            "insert into participants (firstname, lastname, email, gender, paymenttoken) values($1, $2, $3, $4, $5)", [participant.firstname, participant.lastname, participant.email, participant.gender, paymentToken],
             function (err, res) {
                 done();
                 if (!err) {

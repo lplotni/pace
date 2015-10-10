@@ -17,21 +17,7 @@ router.get('/', function(req, res) {
 router.post('/', function(req, res) {
     try{
         var participant = extractParticipant(req);
-
-        //store in DB
-        pg.connect(connectionString,function(err,client){
-            client.query(
-              "insert into participants (firstname, lastname, email, paymenttoken) values($1, $2, $3, $4)",[participant.firstname, participant.lastname, participant.email, createUniqueToken()],
-              function (err, res) {
-                  console.log('Executed');
-                  if (! err) {
-                      console.log("result:" , res);
-                      client.end();
-                      return "inserted";
-                  }
-              }
-            );
-        });
+        participants.save(participant, createUniqueToken());
 
         res.render('registration/success', {name: participant.firstname +' '+ participant.lastname, link: ''});
     } catch (err) {
@@ -52,7 +38,8 @@ var extractParticipant = function (req) {
     return {
         firstname: body.firstname,
         lastname: body.lastname,
-        email: body.email
+        email: body.email,
+        gender: body.gender
     };
 };
 

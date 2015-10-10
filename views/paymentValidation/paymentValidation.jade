@@ -9,7 +9,13 @@ block content
     button(type='submit') Absenden
 
   if amount
-    p Betrag für Token #{token}: #{amount} Euro (Name: #{name})
+    form#payment-validation-form(method='POST', action='/payment_validation/confirm')
+      p Betrag für Token #{token}: #{amount} Euro (Name: #{name})
+      input(type='hidden', name='participantid', value='#{id}')
+      button(type='submit') Registrierung bestätigen
+
+   if success_message
+     p #{success_message}
 
   if error
     p #{error}

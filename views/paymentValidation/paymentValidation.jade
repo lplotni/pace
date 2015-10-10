@@ -2,7 +2,7 @@ extends ../layout
 
 block content
   h2 Überprüfung der Zahlungseingänge
-  form#payment-validation-form(method='POST', action='/paymentValidation')
+  form#payment-validation-form(method='POST', action='/payment_validation')
     label(for='payment-token') Token:
     input#payment-token(type='text', maxlength=7 , name='paymenttoken', required=true)
     br

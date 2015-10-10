@@ -8,7 +8,8 @@ describe('registration on post', function () {
         body: {
             firstname: 'Mark',
             lastname: 'Mueller',
-            email: 'm.mueller@example.com'
+            email: 'm.mueller@example.com',
+            gender: 'Unicorn'
         }
     };
 
@@ -48,8 +49,11 @@ describe('registration on post', function () {
         expect(extractParticipant(validRequestData).lastname).toBe('Mueller');
     });
 
-
     it('should read email from the request body', function () {
         expect(extractParticipant(validRequestData).email).toBe('m.mueller@example.com');
+    });
+    
+    it('should read gender form the request body', function () {
+        expect(extractParticipant(validRequestData).gender).toBe('Unicorn');
     });
 });

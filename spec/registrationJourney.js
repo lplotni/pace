@@ -14,13 +14,12 @@ describe('regisitration journey', function () {
             }
         };
 
-        client = webdriverio
-            .remote(options);
+        client = webdriverio.remote(options);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     });
 
-    afterEach(function() {
+    afterEach(function () {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
@@ -30,6 +29,12 @@ describe('regisitration journey', function () {
             .url(paceUrl)
             .click('a#registration')
             .isVisible('form#registrationForm')
+            .setValue('input#firstname', 'Max')
+            .setValue('input#lastname', 'Mustermann')
+            .setValue('input#email', 'max@example.com')
+            .setValue('input#gender', 'Unicorn')
+            .click('button#submit')
+            .isVisible('div.thanks')
             .then(function (isVisible) {
                 expect(isVisible).toBe(true);
                 done();

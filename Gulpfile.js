@@ -3,8 +3,9 @@ var jasmine = require('gulp-jasmine');
 var jshint = require('gulp-jshint');
 var shell = require('gulp-shell');
 var selenium = require('selenium-standalone');
-var gutil= require('gulp-util');
-var Q= require('q');
+var gutil = require('gulp-util');
+var argv = require('yargs').argv;
+var Q = require('q');
 
 
 function express() {
@@ -12,7 +13,7 @@ function express() {
     var app = require('./app.js');
     app.set('port', process.env.PORT || 3000);
 
-    var server = app.listen(app.get('port'), function() {
+    var server = app.listen(app.get('port'), function () {
         gutil.log('Express server listening on port ' + server.address().port);
         deferred.resolve(server);
     });
@@ -22,23 +23,29 @@ function express() {
 }
 
 function vagrant() {
-  var deferred = Q.defer();
-  var task = shell.task('cd postgres; vagrant up')();
-  task.on('end', deferred.resolve);
-  task.on('error', deferred.reject);
+    var deferred = Q.defer();
+    var task = shell.task('cd postgres; vagrant up')();
+    task.on('end', deferred.resolve);
+    task.on('error', deferred.reject);
 
-  return deferred.promise;
+    return deferred.promise;
 }
 
 function createdb() {
-  return shell.task('./node_modules/db-migrate/bin/db-migrate up')();
+    if(argv.ci) {
+        gutil.log('Adding -e ci');
+        return shell.task('./node_modules/db-migrate/bin/db-migrate -e ci up')();
+    } else {
+        return shell.task('./node_modules/db-migrate/bin/db-migrate up')();
+    }
 }
 
 function testFunctional() {
     var deferred = Q.defer();
     var stream = gulp.src('spec/**/*Journey.js').pipe(jasmine());
 
-    stream.on('data', function () {});
+    stream.on('data', function () {
+    });
 
     stream.on('error', deferred.reject);
     stream.on('end', deferred.resolve);
@@ -61,12 +68,12 @@ function startSelenium() {
 
 gulp.task('express', express);
 
-gulp.task('test', function(){
- return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*Journey.js']).pipe(jasmine());
+gulp.task('test', function () {
+    return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*Journey.js']).pipe(jasmine());
 });
 
-gulp.task('test-integration', function (){
- return gulp.src('spec/**/*IT*.js').pipe(jasmine());
+gulp.task('test-integration', function () {
+    return gulp.src('spec/**/*IT*.js').pipe(jasmine());
 });
 
 gulp.task('selenium-install', function (done) {
@@ -90,10 +97,10 @@ gulp.task('test-functional', function () {
     }
 
     express().then(function (server) {
-        startSelenium().then(function(selenium) {
-            testFunctional().then(function() {
+        startSelenium().then(function (selenium) {
+            testFunctional().then(function () {
                 cleanUp(selenium, server);
-            }).fail(function() {
+            }).fail(function () {
                 cleanUp(selenium, server);
             });
         })
@@ -104,23 +111,23 @@ gulp.task('test-functional', function () {
 
 gulp.task('create-db', createdb);
 
-gulp.task('lint', function() {
-    return gulp.src(['app.js','./spec/**/*.js', './service/*.js','./routes/*.js'])
+gulp.task('lint', function () {
+    return gulp.src(['app.js', './spec/**/*.js', './service/*.js', './routes/*.js'])
         .pipe(jshint())
-        .pipe(jshint.reporter('default', { verbose: true }));
+        .pipe(jshint.reporter('default', {verbose: true}));
 });
 
 gulp.task('default', ['express']);
 
 gulp.task('database', function () {
-  var deferred = Q.defer();
-  vagrant().then(function(){
-      var task = createdb();
-      task.on('end', deferred.resolve);
-      task.on('error', deferred.reject);
+    var deferred = Q.defer();
+    vagrant().then(function () {
+        var task = createdb();
+        task.on('end', deferred.resolve);
+        task.on('error', deferred.reject);
     }).fail(deferred.reject);
 
-  return deferred.promise;
+    return deferred.promise;
 });
 
 gulp.task('dev-setup', ['database', 'selenium-install']);

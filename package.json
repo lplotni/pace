@@ -25,6 +25,7 @@
     "gulp-shell": "^0.5.0",
     "gulp-util": "^3.0.6",
     "selenium-standalone": "^4.5.3",
-    "webdriverio": "^3.1.0"
+    "webdriverio": "^3.1.0",
+    "yargs": "^3.27.0"
   }
 }

@@ -21,6 +21,19 @@ function express() {
 
 }
 
+function vagrant() {
+  var deferred = Q.defer();
+  var task = shell.task('cd postgres; vagrant up')();
+  task.on('end', deferred.resolve);
+  task.on('error', deferred.reject);
+
+  return deferred.promise;
+}
+
+function createdb() {
+  return shell.task('./node_modules/db-migrate/bin/db-migrate up')();
+}
+
 function testFunctional() {
     var deferred = Q.defer();
     var stream = gulp.src('spec/**/*Journey.js').pipe(jasmine());
@@ -89,7 +102,7 @@ gulp.task('test-functional', function () {
     return deferred.promise;
 });
 
-gulp.task('create-db', shell.task(['db-migrate up']));
+gulp.task('create-db', createdb);
 
 gulp.task('lint', function() {
     return gulp.src(['app.js','./spec/**/*.js', './service/*.js','./routes/*.js'])
@@ -98,3 +111,16 @@ gulp.task('lint', function() {
 });
 
 gulp.task('default', ['express']);
+
+gulp.task('database', function () {
+  var deferred = Q.defer();
+  vagrant().then(function(){
+      var task = createdb();
+      task.on('end', deferred.resolve);
+      task.on('error', deferred.reject);
+    }).fail(deferred.reject);
+
+  return deferred.promise;
+});
+
+gulp.task('dev-setup', ['database', 'selenium-install']);

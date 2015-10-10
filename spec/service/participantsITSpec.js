@@ -44,7 +44,8 @@ describe('participants service', function () {
     var aParticipant = {
       firstname: 'Hertha',
       lastname: 'Mustermann',
-      email: 'h.mustermann@example.com'
+      email: 'h.mustermann@example.com',
+      gender: 'Unicorn'
     };
     var randomToken = '1234567';
 
@@ -55,6 +56,7 @@ describe('participants service', function () {
         expect(data[0].firstname).toBe(aParticipant.firstname);
         expect(data[0].lastname).toBe(aParticipant.lastname);
         expect(data[0].email).toBe(aParticipant.email);
+        expect(data[0].gender).toBe(aParticipant.gender);
         done();
       });
   });

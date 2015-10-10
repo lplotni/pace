@@ -10,7 +10,10 @@ block content
             .item
                 label(for='lastname') Nachname:
                 input#lastname(type='text', name='lastname', required=true)
+        .gender
+            label(for='gender') Geschlecht:
+            input#gender(type='text', name='gender', required=true)
         .email
             label(for='email') Email:
             input#email(type='email', name='email', required=true)
-        button(type='submit') Absenden
+        button#submit(type='submit') Absenden

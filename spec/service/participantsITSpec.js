@@ -74,7 +74,7 @@ describe('participants service', function () {
         .then(function() {
           participants.getIdFor(aParticipant)
             .then(function(participantId) {
-              expect(participantId).toBeDefined()
+              expect(participantId).toBeDefined();
               done();
             });
         });

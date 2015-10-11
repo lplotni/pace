@@ -138,7 +138,11 @@ function confirmParticipant(participantId) {
       function (err, res) {
         done();
         if (!err) {
-          res.rowCount > 0 ? deferred.resolve() : deferred.reject();
+            if (res.rowCount > 0) {
+                deferred.resolve();
+            } else {
+                deferred.reject();
+            }
         } else {
           deferred.reject(err);
         }

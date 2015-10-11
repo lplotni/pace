@@ -6,16 +6,21 @@ block content
     label(for='payment-token') Token:
     input#payment-token(type='text', maxlength=7 , name='paymenttoken', required=true)
     br
-    button(type='submit') Absenden
+    button#submit-token(type='submit') Absenden
 
   if amount
-    form#payment-validation-form(method='POST', action='/payment_validation/confirm')
-      p Betrag für Token #{token}: #{amount} Euro (Name: #{name})
+    form#payment-details(method='POST', action='/payment_validation/confirm')
+      p#details Betrag für Token #{token}: #{amount} Euro (Name: #{name})
+      input(type='hidden', name='paymenttoken', value='#{token}')
+      input(type='hidden', name='amount', value='#{amount}')
+      input(type='hidden', name='name', value='#{name}')
       input(type='hidden', name='participantid', value='#{id}')
-      button(type='submit') Registrierung bestätigen
+      button#confirm-registration(type='submit') Registrierung bestätigen
 
    if success_message
-     p #{success_message}
+     .success
+       p #{success_message}
 
   if error
-    p #{error}
+    .error
+      p #{error}

@@ -32,12 +32,20 @@ router.post('/confirm', function(req, res) {
   participants.confirmParticipant(req.body.participantid)
     .then(function() {
       res.render('paymentValidation/paymentValidation', {
-        success_message: "Der Teilnehmer wurde bestätigt"
+        success_message: "Der Teilnehmer wurde bestätigt",
+        token: req.body.paymenttoken,
+        name: req.body.name,
+        amount: req.body.amount,
+        id: req.body.id
       });
     })
     .catch(function() {
       res.render('paymentValidation/paymentValidation', {
-        error: "Fehler: Der Teilnehmer konnte nicht bestätigt werden"
+        error: "Fehler: Der Teilnehmer konnte nicht bestätigt werden",
+        token: req.body.paymenttoken,
+        name: req.body.name,
+        amount: req.body.amount,
+        id: req.body.id
       });
     });
 });

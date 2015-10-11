@@ -11,6 +11,9 @@ block content
   if amount
     form#payment-details(method='POST', action='/payment_validation/confirm')
       p#details Betrag für Token #{token}: #{amount} Euro (Name: #{name})
+      input(type='hidden', name='paymenttoken', value='#{token}')
+      input(type='hidden', name='amount', value='#{amount}')
+      input(type='hidden', name='name', value='#{name}')
       input(type='hidden', name='participantid', value='#{id}')
       button#confirm-registration(type='submit') Registrierung bestätigen
 

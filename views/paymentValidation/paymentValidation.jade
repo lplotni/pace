@@ -13,9 +13,12 @@ block content
       p Betrag für Token #{token}: #{amount} Euro (Name: #{name})
       input(type='hidden', name='participantid', value='#{id}')
       button(type='submit') Registrierung bestätigen
+    
 
    if success_message
-     p #{success_message}
+     .success
+       p #{success_message}
 
-  if error
+if error
+  .error
     p #{error}

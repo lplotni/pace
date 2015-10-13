@@ -17,7 +17,7 @@ router.post('/', function(req, res) {
               token: paymentToken,
               name: result.name,
               amount: result.amount,
-              id: result.id
+              participantid: result.id
           });
       })
       .catch(function (result) {
@@ -36,7 +36,7 @@ router.post('/confirm', function(req, res) {
         token: req.body.paymenttoken,
         name: req.body.name,
         amount: req.body.amount,
-        id: req.body.id
+        participantid: req.body.participantid
       });
     })
     .catch(function() {
@@ -45,7 +45,7 @@ router.post('/confirm', function(req, res) {
         token: req.body.paymenttoken,
         name: req.body.name,
         amount: req.body.amount,
-        id: req.body.id
+        participantid: req.body.participantid
       });
     });
 });

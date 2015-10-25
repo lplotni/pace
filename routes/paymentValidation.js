@@ -5,10 +5,10 @@ var router = require('express').Router();
 var participants = require('../service/participants');
 var accesscontrol = require("../acl/accesscontrol");
 
-var userRole = 'admin';
+var canConfirmPayments = accesscontrol.hasPermissionTo('admin', 'confirm payments');
 
 router.get('/', function (req, res) {
-    if(canAccess(userRole)) {
+    if(canConfirmPayments) {
         res.render('paymentValidation/paymentValidation', {});
     } else {
         var result = {
@@ -22,7 +22,7 @@ router.get('/', function (req, res) {
 });
 
 router.post('/', function(req, res) {
-    if(canAccess(userRole)) {
+    if(canConfirmPayments) {
         var paymentToken = req.body.paymenttoken;
 
         participants.getByToken(paymentToken)
@@ -44,7 +44,7 @@ router.post('/', function(req, res) {
 });
 
 router.post('/confirm', function(req, res) {
-    if(canAccess(userRole)) {
+    if(canConfirmPayments) {
         participants.confirmParticipant(req.body.participantid)
             .then(function () {
                 res.render('paymentValidation/paymentValidation', {
@@ -67,16 +67,5 @@ router.post('/confirm', function(req, res) {
     }
 });
 
-var canAccess = function(userRole) {
-    var accessControlCheckResult = false;
-    accesscontrol.check(userRole, "confirm payment validation", function(err, result){
-        accessControlCheckResult = result;
-    });
-    return accessControlCheckResult;
-};
-
-module.exports = {
-    router: router,
-    canAccess: canAccess
-};
+module.exports = router;
 

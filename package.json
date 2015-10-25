@@ -16,7 +16,8 @@
     "morgan": "~1.0.0",
     "pg": "^4.4.1",
     "q": "^1.4.1",
-    "static-favicon": "~1.0.0"
+    "static-favicon": "~1.0.0",
+    "rbac2": "~1.0.5"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

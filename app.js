@@ -9,7 +9,7 @@ var indexRoute = require('./routes/index');
 var adminRoute = require('./routes/admin');
 var registrationRoute = require('./routes/registration').router;
 var participantsRoute = require('./routes/participants');
-var paymentValidationRoute = require('./routes/paymentValidation');
+var paymentValidationRoute = require('./routes/paymentValidation').router;
 
 var app = express();
 

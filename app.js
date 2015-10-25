@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var indexRoute = require('./routes/index');
+var adminRoute = require('./routes/admin');
 var registrationRoute = require('./routes/registration').router;
 var participantsRoute = require('./routes/participants');
 var paymentValidationRoute = require('./routes/paymentValidation');
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRoute);
+app.use('/admin', adminRoute);
 app.use('/registration', registrationRoute);
 app.use('/participants', participantsRoute);
 app.use('/payment_validation', paymentValidationRoute);

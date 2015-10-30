@@ -41,6 +41,9 @@ router.post('/', function(req, res) {
         var participant = extractParticipant(req);
         participants.save(participant, createUniqueToken());
 
+        res.render('registration/success', {name: participant.firstname +' '+ participant.lastname, link: ''}, function(err, html) {
+              participants.sendEmail(participant.email,html);
+                    });
         res.render('registration/success', {name: participant.firstname +' '+ participant.lastname, link: ''});
     } catch (err) {
         res.send(err.message);

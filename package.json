@@ -17,7 +17,9 @@
     "pg": "^4.4.1",
     "q": "^1.4.1",
     "static-favicon": "~1.0.0",
-    "rbac2": "~1.0.5"
+    "rbac2": "~1.0.5",
+    "passport": "~0.3.0",
+    "passport-local": "~1.0.0"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

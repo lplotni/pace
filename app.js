@@ -28,7 +28,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // authentication using passport needs to be initialized before the routing setup
+app.use(require('express-session')({ 
+    secret: 'secret pace', 
+    resave: false, 
+    saveUninitialized: false 
+})); 
 app.use(passport.initialize());
+app.use(passport.session());
 
 passport.serializeUser(function(user, done) {
     done(null, user.username);
@@ -41,8 +47,6 @@ passport.deserializeUser(function(id, done) {
 
 passport.use(new LocalStrategy(
     function(username, password, done) {
-        console.log("username: ", username);
-        console.log("password: ", password);
         if(username === 'admin' && password === 'admin') {
             user = {username: "admin"};
             return done(null, user);

@@ -1,11 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var accesscontrol = require("../acl/accesscontrol");
+var accesscontrol = require('../acl/accesscontrol');
+var isAuthenticated = require('../acl/authentication');
 
-var canViewAdminPage = accesscontrol.hasPermissionTo('admin', 'view admin page');
-
-router.get('/', function(req, res) {
-    if (canViewAdminPage) {
+router.get('/', isAuthenticated, function(req, res) {
+    if (canViewAdminPage(req.user.role)) {
         res.render('admin', {title: 'Pace Admin-Bereich'});
     } else {
         var result = {
@@ -17,5 +16,9 @@ router.get('/', function(req, res) {
         res.render('error', result);
     }
 });
+
+var canViewAdminPage = function(role) {
+    return accesscontrol.hasPermissionTo(role, 'view admin page');
+};
 
 module.exports = router;

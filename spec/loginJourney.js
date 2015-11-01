@@ -6,6 +6,7 @@ describe('admin page', function() {
 
     var client;
     var paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
+    var loginUrl = paceUrl + 'login';
     var originalTimeout;
 
     beforeEach(function() {
@@ -25,14 +26,12 @@ describe('admin page', function() {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    it('should go to admin page and show admin links', function (done) {
+    it('should login as admin and go to admin page', function (done) {
         client.init()
-            .url(paceUrl + 'login')
+            .url(loginUrl)
             .setValue('input#username', 'admin')
             .setValue('input#password', 'admin')
             .click('button#submit')
-            .url(paceUrl)
-            .click('a#adminPage')
             .isVisible('a#paymentValidation')
             .then(function(isVisible) {
                 expect(isVisible).toBe(true);
@@ -41,13 +40,19 @@ describe('admin page', function() {
             .end();
     });
 
-    it('should redirect to login page if the user is not logged in', function (done) {
+    it('should stay on login page for wrong login credentials and display an error message', function (done) {
         client.init()
-            .url(paceUrl)
-            .click('a#adminPage')
+            .url(loginUrl)
+            .setValue('input#username', 'admin')
+            .setValue('input#password', 'wrong password')
+            .click('button#submit')
             .isVisible('form#loginForm')
             .then(function(isVisible) {
                 expect(isVisible).toBe(true);
+            })
+            .getText('div.error')
+            .then(function (errorMessage) {
+                expect(errorMessage).toBe('Bitte Benutzername und Passwort überprüfen.');
                 done();
             })
             .end();

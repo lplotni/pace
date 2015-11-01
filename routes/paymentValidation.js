@@ -4,11 +4,10 @@
 var router = require('express').Router();
 var participants = require('../service/participants');
 var accesscontrol = require("../acl/accesscontrol");
+var isAuthenticated = require("../acl/authentication");
 
-var canConfirmPayments = accesscontrol.hasPermissionTo('admin', 'confirm payments');
-
-router.get('/', function (req, res) {
-    if(canConfirmPayments) {
+router.get('/', isAuthenticated, function (req, res) {
+    if(canConfirmPayments(req.user.role)) {
         res.render('paymentValidation/paymentValidation', {});
     } else {
         var result = {
@@ -21,8 +20,8 @@ router.get('/', function (req, res) {
     }
 });
 
-router.post('/', function(req, res) {
-    if(canConfirmPayments) {
+router.post('/', isAuthenticated, function(req, res) {
+    if(canConfirmPayments(req.user.role)) {
         var paymentToken = req.body.paymenttoken;
 
         participants.getByToken(paymentToken)
@@ -43,8 +42,8 @@ router.post('/', function(req, res) {
     }
 });
 
-router.post('/confirm', function(req, res) {
-    if(canConfirmPayments) {
+router.post('/confirm', isAuthenticated, function(req, res) {
+    if(canConfirmPayments(req.user.role)) {
         participants.confirmParticipant(req.body.participantid)
             .then(function () {
                 res.render('paymentValidation/paymentValidation', {
@@ -66,6 +65,10 @@ router.post('/confirm', function(req, res) {
             });
     }
 });
+
+var canConfirmPayments = function(role) {
+    return accesscontrol.hasPermissionTo(role, 'confirm payments');
+};
 
 module.exports = router;
 

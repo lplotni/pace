@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var flash = require('connect-flash');
 
 var indexRoute = require('./routes/index');
 var adminRoute = require('./routes/admin');
@@ -32,7 +33,8 @@ app.use(require('express-session')({ 
     secret: 'secret pace', 
     resave: false, 
     saveUninitialized: false 
-})); 
+}));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 

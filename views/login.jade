@@ -11,3 +11,7 @@ block content
                 label(for='password') Passwort:
                 input#password(type='text', name='password', required=true)
         button#submit(type='submit') anmelden
+
+    if error
+    .error
+        p #{error}

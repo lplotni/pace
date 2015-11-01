@@ -19,7 +19,8 @@
     "static-favicon": "~1.0.0",
     "rbac2": "~1.0.5",
     "passport": "~0.3.0",
-    "passport-local": "~1.0.0"
+    "passport-local": "~1.0.0",
+    "connect-flash": "~0.1.1 "
   },
   "devDependencies": {
     "gulp": "^3.9.0",

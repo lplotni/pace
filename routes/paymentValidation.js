@@ -6,10 +6,8 @@ var participants = require('../service/participants');
 var accesscontrol = require("../acl/accesscontrol");
 var isAuthenticated = require("../acl/authentication");
 
-var canConfirmPayments = accesscontrol.hasPermissionTo('admin', 'confirm payments');
-
 router.get('/', isAuthenticated, function (req, res) {
-    if(canConfirmPayments) {
+    if(canConfirmPayments(req.user.role)) {
         res.render('paymentValidation/paymentValidation', {});
     } else {
         var result = {
@@ -23,7 +21,7 @@ router.get('/', isAuthenticated, function (req, res) {
 });
 
 router.post('/', isAuthenticated, function(req, res) {
-    if(canConfirmPayments) {
+    if(canConfirmPayments(req.user.role)) {
         var paymentToken = req.body.paymenttoken;
 
         participants.getByToken(paymentToken)
@@ -45,7 +43,7 @@ router.post('/', isAuthenticated, function(req, res) {
 });
 
 router.post('/confirm', isAuthenticated, function(req, res) {
-    if(canConfirmPayments) {
+    if(canConfirmPayments(req.user.role)) {
         participants.confirmParticipant(req.body.participantid)
             .then(function () {
                 res.render('paymentValidation/paymentValidation', {
@@ -67,6 +65,10 @@ router.post('/confirm', isAuthenticated, function(req, res) {
             });
     }
 });
+
+var canConfirmPayments = function(role) {
+    return accesscontrol.hasPermissionTo(role, 'confirm payments');
+};
 
 module.exports = router;
 

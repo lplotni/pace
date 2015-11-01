@@ -4,10 +4,11 @@
 var router = require('express').Router();
 var participants = require('../service/participants');
 var accesscontrol = require("../acl/accesscontrol");
+var isAuthenticated = require("../acl/authentication");
 
 var canConfirmPayments = accesscontrol.hasPermissionTo('admin', 'confirm payments');
 
-router.get('/', function (req, res) {
+router.get('/', isAuthenticated, function (req, res) {
     if(canConfirmPayments) {
         res.render('paymentValidation/paymentValidation', {});
     } else {
@@ -21,7 +22,7 @@ router.get('/', function (req, res) {
     }
 });
 
-router.post('/', function(req, res) {
+router.post('/', isAuthenticated, function(req, res) {
     if(canConfirmPayments) {
         var paymentToken = req.body.paymenttoken;
 
@@ -43,7 +44,7 @@ router.post('/', function(req, res) {
     }
 });
 
-router.post('/confirm', function(req, res) {
+router.post('/confirm', isAuthenticated, function(req, res) {
     if(canConfirmPayments) {
         participants.confirmParticipant(req.body.participantid)
             .then(function () {

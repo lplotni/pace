@@ -7,6 +7,7 @@ var pg = require('pg');
 
 describe('payment validation journey', function () {
     var client;
+    var loggedInClient;
     var paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
     var paymentValidationUrl = paceUrl + 'payment_validation';
     var originalTimeout;
@@ -50,6 +51,12 @@ describe('payment validation journey', function () {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
         setupDbConnection(done);
+
+        loggedInClient = client.init()
+            .url(paceUrl + 'login')
+            .setValue('input#username', 'admin')
+            .setValue('input#password', 'admin')
+            .click('button#submit')
     });
 
     afterEach(function() {
@@ -61,10 +68,19 @@ describe('payment validation journey', function () {
         done();
     });
 
-    it('displays an error message for an invalid token', function (done) {
-        var invalidToken = 'invalid';
+    it('redirects to the login page for unauthenticated users', function () {
         client.init()
             .url(paymentValidationUrl)
+            .isVisible('form#loginForm')
+            .then(function (isVisible) {
+                expect(isVisible).toBe(true);
+            })
+            .end();
+    });
+
+    it('displays an error message for an invalid token', function (done) {
+        var invalidToken = 'invalid';
+        loggedInClient.url(paymentValidationUrl)
             .setValue('input#payment-token', invalidToken)
             .click('button#submit-token')
             .isVisible('form#payment-details')
@@ -89,8 +105,7 @@ describe('payment validation journey', function () {
 
         participants.save(aParticipant, aToken)
             .then(function() {
-                client.init()
-                    .url(paymentValidationUrl)
+                loggedInClient.url(paymentValidationUrl)
                     .setValue('input#payment-token', aToken)
                     .click('button#submit-token')
                     .isVisible('form#payment-details')

@@ -37,18 +37,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser(function(user, done) {
-    done(null, user.username);
+    done(null, {username: user.username, role: user.role});
 });
 
 passport.deserializeUser(function(id, done) {
-    user = {username: "admin"};
-    done(null, user);
+    done(null, id);
 });
 
 passport.use(new LocalStrategy(
     function(username, password, done) {
         if(username === 'admin' && password === 'admin') {
-            user = {username: "admin"};
+            var user = {username: "admin", role: "admin"};
             return done(null, user);
         } else {
             done(null, false, { message: 'Bitte Benutzername und Passwort überprüfen.' });

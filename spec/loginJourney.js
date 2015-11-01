@@ -40,7 +40,7 @@ describe('admin page', function() {
             .end();
     });
 
-    it('should stay on login page for wrong login credentials', function (done) {
+    it('should stay on login page for wrong login credentials and display an error message', function (done) {
         client.init()
             .url(loginUrl)
             .setValue('input#username', 'admin')
@@ -49,6 +49,10 @@ describe('admin page', function() {
             .isVisible('form#loginForm')
             .then(function(isVisible) {
                 expect(isVisible).toBe(true);
+            })
+            .getText('div.error')
+            .then(function (errorMessage) {
+                expect(errorMessage).toBe('Bitte Benutzername und Passwort überprüfen.');
                 done();
             })
             .end();

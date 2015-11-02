@@ -3,8 +3,12 @@
 
 var router = require('express').Router();
 var participants = require('../service/participants');
-var accesscontrol = require("../acl/accesscontrol");
-var isAuthenticated = require("../acl/authentication");
+var accesscontrol = require('../acl/accesscontrol');
+var isAuthenticated = require('../acl/authentication');
+
+var canConfirmPayments = function(role) {
+    return accesscontrol.hasPermissionTo(role, 'confirm payments');
+};
 
 router.get('/', isAuthenticated, function (req, res) {
     if(canConfirmPayments(req.user.role)) {
@@ -47,7 +51,7 @@ router.post('/confirm', isAuthenticated, function(req, res) {
         participants.confirmParticipant(req.body.participantid)
             .then(function () {
                 res.render('paymentValidation/paymentValidation', {
-                    success_message: "Der Teilnehmer wurde bestätigt",
+                    successMessage: 'Der Teilnehmer wurde bestätigt',
                     token: req.body.paymenttoken,
                     name: req.body.name,
                     amount: req.body.amount,
@@ -56,7 +60,7 @@ router.post('/confirm', isAuthenticated, function(req, res) {
             })
             .catch(function () {
                 res.render('paymentValidation/paymentValidation', {
-                    error: "Fehler: Der Teilnehmer konnte nicht bestätigt werden",
+                    error: 'Fehler: Der Teilnehmer konnte nicht bestätigt werden',
                     token: req.body.paymenttoken,
                     name: req.body.name,
                     amount: req.body.amount,
@@ -65,10 +69,6 @@ router.post('/confirm', isAuthenticated, function(req, res) {
             });
     }
 });
-
-var canConfirmPayments = function(role) {
-    return accesscontrol.hasPermissionTo(role, 'confirm payments');
-};
 
 module.exports = router;
 

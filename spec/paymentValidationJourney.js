@@ -13,7 +13,7 @@ describe('payment validation journey', function () {
     var originalTimeout;
 
     var setupDbConnection = function(done) {
-        var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
+        var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
         var jasmineDone = done;
 
         pg.connect(connectionString, function (err, client, done) {
@@ -56,7 +56,7 @@ describe('payment validation journey', function () {
             .url(paceUrl + 'login')
             .setValue('input#username', 'admin')
             .setValue('input#password', 'admin')
-            .click('button#submit')
+            .click('button#submit');
     });
 
     afterEach(function() {

@@ -1,5 +1,5 @@
 /* jshint node: true */
-/* global describe, beforeEach, afterEach, it, jasmine, expect */
+/* global describe, it, expect */
 'use strict';
 
 var accesscontrol = require('../../acl/accesscontrol');

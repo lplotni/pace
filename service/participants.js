@@ -2,15 +2,14 @@
 'use strict';
 
 var pg = require('pg');
-var _ = require('lodash');
 var Q = require('q');
 
-var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
+var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
 
-function getAllWithPaymentStatus(payment_status) {
+function getAllWithPaymentStatus(paymentStatus) {
   var querystring='';
-  if (payment_status){
-    querystring='select * from participants where has_payed='+payment_status+' order by firstname,lastname';
+  if (paymentStatus){
+    querystring='select * from participants where has_payed='+paymentStatus+' order by firstname,lastname';
   } else {
     querystring='select * from participants order by firstname,lastname';
   }
@@ -50,7 +49,7 @@ function save(participant, paymentToken) {
 
     pg.connect(connectionString, function (err, client, done) {
         client.query(
-            "insert into participants (firstname, lastname, email, gender, paymenttoken) values($1, $2, $3, $4, $5)", [participant.firstname, participant.lastname, participant.email, participant.gender, paymentToken],
+            'insert into participants (firstname, lastname, email, gender, paymenttoken) values($1, $2, $3, $4, $5)', [participant.firstname, participant.lastname, participant.email, participant.gender, paymentToken],
             function (err, res) {
                 done();
                 if (!err) {
@@ -71,11 +70,11 @@ function getByToken(paymentToken) {
 
   pg.connect(connectionString, function(err, client, done){
     var query = client.query(
-      "SELECT id, firstname, lastname FROM participants WHERE paymenttoken = $1", [paymentToken]);
+      'SELECT id, firstname, lastname FROM participants WHERE paymenttoken = $1', [paymentToken]);
 
     query.on('row', function(row) {
       participantDetails = {
-        name : row.lastname + ", " + row.firstname,
+        name : row.lastname + ', ' + row.firstname,
         amount: '10',
         id: row.id
       };
@@ -101,15 +100,15 @@ function getByToken(paymentToken) {
 
 function getIdFor(participant) {
   var deferred = Q.defer();
-  var participant_id;
+  var participantId;
 
   pg.connect(connectionString, function(err, client, done){
     var query = client.query(
-      "SELECT id FROM participants WHERE firstname = $1 AND lastname = $2 AND email = $3",
+      'SELECT id FROM participants WHERE firstname = $1 AND lastname = $2 AND email = $3',
       [participant.firstname, participant.lastname, participant.email]);
 
     query.on('row', function(row) {
-      participant_id = row.id;
+      participantId = row.id;
     });
 
     query.on('error', function() {
@@ -120,9 +119,9 @@ function getIdFor(participant) {
     query.on('end', function(result) {
       done();
       if (result.rowCount > 0) {
-        deferred.resolve(participant_id);
+        deferred.resolve(participantId);
       } else {
-        deferred.reject("No participant found with these details");
+        deferred.reject('No participant found with these details');
       }
     });
   });
@@ -133,7 +132,7 @@ function getIdFor(participant) {
 function confirmParticipant(participantId) {
   var deferred = Q.defer();
   pg.connect(connectionString, function (err, client, done) {
-    var query = "update participants SET has_payed = true WHERE id = " + participantId;
+    var query = 'update participants SET has_payed = true WHERE id = ' + participantId;
     client.query(query,
       function (err, res) {
         done();

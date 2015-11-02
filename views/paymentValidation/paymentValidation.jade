@@ -3,10 +3,12 @@ extends ../layout
 block content
   h2 Überprüfung der Zahlungseingänge
   form#payment-validation-form(method='POST', action='/payment_validation')
-    label(for='payment-token') Token:
-    input#payment-token(type='text', maxlength=7 , name='paymenttoken', required=true)
-    br
-    button#submit-token(type='submit') Absenden
+    .row
+      .six.columns
+        label(for='payment-token') Token:
+        input#payment-token.u-full-width(type='text', maxlength=7 , name='paymenttoken', required=true)
+    .row
+        button#submit-token.button-primary.u(type='submit') Absenden
 
   if amount
     form#payment-details(method='POST', action='/payment_validation/confirm')
@@ -15,7 +17,7 @@ block content
       input(type='hidden', name='amount', value='#{amount}')
       input(type='hidden', name='name', value='#{name}')
       input(type='hidden', name='participantid', value='#{participantid}')
-      button#confirm-registration(type='submit') Registrierung bestätigen
+      button#confirm-registration.button-primary(type='submit') Registrierung bestätigen
 
    if success_message
      .success

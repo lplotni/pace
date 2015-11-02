@@ -2,9 +2,10 @@ extends layout
 
 block content
   h1= title
-
-  a#registration(href='/registration') Registrierung
-  span |
-  a(href='/participants') Teilnehmerliste
-  span |
-  a#adminPage(href='/admin') Admin-Bereich
+  .row
+    .four.columns
+      a#registration.button(href='/registration') Registrierung
+    .four.columns
+      a.button(href='/participants') Teilnehmerliste
+    .four.columns
+      a#adminPage.button(href='/admin') Admin-Bereich

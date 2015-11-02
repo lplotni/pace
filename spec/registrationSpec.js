@@ -1,5 +1,5 @@
 /* jshint node: true */
-/* global describe, beforeEach, afterEach, it, jasmine, expect */
+/* global describe, beforeEach, it, expect */
 'use strict';
 describe('registration on post', function () {
 

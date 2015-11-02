@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeEach, afterAll, it, jasmine, expect */
+/* global describe, beforeEach, afterAll, it, expect */
 
 describe('participants service', function () {
 
@@ -9,7 +9,7 @@ describe('participants service', function () {
   var pg = require('pg');
 
   beforeEach(function (done) {
-    var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || "tcp://vagrant@localhost/pace";
+    var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
     var jasmineDone = done;
 
     pg.connect(connectionString, function (err, client, done) {
@@ -85,7 +85,7 @@ describe('participants service', function () {
 
       participants.getIdFor(wrongId)
         .catch(function(data) {
-          expect(data).toEqual("No participant found with these details");
+          expect(data).toEqual('No participant found with these details');
           done();
         });
     });

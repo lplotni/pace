@@ -1,3 +1,4 @@
+/* jshint node: true */
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -29,30 +30,31 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // authentication using passport needs to be initialized before the routing setup
-app.use(require('express-session')({ 
-    secret: 'secret pace', 
-    resave: false, 
-    saveUninitialized: false 
-}));
+app.use(require('express-session')(
+    {
+        secret: 'secret pace',
+        resave: false,
+        saveUninitialized: false
+    }));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
     done(null, {username: user.username, role: user.role});
 });
 
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser(function (id, done) {
     done(null, id);
 });
 
 passport.use(new LocalStrategy(
-    function(username, password, done) {
-        if(username === 'admin' && password === 'admin') {
-            var user = {username: "admin", role: "admin"};
+    function (username, password, done) {
+        if (username === 'admin' && password === 'admin') {
+            var user = {username: 'admin', role: 'admin'};
             return done(null, user);
         } else {
-            done(null, false, { message: 'Bitte Benutzername und Passwort überprüfen.' });
+            done(null, false, {message: 'Bitte Benutzername und Passwort überprüfen.'});
         }
     }
 ));
@@ -65,7 +67,7 @@ app.use('/payment_validation', paymentValidationRoute);
 app.use('/login', loginRoute);
 
 /// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
@@ -76,7 +78,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
+    app.use(function (err, req, res) {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
@@ -87,7 +89,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,

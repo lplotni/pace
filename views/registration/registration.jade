@@ -1,19 +1,21 @@
 extends ../layout
 
 block content
-    h2 Registrierung
+    h1 Registrierung
     form#registrationForm(method='POST', action='/registration')
-        .name
-            .item
+        .row
+            .three.columns
                 label(for='firstname') Vorname:
-                input#firstname(type='text', name='firstname', required=true)
-            .item
+                input#firstname.u-full-width(type='text', name='firstname', required=true)
+            .three.columns
                 label(for='lastname') Nachname:
-                input#lastname(type='text', name='lastname', required=true)
-        .gender
-            label(for='gender') Geschlecht:
-            input#gender(type='text', name='gender', required=true)
-        .email
-            label(for='email') Email:
-            input#email(type='email', name='email', required=true)
-        button#submit(type='submit') Absenden
+                input#lastname.u-full-width(type='text', name='lastname', required=true)
+        .row
+            .four.columns
+                label(for='gender') Geschlecht:
+                input#gender.u-full-width(type='text', name='gender', required=true)
+        .row
+            .four.columns
+                label(for='email') Email:
+                input#email.u-full-width(type='email', name='email', required=true)
+        button#submit.button-primary(type='submit') Absenden

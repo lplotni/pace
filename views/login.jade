@@ -3,14 +3,14 @@ extends layout
 block content
     h2 Login
     form#loginForm(method='POST', action='/login')
-        .name
-            .item
+        .row
+            .three.columns
                 label(for='username') Benutzername:
-                input#username(type='text', name='username', required=true)
-            .item
+                input#username.u-full-width(type='text', name='username', required=true)
+            .three.columns
                 label(for='password') Passwort:
-                input#password(type='text', name='password', required=true)
-        button#submit(type='submit') anmelden
+                input#password.u-full-width(type='text', name='password', required=true)
+        button#submit.button-primary(type='submit') anmelden
 
     if error
     .error

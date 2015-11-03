@@ -8,7 +8,7 @@ var _ = require('lodash');
 var participants = require('../service/participants');
 
 function invalidData(body) {
-    return _.isUndefined(body.firstname) || _.isUndefined(body.lastname) || _.isUndefined(body.email);
+    return _.isUndefined(body.firstname) || _.isUndefined(body.lastname) || _.isUndefined(body.gender) || _.isUndefined(body.birthyear);
 }
 
 var extractParticipant = function (req) {
@@ -21,7 +21,9 @@ var extractParticipant = function (req) {
         firstname: body.firstname,
         lastname: body.lastname,
         email: body.email,
-        gender: body.gender
+        gender: body.gender,
+        birthyear: body.birthyear,
+        team: body.team
     };
 
 };

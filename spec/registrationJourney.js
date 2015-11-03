@@ -33,6 +33,8 @@ describe('regisitration journey', function () {
             .setValue('input#lastname', 'Mustermann')
             .setValue('input#email', 'max@example.com')
             .setValue('input#gender', 'Unicorn')
+            .setValue('input#birthyear', 2000)
+            .setValue('input#team', 'Crazy runners')
             .click('button#submit')
             .isVisible('div.thanks')
             .then(function (isVisible) {

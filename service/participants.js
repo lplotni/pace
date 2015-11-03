@@ -49,7 +49,8 @@ function save(participant, paymentToken) {
 
     pg.connect(connectionString, function (err, client, done) {
         client.query(
-            'insert into participants (firstname, lastname, email, gender, paymenttoken) values($1, $2, $3, $4, $5)', [participant.firstname, participant.lastname, participant.email, participant.gender, paymentToken],
+            'insert into participants (firstname, lastname, email, gender, birthyear, team, paymenttoken) values($1, $2, $3, $4, $5, $6, $7)',
+            [participant.firstname, participant.lastname, participant.email, participant.gender, participant.birthyear, participant.team, paymentToken],
             function (err, res) {
                 done();
                 if (!err) {

@@ -11,11 +11,18 @@ block content
                 label(for='lastname') Nachname:
                 input#lastname.u-full-width(type='text', name='lastname', required=true)
         .row
-            .four.columns
+            .three.columns
                 label(for='gender') Geschlecht:
                 input#gender.u-full-width(type='text', name='gender', required=true)
+            .three.columns
+                label(for='birthyear') Geburtsjahr:
+                input#birthyear.u-full-width(type='number', name='birthyear', required=true)
         .row
             .four.columns
                 label(for='email') Email:
                 input#email.u-full-width(type='email', name='email', required=true)
+        .row
+            .four.columns
+                label(for='team') Name des Teams:
+                input#team.u-full-width(type='text', name='team')
         button#submit.button-primary(type='submit') Absenden

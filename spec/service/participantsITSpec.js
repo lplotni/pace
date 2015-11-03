@@ -6,7 +6,17 @@
 describe('participants service', function () {
 
   const participants = require('../../service/participants');
-  var pg = require('pg');
+  const pg = require('pg');
+
+  const aParticipant = {
+    firstname: 'Hertha',
+    lastname: 'Mustermann',
+    email: 'h.mustermann@example.com',
+    gender: 'Unicorn',
+    birthyear: 1980,
+    team: 'Crazy runners'
+  };
+
 
   beforeEach(function (done) {
     var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
@@ -39,14 +49,7 @@ describe('participants service', function () {
     done();
   });
 
-
   it('should store and read participants', function (done) {
-    var aParticipant = {
-      firstname: 'Hertha',
-      lastname: 'Mustermann',
-      email: 'h.mustermann@example.com',
-      gender: 'Unicorn'
-    };
     var randomToken = '1234567';
 
     participants.save(aParticipant, randomToken)
@@ -57,23 +60,20 @@ describe('participants service', function () {
         expect(data[0].lastname).toBe(aParticipant.lastname);
         expect(data[0].email).toBe(aParticipant.email);
         expect(data[0].gender).toBe(aParticipant.gender);
+        expect(data[0].birthyear).toBe(aParticipant.birthyear);
+        expect(data[0].team).toBe(aParticipant.team);
         done();
       });
   });
 
-  describe('getIdFor', function() {
+  describe('getIdFor', function () {
     it('should return the database id by fistname, lastname and email', function (done) {
-      var aParticipant = {
-        firstname: 'Mark',
-        lastname: 'Mueller',
-        email: 'm.mueller@example.com'
-      };
       var paymentToken = 'a token';
 
       participants.save(aParticipant, paymentToken)
-        .then(function() {
+        .then(function () {
           participants.getIdFor(aParticipant)
-            .then(function(participantId) {
+            .then(function (participantId) {
               expect(participantId).toBeDefined();
               done();
             });
@@ -84,7 +84,7 @@ describe('participants service', function () {
       var wrongId = '999';
 
       participants.getIdFor(wrongId)
-        .catch(function(data) {
+        .catch(function (data) {
           expect(data).toEqual('No participant found with these details');
           done();
         });
@@ -92,17 +92,12 @@ describe('participants service', function () {
 
   });
 
-  describe('confirmParticipant', function() {
+  describe('confirmParticipant', function () {
     it('should mark the participant as payed', function (done) {
-      var aParticipant = {
-        firstname: 'Mark',
-        lastname: 'Mueller',
-        email: 'm.mueller@example.com'
-      };
       var paymentToken = 'a token';
 
       participants.save(aParticipant, paymentToken)
-        .then(function() {
+        .then(function () {
           participants.getIdFor(aParticipant)
             .then(function (participantId) {
               participants.confirmParticipant(participantId)
@@ -115,18 +110,13 @@ describe('participants service', function () {
     });
 
     it('should give error if ID is invalid', function (done) {
-      var aParticipant = {
-        firstname: 'Mark',
-        lastname: 'Mueller',
-        email: 'm.mueller@example.com'
-      };
       var paymentToken = 'a token';
       var wrongId = '999';
 
       participants.save(aParticipant, paymentToken)
-        .then(function() {
+        .then(function () {
           participants.confirmParticipant(wrongId)
-            .catch(function() {
+            .catch(function () {
               done();
             });
         });

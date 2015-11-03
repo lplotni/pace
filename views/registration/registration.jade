@@ -25,4 +25,25 @@ block content
             .four.columns
                 label(for='team') Name des Teams:
                 input#team.u-full-width(type='text', name='team')
+        .row
+            .three.columns
+                label(for='shirt') Laufshirt gewünscht:
+                select#shirt.u-full-width(name='shirt')
+                  option(value='no') Nein
+                  option(value='yes') Ja
+            .two.columns
+                label(for='model') Model:
+                select#model.u-full-width(name='model')
+                    option(value='Normal fit') Normal fit
+                    option(value='Slim fit') Slim fit
+            .two.columns
+                label(for='size') Size:
+                select#sizeu.u-full-width(name='size')
+                    option(value='XS') XS
+                    option(value='S') S
+                    option(value='M') M
+                    option(value='L') L
+                    option(value='XL') XL
+
+
         button#submit.button-primary(type='submit') Absenden

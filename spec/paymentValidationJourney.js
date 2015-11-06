@@ -99,7 +99,7 @@ describe('payment validation journey', function () {
         var aParticipant = {
             firstname: 'Friedrich',
             lastname: 'Schiller',
-            email: 'f.schiller@example.com',
+            email: 'f.schiller@example.com'
         };
         var aToken = '23eF67i';
 
@@ -130,23 +130,24 @@ describe('payment validation journey', function () {
         var aParticipant = {
             firstname: 'Friedrich',
             lastname: 'Schiller',
-            email: 'f.schiller@example.com',
+            email: 'f.schiller@example.com'
         };
         var aToken = '23eF67i';
 
         participants.save(aParticipant, aToken)
             .then(function() {
               loggedInClient.url(paymentValidationUrl)
+                .isVisible('ul#pending')
                 .then(function (isVisible) {
                     expect(isVisible).toBe(true);
                 })
                 .getText('ul#pending')
                 .then(function(text) {
-                    expect(text).toContain('Token: ' + aToken + ':');
+                    expect(text).toMatch(/.*Token: 23eF67i$/);
+                    done();
                 })
                 .end();
             });
     });
-
 
 });

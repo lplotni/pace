@@ -8,7 +8,7 @@ var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL ||
 
 function getAllWithPaymentStatus(paymentStatus) {
   var querystring='';
-  if (paymentStatus){
+  if (typeof paymentStatus !== 'undefined') {
     querystring='select * from participants where has_payed='+paymentStatus+' order by firstname,lastname';
   } else {
     querystring='select * from participants order by firstname,lastname';

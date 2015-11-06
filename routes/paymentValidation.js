@@ -12,7 +12,9 @@ var canConfirmPayments = function(role) {
 
 router.get('/', isAuthenticated, function (req, res) {
     if(canConfirmPayments(req.user.role)) {
-        res.render('paymentValidation/paymentValidation', {});
+        participants.getRegistered().then(function(result){
+          res.render('paymentValidation/paymentValidation', {participants: result});
+        });
     } else {
         var result = {
             message: 'Bitte anmelden',

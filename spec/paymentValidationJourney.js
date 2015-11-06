@@ -126,4 +126,27 @@ describe('payment validation journey', function () {
             });
     });
 
+    it('should show pending payments', function (done) {
+        var aParticipant = {
+            firstname: 'Friedrich',
+            lastname: 'Schiller',
+            email: 'f.schiller@example.com',
+        };
+        var aToken = '23eF67i';
+
+        participants.save(aParticipant, aToken)
+            .then(function() {
+              loggedInClient.url(paymentValidationUrl)
+                .then(function (isVisible) {
+                    expect(isVisible).toBe(true);
+                })
+                .getText('ul#pending')
+                .then(function(text) {
+                    expect(text).toContain('Token: ' + aToken + ':');
+                })
+                .end();
+            });
+    });
+
+
 });

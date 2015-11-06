@@ -24,7 +24,6 @@ describe('regisitration journey', function () {
     });
 
     it('allows to register via the registration page', function (done) {
-
         client.init()
             .url(paceUrl)
             .click('a#registration')
@@ -39,9 +38,8 @@ describe('regisitration journey', function () {
             .isVisible('div.thanks')
             .then(function (isVisible) {
                 expect(isVisible).toBe(true);
-                done();
             })
-            .end();
+          .end(done);
     });
 
 });

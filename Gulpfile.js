@@ -69,11 +69,11 @@ function startSelenium() {
 gulp.task('express', express);
 
 gulp.task('test', function () {
-  return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*Journey.js']).pipe(jasmine());
+  return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*Journey.js']).pipe(jasmine({verbose: true}));
 });
 
 gulp.task('test-integration', function () {
-  return gulp.src('spec/**/*IT*.js').pipe(jasmine());
+  return gulp.src('spec/**/*IT*.js').pipe(jasmine({verbose: true}));
 });
 
 gulp.task('selenium-install', function (done) {

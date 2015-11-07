@@ -92,9 +92,28 @@ describe('participants service', function () {
 
   });
 
+  describe('getById', function () {
+    it('should return name and email for participant with given Id', function (done) {
+      var paymentToken = 'a token';
+      participants.save(aParticipant, paymentToken)
+        .then(function () {
+          participants.getIdFor(aParticipant)
+            .then(function (participantId){
+                participants.getById(participantId)
+                  .then(function(participant){
+                    expect(participant.name).toBeDefined();
+                    expect(participant.email).toBeDefined();
+                    done();
+                  });
+            });
+        });
+    });
+  });
+
   describe('confirmParticipant', function () {
     it('should mark the participant as payed', function (done) {
       var paymentToken = 'a token';
+      spyOn(participants, 'markPayed').and.callThrough();
 
       participants.save(aParticipant, paymentToken)
         .then(function () {
@@ -102,7 +121,7 @@ describe('participants service', function () {
             .then(function (participantId) {
               participants.confirmParticipant(participantId)
                 .then(function () {
-                  // confirmation was successful
+                  expect(participants.markPayed).toHaveBeenCalledWith(participantId);
                   done();
                 });
             });
@@ -124,7 +143,7 @@ describe('participants service', function () {
   });
 
   describe('registration', function () {
-    it('should save the participant', function (done) {
+    it('should save the participant and send confirmation email', function (done) {
       spyOn(participants, 'save').and.callThrough();
       spyOn(participants, 'sendEmail');
       participants.register(aParticipant, 'aToken').then(function () {

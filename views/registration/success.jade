@@ -4,5 +4,10 @@ block content
     .thanks
         h3 Hey #{name}!
         h5 Danke für deine Registrierung.
-          |  In Kürze erreicht dich eine E-Mail mit weiteren Informationen. Sobald die Gebühr beglichen wird,
-          |  wirst du zu der Teilnehmerliste hinzugefügt. Diese kann #[a(href='/participants') hier] angesehen werden.
+          |  Bitte überweise den Betrag von #{amount} innerhalb der naechsten zwei Wochen auf folgendes Konto:
+          pre Eine nette Bank
+           | IBAN 0234092093
+           | BIC  111222122
+           | Betreff: LGR: #{token}
+          |  Sobald die Gebühr beglichen wird,
+          |  wirst du in der Teilnehmerliste hinzugefügt. Diese kann #[a(href='/participants') hier] angesehen werden.

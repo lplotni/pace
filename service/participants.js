@@ -10,6 +10,8 @@ var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL ||
 
 var service = {};
 
+service._nodemailer = nodemailer;
+
 service.getAllWithPaymentStatus = function (paymentStatus) {
   var querystring = '';
   if (typeof paymentStatus !== 'undefined') {
@@ -173,9 +175,11 @@ service.confirmParticipant = function (participantId) {
 };
 
 service.sendEmail = function (address, text) {
-  var transporter = nodemailer.createTransport(sendmailTransport({
+  var transporter = service._nodemailer.createTransport(sendmailTransport({
     path: '/usr/sbin/sendmail'
   }));
+
+
   transporter.sendMail({
     from: 'info@lauf-gegen-rechts.de',
     to: address,

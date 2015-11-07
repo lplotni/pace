@@ -134,5 +134,4 @@ describe('participants service', function () {
       });
     });
   });
-
 });

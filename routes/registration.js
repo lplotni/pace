@@ -40,7 +40,7 @@ router.post('/', function(req, res) {
     try{
         var participant = extractParticipant(req);
         var token = createUniqueToken();
-        participants.save(participant, token);
+        participants.register(participant, token);
         res.render('registration/success', {name: participant.firstname +' '+ participant.lastname, token: token, link: ''});
     } catch (err) {
         res.send(err.message);

@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeEach, afterAll, it, expect */
+/* global describe, beforeEach, afterAll, spyOn, it, expect */
 
 describe('participants service', function () {
 
@@ -120,6 +120,18 @@ describe('participants service', function () {
               done();
             });
         });
+    });
+  });
+
+  describe('registration', function () {
+    it('should save the participant', function (done) {
+      spyOn(participants, 'save').and.callThrough();
+      spyOn(participants, 'sendEmail');
+      participants.register(aParticipant, 'aToken').then(function () {
+        expect(participants.save).toHaveBeenCalledWith(aParticipant, 'aToken');
+        expect(participants.sendEmail).toHaveBeenCalled(); //todo check args.
+        done();
+      });
     });
   });
 

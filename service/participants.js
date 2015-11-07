@@ -3,6 +3,8 @@
 
 var pg = require('pg');
 var Q = require('q');
+var nodemailer = require('nodemailer');
+var sendmailTransport = require('nodemailer-sendmail-transport');
 
 var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
 
@@ -153,11 +155,25 @@ function confirmParticipant(participantId) {
   return deferred.promise;
 }
 
+function sendEmail(address,text) {
+  var transporter = nodemailer.createTransport(sendmailTransport({
+        path: '/usr/sbin/sendmail'
+  }));
+  transporter.sendMail({
+    from: 'info@lauf-gegen-rechts.de',
+    to: address,
+    subject: 'Registrierungsbestätigung',
+    text: 'This is a HTML only Email',
+    html: text
+  });
+}
+
 module.exports = {
   getRegistered: getRegistered,
   getConfirmed: getConfirmed,
   save: save,
   getByToken: getByToken,
   getIdFor: getIdFor,
-  confirmParticipant: confirmParticipant
+  confirmParticipant: confirmParticipant,
+  sendEmail: sendEmail
 };

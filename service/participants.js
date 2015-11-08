@@ -3,15 +3,21 @@
 
 var pg = require('pg');
 var Q = require('q');
+var nodemailer = require('nodemailer');
+var sendmailTransport = require('nodemailer-sendmail-transport');
 
 var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
 
-function getAllWithPaymentStatus(paymentStatus) {
-  var querystring='';
-  if (paymentStatus){
-    querystring='select * from participants where has_payed='+paymentStatus+' order by firstname,lastname';
+var service = {};
+
+service._nodemailer = nodemailer;
+
+service.getAllWithPaymentStatus = function (paymentStatus) {
+  var querystring = '';
+  if (typeof paymentStatus !== 'undefined') {
+    querystring = 'select * from participants where has_payed=' + paymentStatus + ' order by firstname,lastname';
   } else {
-    querystring='select * from participants order by firstname,lastname';
+    querystring = 'select * from participants order by firstname,lastname';
   }
   var participants = [];
   var deferred = Q.defer();
@@ -22,7 +28,7 @@ function getAllWithPaymentStatus(paymentStatus) {
         participants.push(row);
       });
 
-      query.on('error', function() {
+    query.on('error', function () {
         done();
         deferred.reject();
       });
@@ -34,59 +40,74 @@ function getAllWithPaymentStatus(paymentStatus) {
     }
   );
   return deferred.promise;
-}
+};
 
-function getRegistered() {
-  return getAllWithPaymentStatus(false);
-}
+service.getRegistered = function () {
+  return service.getAllWithPaymentStatus(false);
+};
 
-function getConfirmed() {
-  return getAllWithPaymentStatus(true);
-}
+service.getConfirmed = function () {
+  return service.getAllWithPaymentStatus(true);
+};
 
-function save(participant, paymentToken) {
-    var deferred = Q.defer();
+service.save = function (participant, paymentToken) {
+  var deferred = Q.defer();
 
-    pg.connect(connectionString, function (err, client, done) {
-        client.query(
-            'insert into participants (firstname, lastname, email, gender, birthyear, team, paymenttoken) values($1, $2, $3, $4, $5, $6, $7)',
-            [participant.firstname, participant.lastname, participant.email, participant.gender, participant.birthyear, participant.team, paymentToken],
-            function (err, res) {
-                done();
-                if (!err) {
-                    deferred.resolve(res);
-                } else {
-                    deferred.reject(err);
-                }
-            }
-        );
+  pg.connect(connectionString, function (err, client, done) {
+    client.query(
+      'insert into participants (firstname, lastname, email, gender, birthyear, team, paymenttoken) values($1, $2, $3, $4, $5, $6, $7)',
+      [participant.firstname, participant.lastname, participant.email, participant.gender, participant.birthyear, participant.team, paymentToken],
+      function (err, res) {
+        done();
+        if (!err) {
+          deferred.resolve(res);
+        } else {
+          deferred.reject(err);
+        }
+      }
+    );
+  });
+
+  return deferred.promise;
+};
+
+service.register = function (participant, paymentToken) {
+  var deferred = Q.defer();
+
+  service.save(participant, paymentToken)
+    .then(function () {
+      service.sendEmail(participant.email, 'HELLO');
+      deferred.resolve();
+    })
+    .fail(function (err) {
+      deferred.reject(err);
     });
 
-    return deferred.promise;
-}
+  return deferred.promise;
+};
 
-function getByToken(paymentToken) {
+service.getByToken = function (paymentToken) {
   var deferred = Q.defer();
   var participantDetails;
 
-  pg.connect(connectionString, function(err, client, done){
+  pg.connect(connectionString, function (err, client, done) {
     var query = client.query(
       'SELECT id, firstname, lastname FROM participants WHERE paymenttoken = $1', [paymentToken]);
 
-    query.on('row', function(row) {
+    query.on('row', function (row) {
       participantDetails = {
-        name : row.lastname + ', ' + row.firstname,
+        name: row.lastname + ', ' + row.firstname,
         amount: '10',
         id: row.id
       };
     });
 
-    query.on('error', function() {
+    query.on('error', function () {
       done();
       deferred.reject();
     });
 
-    query.on('end', function(result) {
+    query.on('end', function (result) {
       done();
       if (result.rowCount > 0) {
         deferred.resolve(participantDetails);
@@ -97,27 +118,27 @@ function getByToken(paymentToken) {
   });
 
   return deferred.promise;
-}
+};
 
-function getIdFor(participant) {
+service.getIdFor = function (participant) {
   var deferred = Q.defer();
   var participantId;
 
-  pg.connect(connectionString, function(err, client, done){
+  pg.connect(connectionString, function (err, client, done) {
     var query = client.query(
       'SELECT id FROM participants WHERE firstname = $1 AND lastname = $2 AND email = $3',
       [participant.firstname, participant.lastname, participant.email]);
 
-    query.on('row', function(row) {
+    query.on('row', function (row) {
       participantId = row.id;
     });
 
-    query.on('error', function() {
+    query.on('error', function () {
       done();
       deferred.reject();
     });
 
-    query.on('end', function(result) {
+    query.on('end', function (result) {
       done();
       if (result.rowCount > 0) {
         deferred.resolve(participantId);
@@ -128,9 +149,9 @@ function getIdFor(participant) {
   });
 
   return deferred.promise;
-}
+};
 
-function confirmParticipant(participantId) {
+service.confirmParticipant = function (participantId) {
   var deferred = Q.defer();
   pg.connect(connectionString, function (err, client, done) {
     var query = 'update participants SET has_payed = true WHERE id = ' + participantId;
@@ -138,11 +159,11 @@ function confirmParticipant(participantId) {
       function (err, res) {
         done();
         if (!err) {
-            if (res.rowCount > 0) {
-                deferred.resolve();
-            } else {
-                deferred.reject();
-            }
+          if (res.rowCount > 0) {
+            deferred.resolve();
+          } else {
+            deferred.reject();
+          }
         } else {
           deferred.reject(err);
         }
@@ -151,13 +172,21 @@ function confirmParticipant(participantId) {
   });
 
   return deferred.promise;
-}
-
-module.exports = {
-  getRegistered: getRegistered,
-  getConfirmed: getConfirmed,
-  save: save,
-  getByToken: getByToken,
-  getIdFor: getIdFor,
-  confirmParticipant: confirmParticipant
 };
+
+service.sendEmail = function (address, text) {
+  var transporter = service._nodemailer.createTransport(sendmailTransport({
+    path: '/usr/sbin/sendmail'
+  }));
+
+
+  transporter.sendMail({
+    from: 'info@lauf-gegen-rechts.de',
+    to: address,
+    subject: 'Registrierungsbestätigung',
+    text: 'This is a HTML only Email',
+    html: text
+  });
+};
+
+module.exports = service;

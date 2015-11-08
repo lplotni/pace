@@ -26,3 +26,9 @@ block content
   if error
     .error
       p #{error}
+  
+  if participants
+    h2 Noch zu ueberpruefende Registrierungen
+    ul#pending
+     each p in participants
+       li= p.firstname +' '+ p.lastname +' Token: '+p.paymenttoken

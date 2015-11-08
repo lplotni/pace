@@ -4,4 +4,7 @@ block content
     h1 Registrierte Teilnehmer
     ul
         each p in participants
-            li= p.firstname +' '+ p.lastname +' (Team: '+p.team+' )'
+            if p.team 
+                li= p.firstname +' '+ p.lastname +' (Team: '+p.team+' )'
+            else
+                li= p.firstname +' '+ p.lastname

@@ -1,6 +1,7 @@
-/* jshint node: true */
-/* global describe, beforeEach, it, expect */
 'use strict';
+/* jshint node: true */
+/* jshint esnext: true */
+/* global describe, beforeEach, it, expect */
 describe('registration on post', function () {
 
   var extractParticipant;

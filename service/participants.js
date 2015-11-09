@@ -73,17 +73,19 @@ service.save = function (participant, paymentToken) {
 
 service.register = function (participant, paymentToken) {
   var deferred = Q.defer();
-
-  service.save(participant, paymentToken)
-    .then(function () {
-      service.sendEmail(participant.email, 'HELLO');
+  var jade = require('jade');
+    service.save(participant, paymentToken)
+      .then(function () {
+        jade.renderFile('views/registration/success.jade', { name: participant.firstname, token: paymentToken, amount: '10'} , function(error, html){
+          service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich',html);
+        });
       deferred.resolve();
-    })
-    .fail(function (err) {
-      deferred.reject(err);
-    });
+      })
+      .fail(function (err) {
+        deferred.reject(err);
+      });
 
-  return deferred.promise;
+    return deferred.promise;
 };
 
 service.getByToken = function (paymentToken) {
@@ -120,6 +122,42 @@ service.getByToken = function (paymentToken) {
   return deferred.promise;
 };
 
+service.getById = function (id) {
+  var deferred = Q.defer();
+  var participantDetails;
+
+  pg.connect(connectionString, function (err, client, done) {
+    var query = client.query(
+      'SELECT id, firstname, lastname, email FROM participants WHERE id = $1', [id]);
+
+    query.on('row', function (row) {
+      participantDetails = {
+        name: row.firstname,
+        email: row.email
+      };
+    });
+
+    query.on('error', function () {
+      done();
+      deferred.reject();
+    });
+
+    query.on('end', function (result) {
+      done();
+      if (result.rowCount > 0) {
+        deferred.resolve(participantDetails);
+      } else {
+        deferred.reject({error: 'Es konnte keine Registrierung mit Id ' + id + ' gefunden werden.'});
+      }
+    });
+  });
+
+  return deferred.promise;
+};
+
+
+
+
 service.getIdFor = function (participant) {
   var deferred = Q.defer();
   var participantId;
@@ -151,7 +189,7 @@ service.getIdFor = function (participant) {
   return deferred.promise;
 };
 
-service.confirmParticipant = function (participantId) {
+service.markPayed = function (participantId) {
   var deferred = Q.defer();
   pg.connect(connectionString, function (err, client, done) {
     var query = 'update participants SET has_payed = true WHERE id = ' + participantId;
@@ -174,7 +212,26 @@ service.confirmParticipant = function (participantId) {
   return deferred.promise;
 };
 
-service.sendEmail = function (address, text) {
+service.confirmParticipant = function (participantId) {
+  var deferred = Q.defer();
+  var jade = require('jade');
+  service.markPayed(participantId)
+    .then(function () {
+      service.getById(participantId)
+        .then(function(result){
+          jade.renderFile('views/paymentValidation//success.jade', { name: result.name } , function(error, html){
+            service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten',html );
+        });
+      });
+      deferred.resolve();
+    })
+    .fail(function (err) {
+      deferred.reject(err);
+    });
+  return deferred.promise;
+};
+
+service.sendEmail = function (address, subject, text) {
   var transporter = service._nodemailer.createTransport(sendmailTransport({
     path: '/usr/sbin/sendmail'
   }));
@@ -183,9 +240,8 @@ service.sendEmail = function (address, text) {
   transporter.sendMail({
     from: 'info@lauf-gegen-rechts.de',
     to: address,
-    subject: 'Registrierungsbestätigung',
-    text: 'This is a HTML only Email',
-    html: text
+    subject: subject,
+    html: text,
   });
 };
 

@@ -9,7 +9,7 @@ function invalidData(body) {
   return _.isUndefined(body.firstname) || _.isUndefined(body.lastname) || _.isUndefined(body.gender) || _.isUndefined(body.birthyear);
 }
 
-participant.extract = function (body) {
+participant.from = function (body) {
   if (invalidData(body)) {
     throw new TypeError('Required attributes are not present');
   }

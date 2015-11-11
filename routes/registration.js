@@ -1,29 +1,34 @@
-/* jshint node: true */
 'use strict';
+/* jshint node: true */
+/* jshint esnext: true */
 
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var participants = require('../service/participants');
-var participant = require('../domain/participant');
+const participants = require('../service/participants');
+const participant = require('../domain/participant');
 
-var createUniqueToken = function() {
-    return Math.random().toString(32).substring(2);
-};
+function createUniqueToken() {
+  return Math.random().toString(32).substring(2);
+}
 
-router.get('/', function(req, res) {
-    res.render('registration/registration', {});
+router.get('/', function (req, res) {
+  res.render('registration/registration', {});
 });
 
-router.post('/', function(req, res) {
-    try{
-        var newParticipant = participant.extract(req.body);
-        var token = createUniqueToken();
-        participants.register(newParticipant, token);
-        res.render('registration/success', {name: newParticipant.firstname +' '+ newParticipant.lastname, token: token, link: ''});
-    } catch (err) {
-        res.send(err.message);
-    }
+router.post('/', function (req, res) {
+  try {
+    const newParticipant = participant.from(req.body);
+    const token = createUniqueToken();
+    participants.register(newParticipant, token);
+    res.render('registration/success', {
+      name: newParticipant.firstname + ' ' + newParticipant.lastname,
+      token: token,
+      link: ''
+    });
+  } catch (err) {
+    res.send(err.message);
+  }
 });
 
-module.exports =  router;
+module.exports = router;

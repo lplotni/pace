@@ -116,7 +116,7 @@ gulp.task('test-functional', function () {
 gulp.task('create-db', createdb);
 
 gulp.task('lint', function () {
-  return gulp.src(['app.js', './spec/**/*.js', './service/*.js', './routes/*.js'])
+  return gulp.src(['app.js', './spec/**/*.js', './service/*.js', './routes/*.js', './domain/*.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('default', {verbose: true}));
 });

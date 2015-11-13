@@ -11,7 +11,7 @@ var flash = require('connect-flash');
 
 var indexRoute = require('./routes/index');
 var adminRoute = require('./routes/admin');
-var registrationRoute = require('./routes/registration').router;
+var registrationRoute = require('./routes/registration');
 var participantsRoute = require('./routes/participants');
 var paymentValidationRoute = require('./routes/paymentValidation');
 var loginRoute = require('./routes/login');

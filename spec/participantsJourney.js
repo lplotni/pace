@@ -8,14 +8,12 @@ var helper = require('./journeyHelper');
 
 describe('participants page', function () {
 
-  var client;
   var participantsUrl = helper.paceUrl + 'participants';
   var loginUrl = helper.paceUrl + 'login';
 
   beforeEach(function (done) {
     helper.changeOriginalTimeout();
     helper.setupDbConnection(done);
-    client = helper.setUpClient();
   });
 
   afterEach(function () {
@@ -24,6 +22,8 @@ describe('participants page', function () {
   });
 
   it('shows full participant list only if logged in as admin', function (done) {
+    var fullDetailsHeaderRow = ["Vorname", "Nachname", "Team name", "Email", "Geschlecht", "Geburtsjahr", "Bezahlt"];
+
     var aParticipant = {
       firstname: 'Friedrich',
       lastname: 'Schiller',
@@ -33,7 +33,7 @@ describe('participants page', function () {
 
     participants.save(aParticipant, aToken)
         .then(function () {
-          client.url(participantsUrl)
+            helper.setUpClient().url(participantsUrl)
               .elements('li.participant-line')
               .then(function (res) {
                   expect(res.value.length).toBe(0);
@@ -43,9 +43,13 @@ describe('participants page', function () {
               .setValue('input#password', 'admin')
               .click('button#submit')
               .url(participantsUrl)
-              .elements('li.participant-line')
+              .elements('tr.participant-line')
               .then(function (res) {
                 expect(res.value.length).toBe(1);
+              })
+              .elements('th')
+              .then(function (res) {
+                  expect(res.value.length).toBe(fullDetailsHeaderRow.length);
               })
               .end(done);
         });

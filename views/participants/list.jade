@@ -2,9 +2,28 @@ extends ../layout
 
 block content
     h1 Registrierte Teilnehmer
-    ul
-        each p in participants
-            if p.team 
-                li.participant-line= p.firstname +' '+ p.lastname +' (Team: '+p.team+' )'
-            else
-                li.participant-line= p.firstname +' '+ p.lastname
+    if isAdmin
+        table
+            thead
+                tr
+                    th Vorname
+                    th Nachname
+                    th Team name
+                    th Email
+                    th Geschlecht
+                    th Geburtsjahr
+                    th Bezahlt
+            tbody
+                each p in participants
+                    tr.participant-line
+                        td=p.firstname
+                        td=p.lastname
+                        td=p.team
+                        td=p.email
+                        td=p.gender
+                        td=p.birthyear
+                        td=(p.has_payed ? 'ja' : 'nein')
+    else
+        ul
+            each p in participants
+                li.participant-line= p.firstname +' '+ p.lastname + (p.team ? ' (Team: '+p.team+' )' : '')

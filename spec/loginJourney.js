@@ -2,33 +2,24 @@
 /* global describe, beforeEach, afterEach, it, jasmine, expect */
 'use strict';
 
+var helper = require('./journeyHelper');
+
 describe('admin page', function () {
 
   var client;
-  var paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
-  var loginUrl = paceUrl + 'login';
-  var originalTimeout;
+  var loginUrl = helper.paceUrl + 'login';
 
   beforeEach(function () {
-    var webdriverio = require('webdriverio');
-    var options = {
-      desiredCapabilities: {
-        browserName: 'phantomjs'
-      }
-    };
-
-    client = webdriverio.remote(options);
-    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    helper.changeOriginalTimeout();
+    client = helper.setUpClient();
   });
 
   afterEach(function () {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+    helper.resetToOriginalTimeout();
   });
 
   it('should login as admin and go to admin page', function (done) {
-    client.init()
-      .url(loginUrl)
+    client.url(loginUrl)
       .setValue('input#username', 'admin')
       .setValue('input#password', 'admin')
       .click('button#submit')
@@ -40,8 +31,7 @@ describe('admin page', function () {
   });
 
   it('should stay on login page for wrong login credentials and display an error message', function (done) {
-    client.init()
-      .url(loginUrl)
+    client.url(loginUrl)
       .setValue('input#username', 'admin')
       .setValue('input#password', 'wrong password')
       .click('button#submit')

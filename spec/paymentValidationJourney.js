@@ -7,15 +7,13 @@ var pg = require('pg');
 var helper = require('./journeyHelper');
 
 describe('payment validation journey', function () {
-
-  var client, loggedInClient;
+  var loggedInClient;
   var paymentValidationUrl = helper.paceUrl + 'payment_validation';
   var loginUrl = helper.paceUrl + 'login';
 
   beforeAll(function (done) {
     helper.changeOriginalTimeout();
     helper.setupDbConnection(done);
-    client = helper.setUpClient();
   });
 
   afterAll(function () {
@@ -26,7 +24,7 @@ describe('payment validation journey', function () {
   describe('when not logged in', function () {
 
     it('redirects to the login page for unauthenticated users', function (done) {
-      client.url(paymentValidationUrl)
+      helper.setUpClient().url(paymentValidationUrl)
         .isVisible('form#loginForm')
         .then(function (isVisible) {
           expect(isVisible).toBe(true);

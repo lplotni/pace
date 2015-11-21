@@ -24,12 +24,12 @@ router.get('/', useDefaultAuthentication, function (req, res) {
             var allParticipants = result;
             participants.getRegistered().then(function (result) {
                 allParticipants = allParticipants.concat(result);
-                return res.render('participants/list', {participants: allParticipants});
+                return res.render('participants/list', {participants: allParticipants, isAdmin: true});
             });
         });
     } else {
         participants.getConfirmed().then(function (result) {
-            return res.render('participants/list', {participants: result});
+            return res.render('participants/list', {participants: result, isAdmin: false});
         });
     }
 });

@@ -155,9 +155,6 @@ service.getById = function (id) {
   return deferred.promise;
 };
 
-
-
-
 service.getIdFor = function (participant) {
   var deferred = Q.defer();
   var participantId;
@@ -241,7 +238,7 @@ service.sendEmail = function (address, subject, text) {
     from: 'info@lauf-gegen-rechts.de',
     to: address,
     subject: subject,
-    html: text,
+    html: text
   });
 };
 

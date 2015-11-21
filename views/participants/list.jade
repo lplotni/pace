@@ -5,6 +5,6 @@ block content
     ul
         each p in participants
             if p.team 
-                li= p.firstname +' '+ p.lastname +' (Team: '+p.team+' )'
+                li.participant-line= p.firstname +' '+ p.lastname +' (Team: '+p.team+' )'
             else
-                li= p.firstname +' '+ p.lastname
+                li.participant-line= p.firstname +' '+ p.lastname

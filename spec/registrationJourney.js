@@ -1,31 +1,24 @@
 /* jshint node: true */
 /* global describe, beforeEach, afterEach, it, jasmine, expect */
 'use strict';
+
+var helper = require('./journeyHelper');
+
 describe('regisitration journey', function () {
+
     var client;
-    var paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
-    var originalTimeout;
 
     beforeEach(function () {
-        var webdriverio = require('webdriverio');
-        var options = {
-            desiredCapabilities: {
-                browserName: 'phantomjs'
-            }
-        };
-
-        client = webdriverio.remote(options);
-        originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+        helper.changeOriginalTimeout();
+        client = helper.setUpClient();
     });
 
     afterEach(function () {
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+        helper.resetToOriginalTimeout();
     });
 
     it('allows to register via the registration page', function (done) {
-        client.init()
-            .url(paceUrl)
+        client.url(helper.paceUrl)
             .click('a#registration')
             .isVisible('form#registrationForm')
             .setValue('input#firstname', 'Max')

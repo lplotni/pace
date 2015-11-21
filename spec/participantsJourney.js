@@ -1,57 +1,25 @@
 /* jshint node: true */
 /* global describe, beforeEach, afterEach, it, jasmine, expect */
 'use strict';
+
 var participants = require('../service/participants');
-var webdriverio = require('webdriverio');
 var pg = require('pg');
+var helper = require('./journeyHelper');
 
 describe('participants page', function () {
 
   var client;
-  var paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
-  var originalTimeout;
+  var participantsUrl = helper.paceUrl + 'participants';
+  var loginUrl = helper.paceUrl + 'login';
 
-  var options = {
-    desiredCapabilities: {
-      browserName: 'phantomjs'
-    }
-  };
-
-  var setupDbConnection = function (done) {
-    var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
-    var jasmineDone = done;
-    client = webdriverio.remote(options);
-
-    pg.connect(connectionString, function (err, client, done) {
-          if (err) {
-            console.error('DB connection problem: ', err);
-            done();
-            jasmineDone();
-          } else {
-            var query = client.query('delete from participants');
-            query.on('end', function () {
-              done();
-              jasmineDone();
-            });
-            query.on('error', function (error) {
-              console.error('DB statement problem: ', error);
-              done();
-              jasmineDone();
-            });
-          }
-        }
-    );
-  };
-
-  beforeAll(function (done) {
-    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-
-    setupDbConnection(done);
+  beforeEach(function (done) {
+    helper.changeOriginalTimeout();
+    helper.setupDbConnection(done);
+    client = helper.setUpClient();
   });
 
-  afterAll(function () {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  afterEach(function () {
+    helper.resetToOriginalTimeout();
     pg.end();
   });
 
@@ -65,17 +33,16 @@ describe('participants page', function () {
 
     participants.save(aParticipant, aToken)
         .then(function () {
-          client.init()
-              .url(paceUrl + 'participants')
+          client.url(participantsUrl)
               .elements('li.participant-line')
               .then(function (res) {
                   expect(res.value.length).toBe(0);
               })
-              .url(paceUrl + 'login')
+              .url(loginUrl)
               .setValue('input#username', 'admin')
               .setValue('input#password', 'admin')
               .click('button#submit')
-              .url(paceUrl + 'participants')
+              .url(participantsUrl)
               .elements('li.participant-line')
               .then(function (res) {
                 expect(res.value.length).toBe(1);

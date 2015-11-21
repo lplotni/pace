@@ -2,36 +2,28 @@
 /* global describe, beforeEach, afterEach, it, jasmine, expect */
 'use strict';
 
+var helper = require('./journeyHelper');
+
 describe('admin page', function () {
 
   var client;
-  var paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
-  var originalTimeout;
+  var loginUrl = helper.paceUrl + 'login';
 
   beforeEach(function () {
-    var webdriverio = require('webdriverio');
-    var options = {
-      desiredCapabilities: {
-        browserName: 'phantomjs'
-      }
-    };
-
-    client = webdriverio.remote(options);
-    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    client = helper.setUpClient();
+    helper.changeOriginalTimeout();
   });
 
   afterEach(function () {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+    helper.resetToOriginalTimeout();
   });
 
   it('should go to admin page and show admin links', function (done) {
-    client.init()
-      .url(paceUrl + 'login')
+    client.url(loginUrl)
       .setValue('input#username', 'admin')
       .setValue('input#password', 'admin')
       .click('button#submit')
-      .url(paceUrl)
+      .url(helper.paceUrl)
       .click('a#adminPage')
       .isVisible('a#paymentValidation')
       .then(function (isVisible) {
@@ -41,8 +33,7 @@ describe('admin page', function () {
   });
 
   it('should redirect to login page if the user is not logged in', function (done) {
-    client.init()
-      .url(paceUrl)
+    client.url(helper.paceUrl)
       .click('a#adminPage')
       .isVisible('form#loginForm')
       .then(function (isVisible) {

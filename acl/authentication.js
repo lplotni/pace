@@ -1,7 +1,9 @@
 var isAuthenticated = function (req, res, next) {
-    if (req.isAuthenticated())
+    if (req.isAuthenticated() && req.user.role === 'admin') {
         return next();
-    res.redirect('/login');
+    } else {
+        res.redirect('/login');
+    }
 };
 
 module.exports = isAuthenticated;

@@ -28,4 +28,13 @@ describe('access control', function() {
             expect(result).toBe(false);
         });
     });
+
+    it('should give access to participant details to admin only', function () {
+        accesscontrol.hasPermissionTo('guest', 'view participant details', function(err, result){
+            expect(result).toBe(false);
+        });
+        accesscontrol.hasPermissionTo('admin', 'view participant details', function(err, result){
+            expect(result).toBe(true);
+        });
+    });
 });

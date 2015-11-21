@@ -3,65 +3,28 @@
 'use strict';
 
 var participants = require('../service/participants');
-var webdriverio = require('webdriverio');
 var pg = require('pg');
+var helper = require('./journeyHelper');
 
 describe('payment validation journey', function () {
   var loggedInClient;
-  var paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
-  var paymentValidationUrl = paceUrl + 'payment_validation';
-
-  var originalTimeout;
-  var options = {
-    desiredCapabilities: {
-      browserName: 'phantomjs'
-    }
-  };
-
-  var setupDbConnection = function (done) {
-    var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
-    var jasmineDone = done;
-
-    pg.connect(connectionString, function (err, client, done) {
-        if (err) {
-          console.error('DB connection problem: ', err);
-          done();
-          jasmineDone();
-        } else {
-          var query = client.query('delete from participants');
-          query.on('end', function () {
-            done();
-            jasmineDone();
-          });
-          query.on('error', function (error) {
-            console.error('DB statement problem: ', error);
-            done();
-            jasmineDone();
-          });
-        }
-      }
-    );
-  };
+  var paymentValidationUrl = helper.paceUrl + 'payment_validation';
+  var loginUrl = helper.paceUrl + 'login';
 
   beforeAll(function (done) {
-    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-
-    setupDbConnection(done);
+    helper.changeOriginalTimeout();
+    helper.setupDbConnection(done);
   });
 
   afterAll(function () {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+    helper.resetToOriginalTimeout();
     pg.end();
   });
-
 
   describe('when not logged in', function () {
 
     it('redirects to the login page for unauthenticated users', function (done) {
-      webdriverio
-        .remote(options).init()
-        .url(paymentValidationUrl)
+      helper.setUpClient().url(paymentValidationUrl)
         .isVisible('form#loginForm')
         .then(function (isVisible) {
           expect(isVisible).toBe(true);
@@ -71,15 +34,10 @@ describe('payment validation journey', function () {
   });
 
   describe('when logged it', function () {
-    beforeEach(function (done) {
-      originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
-      setupDbConnection(done);
-
-      loggedInClient = webdriverio
-        .remote(options).init()
-        .url(paceUrl + 'login')
+    beforeEach(function () {
+      loggedInClient = helper.setUpClient()
+        .url(loginUrl)
         .setValue('input#username', 'admin')
         .setValue('input#password', 'admin')
         .click('button#submit');

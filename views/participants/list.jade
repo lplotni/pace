@@ -6,13 +6,37 @@ block content
         table
             thead
                 tr
-                    th Vorname
-                    th Nachname
-                    th Team name
-                    th Email
-                    th Geschlecht
+                    th
+                        form(method='POST', action='/participants')
+                            input(type='hidden', name='participants', value='#{JSON.stringify(participants)}')
+                            input(type='hidden', name='sortFunction', value='byFirstname')
+                            button(type='submit') Vorname
+                    th
+                        form(method='POST', action='/participants')
+                            input(type='hidden', name='participants', value='#{JSON.stringify(participants)}')
+                            input(type='hidden', name='sortFunction', value='byLastname')
+                            button(type='submit') Nachname
+                    th
+                        form(method='POST', action='/participants')
+                            input(type='hidden', name='participants', value='#{JSON.stringify(participants)}')
+                            input(type='hidden', name='sortFunction', value='byTeam')
+                            button(type='submit') Team name
+                    th
+                        form(method='POST', action='/participants')
+                            input(type='hidden', name='participants', value='#{JSON.stringify(participants)}')
+                            input(type='hidden', name='sortFunction', value='byEmail')
+                            button(type='submit') Email
+                    th
+                        form(method='POST', action='/participants')
+                            input(type='hidden', name='participants', value='#{JSON.stringify(participants)}')
+                            input(type='hidden', name='sortFunction', value='byGender')
+                            button(type='submit') Geschlecht
                     th Geburtsjahr
-                    th Bezahlt
+                    th
+                        form(method='POST', action='/participants')
+                            input(type='hidden', name='participants', value='#{JSON.stringify(participants)}')
+                            input(type='hidden', name='sortFunction', value='byPaymentstatus')
+                            button(type='submit') Bezahlt
             tbody
                 each p in participants
                     tr.participant-line

@@ -5,6 +5,7 @@ var pg = require('pg');
 var Q = require('q');
 var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
+var config = require('config');
 
 var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
 
@@ -76,7 +77,7 @@ service.register = function (participant, paymentToken) {
   var jade = require('jade');
     service.save(participant, paymentToken)
       .then(function () {
-        jade.renderFile('views/registration/success.jade', { name: participant.firstname, token: paymentToken, amount: '10'} , function(error, html){
+        jade.renderFile('views/registration/success.jade', { name: participant.firstname, token: paymentToken, amount: config.get('costs.standard')} , function(error, html){
           service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich',html);
         });
       deferred.resolve();
@@ -99,7 +100,7 @@ service.getByToken = function (paymentToken) {
     query.on('row', function (row) {
       participantDetails = {
         name: row.lastname + ', ' + row.firstname,
-        amount: '10',
+        amount: config.get('costs.standard'),
         id: row.id
       };
     });
@@ -235,7 +236,7 @@ service.sendEmail = function (address, subject, text) {
 
 
   transporter.sendMail({
-    from: 'info@lauf-gegen-rechts.de',
+    from: config.get('contact.email'),
     to: address,
     subject: subject,
     html: text

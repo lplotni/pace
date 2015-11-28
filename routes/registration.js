@@ -3,6 +3,7 @@
 /* jshint esnext: true */
 
 const express = require('express');
+const config  = require('config');
 const router = express.Router();
 
 const participants = require('../service/participants');
@@ -24,6 +25,7 @@ router.post('/', function (req, res) {
     res.render('registration/success', {
       name: newParticipant.firstname + ' ' + newParticipant.lastname,
       token: token,
+      amount: config.get('costs.standard'),
       link: ''
     });
   } catch (err) {

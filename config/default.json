@@ -1,5 +1,6 @@
 {
   "shirts": {
+    "price": "20.50",
     "sizes":  ["s","m","l","xl"],
     "models": ["slim","normal"]
   },

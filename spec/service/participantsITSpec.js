@@ -17,27 +17,30 @@ describe('participants service', function () {
     team: 'Crazy runners'
   };
 
-
   beforeEach(function (done) {
     var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
     var jasmineDone = done;
 
     pg.connect(connectionString, function (err, client, done) {
-        if (err) {
-          console.error('DB connection problem: ', err);
+      function errorFunction(error) {
+        console.error('DB statement problem: ', error);
           done();
           jasmineDone();
+      }
+
+      if (err) {
+        errorFunction(err);
         } else {
-          var query = client.query('delete from participants');
-          query.on('end', function () {
+        var deleteShirts = client.query('delete from tshirts');
+        deleteShirts.on('end', function () {
+          var deleteParticipants = client.query('delete from participants');
+          deleteParticipants.on('end', function () {
             done();
             jasmineDone();
           });
-          query.on('error', function (error) {
-            console.error('DB statement problem: ', error);
-            done();
-            jasmineDone();
+          deleteParticipants.on('error', errorFunction);
           });
+        deleteShirts.on('error', errorFunction);
         }
       }
     );
@@ -98,13 +101,13 @@ describe('participants service', function () {
       participants.save(aParticipant, paymentToken)
         .then(function () {
           participants.getIdFor(aParticipant)
-            .then(function (participantId){
-                participants.getById(participantId)
-                  .then(function(participant){
-                    expect(participant.name).toBeDefined();
-                    expect(participant.email).toBeDefined();
-                    done();
-                  });
+            .then(function (participantId) {
+              participants.getById(participantId)
+                .then(function (participant) {
+                  expect(participant.name).toBeDefined();
+                  expect(participant.email).toBeDefined();
+                  done();
+                });
             });
         });
     });
@@ -146,11 +149,55 @@ describe('participants service', function () {
     it('should save the participant and send confirmation email', function (done) {
       spyOn(participants, 'save').and.callThrough();
       spyOn(participants, 'sendEmail');
+      spyOn(participants, 'addTShirt');
+
       participants.register(aParticipant, 'aToken').then(function () {
         expect(participants.save).toHaveBeenCalledWith(aParticipant, 'aToken');
         expect(participants.sendEmail).toHaveBeenCalled(); //todo check args.
+        expect(participants.addTShirt).not.toHaveBeenCalled();
         done();
       });
     });
+
+    it('should call addTShirt if one ordered', function (done) {
+      spyOn(participants, 'addTShirt');
+
+      const aParticipantWithTshirt = {
+        firstname: 'Hertha',
+        lastname: 'Mustermann',
+        email: 'h.mustermann@example.com',
+        gender: 'Unicorn',
+        birthyear: 1980,
+        team: 'Crazy runners',
+        tshirt: {size: 'M', model: 'Slim fit'}
+      };
+
+      participants.register(aParticipantWithTshirt, 'bToken')
+        .then(function () {
+          expect(participants.addTShirt).toHaveBeenCalled();
+          done();
+        });
+    });
+  });
+
+  describe('addTShirt', function () {
+    it('stores tshirt', function (done) {
+      participants.save({
+        firstname: 'Hertha',
+        lastname: 'With TShirt',
+        email: 'h.mustermann@example.com',
+        gender: 'Unicorn',
+        birthyear: 1980,
+        team: 'Crazy runners'
+      }, "tokenX").then(function (id) {
+        participants.addTShirt({size: 'M', model: 'Skin fit'}, id)
+          .then(participants.getTShirts)
+          .then(function (shirts) {
+            expect(shirts.length).toBe(1);
+            done();
+          })
+      });
+
+    })
   });
 });

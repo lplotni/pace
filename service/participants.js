@@ -3,6 +3,7 @@
 
 var pg = require('pg');
 var Q = require('q');
+const _ = require('lodash');
 var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
 
@@ -55,12 +56,12 @@ service.save = function (participant, paymentToken) {
 
   pg.connect(connectionString, function (err, client, done) {
     client.query(
-      'insert into participants (firstname, lastname, email, gender, birthyear, team, paymenttoken) values($1, $2, $3, $4, $5, $6, $7)',
+      'insert into participants (firstname, lastname, email, gender, birthyear, team, paymenttoken) values($1, $2, $3, $4, $5, $6, $7) returning id',
       [participant.firstname, participant.lastname, participant.email, participant.gender, participant.birthyear, participant.team, paymentToken],
       function (err, res) {
         done();
         if (!err) {
-          deferred.resolve(res);
+          deferred.resolve(res.rows[0].id);
         } else {
           deferred.reject(err);
         }
@@ -71,21 +72,75 @@ service.save = function (participant, paymentToken) {
   return deferred.promise;
 };
 
+service.addTShirt = function (tshirt, participantId) {
+  var deferred = Q.defer();
+
+  pg.connect(connectionString, function (err, client, done) {
+    client.query(
+      'insert into tshirts (size, model, participantId) values($1, $2, $3)',
+      [tshirt.size, tshirt.model, participantId],
+      function (err, res) {
+        done();
+        if (!err) {
+          deferred.resolve(res.oid);
+        } else {
+          deferred.reject(err);
+        }
+      }
+    );
+  });
+
+  return deferred.promise;
+
+};
+
+service.getTShirts = function () {
+  var deferred = Q.defer();
+  const tshirts = [];
+
+  pg.connect(connectionString, function (err, client, done) {
+    var query = client.query('SELECT * FROM tshirts');
+
+    query.on('row', function (row) {
+      tshirts.push(row);
+    });
+
+    query.on('error', function () {
+      done();
+      deferred.reject();
+    });
+
+    query.on('end', function () {
+      done();
+      deferred.resolve(tshirts);
+    });
+  });
+
+  return deferred.promise;
+};
+
 service.register = function (participant, paymentToken) {
   var deferred = Q.defer();
   var jade = require('jade');
-    service.save(participant, paymentToken)
-      .then(function () {
-        jade.renderFile('views/registration/success.jade', { name: participant.firstname, token: paymentToken, amount: '10'} , function(error, html){
-          service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich',html);
-        });
-      deferred.resolve();
-      })
-      .fail(function (err) {
-        deferred.reject(err);
+  service.save(participant, paymentToken)
+    .then(function (id) {
+      if (!_.isEmpty(participant.tshirt)) {
+        service.addTShirt(participant.tshirt, id);
+      }
+      jade.renderFile('views/registration/success.jade', {
+        name: participant.firstname,
+        token: paymentToken,
+        amount: '10'
+      }, function (error, html) {
+        service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html);
       });
+      deferred.resolve(id);
+    })
+    .fail(function (err) {
+      deferred.reject(err);
+    });
 
-    return deferred.promise;
+  return deferred.promise;
 };
 
 service.getByToken = function (paymentToken) {
@@ -215,11 +270,11 @@ service.confirmParticipant = function (participantId) {
   service.markPayed(participantId)
     .then(function () {
       service.getById(participantId)
-        .then(function(result){
-          jade.renderFile('views/paymentValidation//success.jade', { name: result.name } , function(error, html){
-            service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten',html );
+        .then(function (result) {
+          jade.renderFile('views/paymentValidation//success.jade', {name: result.name}, function (error, html) {
+            service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html);
+          });
         });
-      });
       deferred.resolve();
     })
     .fail(function (err) {

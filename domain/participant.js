@@ -2,6 +2,7 @@
 /* jshint esnext: true */
 
 const _ = require('lodash');
+const tshirt = require('./tshirt');
 
 const participant = {};
 
@@ -13,13 +14,15 @@ participant.from = function (body) {
   if (invalidData(body)) {
     throw new TypeError('Required attributes are not present');
   }
+
   return {
     firstname: body.firstname,
     lastname: body.lastname,
     email: body.email,
     gender: body.gender,
     birthyear: body.birthyear,
-    team: body.team
+    team: body.team,
+    tshirt: tshirt.from(body)
   };
 
 };

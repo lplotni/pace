@@ -5,7 +5,8 @@ html
     link(rel='stylesheet', href='/stylesheets/css/normalize.css')
     link(rel='stylesheet', href='/stylesheets/css/skeleton.css')
   body
-    if (node_env) != "production"
     .container
-      p DIES IST NUR EINE TESTUMGEBUNG. REGISTRIERUNGEN FUER 2016 SIND NOCH NICHT MOEGLICH
+      if (node_env) != "production"
+        .row
+          h6(style='border:1px solid red; text-align: center;') DIES IST NUR EINE TESTUMGEBUNG. REGISTRIERUNGEN FUER 2016 SIND NOCH NICHT MOEGLICH
       block content

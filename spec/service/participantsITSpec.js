@@ -189,15 +189,15 @@ describe('participants service', function () {
         gender: 'Unicorn',
         birthyear: 1980,
         team: 'Crazy runners'
-      }, "tokenX").then(function (id) {
+      }, 'tokenX').then(function (id) {
         participants.addTShirt({size: 'M', model: 'Skin fit'}, id)
           .then(participants.getTShirts)
           .then(function (shirts) {
             expect(shirts.length).toBe(1);
             done();
-          })
+          });
       });
 
-    })
+    });
   });
 });

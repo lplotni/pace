@@ -1,5 +1,5 @@
 /* jshint node: true */
-/* global describe, beforeEach, afterEach, it, jasmine, expect */
+/* global describe, beforeEach, afterEach, it, expect */
 'use strict';
 
 var participants = require('../service/participants');
@@ -22,7 +22,7 @@ describe('participants page', function () {
   });
 
   it('shows full participant list only if logged in as admin', function (done) {
-    var fullDetailsHeaderRow = ["Vorname", "Nachname", "Team name", "Email", "Geschlecht", "Geburtsjahr", "Bezahlt"];
+    var fullDetailsHeaderRow = ['Vorname', 'Nachname', 'Team name', 'Email', 'Geschlecht', 'Geburtsjahr', 'Bezahlt'];
 
     var aParticipant = {
       firstname: 'Friedrich',

@@ -1,5 +1,5 @@
 /* jshint node: true */
-/* global describe, beforeAll, beforeEach, afterAll, it, jasmine, expect */
+/* global describe, beforeAll, beforeEach, afterAll, it, expect */
 'use strict';
 
 var participants = require('../service/participants');

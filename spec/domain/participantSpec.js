@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeEach, it, expect */
+/* global describe, it, expect */
 describe('participant', function () {
 
   var participant = require('../../domain/participant.js');

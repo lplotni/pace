@@ -1,3 +1,6 @@
+/* jshint node: true */
+/* global jasmine */
+
 var webdriverio = require('webdriverio');
 var pg = require('pg');
 

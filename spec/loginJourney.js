@@ -1,5 +1,5 @@
 /* jshint node: true */
-/* global describe, beforeEach, afterEach, it, jasmine, expect */
+/* global describe, beforeEach, afterEach, it, expect */
 'use strict';
 
 var helper = require('./journeyHelper');

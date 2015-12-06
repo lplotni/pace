@@ -4,7 +4,7 @@ var editUrlGenerator = function () {
 
     var constantUrlPart = 'edit_participant/?edit=';
     var passPhrase = "Lauf gegen rechts!!";
-    var key = cryptico.generateRSAKey(passPhrase, 1024);
+    var key = cryptico.generateRSAKey(passPhrase, 512);
     var publicKeyString = cryptico.publicKeyString(key);
 
     var encrypt = function (value) {

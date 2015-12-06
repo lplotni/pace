@@ -74,6 +74,28 @@ service.save = function (participant, paymentToken) {
   return deferred.promise;
 };
 
+service.update = function (participant, id ) {
+  var deferred = Q.defer();
+
+  pg.connect(connectionString, function (err, client, done) {
+    client.query(
+        'UPDATE participants SET (firstname, lastname, email, gender, birthyear, team) = ($1, $2, $3, $4, $5, $6) WHERE id = $7',
+        [participant.firstname, participant.lastname, participant.email, participant.gender, participant.birthyear, participant.team, id],
+
+            function (err) {
+          done();
+          if (!err) {
+            deferred.resolve(id);
+          } else {
+            deferred.reject(err);
+          }
+        }
+    );
+  });
+
+  return deferred.promise;
+};
+
 service.addTShirt = function (tshirt, participantId) {
   var deferred = Q.defer();
 
@@ -192,6 +214,36 @@ service.getById = function (id) {
         name: row.firstname,
         email: row.email
       };
+    });
+
+    query.on('error', function () {
+      done();
+      deferred.reject();
+    });
+
+    query.on('end', function (result) {
+      done();
+      if (result.rowCount > 0) {
+        deferred.resolve(participantDetails);
+      } else {
+        deferred.reject({error: 'Es konnte keine Registrierung mit Id ' + id + ' gefunden werden.'});
+      }
+    });
+  });
+
+  return deferred.promise;
+};
+
+service.getFullInfoById = function (id) {
+  var deferred = Q.defer();
+  var participantDetails;
+
+  pg.connect(connectionString, function (err, client, done) {
+    var query = client.query(
+      'SELECT * FROM participants WHERE id = $1', [id]);
+
+    query.on('row', function (row) {
+      participantDetails = row;
     });
 
     query.on('error', function () {

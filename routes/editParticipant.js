@@ -1,9 +1,10 @@
 var router = require('express').Router();
 var participants = require('../service/participants');
 var participant = require('../domain/participant');
+var editUrlGenerator = require('../domain/editUrlGenerator');
 
 router.get('/', function(req, res) {
-    var participantId = req.query.edit;
+    var participantId = editUrlGenerator.getIdFromEncryptedUrl(req.query.edit);
     participants.getFullInfoById(participantId).then(function (participant) {
         res.render('participants/editParticipant', { participant: participant, participantid: participantId });
     }).catch(function () {

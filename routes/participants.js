@@ -4,6 +4,7 @@
 var router = require('express').Router();
 var participants = require('../service/participants');
 var accesscontrol = require('../acl/accesscontrol');
+var editUrlGenerator = require('../domain/editUrlGenerator');
 
 var canViewParticipantDetails = function(role) {
     return accesscontrol.hasPermissionTo(role, 'view participant details');
@@ -24,7 +25,12 @@ router.get('/', useDefaultAuthentication, function (req, res) {
             var allParticipants = result;
             participants.getRegistered().then(function (result) {
                 allParticipants = allParticipants.concat(result);
-                return res.render('participants/list', {participants: allParticipants, isAdmin: true});
+                var editUrlExampleToBeMappedToRealId = editUrlGenerator.generateEncryptedUrl(allParticipants[0].id.toString());
+                var participantsWithUrl = allParticipants.map(function(participant) {
+                    participant.editUrl = editUrlExampleToBeMappedToRealId;
+                    return participant;
+                });
+                return res.render('participants/list', {participants: participantsWithUrl, isAdmin: true});
             });
         });
     } else {

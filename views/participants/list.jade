@@ -13,6 +13,7 @@ block content
                     th Geschlecht
                     th Geburtsjahr
                     th Bezahlt
+                    th
             tbody
                 each p in participants
                     tr.participant-line
@@ -23,6 +24,8 @@ block content
                         td=p.gender
                         td=p.birthyear
                         td=(p.has_payed ? 'ja' : 'nein')
+                        td
+                            a.button(href='#{p.editUrl}') Bearbeiten
     else
         ul
             each p in participants

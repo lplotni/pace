@@ -5,6 +5,7 @@
 var helper = require('./journeyHelper');
 var pg = require('pg');
 var participants = require('../service/participants');
+var editUrlGenerator = require('../domain/editUrlGenerator');
 
 describe('edit participant journey', function () {
 
@@ -33,9 +34,13 @@ describe('edit participant journey', function () {
 
     participants.save(aParticipant, aToken)
         .then(function (id) {
+          var editUrl = editUrlGenerator.generateEncryptedUrl(id.toString());
           helper.setUpClient()
-              .url(editParticipantUrl + '/?edit=' + id)
+              .url(editParticipantUrl + '/?edit=' + editUrl)
               .isVisible('form#editParticipantForm')
+              .then(function (isVisible) {
+                  expect(isVisible).toBe(true);
+              })
               .getValue('input#firstname')
               .then(function (value) {
                 expect(value).toBe('Friedrich')

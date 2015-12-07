@@ -25,7 +25,7 @@ block content
                         td=p.birthyear
                         td=(p.has_payed ? 'ja' : 'nein')
                         td
-                            a.button(href='#{p.editUrl}') Bearbeiten
+                            a#edit.button(href='#{p.editUrl}') Bearbeiten
     else
         ul
             each p in participants

@@ -19,17 +19,21 @@ var useDefaultAuthentication = function(req, res, next){
     }
 };
 
+var addEditUrlToParticipants = function (participants) {
+    return participants.map(function(participant) {
+        participant.editUrl = editUrlGenerator.generateEncryptedUrl(participant.id.toString());
+        return participant;
+    });
+};
+
 router.get('/', useDefaultAuthentication, function (req, res) {
     if(canViewParticipantDetails(req.user.role)) {
         participants.getConfirmed().then(function (result) {
             var allParticipants = result;
             participants.getRegistered().then(function (result) {
                 allParticipants = allParticipants.concat(result);
-                var editUrlExampleToBeMappedToRealId = editUrlGenerator.generateEncryptedUrl(allParticipants[0].id.toString());
-                var participantsWithUrl = allParticipants.map(function(participant) {
-                    participant.editUrl = editUrlExampleToBeMappedToRealId;
-                    return participant;
-                });
+                var participantsWithUrl = addEditUrlToParticipants(allParticipants);
+
                 return res.render('participants/list', {participants: participantsWithUrl, isAdmin: true});
             });
         });

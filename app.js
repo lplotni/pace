@@ -14,6 +14,7 @@ var adminRoute = require('./routes/admin');
 var registrationRoute = require('./routes/registration');
 var participantsRoute = require('./routes/participants');
 var paymentValidationRoute = require('./routes/paymentValidation');
+var editParticipantRoute = require('./routes/editParticipant');
 var loginRoute = require('./routes/login');
 
 var app = express();
@@ -65,6 +66,7 @@ app.use('/admin', adminRoute);
 app.use('/registration', registrationRoute);
 app.use('/participants', participantsRoute);
 app.use('/payment_validation', paymentValidationRoute);
+app.use('/edit_participant', editParticipantRoute);
 app.use('/login', loginRoute);
 
 /// catch 404 and forward to error handler

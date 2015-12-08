@@ -74,13 +74,13 @@ describe('participants service', function () {
       var paymentToken = 'a token';
 
       participants.save(aParticipant, paymentToken)
-        .then(function () {
-          participants.getIdFor(aParticipant)
-            .then(function (participantId) {
-              expect(participantId).toBeDefined();
-              done();
-            });
-        });
+          .then(function () {
+            participants.getIdFor(aParticipant)
+                .then(function (participantId) {
+                  expect(participantId).toBeDefined();
+                  done();
+                });
+          });
     });
 
     it('should return an error if the id is invalid', function (done) {
@@ -99,17 +99,33 @@ describe('participants service', function () {
     it('should return name and email for participant with given Id', function (done) {
       var paymentToken = 'a token';
       participants.save(aParticipant, paymentToken)
-        .then(function () {
-          participants.getIdFor(aParticipant)
-            .then(function (participantId) {
-              participants.getById(participantId)
+          .then(function (participantId) {
+            participants.getById(participantId)
                 .then(function (participant) {
                   expect(participant.name).toBeDefined();
                   expect(participant.email).toBeDefined();
                   done();
                 });
-            });
-        });
+          });
+    });
+  });
+
+  describe('getFullInfoById', function () {
+    it('should return the full information for a participant with given Id', function (done) {
+      var paymentToken = 'a token';
+      participants.save(aParticipant, paymentToken)
+          .then(function (participantId) {
+            participants.getFullInfoById(participantId)
+                .then(function (participant) {
+                  expect(participant.firstname).toBeDefined();
+                  expect(participant.lastname).toBeDefined();
+                  expect(participant.email).toBeDefined();
+                  expect(participant.gender).toBeDefined();
+                  expect(participant.birthyear).toBeDefined();
+                  expect(participant.team).toBeDefined();
+                  done();
+                });
+          });
     });
   });
 
@@ -119,16 +135,13 @@ describe('participants service', function () {
       spyOn(participants, 'markPayed').and.callThrough();
 
       participants.save(aParticipant, paymentToken)
-        .then(function () {
-          participants.getIdFor(aParticipant)
-            .then(function (participantId) {
-              participants.confirmParticipant(participantId)
+          .then(function (participantId) {
+            participants.confirmParticipant(participantId)
                 .then(function () {
                   expect(participants.markPayed).toHaveBeenCalledWith(participantId);
                   done();
                 });
-            });
-        });
+          });
     });
 
     it('should give error if ID is invalid', function (done) {
@@ -198,6 +211,36 @@ describe('participants service', function () {
           });
       });
 
+    });
+  });
+
+  describe('update', function () {
+    it('should return the full information for a participant with given Id', function (done) {
+      var paymentToken = 'a token';
+      participants.save(aParticipant, paymentToken)
+          .then(function (id) {
+            const updatedParticipant = {
+              firstname: 'Hertha updated',
+              lastname: 'Mustermann updated',
+              email: 'h.mustermann@example.com updated',
+              gender: 'Unicorn updated',
+              birthyear: 1981,
+              team: 'Crazy runners updated'
+            };
+            participants.update(updatedParticipant, id)
+                .then(function (id) {
+                  participants.getFullInfoById(id)
+                      .then(function (participant) {
+                        expect(participant.firstname).toBe('Hertha updated');
+                        expect(participant.lastname).toBe('Mustermann updated');
+                        expect(participant.email).toBe('h.mustermann@example.com updated');
+                        expect(participant.gender).toBe('Unicorn updated');
+                        expect(participant.birthyear).toBe(1981);
+                        expect(participant.team).toBe('Crazy runners updated');
+                        done();
+                      });
+                });
+          });
     });
   });
 });

@@ -1,0 +1,31 @@
+extends ../layout
+
+block content
+    h1 Angaben ändern
+    form#editParticipantForm(method='POST', action='/edit_participant')
+        .row
+            .three.columns
+                label(for='firstname') Vorname:
+                input#firstname.u-full-width(type='text', name='firstname', required=true, value=participant.firstname)
+            .three.columns
+                label(for='lastname') Nachname:
+                input#lastname.u-full-width(type='text', name='lastname', required=true, value=participant.lastname)
+        .row
+            .three.columns
+                label(for='gender') Geschlecht:
+                input#gender.u-full-width(type='text', name='gender', required=true, value=participant.gender)
+            .three.columns
+                label(for='birthyear') Geburtsjahr:
+                input#birthyear.u-full-width(type='number', name='birthyear', required=true, value=participant.birthyear)
+        .row
+            .four.columns
+                label(for='email') Email:
+                input#email.u-full-width(type='email', name='email', required=true, value=participant.email)
+        .row
+            .four.columns
+                label(for='team') Name des Teams:
+                input#team.u-full-width(type='text', name='team', value=participant.team)
+
+        input(type='hidden', name='participantid', value='#{participantid}')
+
+        button#submit.button-primary(type='submit') Änderung speichern

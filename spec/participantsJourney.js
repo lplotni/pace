@@ -22,7 +22,7 @@ describe('participants page', function () {
   });
 
   it('shows full participant list only if logged in as admin', function (done) {
-    var fullDetailsHeaderRow = ['Vorname', 'Nachname', 'Team name', 'Email', 'Geschlecht', 'Geburtsjahr', 'Bezahlt'];
+    var fullDetailsHeaderRow = ['Vorname', 'Nachname', 'Team name', 'Email', 'Geschlecht', 'Geburtsjahr', 'Bezahlt', 'Bearbeiten'];
 
     var aParticipant = {
       firstname: 'Friedrich',
@@ -50,6 +50,30 @@ describe('participants page', function () {
               .elements('th')
               .then(function (res) {
                   expect(res.value.length).toBe(fullDetailsHeaderRow.length);
+              })
+              .end(done);
+        });
+  });
+
+  it('should have a link to edit a participant', function (done) {
+    var aParticipant = {
+      firstname: 'Friedrich',
+      lastname: 'Schiller',
+      email: 'f.schiller@example.com'
+    };
+    var aToken = 'a token';
+
+    participants.save(aParticipant, aToken)
+        .then(function () {
+          helper.setUpClient()
+              .url(loginUrl)
+              .setValue('input#username', 'admin')
+              .setValue('input#password', 'admin')
+              .click('button#submit')
+              .url(participantsUrl)
+              .isVisible('a#edit')
+              .then(function (isVisible) {
+                expect(isVisible).toBe(true);
               })
               .end(done);
         });

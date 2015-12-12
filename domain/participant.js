@@ -7,7 +7,7 @@ const tshirt = require('./tshirt');
 const participant = {};
 
 function invalidData(body) {
-  return _.isUndefined(body.firstname) || _.isUndefined(body.lastname) || _.isUndefined(body.gender) || _.isUndefined(body.birthyear);
+  return _.isUndefined(body.firstname) || _.isUndefined(body.lastname) || _.isUndefined(body.category) || _.isUndefined(body.birthyear);
 }
 
 participant.from = function (body) {
@@ -19,7 +19,7 @@ participant.from = function (body) {
     firstname: body.firstname,
     lastname: body.lastname,
     email: body.email,
-    gender: body.gender,
+    category: body.category,
     birthyear: body.birthyear,
     team: body.team,
     tshirt: tshirt.from(body)

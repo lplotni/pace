@@ -24,7 +24,7 @@ describe('regisitration journey', function () {
       .setValue('input#firstname', 'Max')
       .setValue('input#lastname', 'Mustermann')
       .setValue('input#email', 'max@example.com')
-      .setValue('input#gender', 'Unicorn')
+      .selectByValue('select#category', 'f')
       .setValue('input#birthyear', 2000)
       .setValue('input#team', 'Crazy runners')
       .click('input#shirt')

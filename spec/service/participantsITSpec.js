@@ -12,7 +12,7 @@ describe('participants service', function () {
     firstname: 'Hertha',
     lastname: 'Mustermann',
     email: 'h.mustermann@example.com',
-    gender: 'Unicorn',
+    category: 'Unicorn',
     birthyear: 1980,
     team: 'Crazy runners'
   };
@@ -62,7 +62,7 @@ describe('participants service', function () {
         expect(data[0].firstname).toBe(aParticipant.firstname);
         expect(data[0].lastname).toBe(aParticipant.lastname);
         expect(data[0].email).toBe(aParticipant.email);
-        expect(data[0].gender).toBe(aParticipant.gender);
+        expect(data[0].category).toBe(aParticipant.category);
         expect(data[0].birthyear).toBe(aParticipant.birthyear);
         expect(data[0].team).toBe(aParticipant.team);
         done();
@@ -120,7 +120,7 @@ describe('participants service', function () {
                   expect(participant.firstname).toBeDefined();
                   expect(participant.lastname).toBeDefined();
                   expect(participant.email).toBeDefined();
-                  expect(participant.gender).toBeDefined();
+                  expect(participant.category).toBeDefined();
                   expect(participant.birthyear).toBeDefined();
                   expect(participant.team).toBeDefined();
                   done();
@@ -179,7 +179,7 @@ describe('participants service', function () {
         firstname: 'Hertha',
         lastname: 'Mustermann',
         email: 'h.mustermann@example.com',
-        gender: 'Unicorn',
+        category: 'Unicorn',
         birthyear: 1980,
         team: 'Crazy runners',
         tshirt: {size: 'M', model: 'Slim fit'}
@@ -199,7 +199,7 @@ describe('participants service', function () {
         firstname: 'Hertha',
         lastname: 'With TShirt',
         email: 'h.mustermann@example.com',
-        gender: 'Unicorn',
+        category: 'Unicorn',
         birthyear: 1980,
         team: 'Crazy runners'
       }, 'tokenX').then(function (id) {
@@ -223,7 +223,7 @@ describe('participants service', function () {
               firstname: 'Hertha updated',
               lastname: 'Mustermann updated',
               email: 'h.mustermann@example.com updated',
-              gender: 'Unicorn updated',
+              category: 'Unicorn updated',
               birthyear: 1981,
               team: 'Crazy runners updated'
             };
@@ -234,7 +234,7 @@ describe('participants service', function () {
                         expect(participant.firstname).toBe('Hertha updated');
                         expect(participant.lastname).toBe('Mustermann updated');
                         expect(participant.email).toBe('h.mustermann@example.com updated');
-                        expect(participant.gender).toBe('Unicorn updated');
+                        expect(participant.category).toBe('Unicorn updated');
                         expect(participant.birthyear).toBe(1981);
                         expect(participant.team).toBe('Crazy runners updated');
                         done();

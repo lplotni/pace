@@ -12,8 +12,10 @@ block content
                 input#lastname.u-full-width(type='text', name='lastname', required=true)
         .row
             .three.columns
-                label(for='gender') Geschlecht:
-                input#gender.u-full-width(type='text', name='gender', required=true)
+                label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
+                select#category.u-full-width(name='category')
+                    option(value='m') m
+                    option(value='f') f
             .three.columns
                 label(for='birthyear') Geburtsjahr:
                 input#birthyear.u-full-width(type='number', name='birthyear', required=true)

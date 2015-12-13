@@ -11,7 +11,7 @@ describe('participant', function () {
       firstname: 'Mark',
       lastname: 'Mueller',
       email: 'm.mueller@example.com',
-      gender: 'Unicorn',
+      category: 'Unicorn',
       birthyear: 1980,
       team: 'Crazy runners',
       shirt: 'Yes',
@@ -25,7 +25,7 @@ describe('participant', function () {
 
     it('should throw an error if no firstname can be found', function () {
       function callWithNoFirstname() {
-        participant.from({lastname: 'XX', email: 'test@example.com', gender: 'male', birthyear: 2000});
+        participant.from({lastname: 'XX', email: 'test@example.com', category: 'male', birthyear: 2000});
       }
 
       expect(callWithNoFirstname).toThrow();
@@ -33,7 +33,7 @@ describe('participant', function () {
 
     it('should throw an error if no lastname can be found', function () {
       function callWithNoLastname() {
-        participant.from({firstName: 'XX', email: 'test@example.com', gender: 'male', birthyear: 2000});
+        participant.from({firstName: 'XX', email: 'test@example.com', category: 'male', birthyear: 2000});
       }
 
       expect(callWithNoLastname).toThrow();
@@ -45,7 +45,7 @@ describe('participant', function () {
 
     it('should throw an error if no email can be found', function () {
       function callWithNoEmail() {
-        participant.from({firstName: 'XX', lastName: 'YY', gender: 'male', birthyear: 2000});
+        participant.from({firstName: 'XX', lastName: 'YY', category: 'male', birthyear: 2000});
       }
 
       expect(callWithNoEmail).toThrow();
@@ -64,7 +64,7 @@ describe('participant', function () {
     });
 
     it('should extract gender form the request body', function () {
-      expect(participant.from(body).gender).toBe('Unicorn');
+      expect(participant.from(body).category).toBe('Unicorn');
     });
 
     it('should extract team name form the request body', function () {
@@ -73,7 +73,7 @@ describe('participant', function () {
 
     it('should throw an error if no birthyear can be found', function () {
       function callWithNoBirthyear() {
-        participant.from({firstName: 'XX', lastName: 'YY', email: 'test@example.com', gender: 'male'});
+        participant.from({firstName: 'XX', lastName: 'YY', email: 'test@example.com', category: 'male'});
       }
 
       expect(callWithNoBirthyear).toThrow();
@@ -93,7 +93,7 @@ describe('participant', function () {
         firstname: 'Mark',
         lastname: 'Mueller',
         email: 'm.mueller@example.com',
-        gender: 'Unicorn',
+        category: 'Unicorn',
         birthyear: 1980,
         team: 'Crazy runners'
       }).tshirt).toEqual({});

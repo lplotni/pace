@@ -6,5 +6,5 @@ exports.up = function(db, callback) {
 };
 
 exports.down = function(db, callback) {
-  db.runSql("alter table participants drop column paymenttoken", callback());
+  db.runSql("alter table participants drop column paymenttoken", callback);
 };

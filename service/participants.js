@@ -58,8 +58,8 @@ service.save = function (participant, paymentToken) {
 
   pg.connect(connectionString, function (err, client, done) {
     client.query(
-      'insert into participants (firstname, lastname, email, gender, birthyear, team, paymenttoken) values($1, $2, $3, $4, $5, $6, $7) returning id',
-      [participant.firstname, participant.lastname, participant.email, participant.gender, participant.birthyear, participant.team, paymentToken],
+      'insert into participants (firstname, lastname, email, category, birthyear, team, paymenttoken) values($1, $2, $3, $4, $5, $6, $7) returning id',
+      [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, paymentToken],
       function (err, res) {
         done();
         if (!err) {
@@ -79,8 +79,8 @@ service.update = function (participant, id ) {
 
   pg.connect(connectionString, function (err, client, done) {
     client.query(
-        'UPDATE participants SET (firstname, lastname, email, gender, birthyear, team) = ($1, $2, $3, $4, $5, $6) WHERE id = $7',
-        [participant.firstname, participant.lastname, participant.email, participant.gender, participant.birthyear, participant.team, id],
+        'UPDATE participants SET (firstname, lastname, email, category, birthyear, team) = ($1, $2, $3, $4, $5, $6) WHERE id = $7',
+        [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, id],
 
             function (err) {
           done();

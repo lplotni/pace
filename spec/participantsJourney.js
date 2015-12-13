@@ -22,7 +22,7 @@ describe('participants page', function () {
   });
 
   it('shows full participant list only if logged in as admin', function (done) {
-    var fullDetailsHeaderRow = ['Vorname', 'Nachname', 'Team name', 'Email', 'Geschlecht', 'Geburtsjahr', 'Bezahlt', 'Bearbeiten'];
+    var fullDetailsHeaderRow = ['Vorname', 'Nachname', 'Team name', 'Email', 'Kategorie', 'Geburtsjahr', 'Bezahlt', 'Bearbeiten'];
 
     var aParticipant = {
       firstname: 'Friedrich',

@@ -26,7 +26,7 @@ describe('edit participant journey', function () {
       firstname: 'Friedrich',
       lastname: 'Schiller',
       email: 'f.schiller@example.com',
-      gender: 'Unicorn',
+      category: 'f',
       birthyear: 1980,
       team: 'Crazy runners'
     };
@@ -53,9 +53,9 @@ describe('edit participant journey', function () {
               .then(function (value) {
                 expect(value).toBe('f.schiller@example.com')
               })
-              .getValue('input#gender')
+              .getValue('select#category')
               .then(function (value) {
-                expect(value).toBe('Unicorn')
+                expect(value).toBe('f')
               })
               .getValue('input#birthyear')
               .then(function (value) {

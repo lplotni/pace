@@ -5,6 +5,7 @@
 var participants = require('../service/participants');
 var pg = require('pg');
 var helper = require('./journeyHelper');
+var costCalculator = require('../domain/costCalculator');
 
 describe('payment validation journey', function () {
   var loggedInClient;
@@ -63,11 +64,15 @@ describe('payment validation journey', function () {
       var aParticipant = {
         firstname: 'Friedrich',
         lastname: 'Schiller',
-        email: 'f.schiller@example.com'
+        email: 'f.schiller@example.com',
+        tshirt: {
+          size: 'M',
+          model: 'Normal fit'
+        }
       };
       var aToken = '23eF67i';
 
-      participants.save(aParticipant, aToken)
+      participants.register(aParticipant, aToken)
         .then(function () {
           loggedInClient.url(paymentValidationUrl)
             .setValue('input#payment-token', aToken)
@@ -79,6 +84,7 @@ describe('payment validation journey', function () {
             .getText('p#details')
             .then(function (text) {
               expect(text).toContain('Betrag für Token ' + aToken + ':');
+              expect(text).toContain(costCalculator.priceFor(aParticipant));
             })
             .click('button#confirm-registration')
             .getText('div.success')

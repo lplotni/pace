@@ -5,6 +5,7 @@ var router = require('express').Router();
 var participants = require('../service/participants');
 var accesscontrol = require('../acl/accesscontrol');
 var isAuthenticated = require('../acl/authentication');
+var calculator = require('../domain/costCalculator');
 
 var canConfirmPayments = function (role) {
   return accesscontrol.hasPermissionTo(role, 'confirm payments');
@@ -35,7 +36,7 @@ router.post('/', isAuthenticated, function (req, res) {
         return res.render('paymentValidation/paymentValidation', {
           token: paymentToken,
           name: result.name,
-          amount: result.amount,
+          amount: calculator.priceFor(result),
           participantid: result.id
         });
       })

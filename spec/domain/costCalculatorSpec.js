@@ -24,12 +24,12 @@ describe('costCalculator', function () {
   it('cost with tshirt = tshirt + standard', function () {
     var cost = calculator.priceFor(participant);
 
-    expect(cost).toBe(_.parseInt(config.get('costs.standard')) + _.parseInt(config.get('shirts.price')));
+    expect(cost).toBe(parseFloat(config.get('costs.standard')) + parseFloat(config.get('shirts.price')));
   });
 
   it('cost without tshirt = standard', function () {
     var cost = calculator.priceFor(_.omit(participant, 'tshirt'));
 
-    expect(cost).toBe(_.parseInt(config.get('costs.standard')));
+    expect(cost).toBe(parseFloat(config.get('costs.standard')));
   })
 });

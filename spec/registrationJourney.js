@@ -35,6 +35,10 @@ describe('regisitration journey', function () {
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })
+      .getText('span.amount').
+      then(function (amount) {
+        expect(amount).toBe('35.50');
+      })
       .end(done);
   });
 

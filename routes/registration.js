@@ -8,6 +8,7 @@ const router = express.Router();
 
 const participants = require('../service/participants');
 const participant = require('../domain/participant');
+const calculator = require('../domain/costCalculator');
 
 function createUniqueToken() {
   return Math.random().toString(32).substring(2);
@@ -25,7 +26,8 @@ router.post('/', function (req, res) {
     res.render('registration/success', {
       name: newParticipant.firstname + ' ' + newParticipant.lastname,
       token: token,
-      amount: config.get('costs.standard'),
+      amount:
+        new Intl.NumberFormat('de-DE', { minimumFractionDigits: '2'}).format(calculator.priceFor(newParticipant)),
       link: ''
     });
   } catch (err) {

@@ -8,6 +8,7 @@ const _ = require('lodash');
 var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
 var config = require('config');
+const calculator = require('../domain/costCalculator');
 
 var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
 
@@ -31,7 +32,7 @@ service.getAllWithPaymentStatus = function (paymentStatus) {
         participants.push(row);
       });
 
-    query.on('error', function () {
+      query.on('error', function () {
         done();
         deferred.reject();
       });
@@ -167,6 +168,8 @@ service.register = function (participant, paymentToken) {
   return deferred.promise;
 };
 
+// select * from participant -> should return participant with tshirt
+
 service.getByToken = function (paymentToken) {
   var deferred = Q.defer();
   var participantDetails;
@@ -178,7 +181,7 @@ service.getByToken = function (paymentToken) {
     query.on('row', function (row) {
       participantDetails = {
         name: row.lastname + ', ' + row.firstname,
-        amount: config.get('costs.standard'),
+        amount: calculator.priceFor(row),
         id: row.id
       };
     });
@@ -189,10 +192,21 @@ service.getByToken = function (paymentToken) {
     });
 
     query.on('end', function (result) {
-      done();
       if (result.rowCount > 0) {
-        deferred.resolve(participantDetails);
+        var tshirtsJoin = client.query('SELECT * from tshirts where participantid = $1', [participantDetails.id]);
+        tshirtsJoin.on('row', function (row) {
+          participantDetails.tshirt = row;
+        });
+        tshirtsJoin.on('end', function () {
+          done();
+          deferred.resolve(participantDetails);
+        });
+        tshirtsJoin.on('error', function () {
+          done();
+          deferred.reject({error: 'Es konnte keine Tshirt-Informationen zum Token ' + paymentToken + ' gefunden werden.'})
+        })
       } else {
+        done();
         deferred.reject({error: 'Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.'});
       }
     });

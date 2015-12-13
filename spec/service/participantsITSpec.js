@@ -82,17 +82,46 @@ describe('participants service', function () {
   });
 
   describe('getById', function () {
-    it('should return participant with given Id', function (done) {
+    it('should return name and email of the participant with given Id', function (done) {
       var paymentToken = 'a token';
       participants.save(aParticipant, paymentToken)
         .then(function (participantId) {
           participants.getById(participantId)
             .then(function (participant) {
-              expect(participant.name).toBeDefined();
-              expect(participant.email).toBeDefined();
-              //expect(participant.tshirt).toBeDefined();
+              expect(participant.name).toEqual(aParticipant.firstname);
+              expect(participant.email).toEqual(aParticipant.email);
               done();
             });
+        });
+    });
+  });
+
+  describe('getByToken', function () {
+    const aParticipantWithTshirt = {
+      firstname: 'Hertha',
+      lastname: 'Mustermann',
+      email: 'h.mustermann@example.com',
+      birthyear: 1980,
+      tshirt: {
+        size: 'XS',
+        model: 'Crazy cool fit'
+      }
+    };
+
+
+    it('should return participant\'s lastname and firstname and ordered tshirt for a given token', function (done) {
+      var paymentToken = 'a token';
+      participants.save(aParticipantWithTshirt, paymentToken)
+        .then(function (participantId) {
+          participants.addTShirt(aParticipantWithTshirt.tshirt, participantId).then(function () {
+            participants.getByToken(paymentToken)
+              .then(function (participant) {
+                expect(participant.name).toEqual(aParticipantWithTshirt.lastname +', '+aParticipantWithTshirt.firstname);
+                expect(participant.tshirt.size).toEqual(aParticipantWithTshirt.tshirt.size);
+                expect(participant.tshirt.model).toEqual(aParticipantWithTshirt.tshirt.model);
+                done();
+              });
+          });
         });
     });
   });

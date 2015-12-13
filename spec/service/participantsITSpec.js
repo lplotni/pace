@@ -22,25 +22,25 @@ describe('participants service', function () {
     var jasmineDone = done;
 
     pg.connect(connectionString, function (err, client, done) {
-      function errorFunction(error) {
-        console.error('DB statement problem: ', error);
+        function errorFunction(error) {
+          console.error('DB statement problem: ', error);
           done();
           jasmineDone();
-      }
+        }
 
-      if (err) {
-        errorFunction(err);
+        if (err) {
+          errorFunction(err);
         } else {
-        var deleteShirts = client.query('delete from tshirts');
-        deleteShirts.on('end', function () {
-          var deleteParticipants = client.query('delete from participants');
-          deleteParticipants.on('end', function () {
-            done();
-            jasmineDone();
+          var deleteShirts = client.query('delete from tshirts');
+          deleteShirts.on('end', function () {
+            var deleteParticipants = client.query('delete from participants');
+            deleteParticipants.on('end', function () {
+              done();
+              jasmineDone();
+            });
+            deleteParticipants.on('error', errorFunction);
           });
-          deleteParticipants.on('error', errorFunction);
-          });
-        deleteShirts.on('error', errorFunction);
+          deleteShirts.on('error', errorFunction);
         }
       }
     );
@@ -69,63 +69,31 @@ describe('participants service', function () {
       });
   });
 
-  describe('getIdFor', function () {
-    it('should return the database id by fistname, lastname and email', function (done) {
+  describe('save', function () {
+    it('should return the id', function (done) {
       var paymentToken = 'a token';
 
       participants.save(aParticipant, paymentToken)
-          .then(function () {
-            participants.getIdFor(aParticipant)
-                .then(function (participantId) {
-                  expect(participantId).toBeDefined();
-                  done();
-                });
-          });
-    });
-
-    it('should return an error if the id is invalid', function (done) {
-      var wrongId = '999';
-
-      participants.getIdFor(wrongId)
-        .catch(function (data) {
-          expect(data).toEqual('No participant found with these details');
+        .then(function (participantId) {
+          expect(participantId).toBeDefined();
           done();
         });
     });
-
   });
 
   describe('getById', function () {
-    it('should return name and email for participant with given Id', function (done) {
+    it('should return participant with given Id', function (done) {
       var paymentToken = 'a token';
       participants.save(aParticipant, paymentToken)
-          .then(function (participantId) {
-            participants.getById(participantId)
-                .then(function (participant) {
-                  expect(participant.name).toBeDefined();
-                  expect(participant.email).toBeDefined();
-                  done();
-                });
-          });
-    });
-  });
-
-  describe('getFullInfoById', function () {
-    it('should return the full information for a participant with given Id', function (done) {
-      var paymentToken = 'a token';
-      participants.save(aParticipant, paymentToken)
-          .then(function (participantId) {
-            participants.getFullInfoById(participantId)
-                .then(function (participant) {
-                  expect(participant.firstname).toBeDefined();
-                  expect(participant.lastname).toBeDefined();
-                  expect(participant.email).toBeDefined();
-                  expect(participant.category).toBeDefined();
-                  expect(participant.birthyear).toBeDefined();
-                  expect(participant.team).toBeDefined();
-                  done();
-                });
-          });
+        .then(function (participantId) {
+          participants.getById(participantId)
+            .then(function (participant) {
+              expect(participant.name).toBeDefined();
+              expect(participant.email).toBeDefined();
+              //expect(participant.tshirt).toBeDefined();
+              done();
+            });
+        });
     });
   });
 
@@ -135,13 +103,13 @@ describe('participants service', function () {
       spyOn(participants, 'markPayed').and.callThrough();
 
       participants.save(aParticipant, paymentToken)
-          .then(function (participantId) {
-            participants.confirmParticipant(participantId)
-                .then(function () {
-                  expect(participants.markPayed).toHaveBeenCalledWith(participantId);
-                  done();
-                });
-          });
+        .then(function (participantId) {
+          participants.confirmParticipant(participantId)
+            .then(function () {
+              expect(participants.markPayed).toHaveBeenCalledWith(participantId);
+              done();
+            });
+        });
     });
 
     it('should give error if ID is invalid', function (done) {
@@ -243,4 +211,5 @@ describe('participants service', function () {
           });
     });
   });
-});
+})
+;

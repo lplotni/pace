@@ -264,37 +264,6 @@ service.getFullInfoById = function (id) {
   return deferred.promise;
 };
 
-service.getIdFor = function (participant) {
-  var deferred = Q.defer();
-  var participantId;
-
-  pg.connect(connectionString, function (err, client, done) {
-    var query = client.query(
-      'SELECT id FROM participants WHERE firstname = $1 AND lastname = $2 AND email = $3',
-      [participant.firstname, participant.lastname, participant.email]);
-
-    query.on('row', function (row) {
-      participantId = row.id;
-    });
-
-    query.on('error', function () {
-      done();
-      deferred.reject();
-    });
-
-    query.on('end', function (result) {
-      done();
-      if (result.rowCount > 0) {
-        deferred.resolve(participantId);
-      } else {
-        deferred.reject('No participant found with these details');
-      }
-    });
-  });
-
-  return deferred.promise;
-};
-
 service.markPayed = function (participantId) {
   var deferred = Q.defer();
   pg.connect(connectionString, function (err, client, done) {

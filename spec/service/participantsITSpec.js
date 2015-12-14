@@ -235,7 +235,7 @@ describe('participants service', function () {
             team: 'Crazy runners updated'
           };
           participants.update(updatedParticipant, id)
-            .then(function (id) {
+            .then(function () {
               participants.getFullInfoById(id)
                 .then(function (participant) {
                   expect(participant.firstname).toBe('Hertha updated');

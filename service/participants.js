@@ -39,25 +39,8 @@ service.save = function (participant, paymentToken) {
 };
 
 service.update = function (participant, id) {
-  var deferred = Q.defer();
-
-  pg.connect(connectionString, function (err, client, done) {
-    client.query(
-      'UPDATE participants SET (firstname, lastname, email, category, birthyear, team) = ($1, $2, $3, $4, $5, $6) WHERE id = $7',
-      [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, id],
-
-      function (err) {
-        done();
-        if (!err) {
-          deferred.resolve(id);
-        } else {
-          deferred.reject(err);
-        }
-      }
-    );
-  });
-
-  return deferred.promise;
+  return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team) = ($1, $2, $3, $4, $5, $6) WHERE id = $7',
+    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, id]);
 };
 
 service.addTShirt = function (tshirt, participantId) {
@@ -148,26 +131,12 @@ service.getFullInfoById = function (id) {
 };
 
 service.markPayed = function (participantId) {
-  var deferred = Q.defer();
-  pg.connect(connectionString, function (err, client, done) {
-    var query = 'update participants SET has_payed = true WHERE id = ' + participantId;
-    client.query(query,
-      function (err, res) {
-        done();
-        if (!err) {
-          if (res.rowCount > 0) {
-            deferred.resolve();
-          } else {
-            deferred.reject();
-          }
-        } else {
-          deferred.reject(err);
-        }
+  return db.update('update participants SET has_payed = true WHERE id = $1', [participantId])
+    .then(function (result) {
+      if (result < 1) {
+        throw new Error('Es konnte kein Teilnehmer mit ID: ' + id + ' gefunden werden.');
       }
-    );
-  });
-
-  return deferred.promise;
+    });
 };
 
 service.confirmParticipant = function (participantId) {

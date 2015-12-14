@@ -54,4 +54,23 @@ db.insert = function (insertString, params) {
   return deferred.promise;
 };
 
+db.update = function (updateString, params) {
+  var deferred = Q.defer();
+
+  pg.connect(connectionString, function (err, client, done) {
+    client.query(updateString, params,
+      function (err, res) {
+        done();
+        if (!err) {
+          deferred.resolve(res.rowCount);
+        } else {
+          deferred.reject(err);
+        }
+      }
+    );
+  });
+
+  return deferred.promise;
+}
+
 module.exports = db;

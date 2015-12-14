@@ -35,4 +35,23 @@ db.select = function (querystring, params) {
   return deferred.promise;
 };
 
+db.insert = function (insertString, params) {
+  var deferred = Q.defer();
+
+  pg.connect(connectionString, function (err, client, done) {
+    client.query(insertString, params,
+      function (err, res) {
+        done();
+        if (!err) {
+          deferred.resolve(res.rows[0].id);
+        } else {
+          deferred.reject(err);
+        }
+      }
+    );
+  });
+
+  return deferred.promise;
+};
+
 module.exports = db;

@@ -34,24 +34,8 @@ service.getConfirmed = function () {
 };
 
 service.save = function (participant, paymentToken) {
-  var deferred = Q.defer();
-
-  pg.connect(connectionString, function (err, client, done) {
-    client.query(
-      'insert into participants (firstname, lastname, email, category, birthyear, team, paymenttoken) values($1, $2, $3, $4, $5, $6, $7) returning id',
-      [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, paymentToken],
-      function (err, res) {
-        done();
-        if (!err) {
-          deferred.resolve(res.rows[0].id);
-        } else {
-          deferred.reject(err);
-        }
-      }
-    );
-  });
-
-  return deferred.promise;
+  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, paymenttoken) values($1, $2, $3, $4, $5, $6, $7) returning id',
+    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, paymentToken]);
 };
 
 service.update = function (participant, id) {
@@ -77,25 +61,8 @@ service.update = function (participant, id) {
 };
 
 service.addTShirt = function (tshirt, participantId) {
-  var deferred = Q.defer();
-
-  pg.connect(connectionString, function (err, client, done) {
-    client.query(
-      'insert into tshirts (size, model, participantId) values($1, $2, $3)',
-      [tshirt.size, tshirt.model, participantId],
-      function (err, res) {
-        done();
-        if (!err) {
-          deferred.resolve(res.oid);
-        } else {
-          deferred.reject(err);
-        }
-      }
-    );
-  });
-
-  return deferred.promise;
-
+  return db.insert('insert into tshirts (size, model, participantId) values($1, $2, $3) returning id',
+    [tshirt.size, tshirt.model, participantId]);
 };
 
 service.getTShirts = function () {

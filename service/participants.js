@@ -9,6 +9,7 @@ var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
 var config = require('config');
 const calculator = require('../domain/costCalculator');
+const db = require('../service/dbHelper')
 
 var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
 
@@ -17,33 +18,11 @@ var service = {};
 service._nodemailer = nodemailer;
 
 service.getAllWithPaymentStatus = function (paymentStatus) {
-  var querystring = '';
   if (typeof paymentStatus !== 'undefined') {
-    querystring = 'select * from participants where has_payed=' + paymentStatus + ' order by firstname,lastname';
+    return db.select('select * from participants where has_payed = $1 order by firstname,lastname', [paymentStatus]);
   } else {
-    querystring = 'select * from participants order by firstname,lastname';
+    return db.select('select * from participants order by firstname,lastname');
   }
-  var participants = [];
-  var deferred = Q.defer();
-
-  pg.connect(connectionString, function (err, client, done) {
-      var query = client.query(querystring);
-      query.on('row', function (row) {
-        participants.push(row);
-      });
-
-      query.on('error', function () {
-        done();
-        deferred.reject();
-      });
-
-      query.on('end', function () {
-        done();
-        deferred.resolve(participants);
-      });
-    }
-  );
-  return deferred.promise;
 };
 
 service.getRegistered = function () {
@@ -75,22 +54,22 @@ service.save = function (participant, paymentToken) {
   return deferred.promise;
 };
 
-service.update = function (participant, id ) {
+service.update = function (participant, id) {
   var deferred = Q.defer();
 
   pg.connect(connectionString, function (err, client, done) {
     client.query(
-        'UPDATE participants SET (firstname, lastname, email, category, birthyear, team) = ($1, $2, $3, $4, $5, $6) WHERE id = $7',
-        [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, id],
+      'UPDATE participants SET (firstname, lastname, email, category, birthyear, team) = ($1, $2, $3, $4, $5, $6) WHERE id = $7',
+      [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, id],
 
-            function (err) {
-          done();
-          if (!err) {
-            deferred.resolve(id);
-          } else {
-            deferred.reject(err);
-          }
+      function (err) {
+        done();
+        if (!err) {
+          deferred.resolve(id);
+        } else {
+          deferred.reject(err);
         }
+      }
     );
   });
 
@@ -120,28 +99,7 @@ service.addTShirt = function (tshirt, participantId) {
 };
 
 service.getTShirts = function () {
-  var deferred = Q.defer();
-  const tshirts = [];
-
-  pg.connect(connectionString, function (err, client, done) {
-    var query = client.query('SELECT * FROM tshirts');
-
-    query.on('row', function (row) {
-      tshirts.push(row);
-    });
-
-    query.on('error', function () {
-      done();
-      deferred.reject();
-    });
-
-    query.on('end', function () {
-      done();
-      deferred.resolve(tshirts);
-    });
-  });
-
-  return deferred.promise;
+  return db.select('SELECT * FROM tshirts');
 };
 
 service.register = function (participant, paymentToken) {
@@ -168,114 +126,58 @@ service.register = function (participant, paymentToken) {
   return deferred.promise;
 };
 
-// select * from participant -> should return participant with tshirt
-
 service.getByToken = function (paymentToken) {
-  var deferred = Q.defer();
-  var participantDetails;
-
-  pg.connect(connectionString, function (err, client, done) {
-    var query = client.query(
-      'SELECT id, firstname, lastname FROM participants WHERE paymenttoken = $1', [paymentToken]);
-
-    query.on('row', function (row) {
-      participantDetails = {
-        name: row.lastname + ', ' + row.firstname,
-        amount: calculator.priceFor(row),
-        id: row.id
-      };
-    });
-
-    query.on('error', function () {
-      done();
-      deferred.reject();
-    });
-
-    query.on('end', function (result) {
-      if (result.rowCount > 0) {
-        var tshirtsJoin = client.query('SELECT * from tshirts where participantid = $1', [participantDetails.id]);
-        tshirtsJoin.on('row', function (row) {
-          participantDetails.tshirt = row;
-        });
-        tshirtsJoin.on('end', function () {
-          done();
-          deferred.resolve(participantDetails);
-        });
-        tshirtsJoin.on('error', function () {
-          done();
-          deferred.reject({error: 'Es konnte keine Tshirt-Informationen zum Token ' + paymentToken + ' gefunden werden.'})
-        })
-      } else {
-        done();
-        deferred.reject({error: 'Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.'});
+  return db.select('SELECT id, firstname, lastname FROM participants WHERE paymenttoken = $1', [paymentToken])
+    .then(function (result) {
+      if (_.isEmpty(result)) {
+        throw new Error('Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.');
       }
-    });
-  });
-
-  return deferred.promise;
+      return result;
+    })
+    .then(function (result) {
+      return {
+        name: result[0].lastname + ', ' + result[0].firstname,
+        amount: calculator.priceFor(result[0]),
+        id: result[0].id
+      }
+    })
+    .then(function (participantDetails) {
+        return db.select('SELECT * from tshirts where participantid = $1', [participantDetails.id])
+          .then(function (result) {
+            participantDetails.tshirt = result[0];
+            return participantDetails;
+          })
+      }
+    );
 };
 
 service.getById = function (id) {
-  var deferred = Q.defer();
-  var participantDetails;
-
-  pg.connect(connectionString, function (err, client, done) {
-    var query = client.query(
-      'SELECT id, firstname, lastname, email FROM participants WHERE id = $1', [id]);
-
-    query.on('row', function (row) {
-      participantDetails = {
-        name: row.firstname,
-        email: row.email
+  return db.select('SELECT id, firstname, lastname, email FROM participants WHERE id = $1', [id])
+    .then(function (result) {
+      if (_.isEmpty(result)) {
+        throw new Error('Es konnte kein Teilnehmer mit ID: ' + id + ' gefunden werden.');
+      }
+      return result;
+    })
+    .then(function (result) {
+      return {
+        name: result[0].firstname,
+        email: result[0].email
       };
     });
-
-    query.on('error', function () {
-      done();
-      deferred.reject();
-    });
-
-    query.on('end', function (result) {
-      done();
-      if (result.rowCount > 0) {
-        deferred.resolve(participantDetails);
-      } else {
-        deferred.reject({error: 'Es konnte keine Registrierung mit Id ' + id + ' gefunden werden.'});
-      }
-    });
-  });
-
-  return deferred.promise;
 };
 
 service.getFullInfoById = function (id) {
-  var deferred = Q.defer();
-  var participantDetails;
-
-  pg.connect(connectionString, function (err, client, done) {
-    var query = client.query(
-      'SELECT * FROM participants WHERE id = $1', [id]);
-
-    query.on('row', function (row) {
-      participantDetails = row;
-    });
-
-    query.on('error', function () {
-      done();
-      deferred.reject();
-    });
-
-    query.on('end', function (result) {
-      done();
-      if (result.rowCount > 0) {
-        deferred.resolve(participantDetails);
-      } else {
-        deferred.reject({error: 'Es konnte keine Registrierung mit Id ' + id + ' gefunden werden.'});
+  return db.select('SELECT * FROM participants WHERE id = $1', [id])
+    .then(function (result) {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
       }
+      return result;
+    })
+    .then(function (result) {
+      return result[0];
     });
-  });
-
-  return deferred.promise;
 };
 
 service.markPayed = function (participantId) {

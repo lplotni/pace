@@ -40,10 +40,10 @@ router.post('/', isAuthenticated, function (req, res) {
           participantid: result.id
         });
       })
-      .catch(function (result) {
+      .catch(function (error) {
         return res.render('paymentValidation/paymentValidation', {
           token: paymentToken,
-          error: result.error
+          error: error.message
         });
       });
   }

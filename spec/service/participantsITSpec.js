@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeEach, afterAll, spyOn, it, expect */
+/* global describe, beforeEach, afterAll, spyOn, it, expect, fail */
 
 describe('participants service', function () {
 
@@ -66,7 +66,8 @@ describe('participants service', function () {
         expect(data[0].birthyear).toBe(aParticipant.birthyear);
         expect(data[0].team).toBe(aParticipant.team);
         done();
-      });
+      })
+      .fail(fail);
   });
 
   describe('save', function () {
@@ -77,7 +78,8 @@ describe('participants service', function () {
         .then(function (participantId) {
           expect(participantId).toBeDefined();
           done();
-        });
+        })
+        .fail(fail);
     });
   });
 
@@ -91,7 +93,8 @@ describe('participants service', function () {
               expect(participant.name).toEqual(aParticipant.firstname);
               expect(participant.email).toEqual(aParticipant.email);
               done();
-            });
+            })
+            .fail(fail);
         });
     });
   });
@@ -113,15 +116,17 @@ describe('participants service', function () {
       var paymentToken = 'a token';
       participants.save(aParticipantWithTshirt, paymentToken)
         .then(function (participantId) {
-          participants.addTShirt(aParticipantWithTshirt.tshirt, participantId).then(function () {
-            participants.getByToken(paymentToken)
-              .then(function (participant) {
-                expect(participant.name).toEqual(aParticipantWithTshirt.lastname +', '+aParticipantWithTshirt.firstname);
-                expect(participant.tshirt.size).toEqual(aParticipantWithTshirt.tshirt.size);
-                expect(participant.tshirt.model).toEqual(aParticipantWithTshirt.tshirt.model);
-                done();
-              });
-          });
+          participants.addTShirt(aParticipantWithTshirt.tshirt, participantId)
+            .then(function () {
+              participants.getByToken(paymentToken)
+                .then(function (participant) {
+                  expect(participant.name).toEqual(aParticipantWithTshirt.lastname + ', ' + aParticipantWithTshirt.firstname);
+                  expect(participant.tshirt.size).toEqual(aParticipantWithTshirt.tshirt.size);
+                  expect(participant.tshirt.model).toEqual(aParticipantWithTshirt.tshirt.model);
+                  done();
+                })
+                .fail(fail);
+            });
         });
     });
   });
@@ -137,7 +142,8 @@ describe('participants service', function () {
             .then(function () {
               expect(participants.markPayed).toHaveBeenCalledWith(participantId);
               done();
-            });
+            })
+            .fail(fail);
         });
     });
 
@@ -161,12 +167,14 @@ describe('participants service', function () {
       spyOn(participants, 'sendEmail');
       spyOn(participants, 'addTShirt');
 
-      participants.register(aParticipant, 'aToken').then(function () {
-        expect(participants.save).toHaveBeenCalledWith(aParticipant, 'aToken');
-        expect(participants.sendEmail).toHaveBeenCalled(); //todo check args.
-        expect(participants.addTShirt).not.toHaveBeenCalled();
-        done();
-      });
+      participants.register(aParticipant, 'aToken')
+        .then(function () {
+          expect(participants.save).toHaveBeenCalledWith(aParticipant, 'aToken');
+          expect(participants.sendEmail).toHaveBeenCalled(); //todo check args.
+          expect(participants.addTShirt).not.toHaveBeenCalled();
+          done();
+        })
+        .fail(fail);
     });
 
     it('should call addTShirt if one ordered', function (done) {
@@ -186,7 +194,8 @@ describe('participants service', function () {
         .then(function () {
           expect(participants.addTShirt).toHaveBeenCalled();
           done();
-        });
+        })
+        .fail(fail);
     });
   });
 
@@ -205,7 +214,8 @@ describe('participants service', function () {
           .then(function (shirts) {
             expect(shirts.length).toBe(1);
             done();
-          });
+          })
+          .fail(fail);
       });
 
     });
@@ -215,29 +225,30 @@ describe('participants service', function () {
     it('should return the full information for a participant with given Id', function (done) {
       var paymentToken = 'a token';
       participants.save(aParticipant, paymentToken)
-          .then(function (id) {
-            const updatedParticipant = {
-              firstname: 'Hertha updated',
-              lastname: 'Mustermann updated',
-              email: 'h.mustermann@example.com updated',
-              category: 'Unicorn updated',
-              birthyear: 1981,
-              team: 'Crazy runners updated'
-            };
-            participants.update(updatedParticipant, id)
-                .then(function (id) {
-                  participants.getFullInfoById(id)
-                      .then(function (participant) {
-                        expect(participant.firstname).toBe('Hertha updated');
-                        expect(participant.lastname).toBe('Mustermann updated');
-                        expect(participant.email).toBe('h.mustermann@example.com updated');
-                        expect(participant.category).toBe('Unicorn updated');
-                        expect(participant.birthyear).toBe(1981);
-                        expect(participant.team).toBe('Crazy runners updated');
-                        done();
-                      });
-                });
-          });
+        .then(function (id) {
+          const updatedParticipant = {
+            firstname: 'Hertha updated',
+            lastname: 'Mustermann updated',
+            email: 'h.mustermann@example.com updated',
+            category: 'Unicorn updated',
+            birthyear: 1981,
+            team: 'Crazy runners updated'
+          };
+          participants.update(updatedParticipant, id)
+            .then(function (id) {
+              participants.getFullInfoById(id)
+                .then(function (participant) {
+                  expect(participant.firstname).toBe('Hertha updated');
+                  expect(participant.lastname).toBe('Mustermann updated');
+                  expect(participant.email).toBe('h.mustermann@example.com updated');
+                  expect(participant.category).toBe('Unicorn updated');
+                  expect(participant.birthyear).toBe(1981);
+                  expect(participant.team).toBe('Crazy runners updated');
+                  done();
+                })
+                .fail(fail);
+            });
+        });
     });
   });
 })

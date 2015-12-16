@@ -71,6 +71,6 @@ db.update = function (updateString, params) {
   });
 
   return deferred.promise;
-}
+};
 
 module.exports = db;

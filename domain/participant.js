@@ -1,5 +1,6 @@
-'use strict';
+/* jshint node: true */
 /* jshint esnext: true */
+'use strict';
 
 const _ = require('lodash');
 const tshirt = require('./tshirt');

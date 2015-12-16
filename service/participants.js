@@ -2,16 +2,13 @@
 /* jshint esnext: true */
 'use strict';
 
-var pg = require('pg');
-var Q = require('q');
+const Q = require('q');
 const _ = require('lodash');
-var nodemailer = require('nodemailer');
-var sendmailTransport = require('nodemailer-sendmail-transport');
-var config = require('config');
+const nodemailer = require('nodemailer');
+const sendmailTransport = require('nodemailer-sendmail-transport');
+const config = require('config');
 const calculator = require('../domain/costCalculator');
 const db = require('../service/dbHelper');
-
-var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
 
 var service = {};
 
@@ -89,14 +86,14 @@ service.getByToken = function (paymentToken) {
         name: result[0].lastname + ', ' + result[0].firstname,
         amount: calculator.priceFor(result[0]),
         id: result[0].id
-      }
+      };
     })
     .then(function (participantDetails) {
         return db.select('SELECT * from tshirts where participantid = $1', [participantDetails.id])
           .then(function (result) {
             participantDetails.tshirt = result[0];
             return participantDetails;
-          })
+          });
       }
     );
 };
@@ -134,7 +131,7 @@ service.markPayed = function (participantId) {
   return db.update('update participants SET has_payed = true WHERE id = $1', [participantId])
     .then(function (result) {
       if (result < 1) {
-        throw new Error('Es konnte kein Teilnehmer mit ID: ' + id + ' gefunden werden.');
+        throw new Error('Es konnte kein Teilnehmer mit ID: ' + participantId + ' gefunden werden.');
       }
     });
 };

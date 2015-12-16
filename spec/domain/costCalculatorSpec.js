@@ -31,5 +31,5 @@ describe('costCalculator', function () {
     var cost = calculator.priceFor(_.omit(participant, 'tshirt'));
 
     expect(cost).toBe(parseFloat(config.get('costs.standard')));
-  })
+  });
 });

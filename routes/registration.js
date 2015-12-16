@@ -1,6 +1,7 @@
-'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
+/* global Intl*/
+'use strict';
 
 const express = require('express');
 const config  = require('config');

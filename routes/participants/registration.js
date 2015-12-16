@@ -7,9 +7,9 @@ const express = require('express');
 const config  = require('config');
 const router = express.Router();
 
-const participants = require('../service/participants');
-const participant = require('../domain/participant');
-const calculator = require('../domain/costCalculator');
+const participants = require('../../service/participants');
+const participant = require('../../domain/participant');
+const calculator = require('../../domain/costCalculator');
 
 function createUniqueToken() {
   return Math.random().toString(32).substring(2);

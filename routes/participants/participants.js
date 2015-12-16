@@ -1,11 +1,11 @@
 /* jshint node: true */
 'use strict';
 
-var router = require('express').Router();
 var Q = require('q');
-var participants = require('../service/participants');
-var accesscontrol = require('../acl/accesscontrol');
-var editUrlGenerator = require('../domain/editUrlGenerator');
+var router = require('express').Router();
+var participants = require('../../service/participants');
+var accesscontrol = require('../../acl/accesscontrol');
+var editUrlGenerator = require('../../domain/editUrlGenerator');
 var participant = require('../domain/participant');
 
 var canViewParticipantDetails = function(role) {

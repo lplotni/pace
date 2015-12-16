@@ -10,12 +10,14 @@ var LocalStrategy = require('passport-local').Strategy;
 var flash = require('connect-flash');
 
 var indexRoute = require('./routes/index');
-var adminRoute = require('./routes/admin');
-var registrationRoute = require('./routes/registration');
-var participantsRoute = require('./routes/participants');
-var paymentValidationRoute = require('./routes/paymentValidation');
-var editParticipantRoute = require('./routes/editParticipant');
 var loginRoute = require('./routes/login');
+
+var registrationRoute = require('./routes/participants/registration');
+var participantsRoute = require('./routes/participants/participants');
+var editParticipantRoute = require('./routes/participants/editParticipant');
+
+var adminRoute = require('./routes/admin/admin');
+var paymentValidationRoute = require('./routes/admin/paymentValidation');
 
 var app = express();
 

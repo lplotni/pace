@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var accesscontrol = require('../acl/accesscontrol');
-var isAuthenticated = require('../acl/authentication');
+var accesscontrol = require('../../acl/accesscontrol');
+var isAuthenticated = require('../../acl/authentication');
 
 var canViewAdminPage = function(role) {
   return accesscontrol.hasPermissionTo(role, 'view admin page');

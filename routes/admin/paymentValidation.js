@@ -2,10 +2,10 @@
 'use strict';
 
 var router = require('express').Router();
-var participants = require('../service/participants');
-var accesscontrol = require('../acl/accesscontrol');
-var isAuthenticated = require('../acl/authentication');
-var calculator = require('../domain/costCalculator');
+var participants = require('../../service/participants');
+var accesscontrol = require('../../acl/accesscontrol');
+var isAuthenticated = require('../../acl/authentication');
+var calculator = require('../../domain/costCalculator');
 
 var canConfirmPayments = function (role) {
   return accesscontrol.hasPermissionTo(role, 'confirm payments');

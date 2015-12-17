@@ -4,29 +4,36 @@ block content
     h1 Registrierung
     form#registrationForm(method='POST', action='/registration')
         .row
-            .three.columns
+            .four.columns
                 label(for='firstname') Vorname:
                 input#firstname.u-full-width(type='text', name='firstname', required=true)
-            .three.columns
+            .four.columns
                 label(for='lastname') Nachname:
                 input#lastname.u-full-width(type='text', name='lastname', required=true)
         .row
-            .three.columns
-                label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
-                select#category.u-full-width(name='category')
-                    option(value='m') m
-                    option(value='f') f
-            .three.columns
+            .four.columns
                 label(for='birthyear') Geburtsjahr:
                 input#birthyear.u-full-width(type='number', name='birthyear', required=true)
-        .row
             .four.columns
                 label(for='email') Email:
                 input#email.u-full-width(type='email', name='email', required=true)
         .row
-            .four.columns
+            .five.columns
+                label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
+            .three.columns
+                select#category.u-full-width(name='category')
+                    option(value='m') m
+                    option(value='f') f
+
+        .row
+            .three.columns
                 label(for='team') Name des Teams:
+            .five.columns
                 input#team.u-full-width(type='text', name='team')
+        .row
+            .six.columns
+                label(for='publiclyVisible') Möchtest du in der Liste der Teilnehmer aufgelistet werden:
+                    input#publiclyVisible(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='publiclyVisible')
         .row
             .three.columns
                 label(for='shirt') Laufshirt gewünscht:

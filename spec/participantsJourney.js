@@ -65,7 +65,35 @@ describe('participants page', function () {
       });
   });
 
-  describe('admin view', function () {
+  it('shows registered participants only if they wished to be publicly visible', function (done) {
+    var aPublicParticipant = {
+      firstname: 'Friedrich',
+      lastname: 'Schiller',
+      email: 'f.schiller@example.com',
+      publiclyVisible: 'Yes'
+    };
+
+    var aParticipant = {
+      firstname: 'Friedrich',
+      lastname: 'Schiller',
+      email: 'f.schiller@example.com',
+    };
+
+    participants.save(aParticipant, 'a token')
+      .then(function () {
+        return participants.save(aPublicParticipant, 'b token');
+      })
+      .then(participants.markPayed)
+        .then(function () {
+            helper.setUpClient().url(participantsUrl)
+              .elements('tr.participant-line')
+              .then(function (res) {
+                expect(res.value.length).toBe(1);
+              })
+              .end(done);
+        });
+  });
+describe('admin view', function () {
 
     var setUpLoggedInClient = function () {
       return helper.setUpClient()

@@ -7,9 +7,10 @@ var Q = require('q');
 
 describe('participant', function () {
 
-  describe('from()', function () {
-    var participant = require('../../domain/participant.js');
+  var _ = require('lodash');
+  var participant = require('../../domain/participant.js');
 
+  describe('from()', function () {
     const body = {
       firstname: 'Mark',
       lastname: 'Mueller',
@@ -17,6 +18,7 @@ describe('participant', function () {
       category: 'Unicorn',
       birthyear: 1980,
       team: 'Crazy runners',
+      visibility: 'public',
       shirt: 'Yes',
       model: 'Normal fit',
       size: 'M'
@@ -28,7 +30,7 @@ describe('participant', function () {
 
     it('should throw an error if no firstname can be found', function () {
       function callWithNoFirstname() {
-        participant.from({lastname: 'XX', email: 'test@example.com', category: 'male', birthyear: 2000});
+        participant.from(_.omit(body, 'firstname'));
       }
 
       expect(callWithNoFirstname).toThrow();
@@ -36,7 +38,7 @@ describe('participant', function () {
 
     it('should throw an error if no lastname can be found', function () {
       function callWithNoLastname() {
-        participant.from({firstName: 'XX', email: 'test@example.com', category: 'male', birthyear: 2000});
+        participant.from(_.omit(body, 'lastname'));
       }
 
       expect(callWithNoLastname).toThrow();
@@ -48,7 +50,7 @@ describe('participant', function () {
 
     it('should throw an error if no email can be found', function () {
       function callWithNoEmail() {
-        participant.from({firstName: 'XX', lastName: 'YY', category: 'male', birthyear: 2000});
+        participant.from(_.omit(body, 'email'));
       }
 
       expect(callWithNoEmail).toThrow();
@@ -58,12 +60,12 @@ describe('participant', function () {
       expect(participant.from(body).email).toBe('m.mueller@example.com');
     });
 
-    it('should throw an error if no gender can be found', function () {
-      function callWithNoGender() {
-        participant.from({firstName: 'XX', lastName: 'YY', email: 'test@example.com', birthyear: 2000});
+    it('should throw an error if no category can be found', function () {
+      function callWithNoCategory() {
+        participant.from(_.omit(body, 'category'));
       }
 
-      expect(callWithNoGender).toThrow();
+      expect(callWithNoCategory).toThrow();
     });
 
     it('should extract gender form the request body', function () {
@@ -76,7 +78,7 @@ describe('participant', function () {
 
     it('should throw an error if no birthyear can be found', function () {
       function callWithNoBirthyear() {
-        participant.from({firstName: 'XX', lastName: 'YY', email: 'test@example.com', category: 'male'});
+        participant.from(_.omit(body, 'birthyear'));
       }
 
       expect(callWithNoBirthyear).toThrow();
@@ -92,15 +94,20 @@ describe('participant', function () {
     });
 
     it('should not extract tshirt form the request body if shirt is not ordered', function () {
-      expect(participant.from({
-        firstname: 'Mark',
-        lastname: 'Mueller',
-        email: 'm.mueller@example.com',
-        category: 'Unicorn',
-        birthyear: 1980,
-        team: 'Crazy runners'
-      }).tshirt).toEqual({});
+      expect(participant.from(_.omit(body, 'shirt')).tshirt).toEqual({});
     });
+
+    it('should extract visibility from the request body', function () {
+      expect(participant.from(body).visibility).toBe('public');
+    });
+
+    it('should throw an error if no visibility can be found', function() {
+      function callWithNoVisibility() {
+        participant.from(_.omit(body, 'visibility'));
+      }
+
+      expect(callWithNoVisibility).toThrow();
+    })
   });
 
   describe('addTshirtDetailsTo', function () {

@@ -2,11 +2,14 @@
 /* jshint node: true */
 /* jshint esnext: true */
 /* global describe, it, expect */
+var mockery = require('mockery');
+var Q = require('q');
+
 describe('participant', function () {
 
-  var participant = require('../../domain/participant.js');
-
   describe('from()', function () {
+    var participant = require('../../domain/participant.js');
+
     const body = {
       firstname: 'Mark',
       lastname: 'Mueller',
@@ -97,6 +100,72 @@ describe('participant', function () {
         birthyear: 1980,
         team: 'Crazy runners'
       }).tshirt).toEqual({});
+    });
+  });
+
+  describe('addTshirtDetailsTo', function () {
+
+    var participant, participantsMock;
+
+    var returnPromiseAndResolveWith = function(data) {
+      function successResolve() {
+        return Q.fcall(function() { return data;});
+      }
+      return successResolve;
+    };
+
+    var returnPromiseAndThrowError = function() {
+      function errorResolve() {
+        return Q.fcall(function() { throw new Error();});
+      }
+      return errorResolve;
+    };
+
+    var setupMocks = function() {
+
+      mockery.enable({
+        useCleanCache: true,
+        warnOnReplace: false,
+        warnOnUnregistered: false
+      });
+      mockery.resetCache();
+      mockery.registerAllowables(['q', '../../domain/participant.js']);
+
+      participantsMock = {
+        getTShirtFor: jasmine.createSpy()
+      };
+
+      mockery.registerMock('../service/participants', participantsMock);
+
+      participant = require('../../domain/participant.js');
+    };
+
+    beforeEach(function () {
+      setupMocks();
+    });
+
+    it('should set the amount to 0 if the participant did not order a tshirt', function (done) {
+      var anyParticipant = {};
+      participantsMock.getTShirtFor.and.callFake(returnPromiseAndThrowError());
+
+      participant.addTshirtDetailsTo(anyParticipant).then(function () {
+        expect(anyParticipant.tshirt.amount).toBe(0);
+        done();
+      });
+    });
+
+    it('should add the tshirt details to a participant', function (done) {
+      var anySize = 'M';
+      var anyModel = 'normal';
+      var anyParticipant = {};
+      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([{size: anySize, model: anyModel}]));
+
+      participant.addTshirtDetailsTo(anyParticipant).then(function () {
+        expect(anyParticipant.tshirt.amount).toBe(1);
+        expect(anyParticipant.tshirt.size).toBe(anySize);
+        expect(anyParticipant.tshirt.model).toBe(anyModel);
+        done();
+      });
     });
   });
 });

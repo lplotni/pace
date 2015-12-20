@@ -3,6 +3,7 @@
 
 const _ = require('lodash');
 const tshirt = require('./tshirt');
+const participants = require('../service/participants');
 
 const participant = {};
 
@@ -25,6 +26,19 @@ participant.from = function (body) {
     tshirt: tshirt.from(body)
   };
 
+};
+
+participant.addTshirtDetailsTo = function(participant) {
+  return participants.getTShirtFor(participant.id)
+    .then(function (tshirtDetails) {
+      participant.tshirt = {
+        size: tshirtDetails[0].size,
+        model: tshirtDetails[0].model,
+        amount: tshirtDetails.length
+      }
+    }).catch(function () {
+      participant.tshirt = {amount: 0};
+    });
 };
 
 module.exports = participant;

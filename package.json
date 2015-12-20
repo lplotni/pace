@@ -36,6 +36,7 @@
     "gulp-util": "^3.0.7",
     "selenium-standalone": "^4.7.1",
     "webdriverio": "^3.2.6",
-    "yargs": "^3.27.0"
+    "yargs": "^3.27.0",
+    "mockery": "^1.4.0"
   }
 }

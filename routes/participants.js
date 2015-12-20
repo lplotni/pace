@@ -6,6 +6,7 @@ var Q = require('q');
 var participants = require('../service/participants');
 var accesscontrol = require('../acl/accesscontrol');
 var editUrlGenerator = require('../domain/editUrlGenerator');
+var participant = require('../domain/participant');
 
 var canViewParticipantDetails = function(role) {
   return accesscontrol.hasPermissionTo(role, 'view participant details');
@@ -27,19 +28,6 @@ var addEditUrlTo = function (participants) {
   });
 };
 
-var addTshirtDetailsTo = function(participant) {
-  return participants.getTShirtFor(participant.id)
-    .then(function (tshirtDetails) {
-      participant.tshirt = {
-        size: tshirtDetails[0].size,
-        model: tshirtDetails[0].model,
-        amount: tshirtDetails.length
-      }
-    }).catch(function () {
-      participant.tshirt = {amount: 0};
-    });
-};
-
 router.get('/', useDefaultAuthentication, function (req, res) {
   if(canViewParticipantDetails(req.user.role)) {
     participants.getConfirmed().then(function (result) {
@@ -47,7 +35,7 @@ router.get('/', useDefaultAuthentication, function (req, res) {
       participants.getRegistered().then(function (result) {
         allParticipants = allParticipants.concat(result);
         addEditUrlTo(allParticipants);
-        Q.all(allParticipants.map(addTshirtDetailsTo)).then( function () {
+        Q.all(allParticipants.map(participant.addTshirtDetailsTo)).then( function () {
           return res.render('participants/list', {participants: allParticipants, isAdmin: true});
         });
       });

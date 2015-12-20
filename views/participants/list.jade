@@ -13,6 +13,7 @@ block content
           th Kategorie
           th Geburtsjahr
           th Bezahlt
+          th Token
           th
       tbody
         each p in participants
@@ -24,6 +25,7 @@ block content
             td=p.category
             td=p.birthyear
             td=(p.has_payed ? 'ja' : 'nein')
+            td=p.paymenttoken
             td
               a#edit.button(href='#{p.editUrl}') Bearbeiten
   else

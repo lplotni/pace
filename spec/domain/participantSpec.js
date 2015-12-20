@@ -144,6 +144,11 @@ describe('participant', function () {
       setupMocks();
     });
 
+    var anySize = 'M';
+    var anyModel = 'normal';
+    var tshirtDetails = {id: 0, size: anySize, model: anyModel, participantId: 0};
+    var anyParticipant = {};
+
     it('should set the amount to 0 if the participant did not order a tshirt', function (done) {
       var anyParticipant = {};
       participantsMock.getTShirtFor.and.callFake(returnPromiseAndThrowError());
@@ -155,15 +160,22 @@ describe('participant', function () {
     });
 
     it('should add the tshirt details to a participant', function (done) {
-      var anySize = 'M';
-      var anyModel = 'normal';
-      var anyParticipant = {};
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([{size: anySize, model: anyModel}]));
+      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails]));
 
       participant.addTshirtDetailsTo(anyParticipant).then(function () {
         expect(anyParticipant.tshirt.amount).toBe(1);
-        expect(anyParticipant.tshirt.size).toBe(anySize);
-        expect(anyParticipant.tshirt.model).toBe(anyModel);
+        expect(anyParticipant.tshirt.details).toEqual([{size: anySize, model: anyModel}]);
+        done();
+      });
+    });
+
+    it('should add multiple tshirt details to a participant', function (done) {
+      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails, tshirtDetails]));
+
+      participant.addTshirtDetailsTo(anyParticipant).then(function () {
+        expect(anyParticipant.tshirt.amount).toBe(2);
+        expect(anyParticipant.tshirt.details).toEqual([{size: anySize, model: anyModel},
+          {size: anySize, model: anyModel}]);
         done();
       });
     });

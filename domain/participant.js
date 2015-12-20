@@ -31,9 +31,12 @@ participant.from = function (body) {
 participant.addTshirtDetailsTo = function(participant) {
   return participants.getTShirtFor(participant.id)
     .then(function (tshirtDetails) {
+      var details = [];
+      tshirtDetails.forEach(function(element) {
+        details.push(_.pick(element, 'size', 'model'));
+      });
       participant.tshirt = {
-        size: tshirtDetails[0].size,
-        model: tshirtDetails[0].model,
+        details: details,
         amount: tshirtDetails.length
       }
     }).catch(function () {

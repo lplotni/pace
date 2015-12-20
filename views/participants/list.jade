@@ -15,6 +15,7 @@ block content
           th Bezahlt
           th Token
           th Anzahl T-shirts
+          th T-shirt Größen
           th
       tbody
         each p in participants
@@ -28,6 +29,9 @@ block content
             td=(p.has_payed ? 'ja' : 'nein')
             td=p.paymenttoken
             td#tshirt-amount=p.tshirt.amount
+            td
+              each t in p.tshirt.details
+                li=t.size + ' (' + t.model + ')'
             td
               a#edit.button(href='#{p.editUrl}') Bearbeiten
   else

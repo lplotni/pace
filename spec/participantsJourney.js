@@ -22,7 +22,7 @@ describe('participants page', function () {
   });
 
   it('shows full participant list only if logged in as admin', function (done) {
-    var fullDetailsHeaderRow = ['Vorname', 'Nachname', 'Team name', 'Email', 'Kategorie', 'Geburtsjahr', 'Bezahlt', 'Token', 'Bearbeiten'];
+    var fullDetailsHeaderRow = ['Vorname', 'Nachname', 'Team name', 'Email', 'Kategorie', 'Geburtsjahr', 'Bezahlt', 'Token', 'Anzahl T-shirts', 'Bearbeiten'];
 
     var aParticipant = {
       firstname: 'Friedrich',
@@ -32,27 +32,27 @@ describe('participants page', function () {
     var aToken = 'a token';
 
     participants.save(aParticipant, aToken)
-        .then(function () {
-            helper.setUpClient().url(participantsUrl)
-              .elements('li.participant-line')
-              .then(function (res) {
-                  expect(res.value.length).toBe(0);
-              })
-              .url(loginUrl)
-              .setValue('input#username', 'admin')
-              .setValue('input#password', 'admin')
-              .click('button#submit')
-              .url(participantsUrl)
-              .elements('tr.participant-line')
-              .then(function (res) {
-                expect(res.value.length).toBe(1);
-              })
-              .elements('th')
-              .then(function (res) {
-                  expect(res.value.length).toBe(fullDetailsHeaderRow.length);
-              })
-              .end(done);
-        });
+      .then(function () {
+        helper.setUpClient().url(participantsUrl)
+          .elements('li.participant-line')
+          .then(function (res) {
+            expect(res.value.length).toBe(0);
+          })
+          .url(loginUrl)
+          .setValue('input#username', 'admin')
+          .setValue('input#password', 'admin')
+          .click('button#submit')
+          .url(participantsUrl)
+          .elements('tr.participant-line')
+          .then(function (res) {
+            expect(res.value.length).toBe(1);
+          })
+          .elements('th')
+          .then(function (res) {
+            expect(res.value.length).toBe(fullDetailsHeaderRow.length);
+          })
+          .end(done);
+      });
   });
 
   it('should have a link to edit a participant', function (done) {
@@ -64,18 +64,18 @@ describe('participants page', function () {
     var aToken = 'a token';
 
     participants.save(aParticipant, aToken)
-        .then(function () {
-          helper.setUpClient()
-              .url(loginUrl)
-              .setValue('input#username', 'admin')
-              .setValue('input#password', 'admin')
-              .click('button#submit')
-              .url(participantsUrl)
-              .isVisible('a#edit')
-              .then(function (isVisible) {
-                expect(isVisible).toBe(true);
-              })
-              .end(done);
-        });
+      .then(function () {
+        helper.setUpClient()
+          .url(loginUrl)
+          .setValue('input#username', 'admin')
+          .setValue('input#password', 'admin')
+          .click('button#submit')
+          .url(participantsUrl)
+          .isVisible('a#edit')
+          .then(function (isVisible) {
+            expect(isVisible).toBe(true);
+          })
+          .end(done);
+      });
   });
 });

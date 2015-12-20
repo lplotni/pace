@@ -1,32 +1,32 @@
 extends ../layout
 
 block content
-    h1 Registrierte Teilnehmer
-    if isAdmin
-        table
-            thead
-                tr
-                    th Vorname
-                    th Nachname
-                    th Team name
-                    th Email
-                    th Kategorie
-                    th Geburtsjahr
-                    th Bezahlt
-                    th
-            tbody
-                each p in participants
-                    tr.participant-line
-                        td=p.firstname
-                        td=p.lastname
-                        td=p.team
-                        td=p.email
-                        td=p.category
-                        td=p.birthyear
-                        td=(p.has_payed ? 'ja' : 'nein')
-                        td
-                            a#edit.button(href='#{p.editUrl}') Bearbeiten
-    else
-        ul
-            each p in participants
-                li.participant-line= p.firstname +' '+ p.lastname + (p.team ? ' (Team: '+p.team+' )' : '')
+  h1 Registrierte Teilnehmer
+  if isAdmin
+    table
+      thead
+        tr
+          th Vorname
+          th Nachname
+          th Team name
+          th Email
+          th Kategorie
+          th Geburtsjahr
+          th Bezahlt
+          th
+      tbody
+        each p in participants
+          tr.participant-line
+            td=p.firstname
+            td=p.lastname
+            td=p.team
+            td=p.email
+            td=p.category
+            td=p.birthyear
+            td=(p.has_payed ? 'ja' : 'nein')
+            td
+              a#edit.button(href='#{p.editUrl}') Bearbeiten
+  else
+    ul
+      each p in participants
+        li.participant-line= p.firstname +' '+ p.lastname + (p.team ? ' (Team: '+p.team+' )' : '')

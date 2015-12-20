@@ -2,6 +2,7 @@
 'use strict';
 
 var router = require('express').Router();
+var Q = require('q');
 var participants = require('../service/participants');
 var accesscontrol = require('../acl/accesscontrol');
 var editUrlGenerator = require('../domain/editUrlGenerator');
@@ -19,11 +20,24 @@ var useDefaultAuthentication = function(req, res, next){
   }
 };
 
-var addEditUrlToParticipants = function (participants) {
-  return participants.map(function(participant) {
+var addEditUrlTo = function (participants) {
+  participants.map(function(participant) {
     participant.editUrl = editUrlGenerator.generateEncryptedUrl(participant.id.toString());
     return participant;
   });
+};
+
+var addTshirtDetailsTo = function(participant) {
+  return participants.getTShirtFor(participant.id)
+    .then(function (tshirtDetails) {
+      participant.tshirt = {
+        size: tshirtDetails[0].size,
+        model: tshirtDetails[0].model,
+        amount: tshirtDetails.length
+      }
+    }).catch(function () {
+      participant.tshirt = {amount: 0};
+    });
 };
 
 router.get('/', useDefaultAuthentication, function (req, res) {
@@ -32,9 +46,10 @@ router.get('/', useDefaultAuthentication, function (req, res) {
       var allParticipants = result;
       participants.getRegistered().then(function (result) {
         allParticipants = allParticipants.concat(result);
-        var participantsWithUrl = addEditUrlToParticipants(allParticipants);
-
-        return res.render('participants/list', {participants: participantsWithUrl, isAdmin: true});
+        addEditUrlTo(allParticipants);
+        Q.all(allParticipants.map(addTshirtDetailsTo)).then( function () {
+          return res.render('participants/list', {participants: allParticipants, isAdmin: true});
+        });
       });
     });
   } else {

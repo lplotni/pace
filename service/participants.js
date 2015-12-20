@@ -9,7 +9,7 @@ var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
 var config = require('config');
 const calculator = require('../domain/costCalculator');
-const db = require('../service/dbHelper')
+const db = require('../service/dbHelper');
 
 var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
 
@@ -48,8 +48,8 @@ service.addTShirt = function (tshirt, participantId) {
     [tshirt.size, tshirt.model, participantId]);
 };
 
-service.getTShirts = function () {
-  return db.select('SELECT * FROM tshirts');
+service.getTShirtFor = function (participantId) {
+  return db.select('SELECT * FROM tshirts WHERE participantid = $1', [participantId]);
 };
 
 service.register = function (participant, paymentToken) {

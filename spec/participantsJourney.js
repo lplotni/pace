@@ -32,6 +32,7 @@ describe('participants page', function () {
       'Token',
       'Anzahl T-shirts',
       'T-shirt Größen',
+      'Registrierung bestätigen',
       'Bearbeiten'];
 
     var aParticipant = {

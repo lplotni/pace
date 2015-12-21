@@ -2,6 +2,7 @@
 'use strict';
 
 var router = require('express').Router();
+var _ = require('lodash');
 var participants = require('../service/participants');
 var accesscontrol = require('../acl/accesscontrol');
 var isAuthenticated = require('../acl/authentication');
@@ -53,13 +54,19 @@ router.post('/confirm', isAuthenticated, function (req, res) {
   if (canConfirmPayments(req.user.role)) {
     participants.confirmParticipant(req.body.participantid)
       .then(function () {
-        res.render('paymentValidation/paymentValidation', {
-          successMessage: 'Der Teilnehmer wurde bestätigt',
-          token: req.body.paymenttoken,
-          name: req.body.name,
-          amount: req.body.amount,
-          participantid: req.body.participantid
-        });
+        if(_.contains(req.body.referer, 'payment_validation')) {
+          res.render('paymentValidation/paymentValidation', {
+            successMessage: 'Der Teilnehmer wurde bestätigt',
+            token: req.body.paymenttoken,
+            name: req.body.name,
+            amount: req.body.amount,
+            participantid: req.body.participantid
+          });
+        } else {
+          var participants = JSON.parse(req.body.participants);
+          res.redirect(req.get('referer'));
+          res.render('participants/list', {participants: participants, isAdmin: true});
+        }
       })
       .catch(function () {
         res.render('paymentValidation/paymentValidation', {

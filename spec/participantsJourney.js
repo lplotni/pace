@@ -29,6 +29,7 @@ describe('participants page', function () {
       'Kategorie',
       'Geburtsjahr',
       'Bezahlt',
+      'Betrag',
       'Token',
       'Anzahl T-shirts',
       'T-shirt Größen',
@@ -95,7 +96,7 @@ describe('participants page', function () {
         });
     });
 
-    it('should show the amount of tshirts ordered', function (done) {
+    it('should show amount to pay - no tshirt', function (done) {
       var aParticipant = {
         firstname: 'Friedrich',
         lastname: 'Schiller',
@@ -113,7 +114,52 @@ describe('participants page', function () {
               loggedInClient.elementIdText(tshirtFields.value[0].ELEMENT)
                 .then(function (textObject) {
                   expect(textObject.value).toBe('0');
-                  loggedInClient.end(done);
+                  loggedInClient.elements('td#amount')
+                    .then(function (amountFields) {
+                      loggedInClient.elementIdText(amountFields.value[0].ELEMENT)
+                        .then(function (textObject) {
+                          expect(textObject.value).toBe('15');
+                          loggedInClient.end(done);
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    it('should show amount to pay - one tshirt', function (done) {
+      var aParticipant = {
+        firstname: 'Friedrich',
+        lastname: 'Schiller',
+        email: 'f.schiller@example.com'
+      };
+      var aToken = 'a token';
+      var aTshirt = {
+        size: 'M',
+        model: 'normal fit'
+      };
+
+      participants.save(aParticipant, aToken)
+        .then(function (id) {
+          participants.addTShirt(aTshirt, id);
+        })
+        .then(function () {
+          var loggedInClient = setUpLoggedInClient();
+
+          loggedInClient.url(participantsUrl)
+            .elements('td#tshirt-amount')
+            .then(function (tshirtFields) {
+              loggedInClient.elementIdText(tshirtFields.value[0].ELEMENT)
+                .then(function (textObject) {
+                  expect(textObject.value).toBe('1');
+                  loggedInClient.elements('td#amount')
+                    .then(function (amountFields) {
+                      loggedInClient.elementIdText(amountFields.value[0].ELEMENT)
+                        .then(function (textObject) {
+                          expect(textObject.value).toBe('35.5');
+                          loggedInClient.end(done);
+                        });
+                    });
                 });
             });
         });

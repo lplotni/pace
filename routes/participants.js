@@ -7,6 +7,7 @@ var participants = require('../service/participants');
 var accesscontrol = require('../acl/accesscontrol');
 var editUrlGenerator = require('../domain/editUrlGenerator');
 var participant = require('../domain/participant');
+var costCalculator = require('../domain/costCalculator');
 
 var canViewParticipantDetails = function(role) {
   return accesscontrol.hasPermissionTo(role, 'view participant details');
@@ -28,6 +29,13 @@ var addEditUrlTo = function (participants) {
   });
 };
 
+var addAmountTo = function (participants) {
+  participants.map(function(participant) {
+    participant.amount = costCalculator.priceFor(participant);
+    return participant;
+  });
+};
+
 router.get('/', useDefaultAuthentication, function (req, res) {
   if(canViewParticipantDetails(req.user.role)) {
     participants.getConfirmed().then(function (result) {
@@ -36,6 +44,7 @@ router.get('/', useDefaultAuthentication, function (req, res) {
         allParticipants = allParticipants.concat(result);
         addEditUrlTo(allParticipants);
         Q.all(allParticipants.map(participant.addTshirtDetailsTo)).then( function () {
+          addAmountTo(allParticipants);
           return res.render('participants/list', {participants: allParticipants, isAdmin: true});
         });
       });

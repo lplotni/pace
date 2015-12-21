@@ -28,19 +28,19 @@ participant.from = function (body) {
 
 };
 
-participant.addTshirtDetailsTo = function(participant) {
+participant.addTshirtDetailsTo = function (participant) {
   return participants.getTShirtFor(participant.id)
     .then(function (tshirtDetails) {
-      var details = [];
-      tshirtDetails.forEach(function(element) {
-        details.push(_.pick(element, 'size', 'model'));
-      });
-      participant.tshirt = {
-        details: details,
-        amount: tshirtDetails.length
+      if(tshirtDetails.length > 0) {
+        var details = [];
+        tshirtDetails.forEach(function (element) {
+          details.push(_.pick(element, 'size', 'model'));
+        });
+        participant.tshirt = {
+          details: details,
+          amount: tshirtDetails.length
+        }
       }
-    }).catch(function () {
-      participant.tshirt = {amount: 0};
     });
 };
 

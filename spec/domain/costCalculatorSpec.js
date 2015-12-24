@@ -28,8 +28,9 @@ describe('costCalculator', function () {
   });
 
   it('cost without tshirt = standard', function () {
-    var cost = calculator.priceFor(_.omit(participant, 'tshirt'));
+    participant.tshirt = {};
+    var cost = calculator.priceFor(participant);
 
     expect(cost).toBe(parseFloat(config.get('costs.standard')));
-  });
+  })
 });

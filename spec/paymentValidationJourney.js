@@ -101,7 +101,7 @@ describe('payment validation journey', function () {
         lastname: 'Schiller',
         email: 'f.schiller@example.com'
       };
-      var aToken = '23eF67i';
+      var aToken = '24eFXXi';
 
       participants.save(aParticipant, aToken)
         .then(function () {
@@ -112,7 +112,7 @@ describe('payment validation journey', function () {
             })
             .getText('ul#pending')
             .then(function (text) {
-              expect(text).toMatch(/.*Token: 23eF67i$/);
+              expect(text).toMatch(/.*Token: 24eFXXi$/);
             })
             .end(done);
         });

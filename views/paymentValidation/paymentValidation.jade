@@ -2,7 +2,7 @@ extends ../layout
 
 block content
   h2 Überprüfung der Zahlungseingänge
-  form#payment-validation-form(method='POST', action='/payment_validation')
+  form#payment-validation-form(method='POST', action='/paymentvalidation')
     .row
       .six.columns
         label(for='payment-token') Token:
@@ -11,7 +11,7 @@ block content
         button#submit-token.button-primary.u(type='submit') Absenden
 
   if amount
-    form#payment-details(method='POST', action='/payment_validation/confirm')
+    form#payment-details(method='POST', action='/paymentvalidation/confirm')
       p#details Betrag für Token #{token}: #{amount} Euro (Name: #{name})
       input(type='hidden', name='paymenttoken', value='#{token}')
       input(type='hidden', name='amount', value='#{amount}')

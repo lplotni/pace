@@ -43,7 +43,7 @@ describe('regisitration journey', function () {
       .setValue('input#username', 'admin')
       .setValue('input#password', 'admin')
       .click('button#submit')
-      .url(helper.paceUrl + 'payment_validation') //todo rename
+      .url(helper.paceUrl + 'paymentvalidation')
       .getText('ul#pending')
       .then(function (text) {
         expect(text).toMatch(/.*Max Mustermann*/);

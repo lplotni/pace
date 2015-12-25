@@ -9,7 +9,7 @@ var costCalculator = require('../domain/costCalculator');
 
 describe('payment validation journey', function () {
   var loggedInClient;
-  var paymentValidationUrl = helper.paceUrl + 'payment_validation';
+  var paymentValidationUrl = helper.paceUrl + 'paymentvalidation';
   var loginUrl = helper.paceUrl + 'login';
 
   beforeAll(function (done) {

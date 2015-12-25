@@ -70,23 +70,23 @@ describe('participants page', function () {
       firstname: 'Friedrich',
       lastname: 'Schiller',
       email: 'f.schiller@example.com',
-      visibility: 'Yes'
+      visibility: 'yes'
     };
 
     var aParticipant = {
       firstname: 'Friedrich',
       lastname: 'Schiller',
-      email: 'f.schiller@example.com',
+      email: 'f.schiller@example.com'
     };
 
-    participants.save(aParticipant, 'a token')
+    participants.save(aParticipant, 'a token').then(participants.markPayed)
       .then(function () {
         return participants.save(aPublicParticipant, 'b token');
       })
       .then(participants.markPayed)
         .then(function () {
             helper.setUpClient().url(participantsUrl)
-              .elements('tr.participant-line')
+              .elements('li.participant-line')
               .then(function (res) {
                 expect(res.value.length).toBe(1);
               })

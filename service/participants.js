@@ -30,14 +30,22 @@ service.getConfirmed = function () {
   return service.getAllWithPaymentStatus(true);
 };
 
+service.getPubliclyVisible = function () {
+  return service.getConfirmed().then(function(confirmed) {
+    return _.filter(confirmed, function(p) {
+      return p.visibility === 'yes';
+    })
+  });
+};
+
 service.save = function (participant, paymentToken) {
-  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, paymenttoken) values($1, $2, $3, $4, $5, $6, $7) returning id',
-    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, paymentToken]);
+  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility, paymenttoken) values($1, $2, $3, $4, $5, $6, $7, $8) returning id',
+    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, paymentToken]);
 };
 
 service.update = function (participant, id) {
-  return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team) = ($1, $2, $3, $4, $5, $6) WHERE id = $7',
-    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, id]);
+  return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility) = ($1, $2, $3, $4, $5, $6, $7) WHERE id = $8',
+    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, id]);
 };
 
 service.addTShirt = function (tshirt, participantId) {

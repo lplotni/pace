@@ -41,7 +41,7 @@ router.get('/', useDefaultAuthentication, function (req, res) {
       });
     });
   } else {
-    participants.getConfirmed().then(function (result) {
+    participants.getPubliclyVisible().then(function (result) {
       return res.render('participants/list', {participants: result, isAdmin: false});
     });
   }

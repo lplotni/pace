@@ -4,7 +4,7 @@
 'use strict';
 
 const express = require('express');
-const config  = require('config');
+const config = require('config');
 const router = express.Router();
 
 const participants = require('../../service/participants');
@@ -23,14 +23,17 @@ router.post('/', function (req, res) {
   try {
     const newParticipant = participant.from(req.body);
     const token = createUniqueToken();
-    participants.register(newParticipant, token);
-    res.render('registration/success', {
-      name: newParticipant.firstname + ' ' + newParticipant.lastname,
-      token: token,
-      amount:
-        new Intl.NumberFormat('de-DE', { minimumFractionDigits: '2'}).format(calculator.priceFor(newParticipant)),
-      link: ''
-    });
+    participants.register(newParticipant, token)
+      .done(function () {
+        res.render('registration/success', {
+          name: newParticipant.firstname + ' ' + newParticipant.lastname,
+          token: token,
+          amount: new Intl.NumberFormat('de-DE', {minimumFractionDigits: '2'}).format(calculator.priceFor(newParticipant)),
+          link: ''
+        });
+      }, function (err) {
+        res.send(err.message);
+      });
   } catch (err) {
     res.send(err.message);
   }

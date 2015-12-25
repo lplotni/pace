@@ -26,7 +26,7 @@ describe('regisitration journey', function () {
       .selectByValue('select#category', 'f')
       .setValue('input#birthyear', 2000)
       .setValue('input#team', 'Crazy runners')
-      .click('input#visibility')
+      .selectByIndex('select#visibility', 1)
       .click('input#shirt')
       .selectByIndex('select#model', 1)
       .selectByIndex('select#size', 1)

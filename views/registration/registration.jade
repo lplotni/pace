@@ -33,7 +33,9 @@ block content
         .row
             .six.columns
                 label(for='visibility') Möchtest du in der Liste der Teilnehmer aufgelistet werden:
-                input#visibility(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='visibility', required=true)
+                select#visibility.u-full-width(name='visibility', required=true)
+                    option(value='yes') Ja
+                    option(value='no') Nein
         .row
             .three.columns
                 label(for='shirt') Laufshirt gewünscht:

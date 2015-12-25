@@ -9,7 +9,7 @@ var editUrlGenerator = require('../domain/editUrlGenerator');
 
 describe('edit participant journey', function () {
 
-  var editParticipantUrl = helper.paceUrl + 'edit_participant';
+  var editParticipantUrl = helper.paceUrl + 'editparticipant';
 
   beforeEach(function (done) {
     helper.changeOriginalTimeout();

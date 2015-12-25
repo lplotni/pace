@@ -68,7 +68,7 @@ app.use('/admin', adminRoute);
 app.use('/registration', registrationRoute);
 app.use('/participants', participantsRoute);
 app.use('/paymentvalidation', paymentValidationRoute);
-app.use('/edit_participant', editParticipantRoute);
+app.use('/editparticipant', editParticipantRoute);
 app.use('/login', loginRoute);
 
 /// catch 404 and forward to error handler

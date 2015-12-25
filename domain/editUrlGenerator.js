@@ -5,7 +5,7 @@ const cryptico = require("cryptico");
 
 const editUrlGenerator = function () {
 
-  const constantUrlPart = 'edit_participant/?edit=';
+  const constantUrlPart = 'editparticipant/?edit=';
   const passPhrase = "Lauf gegen rechts!!";
   const key = cryptico.generateRSAKey(passPhrase, 512);
   const publicKeyString = cryptico.publicKeyString(key);

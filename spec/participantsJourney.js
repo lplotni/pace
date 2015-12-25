@@ -70,7 +70,7 @@ describe('participants page', function () {
       firstname: 'Friedrich',
       lastname: 'Schiller',
       email: 'f.schiller@example.com',
-      publiclyVisible: 'Yes'
+      visibility: 'Yes'
     };
 
     var aParticipant = {

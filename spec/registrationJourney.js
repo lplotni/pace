@@ -7,7 +7,6 @@ var helper = require('./journeyHelper');
 describe('regisitration journey', function () {
 
   var client;
-
   beforeEach(function () {
     helper.changeOriginalTimeout();
     client = helper.setUpClient();
@@ -27,7 +26,7 @@ describe('regisitration journey', function () {
       .selectByValue('select#category', 'f')
       .setValue('input#birthyear', 2000)
       .setValue('input#team', 'Crazy runners')
-      .click('input#publiclyVisible')
+      .click('input#visibility')
       .click('input#shirt')
       .selectByIndex('select#model', 1)
       .selectByIndex('select#size', 1)
@@ -39,6 +38,15 @@ describe('regisitration journey', function () {
       .getText('span.amount').
       then(function (amount) {
         expect(amount).toBe('35.50');
+      })
+      .url(helper.paceUrl + 'login')
+      .setValue('input#username', 'admin')
+      .setValue('input#password', 'admin')
+      .click('button#submit')
+      .url(helper.paceUrl + 'payment_validation') //todo rename
+      .getText('ul#pending')
+      .then(function (text) {
+        expect(text).toMatch(/.*Max Mustermann*/);
       })
       .end(done);
   });

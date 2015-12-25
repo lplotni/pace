@@ -1,30 +1,31 @@
 /* jshint node: true */
+/* jshint esnext: true */
 /* global describe, beforeAll, beforeEach, afterAll, it, expect */
 'use strict';
 
-var participants = require('../service/participants');
-var pg = require('pg');
-var helper = require('./journeyHelper');
-var costCalculator = require('../domain/costCalculator');
+const participants = require('../service/participants');
+const pg = require('pg');
+const helper = require('./journeyHelper');
+const costCalculator = require('../domain/costCalculator');
 
-describe('payment validation journey', function () {
-  var loggedInClient;
-  var paymentValidationUrl = helper.paceUrl + 'paymentvalidation';
-  var loginUrl = helper.paceUrl + 'login';
+describe('payment validation journey', () => {
+  let loggedInClient;
+  const paymentValidationUrl = helper.paceUrl + 'paymentvalidation';
+  const loginUrl = helper.paceUrl + 'login';
 
-  beforeAll(function (done) {
+  beforeAll((done) => {
     helper.changeOriginalTimeout();
     helper.setupDbConnection(done);
   });
 
-  afterAll(function () {
+  afterAll(() => {
     helper.resetToOriginalTimeout();
     pg.end();
   });
 
-  describe('when not logged in', function () {
+  describe('when not logged in', () => {
 
-    it('redirects to the login page for unauthenticated users', function (done) {
+    it('redirects to the login page for unauthenticated users', (done) => {
       helper.setUpClient().url(paymentValidationUrl)
         .isVisible('form#loginForm')
         .then(function (isVisible) {
@@ -34,9 +35,9 @@ describe('payment validation journey', function () {
     });
   });
 
-  describe('when logged it', function () {
+  describe('when logged it', () => {
 
-    beforeEach(function () {
+    beforeEach(() => {
       loggedInClient = helper.setUpClient()
         .url(loginUrl)
         .setValue('input#username', 'admin')
@@ -44,8 +45,8 @@ describe('payment validation journey', function () {
         .click('button#submit');
     });
 
-    it('displays an error message for an invalid token', function (done) {
-      var invalidToken = 'invalid';
+    it('displays an error message for an invalid token', (done) => {
+      let invalidToken = 'invalid';
       loggedInClient.url(paymentValidationUrl)
         .setValue('input#payment-token', invalidToken)
         .click('button#submit-token')
@@ -60,8 +61,8 @@ describe('payment validation journey', function () {
         .end(done);
     });
 
-    it('allows to confirm a participant once she has payed', function (done) {
-      var aParticipant = {
+    it('allows to confirm a participant once she has payed', (done) => {
+      let aParticipant = {
         firstname: 'Friedrich',
         lastname: 'Schiller',
         email: 'f.schiller@example.com',
@@ -70,10 +71,10 @@ describe('payment validation journey', function () {
           model: 'Normal fit'
         }
       };
-      var aToken = '23eF67i';
+      let aToken = '23eF67i';
 
       participants.register(aParticipant, aToken)
-        .then(function () {
+        .then(() => {
           loggedInClient.url(paymentValidationUrl)
             .setValue('input#payment-token', aToken)
             .click('button#submit-token')
@@ -95,16 +96,16 @@ describe('payment validation journey', function () {
         });
     });
 
-    it('should show pending payments', function (done) {
-      var aParticipant = {
+    it('should show pending payments', (done) => {
+      let aParticipant = {
         firstname: 'Friedrich',
         lastname: 'Schiller',
         email: 'f.schiller@example.com'
       };
-      var aToken = '24eFXXi';
+      let aToken = '24eFXXi';
 
       participants.save(aParticipant, aToken)
-        .then(function () {
+        .then(() => {
           loggedInClient.url(paymentValidationUrl)
             .isVisible('ul#pending')
             .then(function (isVisible) {

@@ -1,16 +1,17 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, it, expect */
-var mockery = require('mockery');
-var Q = require('q');
+/* global jasmine, describe, it, expect, beforeEach */
 
-describe('participant', function () {
+const mockery = require('mockery');
+const Q = require('q');
 
-  var _ = require('lodash');
-  var participant = require('../../domain/participant.js');
+describe('participant', () => {
 
-  describe('from()', function () {
+  const _ = require('lodash');
+  const participant = require('../../domain/participant.js');
+
+  describe('from()', () => {
     const body = {
       firstname: 'Mark',
       lastname: 'Mueller',
@@ -24,11 +25,11 @@ describe('participant', function () {
       size: 'M'
     };
 
-    it('should extract firstname from the request body', function () {
+    it('should extract firstname from the request body', () => {
       expect(participant.from(body).firstname).toBe('Mark');
     });
 
-    it('should throw an error if no firstname can be found', function () {
+    it('should throw an error if no firstname can be found', () => {
       function callWithNoFirstname() {
         participant.from(_.omit(body, 'firstname'));
       }
@@ -36,7 +37,7 @@ describe('participant', function () {
       expect(callWithNoFirstname).toThrow();
     });
 
-    it('should throw an error if no lastname can be found', function () {
+    it('should throw an error if no lastname can be found', () => {
       function callWithNoLastname() {
         participant.from(_.omit(body, 'lastname'));
       }
@@ -44,11 +45,11 @@ describe('participant', function () {
       expect(callWithNoLastname).toThrow();
     });
 
-    it('should extract lastname from the request body', function () {
+    it('should extract lastname from the request body', () => {
       expect(participant.from(body).lastname).toBe('Mueller');
     });
 
-    it('should throw an error if no email can be found', function () {
+    it('should throw an error if no email can be found', () => {
       function callWithNoEmail() {
         participant.from(_.omit(body, 'email'));
       }
@@ -56,11 +57,11 @@ describe('participant', function () {
       expect(callWithNoEmail).toThrow();
     });
 
-    it('should extract email from the request body', function () {
+    it('should extract email from the request body', () => {
       expect(participant.from(body).email).toBe('m.mueller@example.com');
     });
 
-    it('should throw an error if no category can be found', function () {
+    it('should throw an error if no category can be found', () => {
       function callWithNoCategory() {
         participant.from(_.omit(body, 'category'));
       }
@@ -68,15 +69,15 @@ describe('participant', function () {
       expect(callWithNoCategory).toThrow();
     });
 
-    it('should extract gender form the request body', function () {
+    it('should extract gender form the request body', () => {
       expect(participant.from(body).category).toBe('Unicorn');
     });
 
-    it('should extract team name form the request body', function () {
+    it('should extract team name form the request body', () => {
       expect(participant.from(body).team).toBe('Crazy runners');
     });
 
-    it('should throw an error if no birthyear can be found', function () {
+    it('should throw an error if no birthyear can be found', () => {
       function callWithNoBirthyear() {
         participant.from(_.omit(body, 'birthyear'));
       }
@@ -84,20 +85,20 @@ describe('participant', function () {
       expect(callWithNoBirthyear).toThrow();
     });
 
-    it('should extract birthyear form the request body', function () {
+    it('should extract birthyear form the request body', () => {
       expect(participant.from(body).birthyear).toBe(1980);
     });
 
-    it('should extract tshirt form the request body if shirt is ordered', function () {
+    it('should extract tshirt form the request body if shirt is ordered', () => {
       expect(participant.from(body).tshirt.model).toBe('Normal fit');
       expect(participant.from(body).tshirt.size).toBe('M');
     });
 
-    it('should not extract tshirt form the request body if shirt is not ordered', function () {
+    it('should not extract tshirt form the request body if shirt is not ordered', () => {
       expect(participant.from(_.omit(body, 'shirt')).tshirt).toEqual({});
     });
 
-    it('should extract visibility from the request body', function () {
+    it('should extract visibility from the request body', () => {
       expect(participant.from(body).visibility).toBe('public');
     });
 
@@ -107,28 +108,28 @@ describe('participant', function () {
       }
 
       expect(callWithNoVisibility).toThrow();
-    })
+    });
   });
 
-  describe('addTshirtDetailsTo', function () {
+  describe('addTshirtDetailsTo', () => {
 
-    var participant, participantsMock;
+    let participant, participantsMock;
 
-    var returnPromiseAndResolveWith = function(data) {
+    let returnPromiseAndResolveWith = function(data) {
       function successResolve() {
         return Q.fcall(function() { return data;});
       }
       return successResolve;
     };
 
-    var returnPromiseAndThrowError = function() {
+    let returnPromiseAndThrowError = function() {
       function errorResolve() {
         return Q.fcall(function() { throw new Error();});
       }
       return errorResolve;
     };
 
-    var setupMocks = function() {
+    let setupMocks = function() {
 
       mockery.enable({
         useCleanCache: true,
@@ -147,20 +148,20 @@ describe('participant', function () {
       participant = require('../../domain/participant.js');
     };
 
-    beforeEach(function () {
+    beforeEach(() => {
       setupMocks();
     });
 
-    var anySize = 'M';
-    var anyModel = 'normal';
-    var tshirtDetails = {id: 0, size: anySize, model: anyModel, participantId: 0};
-    var anyParticipant = {};
+    let anySize = 'M';
+    let anyModel = 'normal';
+    let tshirtDetails = {id: 0, size: anySize, model: anyModel, participantId: 0};
+    let anyParticipant = {};
 
     it('should set the amount to 0 if the participant did not order a tshirt', function (done) {
-      var anyParticipant = {};
+      let anyParticipant = {};
       participantsMock.getTShirtFor.and.callFake(returnPromiseAndThrowError());
 
-      participant.addTshirtDetailsTo(anyParticipant).then(function () {
+      participant.addTshirtDetailsTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt.amount).toBe(0);
         done();
       });
@@ -169,7 +170,7 @@ describe('participant', function () {
     it('should add the tshirt details to a participant', function (done) {
       participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails]));
 
-      participant.addTshirtDetailsTo(anyParticipant).then(function () {
+      participant.addTshirtDetailsTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt.amount).toBe(1);
         expect(anyParticipant.tshirt.details).toEqual([{size: anySize, model: anyModel}]);
         done();
@@ -179,7 +180,7 @@ describe('participant', function () {
     it('should add multiple tshirt details to a participant', function (done) {
       participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails, tshirtDetails]));
 
-      participant.addTshirtDetailsTo(anyParticipant).then(function () {
+      participant.addTshirtDetailsTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt.amount).toBe(2);
         expect(anyParticipant.tshirt.details).toEqual([{size: anySize, model: anyModel},
           {size: anySize, model: anyModel}]);

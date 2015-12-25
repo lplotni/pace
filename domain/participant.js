@@ -9,12 +9,12 @@ const participants = require('../service/participants');
 const participant = {};
 
 function invalidData(body) {
-  return _.isUndefined(body.firstname)
-    || _.isUndefined(body.lastname)
-    || _.isUndefined(body.email)
-    || _.isUndefined(body.category)
-    || _.isUndefined(body.visibility)
-    || _.isUndefined(body.birthyear);
+  return _.isUndefined(body.firstname) ||
+    _.isUndefined(body.lastname) ||
+    _.isUndefined(body.email) ||
+    _.isUndefined(body.category) ||
+    _.isUndefined(body.visibility) ||
+    _.isUndefined(body.birthyear);
 }
 
 participant.from = function (body) {
@@ -37,18 +37,18 @@ participant.from = function (body) {
 
 participant.addTshirtDetailsTo = function(participant) {
   return participants.getTShirtFor(participant.id)
-    .then(function (tshirtDetails) {
-      var details = [];
-      tshirtDetails.forEach(function(element) {
-        details.push(_.pick(element, 'size', 'model'));
-      });
+    .then(tshirtDetails => {
+      let details = [];
+      tshirtDetails.forEach(element =>
+        details.push(_.pick(element, 'size', 'model'))
+      );
       participant.tshirt = {
         details: details,
         amount: tshirtDetails.length
-      }
-    }).catch(function () {
-      participant.tshirt = {amount: 0};
-    });
+      };
+    }).catch(() =>
+      participant.tshirt = {amount: 0}
+    );
 };
 
 module.exports = participant;

@@ -15,25 +15,22 @@ function createUniqueToken() {
   return Math.random().toString(32).substring(2);
 }
 
-router.get('/', function (req, res) {
+router.get('/', (req, res) => {
   res.render('registration/registration', {});
 });
 
-router.post('/', function (req, res) {
+router.post('/', (req, res) => {
   try {
     const newParticipant = participant.from(req.body);
     const token = createUniqueToken();
     participants.register(newParticipant, token)
-      .done(function () {
+      .done(()  =>
         res.render('registration/success', {
           name: newParticipant.firstname + ' ' + newParticipant.lastname,
           token: token,
           amount: new Intl.NumberFormat('de-DE', {minimumFractionDigits: '2'}).format(calculator.priceFor(newParticipant)),
           link: ''
-        });
-      }, function (err) {
-        res.send(err.message);
-      });
+        }), err => res.send(err.message));
   } catch (err) {
     res.send(err.message);
   }

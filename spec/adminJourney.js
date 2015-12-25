@@ -1,24 +1,25 @@
 /* jshint node: true */
+/* jshint esnext: true */
 /* global describe, beforeEach, afterEach, it, expect */
 'use strict';
 
-var helper = require('./journeyHelper');
+let helper = require('./journeyHelper');
 
-describe('admin page', function () {
+describe('admin page', () => {
 
-  var client;
-  var loginUrl = helper.paceUrl + 'login';
+  let client;
+  let loginUrl = helper.paceUrl + 'login';
 
-  beforeEach(function () {
+  beforeEach(() => {
     client = helper.setUpClient();
     helper.changeOriginalTimeout();
   });
 
-  afterEach(function () {
+  afterEach(() => {
     helper.resetToOriginalTimeout();
   });
 
-  it('should go to admin page and show admin links', function (done) {
+  it('should go to admin page and show admin links', (done) => {
     client.url(loginUrl)
       .setValue('input#username', 'admin')
       .setValue('input#password', 'admin')
@@ -32,7 +33,7 @@ describe('admin page', function () {
       .end(done);
   });
 
-  it('should redirect to login page if the user is not logged in', function (done) {
+  it('should redirect to login page if the user is not logged in', (done) => {
     client.url(helper.paceUrl)
       .click('a#adminPage')
       .isVisible('form#loginForm')

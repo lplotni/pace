@@ -5,7 +5,7 @@
 const _ = require('lodash');
 const config = require('config');
 
-var calculator = {};
+let calculator = {};
 
 calculator.priceFor = function (participant) {
   if (_.isEmpty(participant.tshirt)) {

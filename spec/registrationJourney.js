@@ -1,22 +1,23 @@
 /* jshint node: true */
+/* jshint esnext: true */
 /* global describe, beforeEach, afterEach, it, expect */
 'use strict';
 
-var helper = require('./journeyHelper');
+const helper = require('./journeyHelper');
 
-describe('regisitration journey', function () {
+describe('regisitration journey', () => {
 
-  var client;
-  beforeEach(function () {
+  let client;
+  beforeEach(() => {
     helper.changeOriginalTimeout();
     client = helper.setUpClient();
   });
 
-  afterEach(function () {
+  afterEach(() => {
     helper.resetToOriginalTimeout();
   });
 
-  it('allows to register via the registration page', function (done) {
+  it('allows to register via the registration page', (done) => {
     client.url(helper.paceUrl)
       .click('a#registration')
       .isVisible('form#registrationForm')

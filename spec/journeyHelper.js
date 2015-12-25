@@ -1,18 +1,20 @@
 /* jshint node: true */
+/* jshint esnext: true */
 /* global jasmine */
+'use strict';
 
-var webdriverio = require('webdriverio');
-var pg = require('pg');
+const webdriverio = require('webdriverio');
+const pg = require('pg');
 
-var originalTimeout;
+let originalTimeout;
 
-var options = {
+let options = {
   desiredCapabilities: {
     browserName: 'phantomjs'
   }
 };
 
-var journeyHelper = {};
+let journeyHelper = {};
 
 journeyHelper.paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
 
@@ -30,10 +32,10 @@ journeyHelper.resetToOriginalTimeout = function () {
 };
 
 journeyHelper.setupDbConnection = function (done) {
-  var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
-  var jasmineDone = done;
+  let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
+  let jasmineDone = done;
 
-  pg.connect(connectionString, function (err, client, done) {
+  pg.connect(connectionString,  (err, client, done) => {
       function errorFunction(error) {
         console.error('DB statement problem: ', error);
         done();
@@ -43,10 +45,10 @@ journeyHelper.setupDbConnection = function (done) {
       if (err) {
         errorFunction(err);
       } else {
-        var deleteShirts = client.query('delete from tshirts');
-        deleteShirts.on('end', function () {
-          var deleteParticipants = client.query('delete from participants');
-          deleteParticipants.on('end', function () {
+        let deleteShirts = client.query('delete from tshirts');
+        deleteShirts.on('end',  () => {
+          let deleteParticipants = client.query('delete from participants');
+          deleteParticipants.on('end', () => {
             done();
             jasmineDone();
           });

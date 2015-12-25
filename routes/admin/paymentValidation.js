@@ -1,75 +1,73 @@
 /* jshint node: true */
+/* jshint esnext: true */
 'use strict';
 
-var router = require('express').Router();
-var participants = require('../../service/participants');
-var accesscontrol = require('../../acl/accesscontrol');
-var isAuthenticated = require('../../acl/authentication');
-var calculator = require('../../domain/costCalculator');
+const router = require('express').Router();
+const participants = require('../../service/participants');
+const accesscontrol = require('../../acl/accesscontrol');
+const isAuthenticated = require('../../acl/authentication');
+const calculator = require('../../domain/costCalculator');
 
 var canConfirmPayments = function (role) {
   return accesscontrol.hasPermissionTo(role, 'confirm payments');
 };
 
-router.get('/', isAuthenticated, function (req, res) {
+router.get('/', isAuthenticated, (req, res) => {
   if (canConfirmPayments(req.user.role)) {
-    participants.getRegistered().then(function (result) {
-      res.render('paymentValidation/paymentValidation', {participants: result});
-    });
+    participants.getRegistered().then(result => res.render('paymentValidation/paymentValidation', {participants: result})); //todo catch
   } else {
-    var result = {
+    res.render('error', {
       message: 'Bitte anmelden',
       error: {
         status: 'Nur Administratoren können diese Seite einsehen'
       }
-    };
-    res.render('error', result);
+    });
   }
 });
 
-router.post('/', isAuthenticated, function (req, res) {
+router.post('/', isAuthenticated, (req, res) => {
   if (canConfirmPayments(req.user.role)) {
-    var paymentToken = req.body.paymenttoken;
+    const paymentToken = req.body.paymenttoken;
 
     participants.getByToken(paymentToken)
-      .then(function (result) {
-        return res.render('paymentValidation/paymentValidation', {
+      .then(result =>
+        res.render('paymentValidation/paymentValidation', {
           token: paymentToken,
           name: result.name,
           amount: calculator.priceFor(result),
           participantid: result.id
-        });
-      })
-      .catch(function (error) {
-        return res.render('paymentValidation/paymentValidation', {
+        })
+      )
+      .catch(error =>
+        res.render('paymentValidation/paymentValidation', {
           token: paymentToken,
           error: error.message
-        });
-      });
+        })
+      );
   }
 });
 
-router.post('/confirm', isAuthenticated, function (req, res) {
+router.post('/confirm', isAuthenticated, (req, res) => {
   if (canConfirmPayments(req.user.role)) {
     participants.confirmParticipant(req.body.participantid)
-      .then(function () {
+      .then(() =>
         res.render('paymentValidation/paymentValidation', {
           successMessage: 'Der Teilnehmer wurde bestätigt',
           token: req.body.paymenttoken,
           name: req.body.name,
           amount: req.body.amount,
           participantid: req.body.participantid
-        });
-      })
-      .catch(function () {
+        })
+      )
+      .catch(() =>
         res.render('paymentValidation/paymentValidation', {
           error: 'Fehler: Der Teilnehmer konnte nicht bestätigt werden',
           token: req.body.paymenttoken,
           name: req.body.name,
           amount: req.body.amount,
           participantid: req.body.participantid
-        });
-      });
+        })
+      );
   }
 });
 

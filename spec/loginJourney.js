@@ -1,24 +1,25 @@
 /* jshint node: true */
+/* jshint esnext: true */
 /* global describe, beforeEach, afterEach, it, expect */
 'use strict';
 
-var helper = require('./journeyHelper');
+let helper = require('./journeyHelper');
 
-describe('admin page', function () {
+describe('admin page', () => {
 
-  var client;
-  var loginUrl = helper.paceUrl + 'login';
+  let client;
+  let loginUrl = helper.paceUrl + 'login';
 
-  beforeEach(function () {
+  beforeEach(() => {
     helper.changeOriginalTimeout();
     client = helper.setUpClient();
   });
 
-  afterEach(function () {
+  afterEach(() => {
     helper.resetToOriginalTimeout();
   });
 
-  it('should login as admin and go to admin page', function (done) {
+  it('should login as admin and go to admin page', (done) => {
     client.url(loginUrl)
       .setValue('input#username', 'admin')
       .setValue('input#password', 'admin')
@@ -30,7 +31,7 @@ describe('admin page', function () {
       .end(done);
   });
 
-  it('should stay on login page for wrong login credentials and display an error message', function (done) {
+  it('should stay on login page for wrong login credentials and display an error message', (done) => {
     client.url(loginUrl)
       .setValue('input#username', 'admin')
       .setValue('input#password', 'wrong password')

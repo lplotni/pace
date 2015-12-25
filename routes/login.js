@@ -1,10 +1,13 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
+/* jshint node: true */
+/* jshint esnext: true */
+'use strict';
 
-router.get('/', function (req, res) {
-  res.render('login', { error: req.flash('error') });
-});
+const router = require('express').Router();
+const passport = require('passport');
+
+router.get('/', (req, res) =>
+  res.render('login', { error: req.flash('error') })
+);
 
 router.post('/',
   passport.authenticate('local',

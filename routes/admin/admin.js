@@ -13,7 +13,7 @@ var canViewAdminPage = function (role) {
 
 router.get('/', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    res.render('admin', {title: 'Pace Admin-Bereich'});
+    res.render('admin', {});
   } else {
     res.render('error', {
       message: 'Bitte anmelden',

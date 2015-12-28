@@ -1,52 +1,56 @@
 extends ../layout
 
 block content
-    h1 Registrierung
+    p Lorem ipsum dolor sit amet, sea aperiam aliquam an. Malis animal commune ex vix, tale postulant no eos. Ferri audiam signiferumque ea ius. Nam at mucius philosophia, mel an causae eruditi albucius. No sea elit suavitate neglegentur. Clita detracto mei ea, in nostro nonumes luptatum vix.
+      | Vix bonorum omnesque cu, eos te quis aeque, vix te nihil utinam nostro. Antiopam salutandi cum at, et mucius accusamus vim, no feugiat omittantur quo. In mea molestie deterruisset, solet minimum eos ea. Ubique interesset eum ne, ad prima nemore temporibus mea. Vel nostrum fastidii concludaturque cu, nec sale paulo ad.
+      | Lorem libris iracundia id qui, pri maluisset imperdiet an. Eam quas cetero verterem id. Nec dico autem possim eu. Percipit convenire in vis, usu ne debitis albucius petentium. Eu wisi summo his, nostrum intellegam sed ea.
+    h4.black.centered Melde dich hier zum Lauf an
     form#registrationForm(method='POST', action='/registration')
         .row
-            .four.columns
-                label(for='firstname') Vorname:
+            .six.columns.padding
+                label(for='firstname') Vorname*
                 input#firstname.u-full-width(type='text', name='firstname', required=true)
-            .four.columns
-                label(for='lastname') Nachname:
+            .six.columns.padding
+                label(for='lastname') Nachname*
                 input#lastname.u-full-width(type='text', name='lastname', required=true)
         .row
-            .four.columns
-                label(for='birthyear') Geburtsjahr:
-                input#birthyear.u-full-width(type='number', name='birthyear', required=true)
-            .four.columns
-                label(for='email') Email:
+            .twelve.columns.padding
+                label(for='email') Email*
                 input#email.u-full-width(type='email', name='email', required=true)
         .row
-            .five.columns
+            .twelve.columns.padding
+                label(for='birthyear') Geburtsjahr*
+                input#birthyear.u-full-width(type='number', name='birthyear', required=true)
+        .row
+            .twelve.columns.padding
+                label(for='team') Name des Teams:
+                input#team.u-full-width(type='text', name='team')
+        .row
+            .twelve.columns.padding
                 label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
-            .three.columns
                 select#category.u-full-width(name='category')
                     option(value='m') m
                     option(value='f') f
-
         .row
-            .three.columns
-                label(for='team') Name des Teams:
-            .five.columns
-                input#team.u-full-width(type='text', name='team')
-        .row
-            .six.columns
-                label(for='visibility') Möchtest du in der Liste der Teilnehmer aufgelistet werden:
+            .twelve.columns.padding
+                label(for='visibility') Möchtest du in der Liste der Teilnehmer aufgelistet werden*
                 select#visibility.u-full-width(name='visibility', required=true)
                     option(value='yes') Ja
                     option(value='no') Nein
         .row
-            .three.columns
-                label(for='shirt') Laufshirt gewünscht:
-                    input#shirt(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='shirt')
+            .twelve.columns.black.padding(style='height: 36px')
+                label(for='shirt') Laufshirt gewünscht
+                  input#shirt(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='shirt')
         .row
-            .two.columns
+            .six.columns.center
+                img.center.tshirt.u-max-full-width(src='/images/tshirt.png')
+            .six.columns
+              .row
                 label(for='model') Model:
                 select#model.u-full-width(name='model')
                     option(value='Normal fit') Normal fit
                     option(value='Slim fit') Slim fit
-            .two.columns
+              .row
                 label(for='size') Size:
                 select#size.u-full-width(name='size')
                     option(value='XS') XS
@@ -56,4 +60,6 @@ block content
                     option(value='XL') XL
 
 
-        button#submit.button-primary(type='submit') Absenden
+        button#submit.button-primary.u-full-width.pace(type='submit') Absenden
+        .row.u-pull-right
+            p * Pflichtfelder

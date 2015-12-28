@@ -24,8 +24,7 @@ describe('admin page', () => {
       .setValue('input#username', 'admin')
       .setValue('input#password', 'admin')
       .click('button#submit')
-      .url(helper.paceUrl)
-      .click('a#adminPage')
+      .url(helper.paceUrl+'admin')
       .isVisible('a#paymentValidation')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
@@ -34,8 +33,7 @@ describe('admin page', () => {
   });
 
   it('should redirect to login page if the user is not logged in', (done) => {
-    client.url(helper.paceUrl)
-      .click('a#adminPage')
+    client.url(helper.paceUrl+'admin')
       .isVisible('form#loginForm')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);

@@ -1,0 +1,112 @@
+.no-link {
+    text-decoration: none;
+}
+
+hr.navigation {
+    position: relative;
+    top: -10px;
+}
+
+img.logo {
+    width: 125px;
+    height: 125px;
+}
+
+img.tshirt {
+    width: 175px;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.center {
+    padding: 10px;
+    position: relative;
+    left: 5%;
+}
+
+.centered {
+    text-align: center;
+}
+
+.black {
+    color: #FFF;
+    background-color: black;
+    border-color: black;
+}
+
+.warning {
+    color: #FFF;
+    background-color: rgb(212, 64, 52);
+    border-color: rgb(212, 64, 52);
+}
+
+a {
+    color: rgb(212, 64, 52);
+}
+
+a:hover {
+    color: rgb(200, 0, 39);
+}
+
+a.current {
+    color: black;
+}
+
+.padding {
+    padding: 5px;
+}
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+    border: 1px solid rgb(212, 64, 52);
+    outline: 0;
+}
+
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+    color: #333;
+    border-color: #888;
+    outline: 0;
+}
+
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+    color: #FFF;
+    background-color: rgb(212, 64, 52);
+    border-color: rgb(212, 64, 52);
+}
+
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+    color: #FFF;
+    background-color: rgb(200, 0, 39);
+    border-color: rgb(200, 0, 39);
+}
+

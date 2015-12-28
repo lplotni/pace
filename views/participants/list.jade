@@ -1,7 +1,6 @@
 extends ../layout
 
 block content
-  h1 Registrierte Teilnehmer
   if isAdmin
     table
       thead
@@ -31,7 +30,7 @@ block content
             td#tshirt-amount=p.tshirt.amount
             td
               each t in p.tshirt.details
-                li=t.size + ' (' + t.model + ')'
+                p=t.size + ' (' + t.model + ')'
             td
               a#edit.button(href='#{p.editUrl}') Bearbeiten
   else

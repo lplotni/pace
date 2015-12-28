@@ -27,6 +27,12 @@ block content
       .four.columns
         label(for='team') Name des Teams:
         input#team.u-full-width(type='text', name='team', value=participant.team)
+     .row
+         .six.columns
+           label(for='visibility') Öffentlich sichtbar in der Teilnehmerliste:
+           select#visibility.u-full-width(name='visibility', required=true)
+             option(value='yes', selected=(participant.visibility=='yes')) Ja
+             option(value='no', selected=(participant.visibility=='no')) Nein
 
     input(type='hidden', name='participantid', value='#{participantid}')
 

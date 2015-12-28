@@ -11,19 +11,19 @@ html
       if (node_env) != "production"
         .row
           h6.warning.centered DIES IST NUR EINE TESTUMGEBUNG. REGISTRIERUNGEN FUER 2016 SIND NOCH NICHT MOEGLICH
-        .row
-          .five.columns
-            .u-full-width.hidden xx
-          .two.columns
-            img.logo(src='/images/logo.jpg')
-          .five.columns
-        .row
-          hr.three.columns.navigation
-          a.two.columns.no-link(href='/')
-            h5.centered Info
-          a#registration.two.columns.no-link(href='/registration')
-            h5.centered Anmeldung
-          a.two.columns.no-link(href='/participants')
-            h5.centered Teilnehmer
-          hr.three.columns.navigation
+      .row
+        .five.columns
+          .u-full-width.hidden xx
+        .two.columns
+          img.logo(src='/images/logo.jpg')
+        .five.columns
+      .row
+        hr.three.columns.navigation
+        a.two.columns.no-link(href='/')
+          h5.centered Info
+        a#registration.two.columns.no-link(href='/registration')
+          h5.centered Anmeldung
+        a.two.columns.no-link(href='/participants')
+          h5.centered Teilnehmer
+        hr.three.columns.navigation
       block content

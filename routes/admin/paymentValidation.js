@@ -50,29 +50,16 @@ router.post('/', isAuthenticated, (req, res) => {
 router.post('/confirm', isAuthenticated, (req, res) => {
   if (canConfirmPayments(req.user.role)) {
   participants.confirmParticipant(req.body.participantid)
-    .then(() => {
-    if(_.contains(req.body.referer, 'payment_validation')) {
+    .then(() => res.redirect(req.get('referer')))
+    .catch(() =>
       res.render('paymentValidation/paymentValidation', {
-        successMessage: 'Der Teilnehmer wurde bestätigt',
+        error: 'Fehler: Der Teilnehmer konnte nicht bestätigt werden',
         token: req.body.paymenttoken,
         name: req.body.name,
         amount: req.body.amount,
         participantid: req.body.participantid
-      });
-    } else {
-      var participants = JSON.parse(req.body.participants);
-      res.redirect(req.get('referer'));
-      res.render('participants/list', {participants: participants, isAdmin: true});
-    }
-  })
-  .catch(() =>
-    res.render('paymentValidation/paymentValidation', {
-      error: 'Fehler: Der Teilnehmer konnte nicht bestätigt werden',
-      token: req.body.paymenttoken,
-      name: req.body.name,
-      amount: req.body.amount,
-      participantid: req.body.participantid
-    }))
+      })
+    )
   }
 });
 

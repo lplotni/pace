@@ -19,10 +19,6 @@ block content
       input(type='hidden', name='participantid', value='#{participantid}')
       button#confirm-registration.button-primary(type='submit') Registrierung bestätigen
 
-   if successMessage
-     .success
-       p #{successMessage}
-
   if error
     .error
       p #{error}

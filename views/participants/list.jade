@@ -36,9 +36,8 @@ block content
                 each t in p.tshirt.details
                   li=t.size + ' (' + t.model + ')'
             td
-              form#payment-details(method='POST', action='/payment_validation/confirm')
+              form#payment-details(method='POST', action='/paymentValidation/confirm')
                 input(type='hidden', name='participantid', value='#{p.id}')
-                input(type='hidden', name='participants', value='#{JSON.stringify(participants)}')
                 button#confirm-registration.button-primary(type='submit') Registrierung bestätigen
             td
               a#edit.button(href='#{p.editUrl}') Bearbeiten

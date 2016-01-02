@@ -2,11 +2,11 @@
 /* jshint node: true */
 /* jshint esnext: true */
 /* global describe, it, expect */
-describe('tshirt', function () {
+describe('tshirt', () => {
 
-  var tshirt = require('../../domain/tshirt.js');
+  let tshirt = require('../../domain/tshirt.js');
 
-  describe('from()', function () {
+  describe('from()', () => {
     const body = {
       shirt: 'Yes',
       size: 'XL',
@@ -14,11 +14,11 @@ describe('tshirt', function () {
     };
 
 
-    it('should read size from the request body', function () {
+    it('should read size from the request body', () => {
       expect(tshirt.from(body).size).toBe('XL');
     });
 
-    it('should throw an error if no size can be found', function () {
+    it('should throw an error if no size can be found', () => {
       function callWithNoSize() {
         tshirt.from({shirt: 'Yes', model: 'XX'});
       }
@@ -26,11 +26,11 @@ describe('tshirt', function () {
       expect(callWithNoSize).toThrow();
     });
 
-    it('should read model from the request body', function () {
+    it('should read model from the request body', () => {
       expect(tshirt.from(body).model).toBe('SlimFit');
     });
 
-    it('should throw an error if no model can be found', function () {
+    it('should throw an error if no model can be found', () => {
       function callWithNoModel() {
         tshirt.from({shirt: 'Yes', size: 'XL'});
       }
@@ -38,7 +38,7 @@ describe('tshirt', function () {
       expect(callWithNoModel).toThrow();
     });
 
-    it('should return empty object if shirt not wished', function () {
+    it('should return empty object if shirt not wished', () => {
       expect(tshirt.from({shirt: undefined})).toEqual({});
     });
   });

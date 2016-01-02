@@ -3,17 +3,17 @@
 /* jshint esnext: true */
 /* global describe, beforeEach, afterEach, it, expect */
 
-describe('sendEmail', function () {
-  var emailToBeSend;
+describe('sendEmail', () => {
+  let emailToBeSend;
 
-  var service;
-  var realNodeMailer;
+  let service;
+  let realNodeMailer;
 
-  beforeEach(function () {
+  beforeEach(() => {
       service = require('../../service/participants');
       realNodeMailer = service._nodemailer;
       service._nodemailer = {
-        createTransport: function () {
+        createTransport: () => {
           return {
             sendMail: function (email) {
               emailToBeSend = email;
@@ -24,19 +24,19 @@ describe('sendEmail', function () {
     }
   );
 
-  afterEach(function () {
+  afterEach(() => {
     service._nodemailer = realNodeMailer;
   });
 
-  it('should use the correct recipient address', function () {
+  it('should use the correct recipient address', () => {
     service.sendEmail('herbert@example.com', 'A Subject Line','not tested yet');
     expect(emailToBeSend.to).toBe('herbert@example.com');
   });
-  it('should use the correct subject', function () {
+  it('should use the correct subject', () => {
     service.sendEmail('herbert@example.com', 'A Subject Line','not tested yet');
     expect(emailToBeSend.subject).toBe('A Subject Line');
   });
-  it('should use the correct html body', function () {
+  it('should use the correct html body', () => {
     service.sendEmail('herbert@example.com', 'A Subject Line','HTML BODY');
     expect(emailToBeSend.html).toBe('HTML BODY');
   });

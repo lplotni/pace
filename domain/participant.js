@@ -1,5 +1,6 @@
-'use strict';
+/* jshint node: true */
 /* jshint esnext: true */
+'use strict';
 
 const _ = require('lodash');
 const tshirt = require('./tshirt');
@@ -8,7 +9,12 @@ const participants = require('../service/participants');
 const participant = {};
 
 function invalidData(body) {
-  return _.isUndefined(body.firstname) || _.isUndefined(body.lastname) || _.isUndefined(body.category) || _.isUndefined(body.birthyear);
+  return _.isUndefined(body.firstname) ||
+    _.isUndefined(body.lastname) ||
+    _.isUndefined(body.email) ||
+    _.isUndefined(body.category) ||
+    _.isUndefined(body.visibility) ||
+    _.isUndefined(body.birthyear);
 }
 
 participant.from = function (body) {
@@ -20,6 +26,7 @@ participant.from = function (body) {
     firstname: body.firstname,
     lastname: body.lastname,
     email: body.email,
+    visibility: body.visibility,
     category: body.category,
     birthyear: body.birthyear,
     team: body.team,
@@ -30,18 +37,18 @@ participant.from = function (body) {
 
 participant.addTshirtDetailsTo = function (participant) {
   return participants.getTShirtFor(participant.id)
-    .then(function (tshirtDetails) {
-      if(tshirtDetails.length > 0) {
-        var details = [];
-        tshirtDetails.forEach(function (element) {
-          details.push(_.pick(element, 'size', 'model'));
-        });
-        participant.tshirt = {
-          details: details,
-          amount: tshirtDetails.length
-        }
-      }
-    });
+    .then(tshirtDetails => {
+      let details = [];
+      tshirtDetails.forEach(element =>
+        details.push(_.pick(element, 'size', 'model'))
+      );
+      participant.tshirt = {
+        details: details,
+        amount: tshirtDetails.length
+      };
+    }).catch(() =>
+      participant.tshirt = {amount: 0}
+    );
 };
 
 module.exports = participant;

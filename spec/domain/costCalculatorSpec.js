@@ -1,14 +1,16 @@
 /* jshint node: true */
 /* jshint esnext: true */
 /* global describe, it, expect */
-describe('costCalculator', function () {
+'use strict';
 
-  var calculator = require('../../domain/costCalculator.js');
-  var _ = require('lodash');
+describe('costCalculator', () => {
 
-  var config = require('config');
+  const calculator = require('../../domain/costCalculator.js');
+  const _ = require('lodash');
 
-  var participant = {
+  const config = require('config');
+
+  let participant = {
     firstname: 'Mark',
     lastname: 'Mueller',
     email: 'm.mueller@example.com',
@@ -21,14 +23,15 @@ describe('costCalculator', function () {
     }
   };
 
-  it('cost with tshirt = tshirt + standard', function () {
-    var cost = calculator.priceFor(participant);
+  it('cost with tshirt = tshirt + standard', () => {
+    let cost = calculator.priceFor(participant);
 
     expect(cost).toBe(parseFloat(config.get('costs.standard')) + parseFloat(config.get('shirts.price')));
   });
 
-  it('cost without tshirt = standard', function () {
-    var cost = calculator.priceFor(_.omit(participant, 'tshirt'));
+  it('cost without tshirt = standard', () => {
+    participant.tshirt = {};
+    let cost = calculator.priceFor(participant);
 
     expect(cost).toBe(parseFloat(config.get('costs.standard')));
   })

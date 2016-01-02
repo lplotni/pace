@@ -1,40 +1,42 @@
 /* jshint node: true */
-/* global describe, beforeEach, afterEach, it, expect */
+/* jshint esnext: true */
+/* global describe, beforeAll, beforeEach, afterEach, it, expect */
 'use strict';
 
-var helper = require('./journeyHelper');
-var pg = require('pg');
-var participants = require('../service/participants');
-var editUrlGenerator = require('../domain/editUrlGenerator');
+let helper = require('./journeyHelper');
+let pg = require('pg');
+let participants = require('../service/participants');
+let editUrlGenerator = require('../domain/editUrlGenerator');
 
-describe('edit participant journey', function () {
+describe('edit participant journey', () => {
 
-  var editParticipantUrl = helper.paceUrl + 'edit_participant';
+  let editParticipantUrl = helper.paceUrl + 'editparticipant';
 
-  beforeEach(function (done) {
+  beforeEach((done) => {
     helper.changeOriginalTimeout();
     helper.setupDbConnection(done);
   });
 
-  afterEach(function () {
+  afterEach(() => {
     helper.resetToOriginalTimeout();
     pg.end();
   });
 
-  it('allows to edit a participant', function (done) {
-    var aParticipant = {
+  it('allows to edit a participant', (done) => {
+    let aParticipant = {
       firstname: 'Friedrich',
       lastname: 'Schiller',
       email: 'f.schiller@example.com',
       category: 'f',
       birthyear: 1980,
-      team: 'Crazy runners'
+     team: 'Crazy runners',
+      visibility: 'no'
     };
-    var aToken = '23eF67i';
+    let aToken = '23eF67i';
 
     participants.save(aParticipant, aToken)
       .then(function (id) {
-        var editUrl = editUrlGenerator.generateEncryptedUrl(id.toString());
+        let editUrl = editUrlGenerator.generateEncryptedUrl(id.toString());
         helper.setUpClient()
           .url(editParticipantUrl + '/?edit=' + editUrl)
           .isVisible('form#editParticipantForm')
@@ -43,42 +45,45 @@ describe('edit participant journey', function () {
           })
           .getValue('input#firstname')
           .then(function (value) {
-            expect(value).toBe('Friedrich')
+            expect(value).toBe('Friedrich');
           })
           .getValue('input#lastname')
           .then(function (value) {
-            expect(value).toBe('Schiller')
+            expect(value).toBe('Schiller');
           })
           .getValue('input#email')
           .then(function (value) {
-            expect(value).toBe('f.schiller@example.com')
+            expect(value).toBe('f.schiller@example.com');
           })
-          .getValue('select#category')
+          .getValue('select#visibility')
           .then(function (value) {
-            expect(value).toBe('f')
+            expect(value).toBe('no');
+          }).getValue('select#category')
+          .then(function (value) {
+            expect(value).toBe('f');
           })
           .getValue('input#birthyear')
           .then(function (value) {
-            expect(value).toBe('1980')
+            expect(value).toBe('1980');
           })
           .getValue('input#team')
           .then(function (value) {
-            expect(value).toBe('Crazy runners')
+            expect(value).toBe('Crazy runners');
           })
           .end(done);
       });
   });
 
-  it('shows an error page when using an invalid edit link', function (done) {
+  it('shows an error page when using an invalid edit link', (done) => {
     helper.setUpClient()
       .url(editParticipantUrl + '/?edit=invalidId')
       .getText('h1')
       .then(function (text) {
-        expect(text).toBe('Teilnehmer nicht bekannt')
+        expect(text).toBe('Teilnehmer nicht bekannt');
       })
       .getText('h2')
       .then(function (text) {
-        expect(text).toBe('Möglicherweise wurde ein falscher Link verwendet')
+        expect(text).toBe('Möglicherweise wurde ein falscher Link verwendet');
       })
       .end(done);
   });

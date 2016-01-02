@@ -3,7 +3,7 @@
 /* jshint esnext: true */
 /* global describe, beforeEach, afterAll, spyOn, it, expect, fail */
 
-describe('participants service', function () {
+describe('participants service', () => {
 
   const participants = require('../../service/participants');
   const pg = require('pg');
@@ -14,12 +14,13 @@ describe('participants service', function () {
     email: 'h.mustermann@example.com',
     category: 'Unicorn',
     birthyear: 1980,
+    visibility: 'yes',
     team: 'Crazy runners'
   };
 
-  beforeEach(function (done) {
-    var connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
-    var jasmineDone = done;
+  beforeEach((done) => {
+    let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
+    let jasmineDone = done;
 
     pg.connect(connectionString, function (err, client, done) {
         function errorFunction(error) {
@@ -31,10 +32,10 @@ describe('participants service', function () {
         if (err) {
           errorFunction(err);
         } else {
-          var deleteShirts = client.query('delete from tshirts');
-          deleteShirts.on('end', function () {
-            var deleteParticipants = client.query('delete from participants');
-            deleteParticipants.on('end', function () {
+          let deleteShirts = client.query('delete from tshirts');
+          deleteShirts.on('end', () => {
+            let deleteParticipants = client.query('delete from participants');
+            deleteParticipants.on('end', () => {
               done();
               jasmineDone();
             });
@@ -47,13 +48,13 @@ describe('participants service', function () {
 
   });
 
-  afterAll(function (done) {
+  afterAll((done) => {
     pg.end();
     done();
   });
 
-  it('should store and read participants', function (done) {
-    var randomToken = '1234567';
+  it('should store and read participants', (done) => {
+    let randomToken = '1234567';
 
     participants.save(aParticipant, randomToken)
       .then(participants.getRegistered)
@@ -70,9 +71,9 @@ describe('participants service', function () {
       .fail(fail);
   });
 
-  describe('save', function () {
-    it('should return the id', function (done) {
-      var paymentToken = 'a token';
+  describe('save', () => {
+    it('should return the id', (done) => {
+      let paymentToken = 'a token';
 
       participants.save(aParticipant, paymentToken)
         .then(function (participantId) {
@@ -83,9 +84,9 @@ describe('participants service', function () {
     });
   });
 
-  describe('getById', function () {
-    it('should return name and email of the participant with given Id', function (done) {
-      var paymentToken = 'a token';
+  describe('getById', () => {
+    it('should return name and email of the participant with given Id', (done) => {
+      let paymentToken = 'a token';
       participants.save(aParticipant, paymentToken)
         .then(function (participantId) {
           participants.getById(participantId)
@@ -99,7 +100,7 @@ describe('participants service', function () {
     });
   });
 
-  describe('getByToken', function () {
+  describe('getByToken', () => {
     const aParticipantWithTshirt = {
       firstname: 'Hertha',
       lastname: 'Mustermann',
@@ -112,12 +113,12 @@ describe('participants service', function () {
     };
 
 
-    it('should return participant\'s lastname and firstname and ordered tshirt for a given token', function (done) {
-      var paymentToken = 'a token';
+    it('should return participant\'s lastname and firstname and ordered tshirt for a given token', (done) => {
+      let paymentToken = 'a token';
       participants.save(aParticipantWithTshirt, paymentToken)
         .then(function (participantId) {
           participants.addTShirt(aParticipantWithTshirt.tshirt, participantId)
-            .then(function () {
+            .then(() => {
               participants.getByToken(paymentToken)
                 .then(function (participant) {
                   expect(participant.name).toEqual(aParticipantWithTshirt.lastname + ', ' + aParticipantWithTshirt.firstname);
@@ -131,15 +132,15 @@ describe('participants service', function () {
     });
   });
 
-  describe('confirmParticipant', function () {
-    it('should mark the participant as payed', function (done) {
-      var paymentToken = 'a token';
+  describe('confirmParticipant', () => {
+    it('should mark the participant as payed', (done) => {
+      let paymentToken = 'a token';
       spyOn(participants, 'markPayed').and.callThrough();
 
       participants.save(aParticipant, paymentToken)
         .then(function (participantId) {
           participants.confirmParticipant(participantId)
-            .then(function () {
+            .then(() => {
               expect(participants.markPayed).toHaveBeenCalledWith(participantId);
               done();
             })
@@ -147,28 +148,28 @@ describe('participants service', function () {
         });
     });
 
-    it('should give error if ID is invalid', function (done) {
-      var paymentToken = 'a token';
-      var wrongId = '999';
+    it('should give error if ID is invalid', (done) => {
+      let paymentToken = 'a token';
+      let wrongId = '999';
 
       participants.save(aParticipant, paymentToken)
-        .then(function () {
+        .then(() => {
           participants.confirmParticipant(wrongId)
-            .catch(function () {
+            .catch(() => {
               done();
             });
         });
     });
   });
 
-  describe('registration', function () {
-    it('should save the participant and send confirmation email', function (done) {
+  describe('registration', () => {
+    it('should save the participant and send confirmation email', (done) => {
       spyOn(participants, 'save').and.callThrough();
       spyOn(participants, 'sendEmail');
       spyOn(participants, 'addTShirt');
 
       participants.register(aParticipant, 'aToken')
-        .then(function () {
+        .then(() => {
           expect(participants.save).toHaveBeenCalledWith(aParticipant, 'aToken');
           expect(participants.sendEmail).toHaveBeenCalled(); //todo check args.
           expect(participants.addTShirt).not.toHaveBeenCalled();
@@ -177,7 +178,7 @@ describe('participants service', function () {
         .fail(fail);
     });
 
-    it('should call addTShirt if one ordered', function (done) {
+    it('should call addTShirt if one ordered', (done) => {
       spyOn(participants, 'addTShirt');
 
       const aParticipantWithTshirt = {
@@ -191,7 +192,7 @@ describe('participants service', function () {
       };
 
       participants.register(aParticipantWithTshirt, 'bToken')
-        .then(function () {
+        .then(() => {
           expect(participants.addTShirt).toHaveBeenCalled();
           done();
         })
@@ -199,8 +200,8 @@ describe('participants service', function () {
     });
   });
 
-  describe('addTShirt', function () {
-    it('stores tshirt', function (done) {
+  describe('addTShirt', () => {
+    it('stores tshirt', (done) => {
       participants.save({
         firstname: 'Hertha',
         lastname: 'With TShirt',
@@ -210,7 +211,7 @@ describe('participants service', function () {
         team: 'Crazy runners'
       }, 'tokenX').then(function (id) {
         participants.addTShirt({size: 'M', model: 'Skin fit'}, id)
-          .then(function () {
+          .then(() => {
             participants.getTShirtFor(id)
               .then(function (shirts) {
                 expect(shirts.length).toBe(1);
@@ -223,9 +224,9 @@ describe('participants service', function () {
     });
   });
 
-  describe('update', function () {
-    it('should return the full information for a participant with given Id', function (done) {
-      var paymentToken = 'a token';
+  describe('update', () => {
+    it('should return the full information for a participant with given Id', (done) => {
+      let paymentToken = 'a token';
       participants.save(aParticipant, paymentToken)
         .then(function (id) {
           const updatedParticipant = {
@@ -237,7 +238,7 @@ describe('participants service', function () {
             team: 'Crazy runners updated'
           };
           participants.update(updatedParticipant, id)
-            .then(function () {
+            .then(() => {
               participants.getFullInfoById(id)
                 .then(function (participant) {
                   expect(participant.firstname).toBe('Hertha updated');
@@ -252,6 +253,26 @@ describe('participants service', function () {
             });
         });
     });
+  });
+
+  describe('getPubliclyVisible', () => {
+   it('returns only participants which are confirmed and OK with being visible to the public', (done) => {
+     participants.save(aParticipant, 'tokenXX')
+       .then(participants.markPayed)
+       .then(participants.getPubliclyVisible)
+       .then(function (data) {
+         expect(data.length).toBe(1);
+         expect(data[0].firstname).toBe(aParticipant.firstname);
+         expect(data[0].lastname).toBe(aParticipant.lastname);
+         expect(data[0].email).toBe(aParticipant.email);
+         expect(data[0].category).toBe(aParticipant.category);
+         expect(data[0].birthyear).toBe(aParticipant.birthyear);
+         expect(data[0].team).toBe(aParticipant.team);
+         done();
+       })
+       .fail(fail);
+
+   });
   });
 })
 ;

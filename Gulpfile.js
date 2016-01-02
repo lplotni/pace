@@ -40,9 +40,10 @@ function createdb() {
   }
 }
 
-function testFunctional() {
+function testFunctional(pathToTest) {
+  var src = pathToTest || 'spec/**/*Journey.js';
   var deferred = Q.defer();
-  var stream = gulp.src('spec/**/*Journey.js').pipe(jasmine({verbose: true}));
+  var stream = gulp.src(src).pipe(jasmine({verbose: true}));
 
   stream.on('data', function () {
   });
@@ -104,7 +105,7 @@ gulp.task('test-functional', function () {
 
   express().then(function (server) {
     startSelenium().then(function (selenium) {
-      testFunctional().then(function () {
+      testFunctional(argv.single).then(function () {
         cleanUp(selenium, server, deferred.resolve);
       }).fail(function () {
         cleanUp(selenium, server, deferred.reject);

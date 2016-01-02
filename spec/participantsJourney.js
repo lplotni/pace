@@ -1,28 +1,29 @@
 /* jshint node: true */
+/* jshint esnext: true */
 /* global describe, beforeEach, afterEach, it, expect */
 'use strict';
 
-var participants = require('../service/participants');
-var pg = require('pg');
-var helper = require('./journeyHelper');
+let participants = require('../service/participants');
+let pg = require('pg');
+let helper = require('./journeyHelper');
 
-describe('participants page', function () {
+describe('participants page', () => {
 
-  var participantsUrl = helper.paceUrl + 'participants';
-  var loginUrl = helper.paceUrl + 'login';
+  let participantsUrl = helper.paceUrl + 'participants';
+  let loginUrl = helper.paceUrl + 'login';
 
-  beforeEach(function (done) {
+  beforeEach((done) => {
     helper.changeOriginalTimeout();
     helper.setupDbConnection(done);
   });
 
-  afterEach(function () {
+  afterEach(() => {
     helper.resetToOriginalTimeout();
     pg.end();
   });
 
-  it('shows full participant list only if logged in as admin', function (done) {
-    var fullDetailsHeaderRow = ['Vorname',
+  it('shows full participant list only if logged in as admin', (done) => {
+    let fullDetailsHeaderRow = ['Vorname',
       'Nachname',
       'Team name',
       'Email',
@@ -36,15 +37,15 @@ describe('participants page', function () {
       'Registrierung bestätigen',
       'Bearbeiten'];
 
-    var aParticipant = {
+    let aParticipant = {
       firstname: 'Friedrich',
       lastname: 'Schiller',
       email: 'f.schiller@example.com'
     };
-    var aToken = 'a token';
+    let aToken = 'a token';
 
     participants.save(aParticipant, aToken)
-      .then(function () {
+      .then(() => {
         helper.setUpClient().url(participantsUrl)
           .elements('li.participant-line')
           .then(function (res) {
@@ -67,9 +68,37 @@ describe('participants page', function () {
       });
   });
 
-  describe('admin view', function () {
+  it('shows registered participants only if they wished to be publicly visible', (done) => {
+    let aPublicParticipant = {
+      firstname: 'Friedrich',
+      lastname: 'Schiller',
+      email: 'f.schiller@example.com',
+      visibility: 'yes'
+    };
 
-    var setUpLoggedInClient = function () {
+    let aParticipant = {
+      firstname: 'Friedrich',
+      lastname: 'Schiller',
+      email: 'f.schiller@example.com'
+    };
+
+    participants.save(aParticipant, 'a token').then(participants.markPayed)
+      .then(() => {
+        return participants.save(aPublicParticipant, 'b token');
+      })
+      .then(participants.markPayed)
+        .then(() => {
+            helper.setUpClient().url(participantsUrl)
+              .elements('li.participant-line')
+              .then(function (res) {
+                expect(res.value.length).toBe(1);
+              })
+              .end(done);
+        });
+  });
+describe('admin view', () => {
+
+    let setUpLoggedInClient = () => {
       return helper.setUpClient()
         .url(loginUrl)
         .setValue('input#username', 'admin')
@@ -77,16 +106,16 @@ describe('participants page', function () {
         .click('button#submit');
     };
 
-    it('should have a link to edit a participant', function (done) {
-      var aParticipant = {
+    it('should have a link to edit a participant', (done) => {
+      let aParticipant = {
         firstname: 'Friedrich',
         lastname: 'Schiller',
         email: 'f.schiller@example.com'
       };
-      var aToken = 'a token';
+      let aToken = 'a token';
 
       participants.save(aParticipant, aToken)
-        .then(function () {
+        .then(() => {
           setUpLoggedInClient().url(participantsUrl)
             .isVisible('a#edit')
             .then(function (isVisible) {
@@ -97,16 +126,16 @@ describe('participants page', function () {
     });
 
     it('should show amount to pay - no tshirt', function (done) {
-      var aParticipant = {
+      let aParticipant = {
         firstname: 'Friedrich',
         lastname: 'Schiller',
         email: 'f.schiller@example.com'
       };
-      var aToken = 'a token';
+      let aToken = 'a token';
 
       participants.save(aParticipant, aToken)
-        .then(function () {
-          var loggedInClient = setUpLoggedInClient();
+        .then(() => {
+          let loggedInClient = setUpLoggedInClient();
 
           loggedInClient.url(participantsUrl)
             .elements('td#tshirt-amount')

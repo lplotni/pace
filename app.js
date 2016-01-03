@@ -18,6 +18,7 @@ var editParticipantRoute = require('./routes/participants/editParticipant');
 
 var adminRoute = require('./routes/admin/admin');
 var paymentValidationRoute = require('./routes/admin/paymentValidation');
+var config = require('config');
 
 var app = express();
 
@@ -54,7 +55,7 @@ passport.deserializeUser(function (id, done) {
 
 passport.use(new LocalStrategy(
     function (username, password, done) {
-        if (username === 'admin' && password === 'admin') {
+        if (username === config.get('admin.username') && password === config.get('admin.password')) {
             var user = {username: 'admin', role: 'admin'};
             return done(null, user);
         } else {

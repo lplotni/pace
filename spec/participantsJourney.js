@@ -6,6 +6,7 @@
 let participants = require('../service/participants');
 let pg = require('pg');
 let helper = require('./journeyHelper');
+let config = require('config');
 
 describe('participants page', () => {
 
@@ -50,8 +51,8 @@ describe('participants page', () => {
             expect(res.value.length).toBe(0);
           })
           .url(loginUrl)
-          .setValue('input#username', 'admin')
-          .setValue('input#password', 'admin')
+          .setValue('input#username', config.get('admin.username'))
+          .setValue('input#password', config.get('admin.password'))
           .click('button#submit')
           .url(participantsUrl)
           .elements('tr.participant-line')
@@ -99,8 +100,8 @@ describe('admin view', () => {
     let setUpLoggedInClient = () => {
       return helper.setUpClient()
         .url(loginUrl)
-        .setValue('input#username', 'admin')
-        .setValue('input#password', 'admin')
+        .setValue('input#username', config.get('admin.username'))
+        .setValue('input#password', config.get('admin.password'))
         .click('button#submit');
     };
 

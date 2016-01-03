@@ -9,5 +9,9 @@
   },
   "contact": {
     "email": "info@lauf-gegen-rechts.de"
+  },
+  "admin": {
+    "username": "admin",
+    "password": "Blanch4rdst0wn"
   }
 }

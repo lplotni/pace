@@ -4,8 +4,9 @@
 'use strict';
 
 const helper = require('./journeyHelper');
+const config = require('config');
 
-describe('regisitration journey', () => {
+describe('registration journey', () => {
 
   let client;
   beforeEach(() => {
@@ -41,8 +42,8 @@ describe('regisitration journey', () => {
         expect(amount).toBe('35.50');
       })
       .url(helper.paceUrl + 'login')
-      .setValue('input#username', 'admin')
-      .setValue('input#password', 'admin')
+      .setValue('input#username', config.get('admin.username'))
+      .setValue('input#password', config.get('admin.password'))
       .click('button#submit')
       .url(helper.paceUrl + 'paymentvalidation')
       .getText('ul#pending')

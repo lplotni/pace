@@ -12,9 +12,11 @@ block content
           th Kategorie
           th Geburtsjahr
           th Bezahlt
+          th Betrag
           th Token
           th Anzahl T-shirts
           th T-shirt Größen
+          th
           th
       tbody
         each p in participants
@@ -26,11 +28,17 @@ block content
             td=p.category
             td=p.birthyear
             td=(p.has_payed ? 'ja' : 'nein')
+            td#amount=p.amount
             td=p.paymenttoken
-            td#tshirt-amount=p.tshirt.amount
+            td#tshirt-amount=(p.tshirt ? p.tshirt.amount : 0)
             td
-              each t in p.tshirt.details
-                p=t.size + ' (' + t.model + ')'
+              if p.tshirt
+                each t in p.tshirt.details
+                  li=t.size + ' (' + t.model + ')'
+            td
+              form#payment-details(method='POST', action='/paymentValidation/confirm')
+                input(type='hidden', name='participantid', value='#{p.id}')
+                button#confirm-registration.button-primary(type='submit') Registrierung bestätigen
             td
               a#edit.button(href='#{p.editUrl}') Bearbeiten
   else

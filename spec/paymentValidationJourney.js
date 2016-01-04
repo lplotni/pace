@@ -68,7 +68,8 @@ describe('payment validation journey', () => {
         email: 'f.schiller@example.com',
         tshirt: {
           size: 'M',
-          model: 'Normal fit'
+          model: 'Normal fit',
+          amount: 1
         }
       };
       let aToken = '23eF67i';
@@ -88,9 +89,9 @@ describe('payment validation journey', () => {
               expect(text).toContain(costCalculator.priceFor(aParticipant));
             })
             .click('button#confirm-registration')
-            .getText('div.success')
-            .then(function (text) {
-              expect(text).toBe('Der Teilnehmer wurde bestätigt');
+            .isVisible('div.error')
+            .then(function (isVisible) {
+              expect(isVisible).toBe(false);
             })
             .end(done);
         });

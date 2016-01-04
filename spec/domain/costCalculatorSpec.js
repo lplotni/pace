@@ -34,5 +34,5 @@ describe('costCalculator', () => {
     let cost = calculator.priceFor(participant);
 
     expect(cost).toBe(parseFloat(config.get('costs.standard')));
-  })
+  });
 });

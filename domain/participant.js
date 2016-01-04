@@ -35,7 +35,7 @@ participant.from = function (body) {
 
 };
 
-participant.addTshirtDetailsTo = function(participant) {
+participant.addTshirtDetailsTo = function (participant) {
   return participants.getTShirtFor(participant.id)
     .then(tshirtDetails => {
       let details = [];

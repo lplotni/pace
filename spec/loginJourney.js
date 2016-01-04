@@ -4,6 +4,7 @@
 'use strict';
 
 let helper = require('./journeyHelper');
+let config = require('config');
 
 describe('admin page', () => {
 
@@ -21,8 +22,8 @@ describe('admin page', () => {
 
   it('should login as admin and go to admin page', (done) => {
     client.url(loginUrl)
-      .setValue('input#username', 'admin')
-      .setValue('input#password', 'admin')
+      .setValue('input#username', config.get('admin.username'))
+      .setValue('input#password', config.get('admin.password'))
       .click('button#submit')
       .isVisible('a#paymentValidation')
       .then(function (isVisible) {

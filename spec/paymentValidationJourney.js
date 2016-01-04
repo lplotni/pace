@@ -7,6 +7,7 @@ const participants = require('../service/participants');
 const pg = require('pg');
 const helper = require('./journeyHelper');
 const costCalculator = require('../domain/costCalculator');
+const config = require('config');
 
 describe('payment validation journey', () => {
   let loggedInClient;
@@ -40,8 +41,8 @@ describe('payment validation journey', () => {
     beforeEach(() => {
       loggedInClient = helper.setUpClient()
         .url(loginUrl)
-        .setValue('input#username', 'admin')
-        .setValue('input#password', 'admin')
+        .setValue('input#username', config.get('admin.username'))
+        .setValue('input#password', config.get('admin.password'))
         .click('button#submit');
     });
 

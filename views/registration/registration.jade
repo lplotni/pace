@@ -41,7 +41,7 @@ block content
             .twelve.columns.black.padding(style='height: 36px')
                 label(for='shirt') Laufshirt gewünscht
                   input#shirt(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='shirt')
-        .row
+        .row#shirt-details(style='display: none')
             .six.columns.center
                 img.center.tshirt.u-max-full-width(src='/images/tshirt.png')
             .six.columns
@@ -63,3 +63,14 @@ block content
         button#submit.button-primary.u-full-width.pace(type='submit') Absenden
         .row.u-pull-right
             p * Pflichtfelder
+    script(type='text/javascript').
+        var shirtSelection = document.getElementById('shirt');
+        var shirtDetails = document.getElementById('shirt-details');
+        shirtSelection.onclick = function () {
+            if(shirtSelection.checked) {
+                shirtDetails.style.display = 'block';
+            } else {
+                shirtDetails.style.display = 'none';
+            }
+        };
+

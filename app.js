@@ -37,9 +37,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // authentication using passport needs to be initialized before the routing setup
 app.use(require('express-session')(
     {
-        secret: 'secret pace',
+        secret: config.get('cookie-secret'),
+        signed: true,
         resave: false,
-        saveUninitialized: false
+        name: 'pace_session',
+        saveUninitialized: false,
+        httpOnly: true,
+        cookie: {
+          secure: config.get('https'),
+        }
     }));
 app.use(flash());
 app.use(passport.initialize());

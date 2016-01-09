@@ -256,23 +256,23 @@ describe('participants service', () => {
   });
 
   describe('getPubliclyVisible', () => {
-   it('returns only participants which are confirmed and OK with being visible to the public', (done) => {
-     participants.save(aParticipant, 'tokenXX')
-       .then(participants.markPayed)
-       .then(participants.getPubliclyVisible)
-       .then(function (data) {
-         expect(data.length).toBe(1);
-         expect(data[0].firstname).toBe(aParticipant.firstname);
-         expect(data[0].lastname).toBe(aParticipant.lastname);
-         expect(data[0].email).toBe(aParticipant.email);
-         expect(data[0].category).toBe(aParticipant.category);
-         expect(data[0].birthyear).toBe(aParticipant.birthyear);
-         expect(data[0].team).toBe(aParticipant.team);
-         done();
-       })
-       .fail(fail);
+    it('returns only participants which are confirmed and OK with being visible to the public', (done) => {
+      participants.save(aParticipant, 'tokenXX')
+        .then(participants.markPayed)
+        .then(participants.getPubliclyVisible)
+        .then(function (data) {
+          expect(data.length).toBe(1);
+          expect(data[0].firstname).toBe(aParticipant.firstname);
+          expect(data[0].lastname).toBe(aParticipant.lastname);
+          expect(data[0].email).toBe(aParticipant.email);
+          expect(data[0].category).toBe(aParticipant.category);
+          expect(data[0].birthyear).toBe(aParticipant.birthyear);
+          expect(data[0].team).toBe(aParticipant.team);
+          done();
+        })
+        .fail(fail);
 
-   });
+    });
   });
 })
 ;

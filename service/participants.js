@@ -55,34 +55,51 @@ service.getTShirtFor = function (participantId) {
   return db.select('SELECT * FROM tshirts WHERE participantid = $1', [participantId]);
 };
 
-function createUniqueToken() {
-  var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  for( var i=0; i < 5; i++ ) {
+function randomString() {
+  let text = "";
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (let i = 0; i < 5; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
 }
 
+service.createUniqueToken = function () {
+  const deferred = Q.defer();
+  const token = randomString();
+
+  db.select('select * from participants where paymenttoken like $1', [token])
+    .then((result) => {
+      if (_.isEmpty(result)) {
+        deferred.resolve(token);
+      } else {
+        return deferred.resolve(service.createUniqueToken());
+      }
+    })
+    .catch(deferred.reject);
+
+  return deferred.promise;
+};
+
 service.register = function (participant) {
   const deferred = Q.defer();
   const jade = require('jade');
 
-  let paymentToken = createUniqueToken();
-
-  service.save(participant, paymentToken)
-    .then(id => {
-      if (!_.isEmpty(participant.tshirt)) {
-        service.addTShirt(participant.tshirt, id);
-      }
-      jade.renderFile('views/registration/success.jade', {
-        name: participant.firstname,
-        token: paymentToken,
-        amount: config.get('costs.standard')
-      }, (error, html) => service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html));
-      deferred.resolve({'id':id, 'token':paymentToken});
-    })
-    .fail(err => deferred.reject(err));
+  service.createUniqueToken().then((paymentToken) => {
+    service.save(participant, paymentToken)
+      .then(id => {
+        if (!_.isEmpty(participant.tshirt)) {
+          service.addTShirt(participant.tshirt, id);
+        }
+        jade.renderFile('views/registration/success.jade', {
+          name: participant.firstname,
+          token: paymentToken,
+          amount: config.get('costs.standard')
+        }, (error, html) => service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html));
+        deferred.resolve({'id': id, 'token': paymentToken});
+      })
+      .fail(err => deferred.reject(err));
+  }).fail(deferred.reject);
 
   return deferred.promise;
 };

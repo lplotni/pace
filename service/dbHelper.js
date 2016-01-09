@@ -4,7 +4,6 @@
 
 const pg = require('pg');
 const Q = require('q');
-const _ = require('lodash');
 
 const connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
 
@@ -19,9 +18,9 @@ db.select = function (querystring, params) {
       let query = client.query(querystring, params);
 
       query.on('row', row => results.push(row));
-      query.on('error', () => {
+      query.on('error', (e) => {
         done();
-        deferred.reject();
+        deferred.reject(e);
       });
       query.on('end', () => {
         done();

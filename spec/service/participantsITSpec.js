@@ -168,9 +168,9 @@ describe('participants service', () => {
       spyOn(participants, 'sendEmail');
       spyOn(participants, 'addTShirt');
 
-      participants.register(aParticipant, 'aToken')
-        .then(() => {
-          expect(participants.save).toHaveBeenCalledWith(aParticipant, 'aToken');
+      participants.register(aParticipant)
+        .then((result) => {
+          expect(participants.save).toHaveBeenCalledWith(aParticipant, result.token);
           expect(participants.sendEmail).toHaveBeenCalled(); //todo check args.
           expect(participants.addTShirt).not.toHaveBeenCalled();
           done();
@@ -191,7 +191,7 @@ describe('participants service', () => {
         tshirt: {size: 'M', model: 'Slim fit'}
       };
 
-      participants.register(aParticipantWithTshirt, 'bToken')
+      participants.register(aParticipantWithTshirt)
         .then(() => {
           expect(participants.addTShirt).toHaveBeenCalled();
           done();

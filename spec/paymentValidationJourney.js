@@ -73,12 +73,11 @@ describe('payment validation journey', () => {
           amount: 1
         }
       };
-      let aToken = '23eF67i';
 
-      participants.register(aParticipant, aToken)
-        .then(() => {
+      participants.register(aParticipant)
+        .then((result) => {
           loggedInClient.url(paymentValidationUrl)
-            .setValue('input#payment-token', aToken)
+            .setValue('input#payment-token', result.token)
             .click('button#submit-token')
             .isVisible('form#payment-details')
             .then(function (isVisible) {
@@ -86,7 +85,7 @@ describe('payment validation journey', () => {
             })
             .getText('p#details')
             .then(function (text) {
-              expect(text).toContain('Betrag für Token ' + aToken + ':');
+              expect(text).toContain('Betrag für Token ' + result.token + ':');
               expect(text).toContain(costCalculator.priceFor(aParticipant));
             })
             .click('button#confirm-registration')

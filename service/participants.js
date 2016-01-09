@@ -55,9 +55,21 @@ service.getTShirtFor = function (participantId) {
   return db.select('SELECT * FROM tshirts WHERE participantid = $1', [participantId]);
 };
 
-service.register = function (participant, paymentToken) {
+function createUniqueToken() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for( var i=0; i < 5; i++ ) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
+
+service.register = function (participant) {
   const deferred = Q.defer();
   const jade = require('jade');
+
+  let paymentToken = createUniqueToken();
+
   service.save(participant, paymentToken)
     .then(id => {
       if (!_.isEmpty(participant.tshirt)) {
@@ -68,7 +80,7 @@ service.register = function (participant, paymentToken) {
         token: paymentToken,
         amount: config.get('costs.standard')
       }, (error, html) => service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html));
-      deferred.resolve(id);
+      deferred.resolve({'id':id, 'token':paymentToken});
     })
     .fail(err => deferred.reject(err));
 

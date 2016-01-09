@@ -76,7 +76,7 @@ service.register = function (participant, paymentToken) {
 };
 
 service.getByToken = function (paymentToken) {
-  return db.select('SELECT id, firstname, lastname FROM participants WHERE paymenttoken = $1', [paymentToken])
+  return db.select('SELECT id, firstname, lastname FROM participants WHERE upper(paymenttoken) = $1', [paymentToken.toUpperCase()])
     .then(result => {
       if (_.isEmpty(result)) {
         throw new Error('Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.');

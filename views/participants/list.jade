@@ -37,6 +37,7 @@ block content
                   li=t.size + ' (' + t.model + ')'
             td
               form#payment-details(method='POST', action='/paymentValidation/confirm')
+                input(type='hidden', name='_csrf', value=_csrf)
                 input(type='hidden', name='participantid', value='#{p.id}')
                 button#confirm-registration.button-primary(type='submit') Registrierung bestätigen
             td

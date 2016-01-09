@@ -13,5 +13,7 @@
   "admin": {
     "username": "admin",
     "password": "Blanch4rdst0wn"
-  }
+  },
+  "cookie-secret":"change this in your local config",
+  "https":false
 }

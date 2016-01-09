@@ -6,6 +6,7 @@ block content
       | Lorem libris iracundia id qui, pri maluisset imperdiet an. Eam quas cetero verterem id. Nec dico autem possim eu. Percipit convenire in vis, usu ne debitis albucius petentium. Eu wisi summo his, nostrum intellegam sed ea.
     h4.black.centered Melde dich hier zum Lauf an
     form#registrationForm(method='POST', action='/registration')
+        input(type='hidden', name='_csrf', value=_csrf)
         .row
             .six.columns.padding
                 label(for='firstname') Vorname*

@@ -20,12 +20,16 @@ var adminRoute = require('./routes/admin/admin');
 var paymentValidationRoute = require('./routes/admin/paymentValidation');
 var config = require('config');
 
+var csrf = require('csurf');
+
 var app = express();
 
 app.locals.node_env = process.env.NODE_ENV;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+app.disable("x-powered-by");
 
 app.use(favicon());
 app.use(logger('dev'));
@@ -37,10 +41,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 // authentication using passport needs to be initialized before the routing setup
 app.use(require('express-session')(
     {
-        secret: 'secret pace',
+        secret: config.get('cookie-secret'),
+        signed: true,
         resave: false,
-        saveUninitialized: false
+        name: 'pace_session',
+        saveUninitialized: false,
+        httpOnly: true,
+        cookie: {
+          secure: config.get('https'),
+        }
     }));
+
+app.use(csrf());
+app.use(function(req, res, next) {
+  res.locals._csrf = req.csrfToken();
+  next();
+});
+
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());

@@ -35,5 +35,6 @@ block content
              option(value='no', selected=(participant.visibility=='no')) Nein
 
     input(type='hidden', name='participantid', value='#{participantid}')
+    input(type='hidden', name='_csrf', value=_csrf)
 
     button#submit.button-primary(type='submit') Änderung speichern

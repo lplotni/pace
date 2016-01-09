@@ -91,7 +91,7 @@ service.register = function (participant) {
         if (!_.isEmpty(participant.tshirt)) {
           service.addTShirt(participant.tshirt, id);
         }
-        jade.renderFile('views/registration/success.jade', {
+        jade.renderFile('views/registration/text.jade', {
           name: participant.firstname,
           token: paymentToken,
           amount: config.get('costs.standard')
@@ -172,7 +172,7 @@ service.confirmParticipant = function (participantId) {
     .then(() => {
       service.getById(participantId)
         .then(result => {
-          jade.renderFile('views/paymentValidation//success.jade', {name: result.name}, (error, html) =>
+          jade.renderFile('views/paymentValidation/success.jade', {name: result.name}, (error, html) =>
             service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html)
           );
         });

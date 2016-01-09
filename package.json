@@ -11,6 +11,7 @@
     "connect-flash": "~0.1.1 ",
     "cookie-parser": "~1.0.1",
     "cryptico": "~1.0.2",
+    "csurf": "^1.8.3",
     "db-migrate": "~0.9.22",
     "debug": "~0.7.4",
     "express": "~4.13.3",

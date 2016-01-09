@@ -3,6 +3,7 @@ extends ../layout
 block content
   h2 Überprüfung der Zahlungseingänge
   form#payment-validation-form(method='POST', action='/paymentvalidation')
+    input(type='hidden', name='_csrf', value=_csrf)
     .row
       .six.columns
         label(for='payment-token') Token:
@@ -17,6 +18,7 @@ block content
       input(type='hidden', name='amount', value='#{amount}')
       input(type='hidden', name='name', value='#{name}')
       input(type='hidden', name='participantid', value='#{participantid}')
+      input(type='hidden', name='_csrf', value=_csrf)
       button#confirm-registration.button-primary(type='submit') Registrierung bestätigen
 
   if error

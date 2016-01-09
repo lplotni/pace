@@ -20,6 +20,8 @@ var adminRoute = require('./routes/admin/admin');
 var paymentValidationRoute = require('./routes/admin/paymentValidation');
 var config = require('config');
 
+var csrf = require('csurf');
+
 var app = express();
 
 app.locals.node_env = process.env.NODE_ENV;
@@ -47,6 +49,13 @@ app.use(require('express-session')(
           secure: config.get('https'),
         }
     }));
+
+app.use(csrf());
+app.use(function(req, res, next) {
+  res.locals._csrf = req.csrfToken();
+  next();
+});
+
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());

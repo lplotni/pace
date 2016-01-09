@@ -172,7 +172,7 @@ service.confirmParticipant = function (participantId) {
     .then(() => {
       service.getById(participantId)
         .then(result => {
-          jade.renderFile('views/paymentValidation/success.jade', {name: result.name}, (error, html) =>
+          jade.renderFile('views/paymentValidation/text.jade', {name: result.name}, (error, html) =>
             service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html)
           );
         });

@@ -3,13 +3,16 @@
 'use strict';
 
 const _ = require('lodash');
+const validator = require('validator');
 const tshirt = require('./tshirt');
 const participants = require('../service/participants');
 
 const participant = {};
 
+
 function invalidData(body) {
-  return _.isUndefined(body.firstname) ||
+  return !(validator.isEmail(body.email)) ||
+    _.isUndefined(body.firstname) ||
     _.isUndefined(body.lastname) ||
     _.isUndefined(body.email) ||
     _.isUndefined(body.category) ||

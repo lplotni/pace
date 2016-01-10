@@ -24,6 +24,19 @@ describe('participant', () => {
       model: 'Normal fit',
       size: 'M'
     };
+    const invalid_email_body = {
+      firstname: 'Mark',
+      lastname: 'Mueller',
+      email: 'invalid',
+      category: 'Unicorn',
+      birthyear: 1980,
+      team: 'Crazy runners',
+      visibility: 'public',
+      shirt: 'Yes',
+      model: 'Normal fit',
+      size: 'M'
+    };
+
 
     it('should extract firstname from the request body', () => {
       expect(participant.from(body).firstname).toBe('Mark');
@@ -55,6 +68,14 @@ describe('participant', () => {
       }
 
       expect(callWithNoEmail).toThrow();
+    });
+
+    it('should throw an error if email format is invalid', () => {
+      function callWithInvalidEmail() {
+        participant.from(invalid_email_body);
+      }
+
+      expect(callWithInvalidEmail).toThrow();
     });
 
     it('should extract email from the request body', () => {

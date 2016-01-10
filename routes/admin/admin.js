@@ -13,7 +13,9 @@ var canViewAdminPage = function (role) {
 
 router.get('/', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    res.render('admin', {});
+    var admininfo = require('../../domain/admininfo');
+    admininfo.getShirtOrders().then(orders => 
+        res.render('admin', {orders}));
   } else {
     res.render('error', {
       message: 'Bitte anmelden',

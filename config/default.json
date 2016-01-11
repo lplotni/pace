@@ -15,5 +15,6 @@
     "password": "Blanch4rdst0wn"
   },
   "cookie-secret":"change this in your local config",
+  "proxy":false,
   "https":false
 }

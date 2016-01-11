@@ -30,6 +30,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.disable("x-powered-by");
+app.set('trust proxy',config.get('proxy'));
 
 app.use(favicon());
 app.use(logger('dev'));

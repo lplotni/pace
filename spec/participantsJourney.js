@@ -36,7 +36,8 @@ describe('participants page', () => {
       'Anzahl T-shirts',
       'T-shirt Größen',
       'Registrierung bestätigen',
-      'Bearbeiten'];
+      'Bearbeiten',
+      'L&ouml;schen'];
 
     let aParticipant = {
       firstname: 'Friedrich',

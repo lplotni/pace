@@ -172,6 +172,27 @@ describe('participants service', () => {
             });
         });
     });
+      
+    it('should delete users with tshirts', (done) => {
+      let paymentToken = 'a token';
+      const aParticipantWithTshirt = {
+            firstname: 'Hertha',
+            lastname: 'Mustermann',
+            email: 'h.mustermann@example.com',
+            birthyear: 1980,
+            tshirt: {
+              size: 'XS',
+              model: 'Crazy cool fit'
+            }
+      };
+      participants.save(aParticipantWithTshirt, paymentToken)
+        .then((id) => {
+            let participantid = id;
+            participants.delete(participantid).then(() => {
+              done();
+            });
+        });
+    });
 
     it('should give error if accessing deleted user', (done) => {
       let paymentToken = 'a token';

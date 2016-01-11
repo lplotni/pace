@@ -47,7 +47,8 @@ service.delete = function (participantid) {
   db.select('delete from participants where id=$1',[participantid])
     .then((result) => {
         deferred.resolve();
-    });
+    })
+    .catch(deferred.reject);
   return deferred.promise;
 };
 

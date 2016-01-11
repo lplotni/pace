@@ -38,4 +38,13 @@ describe('access control', () => {
       expect(result).toBe(true);
     });
   });
+  it('should give access to participant deletion to admin only', () => {
+    accesscontrol.hasPermissionTo('guest', 'delete', function(err, result){
+      expect(result).toBe(false);
+    });
+    accesscontrol.hasPermissionTo('admin', 'delete', function(err, result){
+      expect(result).toBe(true);
+    });
+  });
+
 });

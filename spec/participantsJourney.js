@@ -88,15 +88,59 @@ describe('participants page', () => {
         return participants.save(aPublicParticipant, 'b token');
       })
       .then(participants.markPayed)
-        .then(() => {
-            helper.setUpClient().url(participantsUrl)
-              .elements('li.participant-line')
-              .then(function (res) {
-                expect(res.value.length).toBe(1);
-              })
-              .end(done);
-        });
+      .then(() => {
+          helper.setUpClient().url(participantsUrl)
+            .elements('tr.participant-line')
+            .then(function (res) {
+              expect(res.value.length).toBe(1);
+            })
+            .end(done);
+      });
   });
+
+  it('shows a search box', (done) => {
+    helper.setUpClient().url(participantsUrl)
+     .isVisible('.dataTables_filter')
+     .then(function (isVisible) {
+       expect(isVisible).toBe(true);
+     })
+    .end(done);
+  });
+
+  it('searches for participants', (done) => {
+
+    let aParticipant = {
+      firstname: 'Friedrich',
+      lastname: 'Schiller',
+      email: 'f.schiller@example.com',
+      visibility: 'yes'
+    };
+    let aToken = 'a token';
+
+    let anotherParticipant = {
+      firstname: 'Issac',
+      lastname: 'Newton',
+      email: 'i.newton@example.com',
+      visibility: 'yes'
+    }
+    let anotherToken = 'another token';
+    participants.save(aParticipant, aToken).then(participants.markPayed)
+
+      .then( () => {
+        return  participants.save(anotherParticipant, anotherToken);
+      })
+      .then(participants.markPayed)
+      .then( () => {
+        helper.setUpClient().url(participantsUrl)
+        .setValue('.dataTables_filter input', 'Friedrich')
+        .elements('tr.participant-line')
+        .then( (res) => {
+          expect(res.value.length).toBe(1);
+        })
+        .end(done);
+      })
+  })
+
 describe('admin view', () => {
 
     let setUpLoggedInClient = () => {
@@ -106,6 +150,45 @@ describe('admin view', () => {
         .setValue('input#password', config.get('admin.password'))
         .click('button#submit');
     };
+
+    it('shows a search box', (done) => {
+    setUpLoggedInClient().url(participantsUrl)
+      .isVisible('.dataTables_filter')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .end(done);
+    });
+
+    it('searches for participants', (done) => {
+
+      let aParticipant = {
+        firstname: 'Friedrich',
+        lastname: 'Schiller',
+        email: 'f.schiller@example.com'
+      };
+      let aToken = 'a token';
+
+      let anotherParticipant = {
+        firstname: 'Issac',
+        lastname: 'Newton',
+        email: 'i.newton@example.com'
+      }
+      let anotherToken = 'another token';
+      participants.save(aParticipant, aToken)
+        .then( () => {
+          return  participants.save(anotherParticipant, anotherToken);
+        })
+        .then( () => {
+          setUpLoggedInClient().url(participantsUrl)
+          .setValue('.dataTables_filter input', 'Friedrich')
+          .elements('tr.participant-line')
+          .then( (res) => {
+            expect(res.value.length).toBe(1);
+          })
+          .end(done);
+        })
+    })
 
     it('should have a link to edit a participant', (done) => {
       let aParticipant = {

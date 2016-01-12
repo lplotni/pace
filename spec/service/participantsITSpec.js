@@ -190,7 +190,8 @@ describe('participants service', () => {
             let participantid = id;
             participants.delete(participantid).then(() => {
               done();
-            });
+            })
+            .fail(fail);
         });
     });
 

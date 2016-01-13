@@ -41,4 +41,12 @@ describe('admin page', () => {
       })
       .end(done);
   });
+  it('should redirect to the start page after logout', (done) => {
+    client.url(helper.paceUrl+'logout')
+      .isVisible('h3*=Online-Anmeldung')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .end(done);
+  });
 });

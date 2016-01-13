@@ -11,6 +11,7 @@ var flash = require('connect-flash');
 
 var indexRoute = require('./routes/index');
 var loginRoute = require('./routes/login');
+var logoutRoute = require('./routes/logout');
 
 var registrationRoute = require('./routes/participants/registration');
 var participantsRoute = require('./routes/participants/participants');
@@ -89,6 +90,7 @@ app.use('/participants', participantsRoute);
 app.use('/paymentvalidation', paymentValidationRoute);
 app.use('/editparticipant', editParticipantRoute);
 app.use('/login', loginRoute);
+app.use('/logout', logoutRoute);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {

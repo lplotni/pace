@@ -162,6 +162,53 @@ describe('participants service', () => {
     });
   });
 
+  describe('delete', () => {
+    it('should delete a user', (done) => {
+      let paymentToken = 'a token';
+      participants.save(aParticipant, paymentToken)
+        .then((id) => {
+            participants.delete(id).then(() => {
+              done();
+            });
+        });
+    });
+      
+    it('should delete users with tshirts', (done) => {
+      let paymentToken = 'a token';
+      const aParticipantWithTshirt = {
+            firstname: 'Hertha',
+            lastname: 'Mustermann',
+            email: 'h.mustermann@example.com',
+            birthyear: 1980,
+            tshirt: {
+              size: 'XS',
+              model: 'Crazy cool fit'
+            }
+      };
+      participants.save(aParticipantWithTshirt, paymentToken)
+        .then((id) => {
+            let participantid = id;
+            participants.delete(participantid).then(() => {
+              done();
+            })
+            .fail(fail);
+        });
+    });
+
+    it('should give error if accessing deleted user', (done) => {
+      let paymentToken = 'a token';
+      participants.save(aParticipant, paymentToken)
+        .then((id) => {
+            let participantid = id;
+            participants.delete(participantid).then(() => {
+              participants.getById(participantid).catch(() => {
+                  done();
+              });
+            });
+        });
+    });
+  });
+
   describe('registration', () => {
     it('should save the participant and send confirmation email', (done) => {
       spyOn(participants, 'save').and.callThrough();

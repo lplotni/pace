@@ -3,6 +3,7 @@ var rbac2 = require('rbac2');
 var rules = [
     {a: 'admin', can: 'view admin page'},
     {a: 'admin', can: 'confirm payments'},
+    {a: 'admin', can: 'delete'},
     {a: 'admin', can: 'view participant details'}
 ];
 

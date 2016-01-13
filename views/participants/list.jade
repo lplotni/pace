@@ -18,6 +18,7 @@ block content
           th T-shirt Größen
           th
           th
+          th
       tbody
         each p in participants
           tr.participant-line
@@ -40,6 +41,11 @@ block content
                 input(type='hidden', name='_csrf', value=_csrf)
                 input(type='hidden', name='participantid', value='#{p.id}')
                 button#confirm-registration.button-primary(type='submit') Registrierung bestätigen
+             td
+              form#user-delete(method='POST', action='/editparticipant/delete')
+                input(type='hidden', name='_csrf', value=_csrf)
+                input(type='hidden', name='participantid', value='#{p.id}')
+                button#delete-user.button-primary(type='submit') L&ouml;schen
             td
               a#edit.button(href='#{p.editUrl}') Bearbeiten
   else

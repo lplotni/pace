@@ -41,6 +41,17 @@ service.save = function (participant, paymentToken) {
     [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, paymentToken]);
 };
 
+
+service.delete = function (participantid) {
+  const deferred = Q.defer();
+  db.select('delete from participants where id=$1',[participantid])
+    .then((result) => {
+        deferred.resolve();
+    })
+    .catch(deferred.reject);
+  return deferred.promise;
+};
+
 service.update = function (participant, id) {
   return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility) = ($1, $2, $3, $4, $5, $6, $7) WHERE id = $8',
     [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, id]);

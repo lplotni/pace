@@ -43,6 +43,16 @@ block content
             td
               a#edit.button(href='#{p.editUrl}') Bearbeiten
   else
-    ul
-      each p in participants
-        li.participant-line= p.firstname +' '+ p.lastname + (p.team ? ' (Team: '+p.team+' )' : '')
+    table
+      thead
+        tr
+          th Vorname
+          th Nachname
+          th Team name
+      tbody
+        each p in participants
+          tr.participant-line
+            td=p.firstname
+            td=p.lastname
+            td=p.team
+  script(src='/javascript/searchAndSort.js')

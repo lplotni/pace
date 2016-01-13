@@ -39,7 +39,7 @@ describe('registration journey', () => {
       })
       .getText('span.amount').
       then(function (amount) {
-        expect(amount).toBe('35.50');
+        expect(amount).toMatch(/35.50/);
       })
       .url(helper.paceUrl + 'login')
       .setValue('input#username', config.get('admin.username'))

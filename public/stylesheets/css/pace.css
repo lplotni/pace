@@ -7,9 +7,12 @@ hr.navigation {
     top: -10px;
 }
 
-img.logo {
-    width: 125px;
-    height: 125px;
+object.logo {
+    width: 100%;
+    max-width: 15em;
+    height: auto;
+    margin: auto;
+    display: block;
 }
 
 img.tshirt {
@@ -18,6 +21,10 @@ img.tshirt {
 
 .hidden {
     opacity: 0;
+}
+
+.outer {
+  width: 100%;
 }
 
 .center {
@@ -34,6 +41,48 @@ img.tshirt {
     color: #FFF;
     background-color: black;
     border-color: black;
+}
+
+html {
+  height: 100%;
+  width: 100%
+}
+
+body {
+  height: 100%;
+  width: 100%
+}
+
+.content {
+  margin-top: 1em;
+  flex-grow: 2;
+}
+
+.outer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%
+}
+
+
+.outer-content-container {
+  padding-top: 2em;
+  flex-grow: 2;
+  width: 100%;
+  background-color: #f8f8f8;
+}
+
+.outer-footer-container {
+  bottom: 0;
+  width: 100%;
+  background-color: black;
+  position: relative;
+}
+
+.footer {
+    color: white;
+    text-align: center;
 }
 
 .warning {
@@ -109,4 +158,3 @@ input[type="button"].button-primary:focus {
     background-color: rgb(200, 0, 39);
     border-color: rgb(200, 0, 39);
 }
-

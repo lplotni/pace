@@ -57,6 +57,7 @@ function startSelenium() {
   var deferred = Q.defer();
   selenium.start(function (err, child) {
     if (err) {
+      console.log(err)
       deferred.reject(err);
     } else {
       selenium.child = child;

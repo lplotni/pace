@@ -34,6 +34,11 @@ block content
              option(value='yes', selected=(participant.visibility=='yes')) Ja
              option(value='no', selected=(participant.visibility=='no')) Nein
 
+      .row
+        .six.columns
+          label Zahlungsstatus:
+          p#paymentStatus #{participant.has_payed ? 'Zahlung eingegangen' : 'Zahlung noch nicht eingegangen' }
+
     input(type='hidden', name='participantid', value='#{participantid}')
     input(type='hidden', name='_csrf', value=_csrf)
 

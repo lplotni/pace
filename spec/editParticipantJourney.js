@@ -29,7 +29,7 @@ describe('edit participant journey', () => {
       email: 'f.schiller@example.com',
       category: 'f',
       birthyear: 1980,
-     team: 'Crazy runners',
+      team: 'Crazy runners',
       visibility: 'no'
     };
     let aToken = '23eF67i';
@@ -70,6 +70,10 @@ describe('edit participant journey', () => {
           .then(function (value) {
             expect(value).toBe('Crazy runners');
           })
+          .getText('p#paymentStatus')
+          .then(function (value) {
+              expect(value).toBe('Zahlung noch nicht eingegangen');
+          })
           .end(done);
       });
   });
@@ -87,5 +91,4 @@ describe('edit participant journey', () => {
       })
       .end(done);
   });
-
 });

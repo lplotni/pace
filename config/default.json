@@ -8,7 +8,12 @@
     "standard": "15"
   },
   "contact": {
-    "email": "info@lauf-gegen-rechts.de"
+    "email": "info@lauf-gegen-rechts.de",
+    "bank": {
+      "name": "Eine nette Bank",
+      "iban": "1234567890",
+      "bic": "DE12345677"
+    }
   },
   "admin": {
     "username": "admin",

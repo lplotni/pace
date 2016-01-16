@@ -2,10 +2,10 @@ h3 Hey #{name}!
     h5 Danke für deine Registrierung.
         |  Bitte überweise den Betrag von&nbsp;
         span.amount #{amount}
-        |  Euro innerhalb der naechsten zwei Wochen auf folgendes Konto:
-        pre Eine nette Bank
-            | IBAN 0234092093
-            | BIC  111222122
-            | Betreff: LGR: #{token}
-        |  Sobald die Gebühr beglichen wird,
+        |  Euro auf folgendes Konto:
+        pre #{bank.name}
+            | IBAN #{bank.iban}
+            | BIC  #{bank.bic}
+            | Verwendungszweck: #{token}
+        |  Sobald die Gebühr beglichen ist,
         |  wirst du in der Teilnehmerliste hinzugefügt.

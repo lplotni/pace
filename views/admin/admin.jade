@@ -17,3 +17,14 @@ block content
           td=p.model
           td=p.amount
 
+
+
+  h3 Zahlungsmoral (Anmeldungen)
+
+  table
+    thead
+      th Bezahlt
+      th Nicht bezahlt
+    tbody
+      td #{confirmed[0].count}
+      td #{unconfirmed[0].count}

@@ -10,7 +10,7 @@ const config = require('config');
 
 describe('user deletion journey', () => {
   let loggedInClient;
-  const participantsListUrl = helper.paceUrl + 'participants';
+  const participantsListUrl = helper.paceUrl + 'admin/participants';
   const loginUrl = helper.paceUrl + 'login';
 
   beforeAll((done) => {

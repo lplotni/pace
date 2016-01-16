@@ -14,7 +14,7 @@ var canConfirmPayments = function (role) {
 
 router.get('/', isAuthenticated, (req, res) => {
   if (canConfirmPayments(req.user.role)) {
-  participants.getRegistered().then(result => res.render('paymentValidation/paymentValidation', {participants: result})); //todo catch
+  participants.getRegistered().then(result => res.render('paymentValidation/paymentValidation', {participants: result, isAdmin: true})); //todo catch
 } else {
   res.render('error', {
     message: 'Bitte anmelden',
@@ -35,13 +35,15 @@ router.post('/', isAuthenticated, (req, res) => {
     token: paymentToken,
     name: result.name,
     amount: calculator.priceFor(result),
-    participantid: result.id
+    participantid: result.id,
+    isAdmin: true
   })
 )
 .catch(error =>
   res.render('paymentValidation/paymentValidation', {
     token: paymentToken,
-    error: error.message
+    error: error.message,
+    isAdmin: true
   })
 );
 }
@@ -57,9 +59,10 @@ router.post('/confirm', isAuthenticated, (req, res) => {
         token: req.body.paymenttoken,
         name: req.body.name,
         amount: req.body.amount,
-        participantid: req.body.participantid
+        participantid: req.body.participantid,
+        isAdmin: true
       })
-    )
+    );
   }
 });
 

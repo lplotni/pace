@@ -2,55 +2,7 @@ extends ../layout
 
 block content
   .row
-    if isAdmin
-      table.u-full-width
-        thead
-          tr
-            th Vorname
-            th Nachname
-            th Team name
-            th Email
-            th Kategorie
-            th Geburtsjahr
-            th Bezahlt
-            th Betrag
-            th Token
-            th Anzahl T-shirts
-            th T-shirt Größen
-            th
-            th
-            th
-        tbody
-          each p in participants
-            tr.participant-line
-              td=p.firstname
-              td=p.lastname
-              td=p.team
-              td=p.email
-              td=p.category
-              td=p.birthyear
-              td=(p.has_payed ? 'ja' : 'nein')
-              td#amount=p.amount
-              td=p.paymenttoken
-              td#tshirt-amount=(p.tshirt ? p.tshirt.amount : 0)
-              td
-                if p.tshirt
-                  each t in p.tshirt.details
-                    li=t.size + ' (' + t.model + ')'
-              td
-                form#payment-details(method='POST', action='/paymentValidation/confirm')
-                  input(type='hidden', name='_csrf', value=_csrf)
-                  input(type='hidden', name='participantid', value='#{p.id}')
-                  button#confirm-registration.button-primary(type='submit') Registrierung bestätigen
-               td
-                form#user-delete(method='POST', action='/editparticipant/delete')
-                  input(type='hidden', name='_csrf', value=_csrf)
-                  input(type='hidden', name='participantid', value='#{p.id}')
-                  button#delete-user.button-primary(type='submit') L&ouml;schen
-              td
-                a#edit.button(href='#{p.editUrl}') Bearbeiten
-    else
-      table
+    table
         thead
           tr
             th Vorname

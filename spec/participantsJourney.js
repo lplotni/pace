@@ -57,7 +57,7 @@ describe('participants page', () => {
           .setValue('input#username', config.get('admin.username'))
           .setValue('input#password', config.get('admin.password'))
           .click('button#submit')
-          .url(participantsUrl)
+          .url(helper.paceUrl+'admin/participants')
           .elements('tr.participant-line')
           .then(function (res) {
             expect(res.value.length).toBe(1);
@@ -153,7 +153,7 @@ describe('admin view', () => {
     };
 
     it('shows a search box', (done) => {
-    setUpLoggedInClient().url(participantsUrl)
+    setUpLoggedInClient().url(helper.paceUrl+'admin/participants')
       .isVisible('.dataTables_filter')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
@@ -181,7 +181,7 @@ describe('admin view', () => {
           return  participants.save(anotherParticipant, anotherToken);
         })
         .then( () => {
-          setUpLoggedInClient().url(participantsUrl)
+          setUpLoggedInClient().url(helper.paceUrl+'admin/participants')
           .setValue('.dataTables_filter input', 'Friedrich')
           .elements('tr.participant-line')
           .then( (res) => {
@@ -201,7 +201,7 @@ describe('admin view', () => {
 
       participants.save(aParticipant, aToken)
         .then(() => {
-          setUpLoggedInClient().url(participantsUrl)
+          setUpLoggedInClient().url(helper.paceUrl+'admin/participants')
             .isVisible('a#edit')
             .then(function (isVisible) {
               expect(isVisible).toBe(true);
@@ -222,7 +222,7 @@ describe('admin view', () => {
         .then(() => {
           let loggedInClient = setUpLoggedInClient();
 
-          loggedInClient.url(participantsUrl)
+          loggedInClient.url(helper.paceUrl+'admin/participants')
             .elements('td#tshirt-amount')
             .then(function (tshirtFields) {
               loggedInClient.elementIdText(tshirtFields.value[0].ELEMENT)
@@ -260,7 +260,7 @@ describe('admin view', () => {
         .then(function () {
           var loggedInClient = setUpLoggedInClient();
 
-          loggedInClient.url(participantsUrl)
+          loggedInClient.url(helper.paceUrl+'admin/participants')
             .elements('td#tshirt-amount')
             .then(function (tshirtFields) {
               loggedInClient.elementIdText(tshirtFields.value[0].ELEMENT)

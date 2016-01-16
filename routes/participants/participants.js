@@ -2,17 +2,10 @@
 /* jshint esnext: true */
 'use strict';
 
-var Q = require('q');
 var router = require('express').Router();
 var participants = require('../../service/participants');
 var accesscontrol = require('../../acl/accesscontrol');
 var editUrlGenerator = require('../../domain/editUrlGenerator');
-var participant = require('../../domain/participant');
-var costCalculator = require('../../domain/costCalculator');
-
-var canViewParticipantDetails = function (role) {
-  return accesscontrol.hasPermissionTo(role, 'view participant details');
-};
 
 var useDefaultAuthentication = function (req, res, next) {
   if (req.user) {
@@ -23,40 +16,10 @@ var useDefaultAuthentication = function (req, res, next) {
   }
 };
 
-var addEditUrlTo = function (participants) {
-  participants.map(participant => {
-    participant.editUrl = editUrlGenerator.generateEncryptedUrl(participant.id.toString());
-    return participant;
-  });
-};
-
-var addAmountTo = function (participants) {
-  participants.map(function(participant) {
-    participant.amount = costCalculator.priceFor(participant);
-    return participant;
-  });
-};
-
 router.get('/', useDefaultAuthentication, (req, res) => {
-  if (canViewParticipantDetails(req.user.role)) {
-    participants.getConfirmed().then(result => {
-      var allParticipants = result;
-      participants.getRegistered().then(result => {
-        allParticipants = allParticipants.concat(result);
-        addEditUrlTo(allParticipants);
-        Q.all(allParticipants.map(participant.addTshirtDetailsTo))
-          .then(() => {
-            addAmountTo(allParticipants);
-            res.render('participants/list', {participants: allParticipants, isAdmin: true});
-          }
-        );
-      });
-    });
-  } else {
-    participants.getPubliclyVisible().then(result  =>
-      res.render('participants/list', {participants: result, isAdmin: false})
-    );
-  }
+  participants.getPubliclyVisible().then(result  =>
+    res.render('participants/list', {participants: result})
+  );
 });
 
 module.exports = router;

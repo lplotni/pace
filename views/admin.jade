@@ -2,3 +2,18 @@ extends layout
 
 block content
   a#paymentValidation.button(href='/paymentvalidation') Überprüfung der Zahlungseingänge
+
+  h3 Bestellte und bezahlte T-Shirts:
+  table
+    thead
+      tr
+        th Size
+        th Model
+        th Amount
+    tbody
+      each p in orders
+        tr.shirt-line
+          td=p.size
+          td=p.model
+          td=p.amount
+

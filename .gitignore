@@ -28,5 +28,7 @@ node_modules
 
 # Vagrant box
 .vagrant/
-#Ignoring the idea folder
+# Ignoring the idea folder
 .idea/
+# ignoring OSX .DS_STORE files
+**/.DS_Store

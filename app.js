@@ -2,33 +2,33 @@
 /* jshint esnext: true */
 'use strict';
 
-var express = require('express');
-var path = require('path');
-var favicon = require('static-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var flash = require('connect-flash');
+let express = require('express');
+let path = require('path');
+let favicon = require('static-favicon');
+let logger = require('morgan');
+let cookieParser = require('cookie-parser');
+let bodyParser = require('body-parser');
+let passport = require('passport');
+let LocalStrategy = require('passport-local').Strategy;
+let flash = require('connect-flash');
 
-var indexRoute = require('./routes/index');
-var loginRoute = require('./routes/login');
-var logoutRoute = require('./routes/logout');
+let indexRoute = require('./routes/index');
+let loginRoute = require('./routes/login');
+let logoutRoute = require('./routes/logout');
 
-var registrationRoute = require('./routes/participants/registration');
-var participantsRoute = require('./routes/participants/participants');
-var editParticipantRoute = require('./routes/participants/editParticipant');
+let registrationRoute = require('./routes/participants/registration');
+let participantsRoute = require('./routes/participants/participants');
+let editParticipantRoute = require('./routes/participants/editParticipant');
 
-var adminRoute = require('./routes/admin/admin');
-var adminParticipantsRoute = require('./routes/admin/participants');
-var adminEditParticipantRoute = require('./routes/admin/editParticipant');
-var paymentValidationRoute = require('./routes/admin/paymentValidation');
+let adminRoute = require('./routes/admin/admin');
+let adminParticipantsRoute = require('./routes/admin/participants');
+let adminEditParticipantRoute = require('./routes/admin/editParticipant');
+let paymentValidationRoute = require('./routes/admin/paymentValidation');
 
-var config = require('config');
-var csrf = require('csurf');
+let config = require('config');
+let csrf = require('csurf');
 
-var app = express();
+let app = express();
 
 app.locals.node_env = process.env.NODE_ENV;
 // view engine setup
@@ -80,7 +80,7 @@ passport.deserializeUser(function (id, done) {
 passport.use(new LocalStrategy(
     function (username, password, done) {
         if (username === config.get('admin.username') && password === config.get('admin.password')) {
-            var user = {username: 'admin', role: 'admin'};
+            let user = {username: 'admin', role: 'admin'};
             return done(null, user);
         } else {
             done(null, false, {message: 'Bitte Benutzername und Passwort überprüfen.'});
@@ -103,7 +103,7 @@ app.use('/admin/editparticipant', adminEditParticipantRoute);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var err = new Error('Not Found');
+    let err = new Error('Not Found');
     err.status = 404;
     next(err);
 });

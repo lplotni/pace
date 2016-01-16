@@ -7,6 +7,12 @@ const participants = require('../../service/participants');
 const participant = require('../../domain/participant');
 const editUrlGenerator = require('../../domain/editUrlGenerator');
 
+const accesscontrol = require('../../acl/accesscontrol');
+
+var canDeleteUser = function (role) {
+  return accesscontrol.hasPermissionTo(role, 'delete');
+};
+
 router.get('/', (req, res) => {
   const participantId = editUrlGenerator.getIdFromEncryptedUrl(req.query.edit);
   participants.getFullInfoById(participantId)
@@ -25,6 +31,23 @@ router.post('/', (req, res) => {
   participants.update(currentParticipant, id)
     .then(() => res.render('participants/success', {name: req.body.firstname + ' ' + req.body.lastname}))
     .catch(() => res.render('error', {message: "Es ist ein Fehler aufgetreten", error: {status: "Bitte versuche es nochmal"}}));
+});
+
+router.post('/delete', (req, res) => {
+  if (canDeleteUser(req.user.role)) {
+    const id = req.body.participantid;
+    participants.delete(id)
+      .then(() => res.redirect('/participants'))
+      .catch(() => res.render('error', {message: "Es ist ein Fehler aufgetreten", error: {status: "Bitte versuche es nochmal"}}));
+  } else {
+    res.render('error', {
+      message: 'Bitte anmelden',
+      error: {
+        status: 'Nur Administratoren können diese Seite einsehen'
+      }
+    });
+  }
+
 });
 
 module.exports = router;

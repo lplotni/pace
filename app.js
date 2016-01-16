@@ -1,4 +1,7 @@
 /* jshint node: true */
+/* jshint esnext: true */
+'use strict';
+
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -18,6 +21,7 @@ var participantsRoute = require('./routes/participants/participants');
 var editParticipantRoute = require('./routes/participants/editParticipant');
 
 var adminRoute = require('./routes/admin/admin');
+var adminEditParticipant = require('./routes/admin/editParticipant');
 var paymentValidationRoute = require('./routes/admin/paymentValidation');
 var config = require('config');
 
@@ -50,7 +54,7 @@ app.use(require('express-session')(
         saveUninitialized: false,
         httpOnly: true,
         cookie: {
-          secure: config.get('https'),
+          secure: config.get('https')
         }
     }));
 
@@ -85,6 +89,7 @@ passport.use(new LocalStrategy(
 
 app.use('/', indexRoute);
 app.use('/admin', adminRoute);
+app.use('/admin/editparticipant', adminEditParticipant);
 app.use('/registration', registrationRoute);
 app.use('/participants', participantsRoute);
 app.use('/paymentvalidation', paymentValidationRoute);

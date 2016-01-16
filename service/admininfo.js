@@ -12,8 +12,8 @@ admininfo.getShirtOrders = function () {
 };
 admininfo.getConfirmedParticipants = function () {
     return db.select('select count(*) from participants where has_payed=true;');
-}
+};
 admininfo.getUnonfirmedParticipants = function () {
       return db.select('select count(*) from participants where has_payed=false;');
-}
+};
 module.exports = admininfo;

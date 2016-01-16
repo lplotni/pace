@@ -14,7 +14,7 @@ var canConfirmPayments = function (role) {
 
 router.get('/', isAuthenticated, (req, res) => {
   if (canConfirmPayments(req.user.role)) {
-    participants.getRegistered().then(result => res.render('paymentValidation/paymentValidation', {
+    participants.getRegistered().then(result => res.render('admin/paymentValidation/paymentValidation', {
       participants: result,
       isAdmin: true
     })); //todo catch
@@ -34,7 +34,7 @@ router.post('/', isAuthenticated, (req, res) => {
 
     participants.getByToken(paymentToken)
       .then(result =>
-        res.render('paymentValidation/paymentValidation', {
+        res.render('admin/paymentValidation/paymentValidation', {
           token: paymentToken,
           name: result.name,
           amount: calculator.priceFor(result),
@@ -43,7 +43,7 @@ router.post('/', isAuthenticated, (req, res) => {
         })
       )
       .catch(error =>
-        res.render('paymentValidation/paymentValidation', {
+        res.render('admin/paymentValidation/paymentValidation', {
           token: paymentToken,
           error: error.message,
           isAdmin: true
@@ -57,7 +57,7 @@ router.post('/confirm', isAuthenticated, (req, res) => {
     participants.confirmParticipant(req.body.participantid)
       .then(() => res.redirect(req.get('referer')))
       .catch(() =>
-        res.render('paymentValidation/paymentValidation', {
+        res.render('admin/paymentValidation/paymentValidation', {
           error: 'Fehler: Der Teilnehmer konnte nicht bestätigt werden',
           token: req.body.paymenttoken,
           name: req.body.name,

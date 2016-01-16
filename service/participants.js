@@ -46,7 +46,7 @@ service.delete = function (participantid) {
   const deferred = Q.defer();
   db.select('delete from participants where id=$1',[participantid])
     .then((result) => {
-        deferred.resolve();
+        deferred.resolve(result);
     })
     .catch(deferred.reject);
   return deferred.promise;
@@ -183,7 +183,7 @@ service.confirmParticipant = function (participantId) {
     .then(() => {
       service.getById(participantId)
         .then(result => {
-          jade.renderFile('views/paymentValidation/text.jade', {name: result.name}, (error, html) =>
+          jade.renderFile('views/admin/paymentValidation/text.jade', {name: result.name}, (error, html) =>
             service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html)
           );
         });

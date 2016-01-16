@@ -21,10 +21,11 @@ var participantsRoute = require('./routes/participants/participants');
 var editParticipantRoute = require('./routes/participants/editParticipant');
 
 var adminRoute = require('./routes/admin/admin');
-var adminEditParticipant = require('./routes/admin/editParticipant');
+var adminParticipantsRoute = require('./routes/admin/participants');
+var adminEditParticipantRoute = require('./routes/admin/editParticipant');
 var paymentValidationRoute = require('./routes/admin/paymentValidation');
-var config = require('config');
 
+var config = require('config');
 var csrf = require('csurf');
 
 var app = express();
@@ -88,14 +89,17 @@ passport.use(new LocalStrategy(
 ));
 
 app.use('/', indexRoute);
-app.use('/admin', adminRoute);
-app.use('/admin/editparticipant', adminEditParticipant);
 app.use('/registration', registrationRoute);
 app.use('/participants', participantsRoute);
 app.use('/paymentvalidation', paymentValidationRoute);
 app.use('/editparticipant', editParticipantRoute);
+
 app.use('/login', loginRoute);
 app.use('/logout', logoutRoute);
+
+app.use('/admin', adminRoute);
+app.use('/admin/participants', adminParticipantsRoute);
+app.use('/admin/editparticipant', adminEditParticipantRoute);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {

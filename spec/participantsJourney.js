@@ -123,7 +123,7 @@ describe('participants page', () => {
       lastname: 'Newton',
       email: 'i.newton@example.com',
       visibility: 'yes'
-    }
+    };
     let anotherToken = 'another token';
     participants.save(aParticipant, aToken).then(participants.markPayed)
 
@@ -139,8 +139,8 @@ describe('participants page', () => {
           expect(res.value.length).toBe(1);
         })
         .end(done);
-      })
-  })
+      });
+  });
 
 describe('admin view', () => {
 
@@ -174,7 +174,7 @@ describe('admin view', () => {
         firstname: 'Issac',
         lastname: 'Newton',
         email: 'i.newton@example.com'
-      }
+      };
       let anotherToken = 'another token';
       participants.save(aParticipant, aToken)
         .then( () => {
@@ -188,8 +188,8 @@ describe('admin view', () => {
             expect(res.value.length).toBe(1);
           })
           .end(done);
-        })
-    })
+        });
+    });
 
     it('should have a link to edit a participant', (done) => {
       let aParticipant = {

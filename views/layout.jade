@@ -1,36 +1,36 @@
 block variables
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/css/normalize.css')
-    link(rel='stylesheet', href='/stylesheets/css/skeleton.css')
-    link(rel='stylesheet', href='/stylesheets/css/pace.css')
-    link(rel='stylesheet', href='/DataTables/DataTables-1.10.10/css/jquery.dataTables.min.css')
-    script(src='/DataTables/jQuery-2.1.4/jquery-2.1.4.min.js')
-    script(src='/DataTables/DataTables-1.10.10/js/jquery.dataTables.min.js')
-  body
-    .outer-container
-      .container
-        if (node_env) != "production"
-          .row
-            h6.warning.centered DIES IST NUR EINE TESTUMGEBUNG. REGISTRIERUNGEN FUER 2016 SIND NOCH NICHT MOEGLICH
-        .row
-          a.four.columns.no-link(href='/')
-            h5.centered Information
-          a#registration.four.columns.no-link(href='/registration')
-            h5.centered Anmeldung
-          if isAdmin
-            a.four.columns.no-link(href='/admin/participants')
-              h5.centered Teilnehmer
-          else
-            a.four.columns.no-link(href='/participants')
-              h5.centered Teilnehmer
-        .row
-          .offset-by-four.four.columns
-            object.logo(data='/images/logo.svg', type='image/svg+xml')
-      .outer-content-container
-        .container
-          block content
-      .outer-footer-container
-        .footer Footer. Info about the site. Email etc.
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/css/normalize.css')
+        link(rel='stylesheet', href='/stylesheets/css/skeleton.css')
+        link(rel='stylesheet', href='/stylesheets/css/pace.css')
+        link(rel='stylesheet', href='/DataTables/DataTables-1.10.10/css/jquery.dataTables.min.css')
+        script(src='/DataTables/jQuery-2.1.4/jquery-2.1.4.min.js')
+        script(src='/DataTables/DataTables-1.10.10/js/jquery.dataTables.min.js')
+        script(src='/javascript/activeLink.js')
+    body
+        .outer-container
+            .container
+                if (node_env) != "production"
+                    .row
+                        h6.warning.centered DIES IST NUR EINE TESTUMGEBUNG. REGISTRIERUNGEN FUER 2016 SIND NOCH NICHT MOEGLICH
+                .row
+                    a.four.columns.no-link(href='/')
+                        h5.centered Information
+                    a#registration.four.columns.no-link(href='/registration')
+                        h5.centered Anmeldung
+                    a.four.columns.no-link(href='/participants')
+                        h5.centered Teilnehmer
+                .row
+                    .offset-by-four.four.columns
+                        object.logo(data='/images/logo.svg', type='image/svg+xml')
+            .outer-content-container
+                .container
+                    block content
+            .outer-footer-container
+                .footer Footer. Info about the site. Email etc.
+
+
+

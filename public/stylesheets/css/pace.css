@@ -43,6 +43,15 @@ img.tshirt {
     border-color: black;
 }
 
+.slim {
+    line-height: 0;
+    margin: 0;
+}
+
+.primary {
+    margin-top: 20px;
+}
+
 html {
   height: 100%;
   width: 100%

@@ -24,20 +24,17 @@ describe('participants page', () => {
   });
 
   it('shows full participant list only if logged in as admin', (done) => {
-    let fullDetailsHeaderRow = ['Vorname',
+    let adminsListElements = [
+      'Vorname',
       'Nachname',
-      'Team name',
-      'Email',
-      'Kategorie',
-      'Geburtsjahr',
       'Bezahlt',
       'Betrag',
       'Token',
       'Anzahl T-shirts',
       'T-shirt Größen',
-      'Registrierung bestätigen',
-      'Bearbeiten',
-      'L&ouml;schen'];
+      'Bestätigen button',
+      'Löschen button',
+      'Edit button'];
 
     let aParticipant = {
       firstname: 'Friedrich',
@@ -64,7 +61,7 @@ describe('participants page', () => {
           })
           .elements('th')
           .then(function (res) {
-            expect(res.value.length).toBe(fullDetailsHeaderRow.length);
+            expect(res.value.length).toBe(adminsListElements.length);
           })
           .end(done);
       });

@@ -7,10 +7,6 @@ block content
                 tr
                     th Vorname
                     th Nachname
-                    th Team name
-                    th Email
-                    th Kategorie
-                    th Geburtsjahr
                     th Bezahlt
                     th Betrag
                     th Token
@@ -24,10 +20,6 @@ block content
                     tr.participant-line
                         td=p.firstname
                         td=p.lastname
-                        td=p.team
-                        td=p.email
-                        td=p.category
-                        td=p.birthyear
                         td=(p.has_payed ? 'ja' : 'nein')
                         td#amount=p.amount
                         td=p.paymenttoken
@@ -35,17 +27,21 @@ block content
                         td
                             if p.tshirt
                                 each t in p.tshirt.details
-                                    li=t.size + ' (' + t.model + ')'
+                                    span=t.size + ' (' + t.model + ')'
                         td
                             form#payment-details(method='POST', action='/paymentValidation/confirm')
                                 input(type='hidden', name='_csrf', value=_csrf)
                                 input(type='hidden', name='participantid', value='#{p.id}')
-                                button#confirm-registration.button-primary(type='submit') Registrierung bestätigen
+                                button#confirm-registration.icon.button-primary(type='submit')
+                                    span.lnr.lnr-checkmark-circle
                         td
                             form#user-delete(method='POST', action='editparticipant/delete')
                                 input(type='hidden', name='_csrf', value=_csrf)
                                 input(type='hidden', name='participantid', value='#{p.id}')
-                                button#delete-user.button-primary(type='submit') L&ouml;schen
+                                button#delete-user.icon.button-primary(type='submit')
+                                    span.lnr.lnr-trash
                         td
-                            a#edit.button(href='#{p.editUrl}') Bearbeiten
+                            form
+                                 a#edit.button.icon(href='#{p.editUrl}')
+                                    span.lnr.lnr-pencil
     script(src='/javascript/searchAndSort.js')

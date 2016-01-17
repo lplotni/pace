@@ -52,6 +52,28 @@ img.tshirt {
     margin-top: 20px;
 }
 
+.icon {
+    font-size: 25px;
+}
+
+button#confirm-registration{
+    border: 1px solid green;
+    background-color: #2E8B57;
+}
+
+button#confirm-registration:hover{
+    border: 1px solid green;
+    background-color: #008080;
+}
+
+table button {
+    margin: 0;
+}
+
+table .button {
+    margin: 0;
+}
+
 html {
   height: 100%;
   width: 100%

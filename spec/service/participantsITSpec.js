@@ -172,7 +172,7 @@ describe('participants service', () => {
             });
         });
     });
-      
+
     it('should delete users with tshirts', (done) => {
       let paymentToken = 'a token';
       const aParticipantWithTshirt = {
@@ -284,20 +284,23 @@ describe('participants service', () => {
             birthyear: 1981,
             team: 'Crazy runners updated'
           };
-          participants.update(updatedParticipant, id)
-            .then(() => {
-              participants.getFullInfoById(id)
-                .then(function (participant) {
-                  expect(participant.firstname).toBe('Hertha updated');
-                  expect(participant.lastname).toBe('Mustermann updated');
-                  expect(participant.email).toBe('h.mustermann@example.com updated');
-                  expect(participant.category).toBe('Unicorn updated');
-                  expect(participant.birthyear).toBe(1981);
-                  expect(participant.team).toBe('Crazy runners updated');
-                  done();
-                })
-                .fail(fail);
-            });
+          participants.getFullInfoById(id)
+          .then((p) => {
+            participants.update(updatedParticipant, p.secureid)
+              .then(() => {
+                participants.getFullInfoById(id)
+                  .then(function (participant) {
+                    expect(participant.firstname).toBe('Hertha updated');
+                    expect(participant.lastname).toBe('Mustermann updated');
+                    expect(participant.email).toBe('h.mustermann@example.com updated');
+                    expect(participant.category).toBe('Unicorn updated');
+                    expect(participant.birthyear).toBe(1981);
+                    expect(participant.team).toBe('Crazy runners updated');
+                    done();
+                  })
+                  .fail(fail);
+              });
+          })
         });
     });
   });

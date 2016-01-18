@@ -4,35 +4,47 @@
 /* global describe, beforeEach, afterAll, spyOn, it, expect, fail, jasmine */
 const mockery = require('mockery');
 const Q = require('q');
+const editUrlHelper = require('../../domain/editUrlHelper')
+
+const secureId = 'secureId';
 
 
 describe('participants service', () => {
 
-    let dbHelperMock;
+    let dbHelperMock, participants, editUrlHelperMock;
 
-    describe('createUniqueToken', () => {
-      let participants;
-      let setupMocks = function () {
+    beforeEach(() => {
+      mockery.enable({
+        useCleanCache: true,
+        warnOnReplace: false,
+        warnOnUnregistered: false
+      });
 
-        mockery.enable({
-          useCleanCache: true,
-          warnOnReplace: false,
-          warnOnUnregistered: false
-        });
-        mockery.resetCache();
-        mockery.registerAllowables(['q', '../../service/dbHelper.js']);
+      mockery.resetCache();
 
-        dbHelperMock = {
-          select: jasmine.createSpy()
-        };
 
-        mockery.registerMock('../service/dbHelper', dbHelperMock);
-
-        participants = require('../../service/participants');
+      dbHelperMock = {
+        select: jasmine.createSpy(),
+        insert: jasmine.createSpy()
       };
 
+      editUrlHelperMock = {
+        generateSecureID: jasmine.createSpy()
+      }
+
+      mockery.registerMock('../service/dbHelper', dbHelperMock);
+      mockery.registerMock('../domain/editUrlHelper', editUrlHelperMock);
+
+      mockery.registerAllowables(['q', '../../service/dbHelper.js', '../../service/editUrlHelper']);
+      participants = require('../../service/participants');
+      dbHelperMock.select.and.returnValue(Q.fcall(() => []));
+
+    });
+
+    describe('createUniqueToken', () => {
+
       beforeEach(() => {
-        setupMocks();
+        dbHelperMock.select.and.returnValue(Q.fcall(() => []));
       });
 
       it('returns a string with 5 upper case characters', (done) => {
@@ -74,9 +86,27 @@ describe('participants service', () => {
           expect(dbHelperMock.select.calls.count()).toBe(2);
           done();
         });
-
-
       });
     });
+    describe('save', () => {
+
+      it('passes the newly generated secureId in the DB', () => {
+        const aParticipant = {
+          firstname: 'Hertha',
+          lastname: 'Mustermann',
+          email: 'h.mustermann@example.com',
+          category: 'Unicorn',
+          birthyear: 1980,
+          visibility: 'yes',
+          team: 'Crazy runners'
+        };
+
+        editUrlHelperMock.generateSecureID.and.returnValue(secureId)
+
+          participants.save(aParticipant, 'a token');
+          const params = dbHelperMock.insert.calls.mostRecent().args[1];
+          expect(params[params.length -1]).toBe(secureId);
+      })
+    })
   }
 );

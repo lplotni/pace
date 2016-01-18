@@ -8,12 +8,12 @@ const accesscontrol = require('../../acl/accesscontrol');
 const isAuthenticated = require('../../acl/authentication');
 const participants = require('../../service/participants');
 const participant = require('../../domain/participant');
-const editUrlGenerator = require('../../domain/editUrlGenerator');
+const editUrlHelper = require('../../domain/editUrlHelper');
 const costCalculator = require('../../domain/costCalculator');
 
 let addEditUrlTo = function (participants) {
   participants.map(participant => {
-    participant.editUrl = editUrlGenerator.generateEncryptedUrl(participant.id.toString());
+    participant.editUrl = editUrlHelper.generateUrl(participant.secureid);
     return participant;
   });
 };

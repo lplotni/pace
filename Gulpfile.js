@@ -108,7 +108,8 @@ gulp.task('test-functional', function () {
     startSelenium().then(function (selenium) {
       testFunctional(argv.single).then(function () {
         cleanUp(selenium, server, deferred.resolve);
-      }).fail(function () {
+      }).fail(function (e) {
+        console.log(e);
         cleanUp(selenium, server, deferred.reject);
       });
     })

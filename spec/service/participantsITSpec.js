@@ -54,7 +54,7 @@ describe('participants service', () => {
   });
 
   it('should store and read participants', (done) => {
-    let randomToken = '1234567';
+    const randomToken = '1234567';
 
     participants.save(aParticipant, randomToken)
       .then(participants.getRegistered)

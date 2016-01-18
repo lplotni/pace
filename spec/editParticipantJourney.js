@@ -6,7 +6,6 @@
 let helper = require('./journeyHelper');
 let pg = require('pg');
 let participants = require('../service/participants');
-let editUrlGenerator = require('../domain/editUrlGenerator');
 
 describe('edit participant journey', () => {
 
@@ -36,45 +35,50 @@ describe('edit participant journey', () => {
 
     participants.save(aParticipant, aToken)
       .then(function (id) {
-        let editUrl = editUrlGenerator.generateEncryptedUrl(id.toString());
-        helper.setUpClient()
-          .url(editParticipantUrl + '/?edit=' + editUrl)
-          .isVisible('form#editParticipantForm')
-          .then(function (isVisible) {
-            expect(isVisible).toBe(true);
-          })
-          .getValue('input#firstname')
-          .then(function (value) {
-            expect(value).toBe('Friedrich');
-          })
-          .getValue('input#lastname')
-          .then(function (value) {
-            expect(value).toBe('Schiller');
-          })
-          .getValue('input#email')
-          .then(function (value) {
-            expect(value).toBe('f.schiller@example.com');
-          })
-          .getValue('select#visibility')
-          .then(function (value) {
-            expect(value).toBe('no');
-          }).getValue('select#category')
-          .then(function (value) {
-            expect(value).toBe('f');
-          })
-          .getValue('input#birthyear')
-          .then(function (value) {
-            expect(value).toBe('1980');
-          })
-          .getValue('input#team')
-          .then(function (value) {
-            expect(value).toBe('Crazy runners');
-          })
-          .getText('p#paymentStatus')
-          .then(function (value) {
-              expect(value).toBe('Zahlung noch nicht eingegangen');
-          })
-          .end(done);
+
+        participants.getFullInfoById(id)
+          .then(p => {
+            let secureid = p.secureid;
+
+            helper.setUpClient()
+              .url(editParticipantUrl + '/?edit=' + secureid)
+              .isVisible('form#editParticipantForm')
+              .then(function (isVisible) {
+                expect(isVisible).toBe(true);
+              })
+              .getValue('input#firstname')
+              .then(function (value) {
+                expect(value).toBe('Friedrich');
+              })
+              .getValue('input#lastname')
+              .then(function (value) {
+                expect(value).toBe('Schiller');
+              })
+              .getValue('input#email')
+              .then(function (value) {
+                expect(value).toBe('f.schiller@example.com');
+              })
+              .getValue('select#visibility')
+              .then(function (value) {
+                expect(value).toBe('no');
+              }).getValue('select#category')
+              .then(function (value) {
+                expect(value).toBe('f');
+              })
+              .getValue('input#birthyear')
+              .then(function (value) {
+                expect(value).toBe('1980');
+              })
+              .getValue('input#team')
+              .then(function (value) {
+                expect(value).toBe('Crazy runners');
+              })
+              .getText('p#paymentStatus')
+              .then(function (value) {
+                  expect(value).toBe('Zahlung noch nicht eingegangen');
+              })
+              .end(done);
+          });
       });
   });
 

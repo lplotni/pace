@@ -24,7 +24,6 @@ participant.from = function (body) {
   if (invalidData(body)) {
     throw new TypeError('Required attributes are not present');
   }
-
   return {
     firstname: body.firstname,
     lastname: body.lastname,

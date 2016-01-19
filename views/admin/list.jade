@@ -18,8 +18,8 @@ block content
             tbody
                 each p in participants
                     tr.participant-line
-                        td=p.firstname
-                        td=p.lastname
+                        td.first-name=p.firstname
+                        td.last-name=p.lastname
                         td=(p.has_payed ? 'ja' : 'nein')
                         td#amount=p.amount
                         td=p.paymenttoken
@@ -42,6 +42,6 @@ block content
                                     span.lnr.lnr-trash
                         td
                             form
-                                 a#edit.button.icon(href='#{p.editUrl}')
+                                 a#edit.edit-button.button.icon(href='#{p.editUrl}')
                                     span.lnr.lnr-pencil
     script(src='/javascript/searchAndSort.js')

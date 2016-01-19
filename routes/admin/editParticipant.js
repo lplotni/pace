@@ -5,7 +5,7 @@
 const router = require('express').Router();
 const participants = require('../../service/participants');
 const participant = require('../../domain/participant');
-const editUrlGenerator = require('../../domain/editUrlGenerator');
+const editUrlHelper = require('../../domain/editUrlHelper');
 
 const accesscontrol = require('../../acl/accesscontrol');
 
@@ -14,9 +14,9 @@ var canDeleteUser = function (role) {
 };
 
 router.get('/', (req, res) => {
-  const participantId = editUrlGenerator.getIdFromEncryptedUrl(req.query.edit);
-  participants.getFullInfoById(participantId)
-    .then(p => res.render('participants/editParticipant', {participant: p, participantid: participantId}))
+  const participantId = editUrlHelper.getIdFromUrl(req.query.edit);
+  participants.getFullInfoBySecureId(participantId)
+  .then(p => res.render('participants/editParticipant', {participant: p, participantid: participantId}))
     .catch( () =>
       res.render('error', {
         message: "Teilnehmer nicht bekannt",

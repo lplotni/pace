@@ -2,6 +2,7 @@
 /* jshint esnext: true */
 'use strict';
 
+const crypto = require('crypto');
 const Q = require('q');
 const _ = require('lodash');
 const nodemailer = require('nodemailer');
@@ -9,6 +10,8 @@ const sendmailTransport = require('nodemailer-sendmail-transport');
 const config = require('config');
 const calculator = require('../domain/costCalculator');
 const db = require('../service/dbHelper');
+
+const editUrlHelper = require('../domain/editUrlHelper');
 
 let service = {};
 
@@ -37,8 +40,9 @@ service.getPubliclyVisible = function () {
 };
 
 service.save = function (participant, paymentToken) {
-  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility, paymenttoken) values($1, $2, $3, $4, $5, $6, $7, $8) returning id',
-    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, paymentToken]);
+  const secureID = editUrlHelper.generateSecureID();
+  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility, paymenttoken, secureid) values($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id',
+    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, paymentToken, secureID]);
 };
 
 
@@ -53,7 +57,7 @@ service.delete = function (participantid) {
 };
 
 service.update = function (participant, id) {
-  return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility) = ($1, $2, $3, $4, $5, $6, $7) WHERE id = $8',
+  return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility) = ($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
     [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, id]);
 };
 
@@ -166,6 +170,18 @@ service.getFullInfoById = function (id) {
     })
     .then(result => result[0]);
 };
+
+service.getFullInfoBySecureId = function (id) {
+  return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
 
 service.markPayed = function (participantId) {
   return db.update('update participants SET has_payed = true WHERE id = $1', [participantId])

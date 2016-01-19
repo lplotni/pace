@@ -5,7 +5,6 @@
 var router = require('express').Router();
 var participants = require('../../service/participants');
 var accesscontrol = require('../../acl/accesscontrol');
-var editUrlGenerator = require('../../domain/editUrlGenerator');
 
 var useDefaultAuthentication = function (req, res, next) {
   if (req.user) {

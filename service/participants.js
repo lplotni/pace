@@ -56,13 +56,42 @@ service.delete = function (participantid) {
   return deferred.promise;
 };
 
+// TO BE REMOVED
 service.update = function (participant, id) {
   return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility) = ($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
     [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, id]);
 };
 
+// service.updateById = function (participant, id) {
+//   return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility) = ($1, $2, $3, $4, $5, $6, $7) WHERE id = $8',
+//     [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, id]);
+// };
+//
+// service.updateWithShirt = function (participant, id) {
+//   return service.updateById(participant, id)
+//   .then(() => {
+//     console.log("PP")
+//
+//     if (participant.tshirt == undefined || participant.tshirt.amount == 0) {
+//        service.deleteTshirt(id)
+//     } else {
+//       service.updateTshirt(participant.tshirt.details[0], id)
+//     }
+//   })
+// }
+
+// service.deleteTshirt = function (participantId) {
+//   console.log("DELETING");
+//   return db.select('DELETE from tshirts WHERE participantId=$1', [participantId])
+// }
+
+// service.updateTshirt = function (tshirt, participantId) {
+//   return db.update('UPDATE tshirts SET size = $1, model = $2 WHERE participantid=$3',
+//     [tshirt.size, tshirt.model, participantId]);
+// }
+
 service.addTShirt = function (tshirt, participantId) {
-  return db.insert('insert into tshirts (size, model, participantId) values($1, $2, $3) returning id',
+  return db.insert('insert into tshirts (size, model, participantid) values($1, $2, $3) returning id',
     [tshirt.size, tshirt.model, participantId]);
 };
 

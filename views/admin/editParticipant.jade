@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+  h1 Angaben ändern
+  form#editParticipantForm(method='POST', action='/admin/editparticipant')
+    include ../partials/editParticipantForm
+    .row
+        .six.columns
+          label(for='paymentStatus') Bezahlungsstatus:
+          select#paymentStatus.u-full-width(name='paymentStatus', required=true)
+            option(value='yes', selected=(participant.has_payed)) Zahlung eingegangen
+            option(value='no', selected=(!participant.has_payed)) Zahlung noch nicht eingegangen
+    .row
+        .six.columns
+          label(for='shirt') Tshirt bestellt:
+          select#shirt.u-full-width(name='shirt', required=true, onchange="changeValue(this.value)", onload="changeValue")
+            option(value='yes', selected=(participant.tshirt.amount == 1)) Ja
+            option(value='no', selected=(participant.tshirt.amount == 0)) Nein
+            
+    .row
+        .six.columns
+          label(for='model') Model:
+          select#model.u-full-width.pace-dropdown(name='model')
+              option(value='Normal fit', selected=(participant.tshirt.details[0].model == 'Normal fit') ) Normal fit
+              option(value='Slim fit', selected=(participant.tshirt.details[0].model == 'Slim fit')) Slim fit
+    .row
+        .six.columns
+          label(for='size') Size:
+          select#size.u-full-width.pace-dropdown(name='size')
+              option(value='XS', selected=(participant.tshirt.details[0].size == 'XS')) XS
+              option(value='S', selected=(participant.tshirt.details[0].size == 'S')) S
+              option(value='M', selected=(participant.tshirt.details[0].size == 'M')) M
+              option(value='L', selected=(participant.tshirt.details[0].size == 'L')) L
+              option(value='XL', selected=(participant.tshirt.details[0].size == 'XL')) XL
+
+    input(type='hidden', name='participantid', value='#{participantid}')
+    input(type='hidden', name='_csrf', value=_csrf)
+
+    button#submit.button-primary(type='submit') Änderung speichern
+
+    script(type='text/javascript').
+      const shirt = document.getElementById('shirt');
+      const model = document.getElementById('model');
+      const size = document.getElementById('size');
+      
+      $(shirt).ready(function() {
+        changeValue(shirt.value)
+      });
+      
+      function changeValue(newValue) {
+        if (newValue == "yes") {
+          model.removeAttribute('disabled');
+          size.removeAttribute('disabled')
+        } else {
+          model.setAttribute('disabled', true);
+          size.setAttribute('disabled', true);
+        }
+      }

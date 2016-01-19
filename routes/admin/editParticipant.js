@@ -3,6 +3,7 @@
 'use strict';
 
 const router = require('express').Router();
+const Q = require('q');
 const participants = require('../../service/participants');
 const participant = require('../../domain/participant');
 const editUrlHelper = require('../../domain/editUrlHelper');
@@ -16,7 +17,12 @@ var canDeleteUser = function (role) {
 router.get('/', (req, res) => {
   const participantId = editUrlHelper.getIdFromUrl(req.query.edit);
   participants.getFullInfoBySecureId(participantId)
-  .then(p => res.render('participants/editParticipant', {participant: p, participantid: participantId}))
+  .then((p) => {
+    participant.addTshirtDetailsTo(p)
+    .then(() => {
+      res.render('admin/editParticipant', {participant: p, participantid: participantId})
+    });
+  })
     .catch( () =>
       res.render('error', {
         message: "Teilnehmer nicht bekannt",
@@ -26,7 +32,9 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
+  console.log(JSON.stringify(req.body));
   const currentParticipant = participant.from(req.body);
+  console.log(JSON.stringify(currentParticipant));
   const id = req.body.participantid;
   participants.update(currentParticipant, id)
     .then(() => res.render('participants/success', {name: req.body.firstname + ' ' + req.body.lastname}))

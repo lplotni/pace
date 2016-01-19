@@ -27,7 +27,7 @@ block content
                         td
                             if p.tshirt
                                 each t in p.tshirt.details
-                                    span=t.size + ' (' + t.model + ')'
+                                    span(hidden=p.tshirt.amount==0)=t.size + ' (' + t.model + ')'
                         td
                             form#payment-details(method='POST', action='/paymentValidation/confirm')
                                 input(type='hidden', name='_csrf', value=_csrf)
@@ -42,6 +42,6 @@ block content
                                     span.lnr.lnr-trash
                         td
                             form
-                                 a#edit.edit-button.button.icon(href='#{p.editUrl}')
+                                 a#edit.edit-button.button.icon(href='/admin/#{p.editUrl}')
                                     span.lnr.lnr-pencil
     script(src='/javascript/searchAndSort.js')

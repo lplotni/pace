@@ -6,6 +6,8 @@
 describe('participants service', () => {
 
   const participants = require('../../service/participants');
+  const specHelper = require('../specHelper');
+  const ParticipantBuilder = specHelper.ParticipantBuilder;
   const pg = require('pg');
 
   const aParticipant = {
@@ -304,6 +306,94 @@ describe('participants service', () => {
         });
     });
   });
+
+
+
+  // describe('updateParticipantWithShirt', () => {
+  //   it('should update both the participant and tshirt', (done) => {
+  //     const testParticipantWithLargeShirt = ParticipantBuilder().initDefault().withFirstName('Roy').withTshirt('L', 'Normal fit').build();
+  //     const testParticipantWithSmallShirt = ParticipantBuilder().initDefault().withFirstName('Martin').withTshirt('S', 'Slim fit').build();
+  //
+  //     participants.save(testParticipantWithLargeShirt, 'someToken')
+  //     .then((savedID) => {
+  //       participants.addTShirt(testParticipantWithLargeShirt.tshirt.details[0], savedID)
+  //       .then(() => {
+  //         participants.updateWithShirt(testParticipantWithSmallShirt, savedID)
+  //         .then(() => {
+  //           participants.getFullInfoById(savedID)
+  //           .then((participant) => {
+  //             expect(participant.firstname).toBe('Martin');
+  //             participants.getTShirtFor(savedID)
+  //             .then((shirt) => {
+  //               expect(shirt[0].size).toBe('S');
+  //               expect(shirt[0].model).toBe('Slim fit');
+  //               done()
+  //             })
+  //           })
+  //         });
+  //       })
+  //     })
+  //   });
+  //
+  //   it('should delete the shirt if set to false', (done) => {
+  //     const testParticipantWithShirt = ParticipantBuilder().initDefault().withFirstName('Roy').withTshirt('L', 'Normal fit').build();
+  //     const testParticipantWithNoShirt = ParticipantBuilder().initDefault().withFirstName('Martin').build();
+  //
+  //     participants.save(testParticipantWithShirt, 'someToken')
+  //     .then((savedID) => {
+  //       console.log('A');
+  //       participants.addTShirt(testParticipantWithShirt.tshirt.details[0], savedID)
+  //       .then(() => {
+  //         console.log('B');
+  //         participants.updateWithShirt(testParticipantWithNoShirt, savedID)
+  //         .then(() => {
+  //           console.log('C');
+  //           participants.getFullInfoById(savedID)
+  //           .then((participant) => {
+  //             console.log(participant);
+  //             expect(participant.firstname).toBe('Martin');
+  //             participants.getTShirtFor(savedID)
+  //             .then((shirt) => {
+  //               console.log('E');
+  //               expect(shirt.length).toBe(0);
+  //               done()
+  //             })
+  //           })
+  //         });
+  //       })
+  //     })
+  //   });
+  //
+  //   it('should add the shirt if set to true', (done) => {
+  //     const testParticipantWithShirt = ParticipantBuilder().initDefault().withFirstName('Roy').withTshirt('L', 'Normal fit').build();
+  //     const testParticipantWithNoShirt = ParticipantBuilder().initDefault().withFirstName('Martin').build();
+  //
+  //     participants.save(testParticipantWithNoShirt, 'someToken')
+  //     // .then((savedID) => {
+  //     //   console.log('A');
+  //     //   participants.addTShirt(testParticipantWithShirt.tshirt.details[0], savedID)
+  //       .then(() => {
+  //         console.log('B');
+  //         participants.updateWithShirt(testParticipantWithShirt, savedID)
+  //         .then(() => {
+  //           console.log('C');
+  //           participants.getFullInfoById(savedID)
+  //           .then((participant) => {
+  //             console.log(participant);
+  //             expect(participant.firstname).toBe('Roy');
+  //             participants.getTShirtFor(savedID)
+  //             .then((shirt) => {
+  //               console.log('E');
+  //               expect(shirt.length).toBe(1);
+  //               done()
+  //             })
+  //           })
+  //         });
+  //       })
+  //     // })
+  //   });
+  //
+  // });
 
   describe('getPubliclyVisible', () => {
     it('returns only participants which are confirmed and OK with being visible to the public', (done) => {

@@ -9,6 +9,10 @@ const participants = require('../service/participants');
 
 const participant = {};
 
+const NoTShirt = {
+  details: [{ size: "L", model: "Slim fit" }],
+  amount: 0
+};
 
 function invalidData(body) {
   return !(validator.isEmail(body.email)) ||
@@ -41,16 +45,22 @@ participant.addTshirtDetailsTo = function (participant) {
   return participants.getTShirtFor(participant.id)
     .then(tshirtDetails => {
       let details = [];
-      tshirtDetails.forEach(element =>
-        details.push(_.pick(element, 'size', 'model'))
-      );
-      participant.tshirt = {
-        details: details,
-        amount: tshirtDetails.length
-      };
-    }).catch(() =>
-      participant.tshirt = {amount: 0}
-    );
+
+      if(tshirtDetails.length == 0) {
+        participant.tshirt = NoTShirt
+      } else {
+
+        tshirtDetails.forEach(element =>
+          details.push(_.pick(element, 'size', 'model'))
+        );
+        participant.tshirt = {
+          details: details,
+          amount: tshirtDetails.length
+        };
+      }
+    }).catch(() => {
+      participant.tshirt = NoTShirt
+    });
 };
 
 module.exports = participant;

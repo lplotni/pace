@@ -79,26 +79,28 @@ describe('admin page', () => {
     var firstName = 'not set yet';
     var lastName = 'not set yet';
 
-      givenAValidUserExists().then(() => {
-        loginAdmin().url(helper.paceUrl+'admin/participants')
-        .getText('.first-name')
-        .then(function (firstNames) {
-          firstName = _.isArray(firstNames) ? firstNames[0] : firstNames;
+      givenAValidUserExists().then((id) => {
+        participants.addTShirt({model: 'Slim fit', size: 'L'}, id).then(() => {
+          loginAdmin().url(helper.paceUrl+'admin/participants')
+          .getText('.first-name')
+          .then(function (firstNames) {
+            firstName = _.isArray(firstNames) ? firstNames[0] : firstNames;
+          })
+          .getText('.last-name')
+          .then(function (lastNames) {
+            lastName = _.isArray(lastNames) ? lastNames[0] : lastNames;
+          })
+          .click('a.edit-button')
+          .getValue('#firstname')
+          .then(function (value) {
+            expect(value).toBe(firstName);
+          })
+          .getValue('#lastname')
+          .then(function (value) {
+            expect(value).toBe(lastName);
+          })
+          .end(done);
         })
-        .getText('.last-name')
-        .then(function (lastNames) {
-          lastName = _.isArray(lastNames) ? lastNames[0] : lastNames;
-        })
-        .click('a.edit-button')
-        .getValue('#firstname')
-        .then(function (value) {
-          expect(value).toBe(firstName);
-        })
-        .getValue('#lastname')
-        .then(function (value) {
-          expect(value).toBe(lastName);
-        })
-        .end(done);
       })
     });
 });

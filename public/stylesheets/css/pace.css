@@ -189,3 +189,7 @@ input[type="button"].button-primary:focus {
     background-color: rgb(200, 0, 39);
     border-color: rgb(200, 0, 39);
 }
+
+.pace-dropdown:disabled {
+  color: #C8C8C8;
+}

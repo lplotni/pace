@@ -247,7 +247,7 @@ describe('admin view', () => {
       var aToken = 'a token';
       var aTshirt = {
         size: 'M',
-        model: 'normal fit'
+        model: 'Normal fit'
       };
 
       participants.save(aParticipant, aToken)

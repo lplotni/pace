@@ -91,12 +91,13 @@ service.update = function (participant, id) {
 // }
 
 service.addTShirt = function (tshirt, participantId) {
-  return db.insert('insert into tshirts (size, model, participantid) values($1, $2, $3) returning id',
-    [tshirt.size, tshirt.model, participantId]);
+  return db.update('UPDATE participants SET (shirtsize, shirtmodel, shirtordered) = ($1, $2, $3) WHERE id = $4',
+    [tshirt.size, tshirt.model, true, participantId])
+
 };
 
 service.getTShirtFor = function (participantId) {
-  return db.select('SELECT * FROM tshirts WHERE participantid = $1', [participantId]);
+  return db.select('SELECT shirtsize, shirtmodel, shirtordered FROM participants WHERE id = $1 AND shirtordered=true', [participantId]);
 };
 
 function randomString() {
@@ -164,7 +165,7 @@ service.getByToken = function (paymentToken) {
       };
     })
     .then(participantDetails => {
-        return db.select('SELECT * from tshirts where participantid = $1', [participantDetails.id])
+        return db.select('SELECT shirtsize, shirtmodel FROM participants WHERE upper(paymenttoken) = $1 AND shirtordered = true', [paymentToken.toUpperCase()])
           .then(result => {
             participantDetails.tshirt = result[0];
             return participantDetails;

@@ -32,9 +32,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  console.log(JSON.stringify(req.body));
   const currentParticipant = participant.from(req.body);
-  console.log(JSON.stringify(currentParticipant));
   const id = req.body.participantid;
   participants.update(currentParticipant, id)
     .then(() => res.render('participants/success', {name: req.body.firstname + ' ' + req.body.lastname}))

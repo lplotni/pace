@@ -34,16 +34,12 @@ describe('participants service', () => {
         if (err) {
           errorFunction(err);
         } else {
-          let deleteShirts = client.query('delete from tshirts');
-          deleteShirts.on('end', () => {
             let deleteParticipants = client.query('delete from participants');
             deleteParticipants.on('end', () => {
               done();
               jasmineDone();
             });
             deleteParticipants.on('error', errorFunction);
-          });
-          deleteShirts.on('error', errorFunction);
         }
       }
     );
@@ -68,6 +64,9 @@ describe('participants service', () => {
         expect(data[0].category).toBe(aParticipant.category);
         expect(data[0].birthyear).toBe(aParticipant.birthyear);
         expect(data[0].team).toBe(aParticipant.team);
+        expect(data[0].shirtsize).toBe('XS');
+        expect(data[0].shirtmodel).toBe('Normal fit');
+        expect(data[0].shirtordered).toBe(false);
         done();
       })
       .fail(fail);
@@ -110,7 +109,7 @@ describe('participants service', () => {
       birthyear: 1980,
       tshirt: {
         size: 'XS',
-        model: 'Crazy cool fit'
+        model: 'Normal fit'
       }
     };
 
@@ -119,17 +118,17 @@ describe('participants service', () => {
       let paymentToken = 'a token';
       participants.save(aParticipantWithTshirt, paymentToken)
         .then(function (participantId) {
-          participants.addTShirt(aParticipantWithTshirt.tshirt, participantId)
-            .then(() => {
-              participants.getByToken(paymentToken)
-                .then(function (participant) {
-                  expect(participant.name).toEqual(aParticipantWithTshirt.lastname + ', ' + aParticipantWithTshirt.firstname);
-                  expect(participant.tshirt.size).toEqual(aParticipantWithTshirt.tshirt.size);
-                  expect(participant.tshirt.model).toEqual(aParticipantWithTshirt.tshirt.model);
-                  done();
-                })
-                .fail(fail);
-            });
+            participants.addTShirt(aParticipantWithTshirt.tshirt, participantId)
+              .then(() => {
+                participants.getByToken(paymentToken)
+                  .then(function (participant) {
+                    expect(participant.name).toEqual(aParticipantWithTshirt.lastname + ', ' + aParticipantWithTshirt.firstname);
+                    expect(participant.tshirt.shirtsize).toEqual(aParticipantWithTshirt.tshirt.size);
+                    expect(participant.tshirt.shirtmodel).toEqual(aParticipantWithTshirt.tshirt.model);
+                    done();
+                  })
+                  .fail(fail);
+              });
         });
     });
   });
@@ -259,15 +258,15 @@ describe('participants service', () => {
         birthyear: 1980,
         team: 'Crazy runners'
       }, 'tokenX').then(function (id) {
-        participants.addTShirt({size: 'M', model: 'Skin fit'}, id)
-          .then(() => {
-            participants.getTShirtFor(id)
-              .then(function (shirts) {
-                expect(shirts.length).toBe(1);
-                done();
-              })
-              .fail(fail);
-          });
+          participants.addTShirt({size: 'M', model: 'Normal fit'}, id)
+            .then(() => {
+              participants.getTShirtFor(id)
+                .then(function (shirts) {
+                  expect(shirts.length).toBe(1);
+                  done();
+                })
+                .fail(fail);
+            });
       });
 
     });

@@ -14,9 +14,11 @@ router.get('/', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     var admininfo = require('../../service/admininfo');
     admininfo.getShirtOrders().then(orders =>
+    {
       admininfo.getConfirmedParticipants().then(confirmed =>
         admininfo.getUnonfirmedParticipants().then(unconfirmed =>
-          res.render('admin/admin', {orders, confirmed ,unconfirmed, isAdmin: true}))));
+          res.render('admin/admin', {orders, confirmed ,unconfirmed, isAdmin: true})))
+    });
   } else {
     res.render('error', {
       message: 'Bitte anmelden',

@@ -45,16 +45,12 @@ journeyHelper.setupDbConnection = function (done) {
       if (err) {
         errorFunction(err);
       } else {
-        let deleteShirts = client.query('delete from tshirts');
-        deleteShirts.on('end',  () => {
-          let deleteParticipants = client.query('delete from participants');
-          deleteParticipants.on('end', () => {
-            done();
-            jasmineDone();
-          });
-          deleteParticipants.on('error', errorFunction);
+        let deleteParticipants = client.query('delete from participants');
+        deleteParticipants.on('end', () => {
+          done();
+          jasmineDone();
         });
-        deleteShirts.on('error', errorFunction);
+        deleteParticipants.on('error', errorFunction);
       }
     }
   );

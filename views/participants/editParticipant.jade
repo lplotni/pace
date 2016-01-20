@@ -1,8 +1,9 @@
 extends ../layout
 
 block content
+  - var formAction = (isAdmin ? '/admin/editparticipant' : '/editparticipant')
   h1 Angaben ändern
-  form#editParticipantForm(method='POST', action='/editparticipant')
+  form#editParticipantForm(method='POST', action=formAction)
     .row
       .three.columns
         label(for='firstname') Vorname:

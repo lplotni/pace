@@ -12,7 +12,6 @@ let _ = require('lodash');
 
 describe('admin page', () => {
 
-  let client;
   let loginUrl = helper.paceUrl + 'login';
 
   beforeEach((done) => {
@@ -32,9 +31,9 @@ describe('admin page', () => {
     .click('button#submit')
   }
 
-  it('should go to admin page and show admin links', (done) => {
+  it('should go to admin page and show statistics', (done) => {
     loginAdmin().url(helper.paceUrl+'admin')
-    .isVisible('a#paymentValidation')
+    .isVisible('h3#admin_tshirts_count')
     .then(function (isVisible) {
       expect(isVisible).toBe(true);
     })

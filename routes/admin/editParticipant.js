@@ -37,7 +37,7 @@ router.post('/delete', (req, res) => {
   if (canDeleteUser(req.user.role)) {
     const id = req.body.participantid;
     participants.delete(id)
-      .then(() => res.redirect('/participants'))
+      .then(() => res.redirect('/admin/participants'))
       .catch(() => res.render('error', {message: "Es ist ein Fehler aufgetreten", error: {status: "Bitte versuche es nochmal"}, isAdmin: true}));
   } else {
     res.render('error', {

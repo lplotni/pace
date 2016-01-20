@@ -28,7 +28,7 @@ describe('admin page', () => {
     return helper.setUpClient().url(loginUrl)
     .setValue('input#username', config.get('admin.username'))
     .setValue('input#password', config.get('admin.password'))
-    .click('button#submit')
+    .click('button#submit');
   }
 
   it('should go to admin page and show statistics', (done) => {
@@ -71,7 +71,7 @@ describe('admin page', () => {
       visibility: 'no'
     };
 
-    return participants.save(aParticipant, randomString)
+    return participants.save(aParticipant, randomString);
   }
 
   it('should go to edit user when clicking edit button (admin is signed in)', (done) => {
@@ -98,6 +98,6 @@ describe('admin page', () => {
           expect(value).toBe(lastName);
         })
         .end(done);
-      })
+      });
     });
 });

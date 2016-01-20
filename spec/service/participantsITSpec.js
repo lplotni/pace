@@ -300,7 +300,7 @@ describe('participants service', () => {
                   })
                   .fail(fail);
               });
-          })
+          });
         });
     });
   });

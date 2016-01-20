@@ -1,9 +1,9 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global jasmine, describe, it, expect, beforeEach */
+/* global jasmine, describe, it, expect, beforeEach, spyOn */
 
-const crypto = require('crypto')
+const crypto = require('crypto');
 
 describe('editUrlHelper', () => {
 
@@ -20,8 +20,7 @@ describe('editUrlHelper', () => {
 
       expect(secureID).toBe("testID");
 
-    })
+    });
+  });
 
-  })
-
-})
+});

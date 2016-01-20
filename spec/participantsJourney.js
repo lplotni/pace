@@ -8,6 +8,9 @@ let pg = require('pg');
 let helper = require('./journeyHelper');
 let config = require('config');
 
+let specHelper = require('./specHelper');
+let ParticipantBuilder = specHelper.ParticipantBuilder;
+
 describe('participants page', () => {
 
   let participantsUrl = helper.paceUrl + 'participants';
@@ -36,50 +39,37 @@ describe('participants page', () => {
       'Löschen button',
       'Edit button'];
 
-    let aParticipant = {
-      firstname: 'Friedrich',
-      lastname: 'Schiller',
-      email: 'f.schiller@example.com'
-    };
-    let aToken = 'a token';
+      let aParticipant = ParticipantBuilder().initDefault().build();
 
-    participants.save(aParticipant, aToken)
+      let aToken = 'a token';
+
+      participants.save(aParticipant, aToken)
       .then(() => {
         helper.setUpClient().url(participantsUrl)
-          .elements('li.participant-line')
-          .then(function (res) {
-            expect(res.value.length).toBe(0);
-          })
-          .url(loginUrl)
-          .setValue('input#username', config.get('admin.username'))
-          .setValue('input#password', config.get('admin.password'))
-          .click('button#submit')
-          .url(helper.paceUrl+'admin/participants')
-          .elements('tr.participant-line')
-          .then(function (res) {
-            expect(res.value.length).toBe(1);
-          })
-          .elements('th')
-          .then(function (res) {
-            expect(res.value.length).toBe(adminsListElements.length);
-          })
-          .end(done);
+        .elements('li.participant-line')
+        .then(function (res) {
+          expect(res.value.length).toBe(0);
+        })
+        .url(loginUrl)
+        .setValue('input#username', config.get('admin.username'))
+        .setValue('input#password', config.get('admin.password'))
+        .click('button#submit')
+        .url(helper.paceUrl+'admin/participants')
+        .elements('tr.participant-line')
+        .then(function (res) {
+          expect(res.value.length).toBe(1);
+        })
+        .elements('th')
+        .then(function (res) {
+          expect(res.value.length).toBe(adminsListElements.length);
+        })
+        .end(done);
       });
-  });
+    });
 
   it('shows registered participants only if they wished to be publicly visible', (done) => {
-    let aPublicParticipant = {
-      firstname: 'Friedrich',
-      lastname: 'Schiller',
-      email: 'f.schiller@example.com',
-      visibility: 'yes'
-    };
-
-    let aParticipant = {
-      firstname: 'Friedrich',
-      lastname: 'Schiller',
-      email: 'f.schiller@example.com'
-    };
+    let aPublicParticipant = ParticipantBuilder().initDefault().withVisibility(true).build();
+    let aParticipant = ParticipantBuilder().initDefault().build();
 
     participants.save(aParticipant, 'a token').then(participants.markPayed)
       .then(() => {
@@ -106,22 +96,12 @@ describe('participants page', () => {
   });
 
   it('searches for participants', (done) => {
+    let aParticipant = ParticipantBuilder().initDefault().withFirstName('Friedrich').withVisibility(true).build();
+    let anotherParticipant = ParticipantBuilder().initDefault().withFirstName('Issac').withVisibility(true).build();
 
-    let aParticipant = {
-      firstname: 'Friedrich',
-      lastname: 'Schiller',
-      email: 'f.schiller@example.com',
-      visibility: 'yes'
-    };
     let aToken = 'a token';
-
-    let anotherParticipant = {
-      firstname: 'Issac',
-      lastname: 'Newton',
-      email: 'i.newton@example.com',
-      visibility: 'yes'
-    };
     let anotherToken = 'another token';
+
     participants.save(aParticipant, aToken).then(participants.markPayed)
 
       .then( () => {
@@ -134,7 +114,7 @@ describe('participants page', () => {
         .elements('tr.participant-line')
         .then( (res) => {
           expect(res.value.length).toBe(1);
-        })
+        }).catch(e => console.log(e))
         .end(done);
       });
   });
@@ -159,20 +139,12 @@ describe('admin view', () => {
     });
 
     it('searches for participants', (done) => {
+      let aParticipant = ParticipantBuilder().initDefault().withFirstName('Friedrich').withVisibility(true).build();
+      let anotherParticipant = ParticipantBuilder().initDefault().withFirstName('Issac').withVisibility(true).build();
 
-      let aParticipant = {
-        firstname: 'Friedrich',
-        lastname: 'Schiller',
-        email: 'f.schiller@example.com'
-      };
       let aToken = 'a token';
-
-      let anotherParticipant = {
-        firstname: 'Issac',
-        lastname: 'Newton',
-        email: 'i.newton@example.com'
-      };
       let anotherToken = 'another token';
+
       participants.save(aParticipant, aToken)
         .then( () => {
           return  participants.save(anotherParticipant, anotherToken);
@@ -189,11 +161,7 @@ describe('admin view', () => {
     });
 
     it('should have a link to edit a participant', (done) => {
-      let aParticipant = {
-        firstname: 'Friedrich',
-        lastname: 'Schiller',
-        email: 'f.schiller@example.com'
-      };
+      let aParticipant = ParticipantBuilder().initDefault().withFirstName('Friedrich').withVisibility(true).build();
       let aToken = 'a token';
 
       participants.save(aParticipant, aToken)
@@ -208,11 +176,7 @@ describe('admin view', () => {
     });
 
     it('should show amount to pay - no tshirt', function (done) {
-      let aParticipant = {
-        firstname: 'Friedrich',
-        lastname: 'Schiller',
-        email: 'f.schiller@example.com'
-      };
+      let aParticipant = ParticipantBuilder().initDefault().withFirstName('Friedrich').withVisibility(true).build();
       let aToken = 'a token';
 
       participants.save(aParticipant, aToken)
@@ -239,41 +203,32 @@ describe('admin view', () => {
     });
 
     it('should show amount to pay - one tshirt', function (done) {
-      var aParticipant = {
-        firstname: 'Friedrich',
-        lastname: 'Schiller',
-        email: 'f.schiller@example.com'
-      };
+      let aParticipant = ParticipantBuilder().initDefault()
+      .withFirstName('Friedrich').withTshirt('M', 'Normal fit').build();
+
       var aToken = 'a token';
-      var aTshirt = {
-        size: 'M',
-        model: 'Normal fit'
-      };
 
       participants.save(aParticipant, aToken)
-        .then(function (id) {
-          participants.addTShirt(aTshirt, id);
-        })
-        .then(function () {
-          var loggedInClient = setUpLoggedInClient();
+      .then(function () {
+        var loggedInClient = setUpLoggedInClient();
 
-          loggedInClient.url(helper.paceUrl+'admin/participants')
-            .elements('td#tshirt-amount')
-            .then(function (tshirtFields) {
-              loggedInClient.elementIdText(tshirtFields.value[0].ELEMENT)
-                .then(function (textObject) {
-                  expect(textObject.value).toBe('1');
-                  loggedInClient.elements('td#amount')
-                    .then(function (amountFields) {
-                      loggedInClient.elementIdText(amountFields.value[0].ELEMENT)
-                        .then(function (textObject) {
-                          expect(textObject.value).toBe('35.5');
-                          loggedInClient.end(done);
-                        });
-                    });
-                });
+        loggedInClient.url(helper.paceUrl+'admin/participants')
+        .elements('td#tshirt-amount')
+        .then(function (tshirtFields) {
+          loggedInClient.elementIdText(tshirtFields.value[0].ELEMENT)
+          .then(function (textObject) {
+            expect(textObject.value).toBe('1');
+            loggedInClient.elements('td#amount')
+            .then(function (amountFields) {
+              loggedInClient.elementIdText(amountFields.value[0].ELEMENT)
+              .then(function (textObject) {
+                expect(textObject.value).toBe('35.5');
+                loggedInClient.end(done);
+              });
             });
+          });
         });
+      });
     });
   });
 });

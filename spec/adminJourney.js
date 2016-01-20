@@ -10,6 +10,9 @@ let pg = require('pg');
 let participants = require('../service/participants');
 let _ = require('lodash');
 
+let specHelper = require('./specHelper');
+let ParticipantBuilder = specHelper.ParticipantBuilder;
+
 describe('admin page', () => {
 
   let client;
@@ -59,48 +62,87 @@ describe('admin page', () => {
     .end(done);
   });
 
-  function givenAValidUserExists() {
+  function givenAValidUserExists(participant) {
     let randomString = crypto.randomBytes(8).toString('hex');
-
-    let aParticipant = {
-      firstname: 'Friedrich',
-      lastname: 'Schiller',
-      email: randomString + '@example.com',
-      category: 'f',
-      birthyear: 1980,
-      team: 'Crazy runners',
-      visibility: 'no'
-    };
-
-    return participants.save(aParticipant, randomString)
+    return participants.save(participant, randomString)
   }
 
   it('should go to edit user when clicking edit button (admin is signed in)', (done) => {
-    var firstName = 'not set yet';
-    var lastName = 'not set yet';
+      var firstName = 'not set yet';
+      var lastName = 'not set yet';
 
-      givenAValidUserExists().then((id) => {
-        participants.addTShirt({model: 'Slim fit', size: 'L'}, id).then(() => {
-          loginAdmin().url(helper.paceUrl+'admin/participants')
-          .getText('.first-name')
-          .then(function (firstNames) {
-            firstName = _.isArray(firstNames) ? firstNames[0] : firstNames;
-          })
-          .getText('.last-name')
-          .then(function (lastNames) {
-            lastName = _.isArray(lastNames) ? lastNames[0] : lastNames;
-          })
-          .click('a.edit-button')
-          .getValue('#firstname')
-          .then(function (value) {
-            expect(value).toBe(firstName);
-          })
-          .getValue('#lastname')
-          .then(function (value) {
-            expect(value).toBe(lastName);
-          })
-          .end(done);
+      let participant = ParticipantBuilder().initDefault().withFirstName('Foo').build();
+
+      givenAValidUserExists(participant).then((id) => {
+        loginAdmin().url(helper.paceUrl+'admin/participants')
+        .getText('.first-name')
+        .then(function (firstNames) {
+          firstName = _.isArray(firstNames) ? firstNames[0] : firstNames;
         })
-      })
+        .getText('.last-name')
+        .then(function (lastNames) {
+          lastName = _.isArray(lastNames) ? lastNames[0] : lastNames;
+        })
+        .click('a.edit-button')
+        .getValue('#firstname')
+        .then(function (value) {
+          expect(value).toBe(firstName);
+        })
+        .getValue('#lastname')
+        .then(function (value) {
+          expect(value).toBe(lastName);
+        })
+        .getValue('#shirt')
+        .then(function (value) {
+          expect(value).toBe('no')
+        })
+        .end(done);
+      }).catch((e) => console.log(e))
     });
+
+    it('should change participant\'s information after editing', (done) =>{
+      let participant = ParticipantBuilder().initDefault()
+                        .withFirstName('Bob')
+                        .withTshirt('L', 'Normal fit').build();
+
+      givenAValidUserExists(participant).then((id) => {
+        loginAdmin().url(helper.paceUrl+'admin/participants')
+        .click('a.edit-button')
+        .setValue('#firstname', 'Bill')
+        .click('//*[@id="size"]/option[3]')
+        .click('.button-primary')
+        .then(() => {
+          participants.getFullInfoById(id)
+          .then((participant) => {
+            expect(participant.firstname).toBe('Bill')
+            expect(participant.tshirt.details[0].size).toBe('M')
+          })
+        })
+        .end(done);
+      }).catch((e) => console.log(e))
+    })
+
+    it('should add tshirt to participant\'s after editing', (done) =>{
+      let participant = ParticipantBuilder().initDefault()
+                        .withFirstName('Bob').build();
+
+      givenAValidUserExists(participant).then((id) => {
+        loginAdmin().url(helper.paceUrl+'admin/participants')
+        .click('a.edit-button')
+        .setValue('#firstname', 'Bill')
+        .click('//*[@id="shirt"]/option[1]')
+        .click('//*[@id="size"]/option[3]')
+        .click('.button-primary')
+        .then(() => {
+          participants.getFullInfoById(id)
+          .then((participant) => {
+            expect(participant.firstname).toBe('Bill')
+            expect(participant.tshirt.details[0].size).toBe('M')
+          })
+        })
+        .end(done);
+      }).catch((e) => console.log(e))
+    })
+
+
 });

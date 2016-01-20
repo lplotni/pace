@@ -16,7 +16,6 @@ block content
           select#shirt.u-full-width(name='shirt', required=true, onchange="changeValue(this.value)", onload="changeValue")
             option(value='yes', selected=(participant.tshirt.amount == 1)) Ja
             option(value='no', selected=(participant.tshirt.amount == 0)) Nein
-            
     .row
         .six.columns
           label(for='model') Model:

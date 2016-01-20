@@ -8,6 +8,8 @@ const pg = require('pg');
 const helper = require('./journeyHelper');
 const costCalculator = require('../domain/costCalculator');
 const config = require('config');
+const specHelper = require('./specHelper');
+const ParticipantBuilder = specHelper.ParticipantBuilder;
 
 describe('payment validation journey', () => {
   let loggedInClient;
@@ -63,16 +65,7 @@ describe('payment validation journey', () => {
     });
 
     it('allows to confirm a participant once she has payed', (done) => {
-      let aParticipant = {
-        firstname: 'Friedrich',
-        lastname: 'Schiller',
-        email: 'f.schiller@example.com',
-        tshirt: {
-          size: 'M',
-          model: 'Normal fit',
-          amount: 1
-        }
-      };
+      let aParticipant = ParticipantBuilder().initDefault().build()
 
       participants.register(aParticipant)
         .then((result) => {
@@ -98,11 +91,7 @@ describe('payment validation journey', () => {
     });
 
     it('should show pending payments', (done) => {
-      let aParticipant = {
-        firstname: 'Friedrich',
-        lastname: 'Schiller',
-        email: 'f.schiller@example.com'
-      };
+      let aParticipant = ParticipantBuilder().initDefault().build()
       let aToken = '24eFXXi';
 
       participants.save(aParticipant, aToken)

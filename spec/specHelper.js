@@ -15,8 +15,19 @@ let ParticipantBuilder = function() {
     internalObj.category = 'm';
     internalObj.birthyear = 1963;
     internalObj.team = 'ThoughtWorks';
+    internalObj.visibility = 'no';
+
+    internalObj.tshirt = {
+      details: [{ size: 'S', model: 'Normal fit' }],
+      amount: 0
+    }
 
     return self;
+  }
+
+  self.withVisibility = function(visibility) {
+    internalObj.visibility = (visibility == true) ? 'yes' : 'no'
+    return self
   }
 
   self.withTshirt = function(shirtSize, shirtModel) {

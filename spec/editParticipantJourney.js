@@ -6,6 +6,8 @@
 let helper = require('./journeyHelper');
 let pg = require('pg');
 let participants = require('../service/participants');
+let specHelper = require('./specHelper');
+let ParticipantBuilder = specHelper.ParticipantBuilder;
 
 describe('edit participant journey', () => {
 
@@ -22,15 +24,7 @@ describe('edit participant journey', () => {
   });
 
   it('allows to edit a participant', (done) => {
-    let aParticipant = {
-      firstname: 'Friedrich',
-      lastname: 'Schiller',
-      email: 'f.schiller@example.com',
-      category: 'f',
-      birthyear: 1980,
-      team: 'Crazy runners',
-      visibility: 'no'
-    };
+    let aParticipant = ParticipantBuilder().initDefault().build()
     let aToken = '23eF67i';
 
     participants.save(aParticipant, aToken)
@@ -48,30 +42,30 @@ describe('edit participant journey', () => {
               })
               .getValue('input#firstname')
               .then(function (value) {
-                expect(value).toBe('Friedrich');
+                expect(value).toBe(aParticipant.firstname);
               })
               .getValue('input#lastname')
               .then(function (value) {
-                expect(value).toBe('Schiller');
+                expect(value).toBe(aParticipant.lastname);
               })
               .getValue('input#email')
               .then(function (value) {
-                expect(value).toBe('f.schiller@example.com');
+                expect(value).toBe(aParticipant.email);
               })
               .getValue('select#visibility')
               .then(function (value) {
-                expect(value).toBe('no');
+                expect(value).toBe(aParticipant.visibility);
               }).getValue('select#category')
               .then(function (value) {
-                expect(value).toBe('f');
+                expect(value).toBe(aParticipant.category);
               })
               .getValue('input#birthyear')
               .then(function (value) {
-                expect(value).toBe('1980');
+                expect(parseInt(value)).toBe(aParticipant.birthyear);
               })
               .getValue('input#team')
               .then(function (value) {
-                expect(value).toBe('Crazy runners');
+                expect(value).toBe(aParticipant.team);
               })
               .getText('p#paymentStatus')
               .then(function (value) {

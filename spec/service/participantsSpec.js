@@ -7,6 +7,8 @@ const Q = require('q');
 const editUrlHelper = require('../../domain/editUrlHelper')
 
 const secureId = 'secureId';
+const specHelper = require('../specHelper');
+const ParticipantBuilder = specHelper.ParticipantBuilder;
 
 
 describe('participants service', () => {
@@ -91,21 +93,12 @@ describe('participants service', () => {
     describe('save', () => {
 
       it('passes the newly generated secureId in the DB', () => {
-        const aParticipant = {
-          firstname: 'Hertha',
-          lastname: 'Mustermann',
-          email: 'h.mustermann@example.com',
-          category: 'Unicorn',
-          birthyear: 1980,
-          visibility: 'yes',
-          team: 'Crazy runners'
-        };
+        const aParticipant = ParticipantBuilder().initDefault().build()
 
         editUrlHelperMock.generateSecureID.and.returnValue(secureId)
-
-          participants.save(aParticipant, 'a token');
-          const params = dbHelperMock.insert.calls.mostRecent().args[1];
-          expect(params[params.length -1]).toBe(secureId);
+        participants.save(aParticipant, 'a token');
+        const params = dbHelperMock.insert.calls.mostRecent().args[1];
+        expect(params[params.length -1]).toBe(secureId);
       })
     })
   }

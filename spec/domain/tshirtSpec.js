@@ -15,7 +15,7 @@ describe('tshirt', () => {
 
 
     it('should read size from the request body', () => {
-      expect(tshirt.from(body).size).toBe('XL');
+      expect(tshirt.from(body).details[0].size).toBe('XL');
     });
 
     it('should throw an error if no size can be found', () => {
@@ -27,7 +27,7 @@ describe('tshirt', () => {
     });
 
     it('should read model from the request body', () => {
-      expect(tshirt.from(body).model).toBe('SlimFit');
+      expect(tshirt.from(body).details[0].model).toBe('SlimFit');
     });
 
     it('should throw an error if no model can be found', () => {
@@ -39,7 +39,7 @@ describe('tshirt', () => {
     });
 
     it('should return empty object if shirt not wished', () => {
-      expect(tshirt.from({shirt: undefined})).toEqual({});
+      expect(tshirt.from({})).toEqual(jasmine.objectContaining({ amount: 0 }));
     });
   });
 

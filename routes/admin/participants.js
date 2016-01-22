@@ -32,12 +32,8 @@ router.get('/', isAuthenticated, (req, res) => {
     participants.getRegistered().then(result => {
       allParticipants = allParticipants.concat(result);
       addEditUrlTo(allParticipants);
-      Q.all(allParticipants.map(participant.addTshirtDetailsTo))
-        .then(() => {
-            addAmountTo(allParticipants);
-            res.render('admin/list', {participants: allParticipants, isAdmin: true});
-          }
-        );
+        addAmountTo(allParticipants);
+        res.render('admin/list', {participants: allParticipants, isAdmin: true});
     });
   });
 

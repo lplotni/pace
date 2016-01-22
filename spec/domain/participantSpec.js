@@ -111,12 +111,12 @@ describe('participant', () => {
     });
 
     it('should extract tshirt form the request body if shirt is ordered', () => {
-      expect(participant.from(body).tshirt.model).toBe('Normal fit');
-      expect(participant.from(body).tshirt.size).toBe('M');
+      expect(participant.from(body).tshirt.details[0].model).toBe('Normal fit');
+      expect(participant.from(body).tshirt.details[0].size).toBe('M');
     });
 
-    it('should not extract tshirt form the request body if shirt is not ordered', () => {
-      expect(participant.from(_.omit(body, 'shirt')).tshirt).toEqual({});
+    it('should have a tshirt amount of 0 request body if shirt is not ordered', () => {
+      expect(participant.from(_.omit(body, 'shirt')).tshirt.amount).toEqual(0);
     });
 
     it('should extract visibility from the request body', () => {
@@ -131,82 +131,5 @@ describe('participant', () => {
       expect(callWithNoVisibility).toThrow();
     });
   });
-
-  describe('addTshirtDetailsTo', () => {
-
-    let participant, participantsMock;
-
-    let returnPromiseAndResolveWith = function(data) {
-      function successResolve() {
-        return Q.fcall(function() { return data;});
-      }
-      return successResolve;
-    };
-
-    let returnPromiseAndThrowError = function() {
-      function errorResolve() {
-        return Q.fcall(function() { throw new Error();});
-      }
-      return errorResolve;
-    };
-
-    let setupMocks = function() {
-
-      mockery.enable({
-        useCleanCache: true,
-        warnOnReplace: false,
-        warnOnUnregistered: false
-      });
-      mockery.resetCache();
-      mockery.registerAllowables(['q', '../../domain/participant.js']);
-
-      participantsMock = {
-        getTShirtFor: jasmine.createSpy()
-      };
-
-      mockery.registerMock('../service/participants', participantsMock);
-
-      participant = require('../../domain/participant.js');
-    };
-
-    beforeEach(() => {
-      setupMocks();
-    });
-
-    let anySize = 'M';
-    let anyModel = 'normal';
-    let tshirtDetails = {id: 0, size: anySize, model: anyModel, participantId: 0};
-    let anyParticipant = {};
-
-    it('should set the amount to 0 if the participant did not order a tshirt', function (done) {
-      let anyParticipant = {};
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndThrowError());
-
-      participant.addTshirtDetailsTo(anyParticipant).then(() => {
-        expect(anyParticipant.tshirt.amount).toBe(0);
-        done();
-      });
-    });
-
-    it('should add the tshirt details to a participant', function (done) {
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails]));
-
-      participant.addTshirtDetailsTo(anyParticipant).then(() => {
-        expect(anyParticipant.tshirt.amount).toBe(1);
-        expect(anyParticipant.tshirt.details).toEqual([{size: anySize, model: anyModel}]);
-        done();
-      });
-    });
-
-    it('should add multiple tshirt details to a participant', function (done) {
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails, tshirtDetails]));
-
-      participant.addTshirtDetailsTo(anyParticipant).then(() => {
-        expect(anyParticipant.tshirt.amount).toBe(2);
-        expect(anyParticipant.tshirt.details).toEqual([{size: anySize, model: anyModel},
-          {size: anySize, model: anyModel}]);
-        done();
-      });
-    });
-  });
+  
 });

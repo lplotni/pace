@@ -17,11 +17,24 @@ let service = {};
 
 service._nodemailer = nodemailer;
 
+function participantFromRow(row) {
+  var participant = row
+  participant.tshirt = {
+    details: [{ size: row.shirtsize, model: row.shirtmodel }],
+    amount: row.shirtordered ? 1 : 0
+  }
+  return participant;
+}
+
 service.getAllWithPaymentStatus = function (paymentStatus) {
+  const deferred = Q.defer();
+
   if (typeof paymentStatus !== 'undefined') {
-    return db.select('select * from participants where has_payed = $1 order by firstname,lastname', [paymentStatus]);
+    return db.select('select * from participants where has_payed = $1 order by firstname,lastname', [paymentStatus])
+      .then (rows =>  _.map(rows, participantFromRow));
   } else {
-    return db.select('select * from participants order by firstname,lastname');
+    return db.select('select * from participants order by firstname,lastname')
+      .then (rows =>  _.map(rows, participantFromRow));
   }
 };
 
@@ -41,8 +54,8 @@ service.getPubliclyVisible = function () {
 
 service.save = function (participant, paymentToken) {
   const secureID = editUrlHelper.generateSecureID();
-  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility, paymenttoken, secureid) values($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id',
-    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, paymentToken, secureID]);
+  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility, shirtsize, shirtmodel, shirtordered, paymenttoken, secureid) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning id',
+    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, participant.tshirt.details[0].size, participant.tshirt.details[0].model, (participant.tshirt.amount == 1 ? true : false), paymentToken, secureID]);
 };
 
 
@@ -56,18 +69,44 @@ service.delete = function (participantid) {
   return deferred.promise;
 };
 
+// TO BE REMOVED
 service.update = function (participant, id) {
   return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility) = ($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
     [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, id]);
 };
 
+service.updateById = function (participant, id) {
+  return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility, shirtsize, shirtmodel, shirtordered) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) WHERE id = $11',
+    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, participant.tshirt.details[0].size, participant.tshirt.details[0].model, (participant.tshirt.amount == 1 ? true : false), id]);
+};
+
+service.updateWithShirt = function (participant, id) {
+  return service.updateById(participant, id)
+  .then(() => {
+    if (participant.tshirt == undefined || participant.tshirt.amount == 0) {
+       service.deleteTshirt(id)
+    } else {
+      service.updateTshirt(participant.tshirt.details[0], id)
+    }
+  })
+}
+
+service.deleteTshirt = function (participantId) {
+  return db.update('UPDATE participants SET shirtordered = false WHERE id=$1', [participantId]);
+}
+
+service.updateTshirt = function (tshirt, participantId) {
+  return db.update('UPDATE participants SET shirtsize = $1, shirtmodel = $2, shirtordered = $3 WHERE id=$4',
+    [tshirt.size, tshirt.model, true, participantId]);
+}
+
 service.addTShirt = function (tshirt, participantId) {
-  return db.insert('insert into tshirts (size, model, participantId) values($1, $2, $3) returning id',
-    [tshirt.size, tshirt.model, participantId]);
+  return db.update('UPDATE participants SET (shirtsize, shirtmodel, shirtordered) = ($1, $2, $3) WHERE id = $4',
+    [tshirt.size, tshirt.model, true, participantId])
 };
 
 service.getTShirtFor = function (participantId) {
-  return db.select('SELECT * FROM tshirts WHERE participantid = $1', [participantId]);
+  return db.select('SELECT shirtsize, shirtmodel, shirtordered FROM participants WHERE id = $1 AND shirtordered=true', [participantId]);
 };
 
 function randomString() {
@@ -103,9 +142,6 @@ service.register = function (participant) {
   service.createUniqueToken().then((paymentToken) => {
     service.save(participant, paymentToken)
       .then(id => {
-        if (!_.isEmpty(participant.tshirt)) {
-          service.addTShirt(participant.tshirt, id);
-        }
         jade.renderFile('views/registration/text.jade', {
           name: participant.firstname,
           token: paymentToken,
@@ -135,9 +171,12 @@ service.getByToken = function (paymentToken) {
       };
     })
     .then(participantDetails => {
-        return db.select('SELECT * from tshirts where participantid = $1', [participantDetails.id])
-          .then(result => {
-            participantDetails.tshirt = result[0];
+        return db.select('SELECT shirtsize, shirtmodel, shirtordered FROM participants WHERE upper(paymenttoken) = $1', [paymentToken.toUpperCase()])
+          .then((result) => {
+            participantDetails.tshirt = {
+              details: [{ size: result[0].shirtsize, model: result[0].shirtmodel }],
+              amount: result[0].shirtordered ? 1 : 0
+            }
             return participantDetails;
           });
       }
@@ -168,7 +207,7 @@ service.getFullInfoById = function (id) {
       }
       return result;
     })
-    .then(result => result[0]);
+    .then(result => participantFromRow(result[0]) )
 };
 
 service.getFullInfoBySecureId = function (id) {
@@ -179,7 +218,7 @@ service.getFullInfoBySecureId = function (id) {
       }
       return result;
     })
-    .then(result => result[0]);
+    .then(result => participantFromRow(result[0]) )
 };
 
 

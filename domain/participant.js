@@ -9,7 +9,6 @@ const participants = require('../service/participants');
 
 const participant = {};
 
-
 function invalidData(body) {
   return !(validator.isEmail(body.email)) ||
     _.isUndefined(body.firstname) ||
@@ -35,22 +34,6 @@ participant.from = function (body) {
     tshirt: tshirt.from(body)
   };
 
-};
-
-participant.addTshirtDetailsTo = function (participant) {
-  return participants.getTShirtFor(participant.id)
-    .then(tshirtDetails => {
-      let details = [];
-      tshirtDetails.forEach(element =>
-        details.push(_.pick(element, 'size', 'model'))
-      );
-      participant.tshirt = {
-        details: details,
-        amount: tshirtDetails.length
-      };
-    }).catch(() =>
-      participant.tshirt = {amount: 0}
-    );
 };
 
 module.exports = participant;

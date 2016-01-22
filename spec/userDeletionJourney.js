@@ -8,6 +8,9 @@ const pg = require('pg');
 const helper = require('./journeyHelper');
 const config = require('config');
 
+let specHelper = require('./specHelper');
+let ParticipantBuilder = specHelper.ParticipantBuilder;
+
 describe('user deletion journey', () => {
   let loggedInClient;
   const participantsListUrl = helper.paceUrl + 'admin/participants';
@@ -34,22 +37,18 @@ describe('user deletion journey', () => {
     });
 
     it('allows to delete a participant', (done) => {
-      let aParticipant = {
-        firstname: 'Johann-Wolfgang',
-        lastname: 'von Goethe',
-        email: 'jvg@example.com'
-      };
+      let aParticipant = ParticipantBuilder().initDefault().build();
       let aToken = 'GLSKDJ';
 
       participants.save(aParticipant, aToken)
         .then(() => {
           loggedInClient.url(participantsListUrl)
-            .isVisible('td=Johann-Wolfgang')
+            .isVisible('td='+ aParticipant.firstname)
             .then(function (isVisible) {
               expect(isVisible).toBe(true);
             })
             .click('button#delete-user')
-            .isVisible('td=Johann-Wolfgang')
+            .isVisible('td='+ aParticipant.firstname)
             .then(function (isVisible) {
               expect(isVisible).toBe(false);
             })

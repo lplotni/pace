@@ -45,11 +45,6 @@ describe('registration journey', () => {
       .setValue('input#username', config.get('admin.username'))
       .setValue('input#password', config.get('admin.password'))
       .click('button#submit')
-      .url(helper.paceUrl + 'paymentvalidation')
-      .getText('ul#pending')
-      .then(function (text) {
-        expect(text).toMatch(/.*Max Mustermann*/);
-      })
       .end(done);
   });
 

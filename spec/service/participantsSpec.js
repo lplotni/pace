@@ -4,7 +4,7 @@
 /* global describe, beforeEach, afterAll, spyOn, it, expect, fail, jasmine */
 const mockery = require('mockery');
 const Q = require('q');
-const editUrlHelper = require('../../domain/editUrlHelper')
+const editUrlHelper = require('../../domain/editUrlHelper');
 
 const secureId = 'secureId';
 
@@ -30,7 +30,7 @@ describe('participants service', () => {
 
       editUrlHelperMock = {
         generateSecureID: jasmine.createSpy()
-      }
+      };
 
       mockery.registerMock('../service/dbHelper', dbHelperMock);
       mockery.registerMock('../domain/editUrlHelper', editUrlHelperMock);
@@ -101,12 +101,12 @@ describe('participants service', () => {
           team: 'Crazy runners'
         };
 
-        editUrlHelperMock.generateSecureID.and.returnValue(secureId)
+        editUrlHelperMock.generateSecureID.and.returnValue(secureId);
 
           participants.save(aParticipant, 'a token');
           const params = dbHelperMock.insert.calls.mostRecent().args[1];
           expect(params[params.length -1]).toBe(secureId);
-      })
-    })
+      });
+    });
   }
 );

@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
   const currentParticipant = participant.from(req.body);
   const id = req.body.participantid;
-  participants.update(currentParticipant, id)
+  participants.updateBySecureId(currentParticipant, id)
     .then(() => res.render('participants/success', {name: req.body.firstname + ' ' + req.body.lastname}))
     .catch(() => res.render('error', {message: "Es ist ein Fehler aufgetreten", error: {status: "Bitte versuche es nochmal"}}));
 });

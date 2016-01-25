@@ -69,10 +69,9 @@ service.delete = function (participantid) {
   return deferred.promise;
 };
 
-// TO BE REMOVED
-service.update = function (participant, id) {
-  return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility) = ($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
-    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, id]);
+service.updateBySecureId = function (participant, sid) {
+  return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility, shirtsize, shirtmodel, shirtordered) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) WHERE secureid = $11',
+    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, participant.tshirt.details[0].size, participant.tshirt.details[0].model, (participant.tshirt.amount == 1 ? true : false), sid]);
 };
 
 service.updateById = function (participant, id) {

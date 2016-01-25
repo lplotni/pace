@@ -220,23 +220,25 @@ describe('participants service', () => {
       let paymentToken = 'a token';
       participants.save(aParticipant, paymentToken)
         .then(function (id) {
-          const updatedParticipant = {
-            firstname: 'Hertha updated',
-            lastname: 'Mustermann updated',
-            email: 'h.mustermann@example.com updated',
-            category: 'Unicorn updated',
-            birthyear: 1981,
-            team: 'Crazy runners updated'
-          };
+          const updatedParticipant = ParticipantBuilder()
+                                      .initDefault()
+                                      .withFirstname('Hertha Updated')
+                                      .withLastname('Mustermann Updated')
+                                      .withEmail('h.mustermann@example.com Updated')
+                                      .withCategory('Unicorn updated')
+                                      .withBirthyear(1981)
+                                      .withTeam('Crazy runners updated')
+                                      .build();
+
           participants.getFullInfoById(id)
           .then((p) => {
-            participants.update(updatedParticipant, p.secureid)
+            participants.updateById(updatedParticipant, p.id)
               .then(() => {
                 participants.getFullInfoById(id)
                   .then(function (participant) {
-                    expect(participant.firstname).toBe('Hertha updated');
-                    expect(participant.lastname).toBe('Mustermann updated');
-                    expect(participant.email).toBe('h.mustermann@example.com updated');
+                    expect(participant.firstname).toBe('Hertha Updated');
+                    expect(participant.lastname).toBe('Mustermann Updated');
+                    expect(participant.email).toBe('h.mustermann@example.com Updated');
                     expect(participant.category).toBe('Unicorn updated');
                     expect(participant.birthyear).toBe(1981);
                     expect(participant.team).toBe('Crazy runners updated');
@@ -253,8 +255,8 @@ describe('participants service', () => {
 
   describe('updateParticipantWithShirt', () => {
     it('should update both the participant and tshirt', (done) => {
-      const testParticipantWithLargeShirt = ParticipantBuilder().initDefault().withFirstName('Roy').withTshirt('L', 'Normal fit').build();
-      const testParticipantWithSmallShirt = ParticipantBuilder().initDefault().withFirstName('Martin').withTshirt('S', 'Slim fit').build();
+      const testParticipantWithLargeShirt = ParticipantBuilder().initDefault().withFirstname('Roy').withTshirt('L', 'Normal fit').build();
+      const testParticipantWithSmallShirt = ParticipantBuilder().initDefault().withFirstname('Martin').withTshirt('S', 'Slim fit').build();
 
       participants.save(testParticipantWithLargeShirt, 'someToken')
       .then((savedID) => {
@@ -275,8 +277,8 @@ describe('participants service', () => {
     });
 
     it('should delete the shirt if set to false', (done) => {
-      const testParticipantWithShirt = ParticipantBuilder().initDefault().withFirstName('Roy').withTshirt('L', 'Normal fit').build();
-      const testParticipantWithNoShirt = ParticipantBuilder().initDefault().withFirstName('Martin').build();
+      const testParticipantWithShirt = ParticipantBuilder().initDefault().withFirstname('Roy').withTshirt('L', 'Normal fit').build();
+      const testParticipantWithNoShirt = ParticipantBuilder().initDefault().withFirstname('Martin').build();
 
       participants.save(testParticipantWithShirt, 'someToken')
       .then((savedID) => {
@@ -296,8 +298,8 @@ describe('participants service', () => {
     });
 
     it('should add the shirt if set to true', (done) => {
-      const testParticipantWithShirt = ParticipantBuilder().initDefault().withFirstName('Roy').withTshirt('L', 'Normal fit').build();
-      const testParticipantWithNoShirt = ParticipantBuilder().initDefault().withFirstName('Martin').build();
+      const testParticipantWithShirt = ParticipantBuilder().initDefault().withFirstname('Roy').withTshirt('L', 'Normal fit').build();
+      const testParticipantWithNoShirt = ParticipantBuilder().initDefault().withFirstname('Martin').build();
 
       participants.save(testParticipantWithNoShirt, 'someToken')
        .then((savedID) => {

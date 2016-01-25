@@ -96,8 +96,8 @@ describe('participants page', () => {
   });
 
   it('searches for participants', (done) => {
-    let aParticipant = ParticipantBuilder().initDefault().withFirstName('Friedrich').withVisibility(true).build();
-    let anotherParticipant = ParticipantBuilder().initDefault().withFirstName('Issac').withVisibility(true).build();
+    let aParticipant = ParticipantBuilder().initDefault().withFirstname('Friedrich').withVisibility(true).build();
+    let anotherParticipant = ParticipantBuilder().initDefault().withFirstname('Issac').withVisibility(true).build();
 
     let aToken = 'a token';
     let anotherToken = 'another token';
@@ -139,8 +139,8 @@ describe('admin view', () => {
     });
 
     it('searches for participants', (done) => {
-      let aParticipant = ParticipantBuilder().initDefault().withFirstName('Friedrich').withVisibility(true).build();
-      let anotherParticipant = ParticipantBuilder().initDefault().withFirstName('Issac').withVisibility(true).build();
+      let aParticipant = ParticipantBuilder().initDefault().withFirstname('Friedrich').withVisibility(true).build();
+      let anotherParticipant = ParticipantBuilder().initDefault().withFirstname('Issac').withVisibility(true).build();
 
       let aToken = 'a token';
       let anotherToken = 'another token';
@@ -161,7 +161,7 @@ describe('admin view', () => {
     });
 
     it('should have a link to edit a participant', (done) => {
-      let aParticipant = ParticipantBuilder().initDefault().withFirstName('Friedrich').withVisibility(true).build();
+      let aParticipant = ParticipantBuilder().initDefault().withFirstname('Friedrich').withVisibility(true).build();
       let aToken = 'a token';
 
       participants.save(aParticipant, aToken)
@@ -176,7 +176,7 @@ describe('admin view', () => {
     });
 
     it('should show amount to pay - no tshirt', function (done) {
-      let aParticipant = ParticipantBuilder().initDefault().withFirstName('Friedrich').withVisibility(true).build();
+      let aParticipant = ParticipantBuilder().initDefault().withFirstname('Friedrich').withVisibility(true).build();
       let aToken = 'a token';
 
       participants.save(aParticipant, aToken)
@@ -204,7 +204,7 @@ describe('admin view', () => {
 
     it('should show amount to pay - one tshirt', function (done) {
       let aParticipant = ParticipantBuilder().initDefault()
-      .withFirstName('Friedrich').withTshirt('M', 'Normal fit').build();
+      .withFirstname('Friedrich').withTshirt('M', 'Normal fit').build();
 
       var aToken = 'a token';
 

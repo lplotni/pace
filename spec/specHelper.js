@@ -8,7 +8,6 @@ let ParticipantBuilder = function() {
   let internalObj = {}
 
   self.initDefault = function() {
-    // self = {};
     internalObj.firstname = 'Martin';
     internalObj.lastname = 'Fowler';
     internalObj.email = 'test@example.com';
@@ -44,9 +43,33 @@ let ParticipantBuilder = function() {
     return self;
   }
 
-  self.withFirstName = function(inputFirstName) {
-    internalObj.firstname = inputFirstName;
+  self.withEmail = function(inputEmail) {
+    internalObj.email = inputEmail;
+    return self;
+  }
 
+  self.withFirstname = function(inputFirstname) {
+    internalObj.firstname = inputFirstname;
+    return self;
+  }
+
+  self.withLastname = function(inputLastname) {
+    internalObj.lastname = inputLastname;
+    return self;
+  }
+
+  self.withCategory = function(inputCategory) {
+    internalObj.category = inputCategory;
+    return self;
+  }
+
+  self.withBirthyear = function(inputBirthyear) {
+    internalObj.birthyear = inputBirthyear;
+    return self;
+  }
+
+  self.withTeam = function(inputTeam) {
+    internalObj.team = inputTeam;
     return self;
   }
 

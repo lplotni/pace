@@ -80,6 +80,38 @@ describe('edit participant journey', () => {
       });
   });
 
+  it('edits a participant', (done) => {
+    let aParticipant = ParticipantBuilder().initDefault().build()
+    let aToken = '23eF67i';
+
+    participants.save(aParticipant, aToken)
+      .then(function (id) {
+
+        participants.getFullInfoById(id)
+          .then(p => {
+            let secureid = p.secureid;
+
+            helper.setUpClient()
+              .url(editParticipantUrl + '/?edit=' + secureid)
+              .isVisible('form#editParticipantForm')
+              .then(function (isVisible) {
+                expect(isVisible).toBe(true);
+              })
+              .setValue('#firstname', 'Bill')
+              .setValue('#lastname', 'Hercules')
+              .click('.button-primary')
+              .then(() => {
+                participants.getFullInfoById(id)
+                .then((participant) => {
+                  expect(participant.firstname).toBe('Bill')
+                  expect(participant.lastname).toBe('Hercules')
+                })
+              })
+              .end(done);
+          }).catch(e => console.log(e));
+      }).catch(e => console.log(e));
+  });
+
   it('shows an error page when using an invalid edit link', (done) => {
     helper.setUpClient()
       .url(editParticipantUrl + '/?edit=invalidId')

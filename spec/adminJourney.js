@@ -71,7 +71,7 @@ describe('admin page', () => {
       var firstName = 'not set yet';
       var lastName = 'not set yet';
 
-      let participant = ParticipantBuilder().initDefault().withFirstName('Foo').build();
+      let participant = ParticipantBuilder().initDefault().withFirstname('Foo').build();
 
       givenAValidUserExists(participant).then((id) => {
         loginAdmin().url(helper.paceUrl+'admin/participants')
@@ -102,7 +102,7 @@ describe('admin page', () => {
 
     it('should change participant\'s information after editing', (done) =>{
       let participant = ParticipantBuilder().initDefault()
-                        .withFirstName('Bob')
+                        .withFirstname('Bob')
                         .withTshirt('L', 'Normal fit').build();
 
       givenAValidUserExists(participant).then((id) => {
@@ -124,7 +124,7 @@ describe('admin page', () => {
 
     it('should add tshirt to participant\'s after editing', (done) =>{
       let participant = ParticipantBuilder().initDefault()
-                        .withFirstName('Bob').build();
+                        .withFirstname('Bob').build();
 
       givenAValidUserExists(participant).then((id) => {
         loginAdmin().url(helper.paceUrl+'admin/participants')

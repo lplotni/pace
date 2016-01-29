@@ -8,11 +8,17 @@ const config = require('config');
 let calculator = {};
 
 calculator.priceFor = function (participant) {
-  if (_.isEmpty(participant.tshirt) || participant.tshirt.amount === 0) {
-    return parseFloat(config.get('costs.standard'));
-  } else {
-    return parseFloat(config.get('costs.standard')) + parseFloat(config.get('shirts.price'));
+  let total = 0;
+  if (!_.isEmpty(participant.tshirt)) {
+    total = total + parseFloat(config.get('shirts.price'));
   }
+  if (participant.reduced_price === 'yes' ) {
+    total = total + parseFloat(config.get('costs.reduced'));
+  }
+  else {
+    total = total + parseFloat(config.get('costs.standard'));
+  }
+  return total;
 };
 
 module.exports = calculator;

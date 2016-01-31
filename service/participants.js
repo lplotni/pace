@@ -48,9 +48,9 @@ service.save = function (participant, paymentToken) {
 
 service.delete = function (participantid) {
   const deferred = Q.defer();
-  db.select('delete from participants where id=$1',[participantid])
+  db.select('delete from participants where id=$1', [participantid])
     .then((result) => {
-        deferred.resolve(result);
+      deferred.resolve(result);
     })
     .catch(deferred.reject);
   return deferred.promise;
@@ -106,11 +106,19 @@ service.register = function (participant) {
         if (!_.isEmpty(participant.tshirt)) {
           service.addTShirt(participant.tshirt, id);
         }
-        jade.renderFile('views/registration/text.jade', {
-          name: participant.firstname,
-          token: paymentToken,
-          amount: config.get('costs.standard')
-        }, (error, html) => service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html));
+
+        jade.renderFile('views/registration/text.jade',
+          {
+            name: participant.firstname,
+            token: paymentToken,
+            bank: config.get('contact.bank'),
+            amount: config.get('costs.standard')
+          },
+          (error, html) => {
+            service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
+          }
+        );
+
         deferred.resolve({'id': id, 'token': paymentToken});
       })
       .fail(err => deferred.reject(err));
@@ -127,7 +135,7 @@ service.getByToken = function (paymentToken) {
       }
       return result;
     })
-    .then(result  => {
+    .then(result => {
       return {
         name: result[0].lastname + ', ' + result[0].firstname,
         amount: calculator.priceFor(result[0]),
@@ -200,10 +208,10 @@ service.confirmParticipant = function (participantId) {
       service.getById(participantId)
         .then(result => {
           jade.renderFile('views/admin/paymentValidation/text.jade', {name: result.name}, (error, html) =>
-            service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html)
+            service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
           );
+          deferred.resolve();
         });
-      deferred.resolve();
     })
     .fail(err =>
       deferred.reject(err)
@@ -211,18 +219,22 @@ service.confirmParticipant = function (participantId) {
   return deferred.promise;
 };
 
-service.sendEmail = function (address, subject, text) {
-  let transporter = service._nodemailer.createTransport(sendmailTransport({
-    path: '/usr/sbin/sendmail'
-  }));
+service.sendEmail = function (address, subject, text, error) {
+  if (error) {
+    console.error(error);
+  } else {
+    let transporter = service._nodemailer.createTransport(sendmailTransport({
+      path: '/usr/sbin/sendmail'
+    }));
 
 
-  transporter.sendMail({
-    from: config.get('contact.email'),
-    to: address,
-    subject: subject,
-    html: text
-  });
+    transporter.sendMail({
+      from: config.get('contact.email'),
+      to: address,
+      subject: subject,
+      html: text
+    });
+  }
 };
 
 module.exports = service;

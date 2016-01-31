@@ -136,12 +136,22 @@ describe('participants service', () => {
     it('should mark the participant as payed', (done) => {
       let paymentToken = 'a token';
       spyOn(participants, 'markPayed').and.callThrough();
+      spyOn(participants, 'sendEmail');
 
       participants.save(aParticipant, paymentToken)
         .then(function (participantId) {
           participants.confirmParticipant(participantId)
             .then(() => {
               expect(participants.markPayed).toHaveBeenCalledWith(participantId);
+
+              expect(participants.sendEmail).toHaveBeenCalled();
+              let partcipantsEmail = participants.sendEmail.calls.mostRecent().args[0];
+              expect(partcipantsEmail).toBe(aParticipant.email);
+              let subject = participants.sendEmail.calls.mostRecent().args[1];
+              expect(subject).toBe('Lauf gegen Rechts: Zahlung erhalten');
+              let content = participants.sendEmail.calls.mostRecent().args[2];
+              expect(content).toMatch(/eingegangen/);
+
               done();
             })
             .fail(fail);
@@ -218,7 +228,17 @@ describe('participants service', () => {
       participants.register(aParticipant)
         .then((result) => {
           expect(participants.save).toHaveBeenCalledWith(aParticipant, result.token);
-          expect(participants.sendEmail).toHaveBeenCalled(); //todo check args.
+          expect(participants.sendEmail).toHaveBeenCalled();
+
+          let participantsEmail = participants.sendEmail.calls.mostRecent().args[0];
+          expect(participantsEmail).toBe(aParticipant.email);
+
+          let subject = participants.sendEmail.calls.mostRecent().args[1];
+          expect(subject).toBe('Lauf Gegen Rechts: Registrierung erfolgreich');
+
+          let content = participants.sendEmail.calls.mostRecent().args[2];
+          expect(content).toMatch(/Danke/);
+
           expect(participants.addTShirt).not.toHaveBeenCalled();
           done();
         })

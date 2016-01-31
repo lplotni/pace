@@ -38,6 +38,13 @@ block content
                     option(value='yes') Ja
                     option(value='no') Nein
         .row
+            .twelve.columns.padding
+                label(for='discount') Ich moechte den erm&auml;ssigten Preis zahlen.
+                select#discount.u-full-width(name='discount', required=true)
+                    option(value='no') Nein
+                    option(value='yes') Ja
+
+        .row
             .twelve.columns.black.padding(style='height: 36px')
                 label(for='shirt') Laufshirt gewünscht
                     input#shirt(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='shirt')

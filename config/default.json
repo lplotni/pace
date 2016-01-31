@@ -1,11 +1,12 @@
 {
   "shirts": {
-    "price": "20.50",
+    "price": "10",
     "sizes":  ["s","m","l","xl"],
     "models": ["slim","normal"]
   },
   "costs": {
-    "standard": "15"
+    "standard": "10",
+    "discount": "5"
   },
   "contact": {
     "email": "info@lauf-gegen-rechts.de",

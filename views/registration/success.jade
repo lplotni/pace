@@ -1,5 +1,8 @@
 extends ../layout
 
 block content
-    .thanks
-        include text.jade
+  .thanks.row
+    .columns.five
+      span.lnr.lnr-checkmark-circle(style='font-size: 23em; color: #2E8B57')
+    .columns.six
+      include text.jade

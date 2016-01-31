@@ -56,8 +56,13 @@ img.tshirt {
     font-size: 25px;
 }
 
+.footer a {
+    color: white;
+}
+
+
 .small {
-    font-size: 12px;
+    font-size: 14px;
 }
 
 button#confirm-registration{

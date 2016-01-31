@@ -6,7 +6,7 @@
   },
   "costs": {
     "standard": "10",
-    "reduced": "5"
+    "discount": "5"
   },
   "contact": {
     "email": "info@lauf-gegen-rechts.de",

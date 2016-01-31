@@ -17,7 +17,7 @@ describe('costCalculator', () => {
     gender: 'Unicorn',
     birthyear: 1980,
     team: 'Crazy runners',
-    reduced_price: 'no',
+    discount: 'no',
     tshirt: {
       model: 'Normal fit',
       size: 'M'
@@ -36,12 +36,12 @@ describe('costCalculator', () => {
 
     expect(cost).toBe(parseFloat(config.get('costs.standard')));
   });
-  it('cost for reduced price', () => {
+  it('cost with discount', () => {
     participant.tshirt = {};
-    participant.reduced_price = 'yes';
+    participant.discount = 'yes';
     let cost = calculator.priceFor(participant);
 
-    expect(cost).toBe(parseFloat(config.get('costs.reduced')));
+    expect(cost).toBe(parseFloat(config.get('costs.discount')));
   });
 
 });

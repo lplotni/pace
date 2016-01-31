@@ -17,7 +17,6 @@ function invalidData(body) {
     _.isUndefined(body.email) ||
     _.isUndefined(body.category) ||
     _.isUndefined(body.visibility) ||
-    _.isUndefined(body.discount) ||
     _.isUndefined(body.birthyear);
 }
 
@@ -30,7 +29,7 @@ participant.from = function (body) {
     lastname: body.lastname,
     email: body.email,
     visibility: body.visibility,
-    discount: body.discount,
+    discount: _.isUndefined(body.discount) ? 'no' : body.discount,
     category: body.category,
     birthyear: body.birthyear,
     team: body.team,
@@ -45,7 +44,7 @@ participant.addTshirtDetailsTo = function (participant) {
       let details = [];
       tshirtDetails.forEach(element =>
         details.push(_.pick(element, 'size', 'model'))
-      );
+      ); //todo transform to map
       participant.tshirt = {
         details: details,
         amount: tshirtDetails.length

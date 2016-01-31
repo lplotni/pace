@@ -6,8 +6,6 @@
 describe('costCalculator', () => {
 
   const calculator = require('../../domain/costCalculator.js');
-  const _ = require('lodash');
-
   const config = require('config');
 
   let participant = {
@@ -36,6 +34,7 @@ describe('costCalculator', () => {
 
     expect(cost).toBe(parseFloat(config.get('costs.standard')));
   });
+
   it('cost with discount', () => {
     participant.tshirt = {};
     participant.discount = 'yes';

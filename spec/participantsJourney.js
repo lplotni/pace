@@ -209,9 +209,9 @@ describe('admin view', () => {
 
     it('should show amount to pay - no tshirt', function (done) {
       let aParticipant = {
-        firstname: 'Friedrich',
-        lastname: 'Schiller',
-        email: 'f.schiller@example.com'
+        firstname: 'Johann Wolfgang',
+        lastname: 'Goethe',
+        email: 'jwg@example.com'
       };
       let aToken = 'a token';
 
@@ -229,7 +229,7 @@ describe('admin view', () => {
                     .then(function (amountFields) {
                       loggedInClient.elementIdText(amountFields.value[0].ELEMENT)
                         .then(function (textObject) {
-                          expect(textObject.value).toBe('15');
+                          expect(textObject.value).toBe('10');
                           loggedInClient.end(done);
                         });
                     });
@@ -267,7 +267,7 @@ describe('admin view', () => {
                     .then(function (amountFields) {
                       loggedInClient.elementIdText(amountFields.value[0].ELEMENT)
                         .then(function (textObject) {
-                          expect(textObject.value).toBe('35.5');
+                          expect(textObject.value).toBe('20');
                           loggedInClient.end(done);
                         });
                     });

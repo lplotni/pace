@@ -56,6 +56,10 @@ img.tshirt {
     font-size: 25px;
 }
 
+.small {
+    font-size: 12px;
+}
+
 button#confirm-registration{
     border: 1px solid green;
     background-color: #2E8B57;

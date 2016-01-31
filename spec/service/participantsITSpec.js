@@ -15,6 +15,7 @@ describe('participants service', () => {
     category: 'Unicorn',
     birthyear: 1980,
     visibility: 'yes',
+    discount:'no',
     team: 'Crazy runners'
   };
 
@@ -65,6 +66,7 @@ describe('participants service', () => {
         expect(data[0].email).toBe(aParticipant.email);
         expect(data[0].category).toBe(aParticipant.category);
         expect(data[0].birthyear).toBe(aParticipant.birthyear);
+        expect(data[0].discount).toBe(aParticipant.discount);
         expect(data[0].team).toBe(aParticipant.team);
         done();
       })

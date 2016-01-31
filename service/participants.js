@@ -42,8 +42,8 @@ service.getPubliclyVisible = function () {
 service.save = function (participant, paymentToken) {
   const secureID = editUrlHelper.generateSecureID();
   console.log(participant);
-  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility,reduced_price, paymenttoken, secureid) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning id',
-    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, participant.reduced_price, paymentToken, secureID]);
+  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning id',
+    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, participant.discount, paymentToken, secureID]);
 };
 
 

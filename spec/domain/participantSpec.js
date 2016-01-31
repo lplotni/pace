@@ -20,6 +20,7 @@ describe('participant', () => {
       birthyear: 1980,
       team: 'Crazy runners',
       visibility: 'public',
+      discount: 'no',
       shirt: 'Yes',
       model: 'Normal fit',
       size: 'M'
@@ -32,6 +33,7 @@ describe('participant', () => {
       birthyear: 1980,
       team: 'Crazy runners',
       visibility: 'public',
+      discount: 'no',
       shirt: 'Yes',
       model: 'Normal fit',
       size: 'M'
@@ -128,6 +130,15 @@ describe('participant', () => {
         participant.from(_.omit(body, 'visibility'));
       }
 
+      expect(callWithNoVisibility).toThrow();
+    });
+    it('should extract discount from the request body', () => {
+      expect(participant.from(body).discount).toBe('no');
+    });
+    it('should throw an error if no discount can be found', function() {
+      function callWithNoVisibility() {
+        participant.from(_.omit(body, 'discount'));
+      }
       expect(callWithNoVisibility).toThrow();
     });
   });

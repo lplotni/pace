@@ -17,6 +17,7 @@ function invalidData(body) {
     _.isUndefined(body.email) ||
     _.isUndefined(body.category) ||
     _.isUndefined(body.visibility) ||
+    _.isUndefined(body.discount) ||
     _.isUndefined(body.birthyear);
 }
 

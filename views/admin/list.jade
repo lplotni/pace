@@ -32,8 +32,8 @@ block content
                             form#payment-details(method='POST', action='/paymentValidation/confirm')
                                 input(type='hidden', name='_csrf', value=_csrf)
                                 input(type='hidden', name='participantid', value='#{p.id}')
-                                button#confirm-registration.icon.button-primary(type='submit')
-                                    span.lnr.lnr-checkmark-circle
+                                button(id = p.has_payed ? 'confirm-registration-done' : 'confirm-registration').icon.button-primary(type='submit')
+                                  span.lnr.lnr-checkmark-circle
                         td
                             form#user-delete(method='POST', action='editparticipant/delete')
                                 input(type='hidden', name='_csrf', value=_csrf)

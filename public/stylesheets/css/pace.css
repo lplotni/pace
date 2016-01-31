@@ -70,6 +70,11 @@ button#confirm-registration{
     background-color: #2E8B57;
 }
 
+button#confirm-registration-done{
+    border: 1px solid grey;
+    background-color: grey;
+}
+
 button#confirm-registration:hover{
     border: 1px solid green;
     background-color: #008080;

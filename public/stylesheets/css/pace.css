@@ -110,7 +110,6 @@ body {
   width: 100%
 }
 
-
 .outer-content-container {
   padding-top: 2em;
   flex-grow: 2;
@@ -128,6 +127,23 @@ body {
 .footer {
     color: white;
     text-align: center;
+}
+
+@media(max-width: 560px) {
+    .success {
+        display: none;
+    }
+}
+
+@media(max-width: 960px) {
+    .success {
+        font-size: 10em !important;
+    }
+}
+
+.success {
+    font-size: 23em;
+    color: #2E8B57
 }
 
 .warning {

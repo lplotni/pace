@@ -29,7 +29,7 @@ participant.from = function (body) {
     lastname: body.lastname,
     email: body.email,
     visibility: body.visibility,
-    reduced_price: body.reduced_price,
+    discount: body.discount,
     category: body.category,
     birthyear: body.birthyear,
     team: body.team,

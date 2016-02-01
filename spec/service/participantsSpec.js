@@ -11,7 +11,7 @@ const secureId = 'secureId';
 
 describe('participants service', () => {
 
-    let dbHelperMock, participants, editUrlHelperMock;
+    let participants, dbHelperMock, editUrlHelperMock, jadeMock, configMock;
 
     beforeEach(() => {
       mockery.enable({
@@ -22,23 +22,33 @@ describe('participants service', () => {
 
       mockery.resetCache();
 
-
       dbHelperMock = {
         select: jasmine.createSpy(),
         insert: jasmine.createSpy()
       };
 
       editUrlHelperMock = {
-        generateSecureID: jasmine.createSpy()
+        generateSecureID: jasmine.createSpy(),
+        generateUrl: jasmine.createSpy()
+      };
+
+      jadeMock = {
+        renderFile: jasmine.createSpy()
+      };
+
+      configMock = {
+        get: jasmine.createSpy()
       };
 
       mockery.registerMock('../service/dbHelper', dbHelperMock);
       mockery.registerMock('../domain/editUrlHelper', editUrlHelperMock);
+      mockery.registerMock('jade', jadeMock);
+      mockery.registerMock('config', configMock);
 
-      mockery.registerAllowables(['q', '../../service/dbHelper.js', '../../service/editUrlHelper']);
+      mockery.registerAllowables(['q', '../../service/dbHelper.js', '../../service/editUrlHelper', 'jade', 'config']);
       participants = require('../../service/participants');
       dbHelperMock.select.and.returnValue(Q.fcall(() => []));
-
+      dbHelperMock.insert.and.returnValue(Q.fcall(() => 'some id'));
     });
 
     describe('createUniqueToken', () => {
@@ -88,25 +98,29 @@ describe('participants service', () => {
         });
       });
     });
-    describe('save', () => {
 
-      it('passes the newly generated secureId in the DB', () => {
-        const aParticipant = {
-          firstname: 'Hertha',
-          lastname: 'Mustermann',
-          email: 'h.mustermann@example.com',
-          category: 'Unicorn',
-          birthyear: 1980,
-          visibility: 'yes',
-          team: 'Crazy runners'
-        };
+  describe('register', () => {
 
-        editUrlHelperMock.generateSecureID.and.returnValue(secureId);
+    it('passes the newly generated secureId in the DB', (done) => {
+      const aParticipant = {
+        firstname: 'Hertha',
+        lastname: 'Mustermann',
+        email: 'h.mustermann@example.com',
+        category: 'Unicorn',
+        birthyear: 1980,
+        visibility: 'yes',
+        team: 'Crazy runners'
+      };
 
-          participants.save(aParticipant, 'a token');
-          const params = dbHelperMock.insert.calls.mostRecent().args[1];
-          expect(params[params.length -1]).toBe(secureId);
+      editUrlHelperMock.generateSecureID.and.returnValue(secureId);
+
+      participants.register(aParticipant).then(function() {
+        const params = dbHelperMock.insert.calls.mostRecent().args[1];
+        expect(params[params.length -1]).toBe(secureId);
+        done();
       });
+
     });
+  });
   }
 );

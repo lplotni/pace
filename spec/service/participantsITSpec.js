@@ -198,8 +198,7 @@ describe('participants service', () => {
             }
       };
       participants.save(aParticipantWithTshirt, paymentToken)
-        .then((id) => {
-            let participantid = id;
+        .then((participantid) => {
             participants.delete(participantid).then(() => {
               done();
             })
@@ -229,7 +228,14 @@ describe('participants service', () => {
 
       participants.register(aParticipant)
         .then((result) => {
-          expect(participants.save).toHaveBeenCalledWith(aParticipant, result.token);
+          expect(participants.save).toHaveBeenCalled();
+          let participant = participants.save.calls.mostRecent().args[0];
+          expect(participant).toBe(aParticipant);
+          let token = participants.save.calls.mostRecent().args[1];
+          expect(token).toBe(result.token);
+          let secureId = participants.save.calls.mostRecent().args[2];
+          expect(secureId).not.toBeNull();
+
           expect(participants.sendEmail).toHaveBeenCalled();
 
           let participantsEmail = participants.sendEmail.calls.mostRecent().args[0];
@@ -296,7 +302,7 @@ describe('participants service', () => {
   describe('update', () => {
     it('should return the full information for a participant with given Id', (done) => {
       let paymentToken = 'a token';
-      participants.save(aParticipant, paymentToken)
+      participants.save(aParticipant, paymentToken, 'someSecureId')
         .then(function (id) {
           const updatedParticipant = {
             firstname: 'Hertha updated',

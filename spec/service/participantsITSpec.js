@@ -19,6 +19,8 @@ describe('participants service', () => {
     team: 'Crazy runners'
   };
 
+  const secureId = 'some secure id';
+
   beforeEach((done) => {
     let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
     let jasmineDone = done;
@@ -57,7 +59,7 @@ describe('participants service', () => {
   it('should store and read participants', (done) => {
     const randomToken = '1234567';
 
-    participants.save(aParticipant, randomToken)
+    participants.save(aParticipant, randomToken, secureId)
       .then(participants.getRegistered)
       .then(function (data) {
         expect(data.length).toBe(1);
@@ -77,7 +79,7 @@ describe('participants service', () => {
     it('should return the id', (done) => {
       let paymentToken = 'a token';
 
-      participants.save(aParticipant, paymentToken)
+      participants.save(aParticipant, paymentToken, secureId)
         .then(function (participantId) {
           expect(participantId).toBeDefined();
           done();
@@ -89,7 +91,7 @@ describe('participants service', () => {
   describe('getById', () => {
     it('should return name and email of the participant with given Id', (done) => {
       let paymentToken = 'a token';
-      participants.save(aParticipant, paymentToken)
+      participants.save(aParticipant, paymentToken, secureId)
         .then(function (participantId) {
           participants.getById(participantId)
             .then(function (participant) {
@@ -140,7 +142,7 @@ describe('participants service', () => {
       spyOn(participants, 'markPayed').and.callThrough();
       spyOn(participants, 'sendEmail');
 
-      participants.save(aParticipant, paymentToken)
+      participants.save(aParticipant, paymentToken, secureId)
         .then(function (participantId) {
           participants.confirmParticipant(participantId)
             .then(() => {
@@ -164,7 +166,7 @@ describe('participants service', () => {
       let paymentToken = 'a token';
       let wrongId = '999';
 
-      participants.save(aParticipant, paymentToken)
+      participants.save(aParticipant, paymentToken, secureId)
         .then(() => {
           participants.confirmParticipant(wrongId)
             .catch(() => {
@@ -177,7 +179,7 @@ describe('participants service', () => {
   describe('delete', () => {
     it('should delete a user', (done) => {
       let paymentToken = 'a token';
-      participants.save(aParticipant, paymentToken)
+      participants.save(aParticipant, paymentToken, secureId)
         .then((id) => {
             participants.delete(id).then(() => {
               done();
@@ -197,7 +199,7 @@ describe('participants service', () => {
               model: 'Crazy cool fit'
             }
       };
-      participants.save(aParticipantWithTshirt, paymentToken)
+      participants.save(aParticipantWithTshirt, paymentToken, secureId)
         .then((participantid) => {
             participants.delete(participantid).then(() => {
               done();

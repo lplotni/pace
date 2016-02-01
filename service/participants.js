@@ -112,7 +112,7 @@ service.register = function (participant) {
             name: participant.firstname,
             token: paymentToken,
             bank: config.get('contact.bank'),
-            amount: config.get('costs.standard')
+            amount: calculator.priceFor(participant),
           },
           (error, html) => {
             service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);

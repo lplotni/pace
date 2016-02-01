@@ -37,6 +37,10 @@ describe('registration journey', () => {
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })
+      .isVisible('a#editurl')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
       .getText('span.amount').
       then(function (amount) {
         expect(amount).toMatch(/20.00/);

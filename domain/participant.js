@@ -41,10 +41,9 @@ participant.from = function (body) {
 participant.addTshirtDetailsTo = function (participant) {
   return participants.getTShirtFor(participant.id)
     .then(tshirtDetails => {
-      let details = [];
-      tshirtDetails.forEach(element =>
-        details.push(_.pick(element, 'size', 'model'))
-      ); //todo transform to map
+      let details = tshirtDetails.map(function (element) {
+        return _.pick(element, 'size', 'model');
+      });
       participant.tshirt = {
         details: details,
         amount: tshirtDetails.length

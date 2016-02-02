@@ -10,6 +10,11 @@ const router = express.Router();
 const participants = require('../../service/participants');
 const participant = require('../../domain/participant');
 const calculator = require('../../domain/costCalculator');
+const editUrlHelper = require('../../domain/editUrlHelper');
+
+let assembleEditUrl = function(baseUrl, secureid) {
+  return baseUrl + '/' + editUrlHelper.generateUrl(secureid);
+};
 
 router.get('/', (req, res) => {
   res.render('registration/registration', {});
@@ -19,14 +24,16 @@ router.post('/', (req, res) => {
   try {
     const newParticipant = participant.from(req.body);
     participants.register(newParticipant)
-      .done((result)  =>
+      .done((result)  => {
         res.render('registration/success', {
           name: newParticipant.firstname + ' ' + newParticipant.lastname,
           bank: config.get('contact.bank'),
           token: result.token,
           amount: new Intl.NumberFormat('de-DE', {minimumFractionDigits: '2'}).format(calculator.priceFor(newParticipant)),
-          link: ''
-        }), err => res.send(err.message));
+          link: '',
+          editUrl: assembleEditUrl(req.header('origin'), result.secureid)
+        });
+      }, err => res.send(err.message));
   } catch (err) {
     res.send(err.message);
   }

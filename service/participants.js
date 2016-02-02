@@ -39,8 +39,7 @@ service.getPubliclyVisible = function () {
   );
 };
 
-service.save = function (participant, paymentToken) {
-  const secureID = editUrlHelper.generateSecureID();
+service.save = function (participant, paymentToken, secureID) {
   return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning id',
     [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, participant.discount, paymentToken, secureID]);
 };
@@ -101,7 +100,8 @@ service.register = function (participant) {
   const jade = require('jade');
 
   service.createUniqueToken().then((paymentToken) => {
-    service.save(participant, paymentToken)
+    const secureID = editUrlHelper.generateSecureID();
+    service.save(participant, paymentToken, secureID)
       .then(id => {
         if (!_.isEmpty(participant.tshirt)) {
           service.addTShirt(participant.tshirt, id);
@@ -113,13 +113,14 @@ service.register = function (participant) {
             token: paymentToken,
             bank: config.get('contact.bank'),
             amount: calculator.priceFor(participant),
+            editUrl: editUrlHelper.generateUrl(secureID)
           },
           (error, html) => {
             service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
           }
         );
 
-        deferred.resolve({'id': id, 'token': paymentToken});
+        deferred.resolve({'id': id, 'token': paymentToken, secureid: secureID});
       })
       .fail(err => deferred.reject(err));
   }).fail(deferred.reject);

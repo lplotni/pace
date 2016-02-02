@@ -12,10 +12,6 @@ const participant = require('../../domain/participant');
 const calculator = require('../../domain/costCalculator');
 const editUrlHelper = require('../../domain/editUrlHelper');
 
-let assembleEditUrl = function(baseUrl, secureid) {
-  return baseUrl + '/' + editUrlHelper.generateUrl(secureid);
-};
-
 router.get('/', (req, res) => {
   res.render('registration/registration', {});
 });
@@ -30,8 +26,7 @@ router.post('/', (req, res) => {
           bank: config.get('contact.bank'),
           token: result.token,
           amount: new Intl.NumberFormat('de-DE', {minimumFractionDigits: '2'}).format(calculator.priceFor(newParticipant)),
-          link: '',
-          editUrl: assembleEditUrl(req.header('origin'), result.secureid)
+          editUrl: editUrlHelper.generateUrl(result.secureid)
         });
       }, err => res.send(err.message));
   } catch (err) {

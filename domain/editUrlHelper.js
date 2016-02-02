@@ -1,10 +1,11 @@
 /* jshint node: true */
 /* jshint esnext: true */
 'use strict';
-const crypto = require("crypto");
+const crypto = require('crypto');
+const config = require('config');
 
 const editUrlHelper = function () {
-  const constantUrlPart = 'editparticipant/?edit=';
+  const constantUrlPart = `${config.get('pace-url')}/editparticipant/?edit=`;
 
   var generateUrl = function (value) {
     return constantUrlPart + encodeURIComponent(value);
@@ -15,8 +16,7 @@ const editUrlHelper = function () {
   };
 
   var getIdFromUrl = function (url) {
-    var encryptedPart = url.replace(constantUrlPart, '');
-    return encryptedPart;
+    return url.replace(constantUrlPart, '');
   };
 
   return {

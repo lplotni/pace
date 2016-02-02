@@ -19,6 +19,10 @@ img.tshirt {
     width: 175px;
 }
 
+pre {
+  overflow: visible;
+}
+
 .hidden {
     opacity: 0;
 }

@@ -6,17 +6,16 @@ const crypto = require("crypto");
 const editUrlHelper = function () {
   const constantUrlPart = 'editparticipant/?edit=';
 
-  var generateUrl = function (value) {
+  let generateUrl = function (value) {
     return constantUrlPart + encodeURIComponent(value);
   };
 
-  var generateSecureID = function () {
+  let generateSecureID = function () {
     return crypto.randomBytes(32).toString('hex');
   };
 
-  var getIdFromUrl = function (url) {
-    var encryptedPart = url.replace(constantUrlPart, '');
-    return encryptedPart;
+  let getIdFromUrl = function (url) {
+    return url.replace(constantUrlPart, '');
   };
 
   return {

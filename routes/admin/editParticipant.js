@@ -9,7 +9,7 @@ const editUrlHelper = require('../../domain/editUrlHelper');
 
 const accesscontrol = require('../../acl/accesscontrol');
 
-var canDeleteUser = function (role) {
+let canDeleteUser = function (role) {
   return accesscontrol.hasPermissionTo(role, 'delete');
 };
 

@@ -28,7 +28,7 @@ let addAmountTo = function (participants) {
 
 router.get('/', isAuthenticated, (req, res) => {
   participants.getConfirmed().then(result => {
-    var allParticipants = result;
+    let allParticipants = result;
     participants.getRegistered().then(result => {
       allParticipants = allParticipants.concat(result);
       addEditUrlTo(allParticipants);

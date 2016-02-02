@@ -41,16 +41,17 @@ participant.from = function (body) {
 participant.addTshirtDetailsTo = function (participant) {
   return participants.getTShirtFor(participant.id)
     .then(tshirtDetails => {
-      let details = tshirtDetails.map(function (element) {
-        return _.pick(element, 'size', 'model');
-      });
-      participant.tshirt = {
-        details: details,
-        amount: tshirtDetails.length
-      };
-    }).catch(() =>
-      participant.tshirt = {amount: 0}
-    );
+      let tshirtAmount = tshirtDetails.length;
+      if(tshirtAmount > 0) {
+        let details = tshirtDetails.map(function (element) {
+          return _.pick(element, 'size', 'model');
+        });
+        participant.tshirt = {
+          details: details,
+          amount: tshirtAmount
+        };
+      }
+    });
 };
 
 module.exports = participant;

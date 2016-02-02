@@ -154,13 +154,6 @@ describe('participant', () => {
       return successResolve;
     };
 
-    let returnPromiseAndThrowError = function() {
-      function errorResolve() {
-        return Q.fcall(function() { throw new Error();});
-      }
-      return errorResolve;
-    };
-
     let setupMocks = function() {
 
       mockery.enable({
@@ -189,12 +182,12 @@ describe('participant', () => {
     let tshirtDetails = {id: 0, size: anySize, model: anyModel, participantId: 0};
     let anyParticipant = {};
 
-    it('should set the amount to 0 if the participant did not order a tshirt', function (done) {
+    it('should not add tshirt details if the participant did not order a tshirt', function (done) {
       let anyParticipant = {};
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndThrowError());
+      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([]));
 
       participant.addTshirtDetailsTo(anyParticipant).then(() => {
-        expect(anyParticipant.tshirt.amount).toBe(0);
+        expect(anyParticipant.tshirt).toBeUndefined();
         done();
       });
     });

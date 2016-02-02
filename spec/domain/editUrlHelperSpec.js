@@ -28,7 +28,15 @@ describe('editUrlHelper', () => {
     it('should produce absolute URI', () => {
       const secureID = editUrlHelper.generateUrl('secureId');
 
-      expect(secureID).toBe(`${config.get('pace-url')}/editparticipant/?edit=secureId`);
+      expect(secureID).toBe(`${config.get('pace-url')}/editparticipant/secureId`);
+    });
+  });
+
+  describe('generateUrlForAdmin', () => {
+    it('should produce absolute URI', () => {
+      const secureID = editUrlHelper.generateUrlForAdmin('secureId');
+
+      expect(secureID).toBe(`${config.get('pace-url')}/admin/editparticipant/secureId`);
     });
   });
 

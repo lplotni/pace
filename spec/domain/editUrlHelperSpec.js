@@ -28,6 +28,14 @@ describe('editUrlHelper', () => {
     it('should produce absolute URI', () => {
       const secureID = editUrlHelper.generateUrl('secureId');
 
+      expect(secureID).toBe(`${config.get('pace-url')}/editparticipant/?edit=secureId`);
+    });
+  });
+
+  describe('generateUrl', () => {
+    it('should produce absolute URI', () => {
+      const secureID = editUrlHelper.generateUrl('secureId');
+
       expect(secureID).toBe(`${config.get('pace-url')}/editparticipant/secureId`);
     });
   });

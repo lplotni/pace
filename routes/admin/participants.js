@@ -11,9 +11,11 @@ const participant = require('../../domain/participant');
 const editUrlHelper = require('../../domain/editUrlHelper');
 const costCalculator = require('../../domain/costCalculator');
 
+
+//TODO Move those 2 method out of the Ctrl.
 let addEditUrlTo = function (participants) {
   participants.map(participant => {
-    participant.editUrl = editUrlHelper.generateUrl(participant.secureid);
+    participant.editUrl = editUrlHelper.generateUrlForAdmin(participant.secureid);
     return participant;
   });
 };

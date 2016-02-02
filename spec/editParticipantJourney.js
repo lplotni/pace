@@ -38,7 +38,7 @@ describe('edit participant journey', () => {
     participants.save(aParticipant, aToken, secureid)
       .then(() => {
         helper.setUpClient()
-          .url(editParticipantUrl + '/?edit=' + secureid)
+          .url(editParticipantUrl + '/' + secureid)
           .isVisible('form#editParticipantForm')
           .then(function (isVisible) {
             expect(isVisible).toBe(true);
@@ -84,7 +84,7 @@ describe('edit participant journey', () => {
 
   it('shows an error page when using an invalid edit link', (done) => {
     helper.setUpClient()
-      .url(editParticipantUrl + '/?edit=invalidId')
+      .url(editParticipantUrl + '/invalidId')
       .getText('h1')
       .then(function (text) {
         expect(text).toBe('Teilnehmer nicht bekannt');

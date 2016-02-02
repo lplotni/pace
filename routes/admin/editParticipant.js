@@ -13,8 +13,8 @@ var canDeleteUser = function (role) {
   return accesscontrol.hasPermissionTo(role, 'delete');
 };
 
-router.get('/', (req, res) => {
-  const participantId = editUrlHelper.getIdFromUrl(req.query.edit);
+router.get('/:secureId', (req, res) => {
+  const participantId = req.params.secureId;
   participants.getFullInfoBySecureId(participantId)
   .then(p => res.render('participants/editParticipant', {participant: p, participantid: participantId, isAdmin: true}))
     .catch( () =>

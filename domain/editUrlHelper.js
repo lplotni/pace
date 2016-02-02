@@ -1,10 +1,11 @@
 /* jshint node: true */
 /* jshint esnext: true */
 'use strict';
-const crypto = require("crypto");
+const crypto = require('crypto');
+const config = require('config');
 
 const editUrlHelper = function () {
-  const constantUrlPart = 'editparticipant/?edit=';
+  const constantUrlPart = `${config.get('pace-url')}/editparticipant/?edit=`;
 
   let generateUrl = function (value) {
     return constantUrlPart + encodeURIComponent(value);

@@ -12,7 +12,7 @@
     "email": "info@lauf-gegen-rechts.de",
     "bank": {
       "name": "Eine nette Bank",
-      "iban": "12345678902lkj3lkj23",
+      "iban": "DE19 1234 1234 1234 1234 12",
       "bic": "DE12345677"
     }
   },
@@ -20,6 +20,7 @@
     "username": "admin",
     "password": "Blanch4rdst0wn"
   },
+  "pace-url": "http://localhost:3000",
   "cookie-secret":"change this in your local config",
   "proxy":false,
   "https":false

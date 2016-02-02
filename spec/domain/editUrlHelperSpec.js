@@ -4,6 +4,7 @@
 /* global jasmine, describe, it, expect, beforeEach, spyOn */
 
 const crypto = require('crypto');
+const config = require('config');
 
 describe('editUrlHelper', () => {
 
@@ -20,6 +21,14 @@ describe('editUrlHelper', () => {
 
       expect(secureID).toBe("testID");
 
+    });
+  });
+
+  describe('generateUrl', () => {
+    it('should produce absolute URI', () => {
+      const secureID = editUrlHelper.generateUrl('secureId');
+
+      expect(secureID).toBe(`${config.get('pace-url')}/editparticipant/?edit=secureId`);
     });
   });
 

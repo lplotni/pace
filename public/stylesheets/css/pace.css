@@ -134,21 +134,30 @@ body {
     text-align: center;
 }
 
-@media(max-width: 560px) {
-    .success {
-        display: none;
-    }
-}
-
-@media(max-width: 960px) {
-    .success {
-        font-size: 10em !important;
-    }
-}
-
 .success {
-    font-size: 21em;
+    display: none;
     color: #2E8B57
+}
+
+@media(min-width: 560px) {
+    .success {
+        display: block;
+        font-size: 10em;
+    }
+}
+
+@media(min-width: 760px) {
+    .success {
+        display: block;
+        font-size: 15em;
+    }
+}
+
+@media(min-width: 1200px) {
+    .success {
+        display: block;
+        font-size: 21em;
+    }
 }
 
 .warning {

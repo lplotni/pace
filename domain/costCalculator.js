@@ -9,7 +9,7 @@ let calculator = {};
 
 calculator.priceFor = function (participant) {
   let total = 0;
-  if (!(_.isEmpty(participant.tshirt) || participant.tshirt.amount === 0)) {
+  if (!_.isEmpty(participant.tshirt)) {
     total = total + parseFloat(config.get('shirts.price'));
   }
   if (participant.discount === 'yes' ) {

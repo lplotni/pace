@@ -7,7 +7,7 @@ const participants = require('../../service/participants');
 const accesscontrol = require('../../acl/accesscontrol');
 const isAuthenticated = require('../../acl/authentication');
 
-var canConfirmPayments = function (role) {
+let canConfirmPayments = function (role) {
   return accesscontrol.hasPermissionTo(role, 'confirm payments');
 };
 

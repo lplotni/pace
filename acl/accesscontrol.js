@@ -1,3 +1,7 @@
+/* jshint node: true */
+/* jshint esnext: true */
+'use strict';
+
 var rbac2 = require('rbac2');
 
 var rules = [
@@ -10,8 +14,8 @@ var rules = [
 var rbac = new rbac2(rules);
 
 var hasPermissionTo = function(userRole, action) {
-    var accessControlCheckResult = false;
-    rbac.check(userRole, action, function(err, result){
+    let accessControlCheckResult = false;
+    rbac.check(userRole, action, (err, result) => {
         accessControlCheckResult = result;
     });
     return accessControlCheckResult;

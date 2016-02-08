@@ -2,15 +2,15 @@
 /* jshint esnext: true */
 'use strict';
 
-var router = require('express').Router();
-var participants = require('../../service/participants');
-var accesscontrol = require('../../acl/accesscontrol');
+const router = require('express').Router();
+const participants = require('../../service/participants');
+const accesscontrol = require('../../acl/accesscontrol');
 
-var useDefaultAuthentication = function (req, res, next) {
+let useDefaultAuthentication = function (req, res, next) {
   if (req.user) {
     return next();
   } else {
-    var user = {username: 'guest', role: 'guest'};
+    let user = {username: 'guest', role: 'guest'};
     req.logIn(user, next);
   }
 };

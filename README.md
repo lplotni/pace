@@ -28,6 +28,19 @@ For **functional** tests: `gulp test-functional`
 #### Running jshint
 Here you go: `gulp lint`
 
+### Running in docker
+Run pace inside docker:
+```
+docker-compose up 
+```
+Create the database needed:
+```
+docker-compose run pace-app /usr/src/app/node_modules/db-migrate/bin/db-migrate up
+```
+
+Pace will be reachable on http://localhost:3000
+
+
 ## More info
 If you would like to contribute, we have also few blog post explaining our
 technical choices and setup:

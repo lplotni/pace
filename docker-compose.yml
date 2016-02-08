@@ -1,0 +1,13 @@
+db:  
+  image: postgres
+pace-app:  
+  build: .
+  ports:
+    - "3000:3000"
+  links:
+    - db
+  environment:
+    - DATABASE_URL=postgres://db:5432/postgres
+    - PGHOST=db
+    - PGDATABASE=postgres
+    - PGUSER=postgres

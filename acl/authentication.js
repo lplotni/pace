@@ -1,4 +1,8 @@
-var isAuthenticated = function (req, res, next) {
+/* jshint node: true */
+/* jshint esnext: true */
+'use strict';
+
+let isAuthenticated = function (req, res, next) {
     if (req.isAuthenticated() && req.user.role === 'admin') {
         return next();
     } else {

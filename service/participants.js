@@ -209,7 +209,7 @@ service.confirmParticipant = function (participantId) {
       service.getFullInfoById(participantId)
         .then(result => {
           jade.renderFile('views/admin/paymentValidation/text.jade',
-            {name: result.name, editUrl: editUrlHelper.generateUrl(result.secureid)},
+            {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},
             (error, html) =>
               service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
           );

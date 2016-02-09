@@ -154,6 +154,7 @@ describe('participants service', () => {
               let subject = participants.sendEmail.calls.mostRecent().args[1];
               expect(subject).toBe('Lauf gegen Rechts: Zahlung erhalten');
               let content = participants.sendEmail.calls.mostRecent().args[2];
+              expect(content).toMatch(aParticipant.firstname);
               expect(content).toMatch(/eingegangen/);
               expect(content).toMatch(secureId);
 

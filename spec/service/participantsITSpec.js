@@ -20,6 +20,22 @@ describe('participants service', () => {
   };
 
   const secureId = 'some_secure_id';
+  const paymentToken = 'a token';
+
+  const expectOnParticipantFields = function(participantFromDb, participantId) {
+    expect(participantFromDb.id).toEqual(participantId);
+    expect(participantFromDb.firstname).toEqual(aParticipant.firstname);
+    expect(participantFromDb.lastname).toEqual(aParticipant.lastname);
+    expect(participantFromDb.email).toEqual(aParticipant.email);
+    expect(participantFromDb.category).toEqual(aParticipant.category);
+    expect(participantFromDb.birthyear).toEqual(aParticipant.birthyear);
+    expect(participantFromDb.visibility).toEqual(aParticipant.visibility);
+    expect(participantFromDb.discount).toEqual(aParticipant.discount);
+    expect(participantFromDb.team).toEqual(aParticipant.team);
+    expect(participantFromDb.paymenttoken).toEqual(paymentToken);
+    expect(participantFromDb.has_payed).toEqual(false);
+    expect(participantFromDb.secureid).toEqual(secureId);
+  };
 
   beforeEach((done) => {
     let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
@@ -77,7 +93,6 @@ describe('participants service', () => {
 
   describe('save', () => {
     it('should return the id', (done) => {
-      let paymentToken = 'a token';
 
       participants.save(aParticipant, paymentToken, secureId)
         .then(function (participantId) {
@@ -90,24 +105,11 @@ describe('participants service', () => {
 
   describe('getById', () => {
     it('should return all information of the participant with given Id', (done) => {
-      let paymentToken = 'a token';
       participants.save(aParticipant, paymentToken, secureId)
         .then(function (participantId) {
           participants.getById(participantId)
             .then(function (participant) {
-              expect(participant.id).toEqual(participantId);
-              expect(participant.firstname).toEqual(aParticipant.firstname);
-              expect(participant.lastname).toEqual(aParticipant.lastname);
-              expect(participant.email).toEqual(aParticipant.email);
-              expect(participant.category).toEqual(aParticipant.category);
-              expect(participant.birthyear).toEqual(aParticipant.birthyear);
-              expect(participant.visibility).toEqual(aParticipant.visibility);
-              expect(participant.discount).toEqual(aParticipant.discount);
-              expect(participant.team).toEqual(aParticipant.team);
-              expect(participant.paymenttoken).toEqual(paymentToken);
-              expect(participant.has_payed).toEqual(false);
-              expect(participant.secureid).toEqual(secureId);
-
+              expectOnParticipantFields(participant, participantId);
               done();
             })
             .fail(fail);
@@ -129,7 +131,6 @@ describe('participants service', () => {
 
 
     it('should return participant\'s lastname and firstname and ordered tshirt for a given token', (done) => {
-      let paymentToken = 'a token';
       participants.save(aParticipantWithTshirt, paymentToken)
         .then(function (participantId) {
           participants.addTShirt(aParticipantWithTshirt.tshirt, participantId)
@@ -147,9 +148,22 @@ describe('participants service', () => {
     });
   });
 
+  describe('getBySecureId', () => {
+    it('should return all information of the participant with given secureId', (done) => {
+      participants.save(aParticipant, paymentToken, secureId)
+        .then(function (participantId) {
+          participants.getBySecureId(secureId)
+            .then(function (participant) {
+              expectOnParticipantFields(participant, participantId);
+              done();
+            })
+            .fail(fail);
+        });
+    });
+  });
+
   describe('confirmParticipant', () => {
     it('should mark the participant as payed and send a confirmation mail which includes the edit link', (done) => {
-      let paymentToken = 'a token';
       spyOn(participants, 'markPayed').and.callThrough();
       spyOn(participants, 'sendEmail');
 
@@ -176,7 +190,6 @@ describe('participants service', () => {
     });
 
     it('should give error if ID is invalid', (done) => {
-      let paymentToken = 'a token';
       let wrongId = '999';
 
       participants.save(aParticipant, paymentToken, secureId)
@@ -191,7 +204,6 @@ describe('participants service', () => {
 
   describe('delete', () => {
     it('should delete a user', (done) => {
-      let paymentToken = 'a token';
       participants.save(aParticipant, paymentToken, secureId)
         .then((id) => {
             participants.delete(id).then(() => {
@@ -201,7 +213,6 @@ describe('participants service', () => {
     });
 
     it('should delete users with tshirts', (done) => {
-      let paymentToken = 'a token';
       const aParticipantWithTshirt = {
             firstname: 'Hertha',
             lastname: 'Mustermann',
@@ -222,7 +233,6 @@ describe('participants service', () => {
     });
 
     it('should give error if accessing deleted user', (done) => {
-      let paymentToken = 'a token';
       participants.save(aParticipant, paymentToken)
         .then((id) => {
             let participantid = id;
@@ -316,7 +326,6 @@ describe('participants service', () => {
 
   describe('update', () => {
     it('should return the full information for a participant with given Id', (done) => {
-      let paymentToken = 'a token';
       participants.save(aParticipant, paymentToken, 'someSecureId')
         .then(function (id) {
           const updatedParticipant = {

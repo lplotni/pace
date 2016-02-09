@@ -164,7 +164,7 @@ service.getById = function (id) {
     .then(result => result[0]);
 };
 
-service.getFullInfoBySecureId = function (id) {
+service.getBySecureId = function (id) {
   return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
     .then(result => {
       if (_.isEmpty(result)) {

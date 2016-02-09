@@ -206,10 +206,12 @@ service.confirmParticipant = function (participantId) {
   const jade = require('jade');
   service.markPayed(participantId)
     .then(() => {
-      service.getById(participantId)
+      service.getFullInfoById(participantId)
         .then(result => {
-          jade.renderFile('views/admin/paymentValidation/text.jade', {name: result.name}, (error, html) =>
-            service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
+          jade.renderFile('views/admin/paymentValidation/text.jade',
+            {name: result.name, editUrl: editUrlHelper.generateUrl(result.secureid)},
+            (error, html) =>
+              service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
           );
           deferred.resolve();
         });

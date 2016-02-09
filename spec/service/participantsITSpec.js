@@ -19,7 +19,7 @@ describe('participants service', () => {
     team: 'Crazy runners'
   };
 
-  const secureId = 'some secure id';
+  const secureId = 'some_secure_id';
 
   beforeEach((done) => {
     let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
@@ -137,7 +137,7 @@ describe('participants service', () => {
   });
 
   describe('confirmParticipant', () => {
-    it('should mark the participant as payed', (done) => {
+    it('should mark the participant as payed and send a confirmation mail which includes the edit link', (done) => {
       let paymentToken = 'a token';
       spyOn(participants, 'markPayed').and.callThrough();
       spyOn(participants, 'sendEmail');
@@ -155,6 +155,7 @@ describe('participants service', () => {
               expect(subject).toBe('Lauf gegen Rechts: Zahlung erhalten');
               let content = participants.sendEmail.calls.mostRecent().args[2];
               expect(content).toMatch(/eingegangen/);
+              expect(content).toMatch(secureId);
 
               done();
             })

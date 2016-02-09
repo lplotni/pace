@@ -154,22 +154,6 @@ service.getByToken = function (paymentToken) {
 };
 
 service.getById = function (id) {
-  return db.select('SELECT id, firstname, lastname, email FROM participants WHERE id = $1', [id])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('Es konnte kein Teilnehmer mit ID: ' + id + ' gefunden werden.');
-      }
-      return result;
-    })
-    .then(result => {
-      return {
-        name: result[0].firstname,
-        email: result[0].email
-      };
-    });
-};
-
-service.getFullInfoById = function (id) {
   return db.select('SELECT * FROM participants WHERE id = $1', [id])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -206,7 +190,7 @@ service.confirmParticipant = function (participantId) {
   const jade = require('jade');
   service.markPayed(participantId)
     .then(() => {
-      service.getFullInfoById(participantId)
+      service.getById(participantId)
         .then(result => {
           jade.renderFile('views/admin/paymentValidation/text.jade',
             {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},

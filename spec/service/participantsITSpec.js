@@ -89,14 +89,25 @@ describe('participants service', () => {
   });
 
   describe('getById', () => {
-    it('should return name and email of the participant with given Id', (done) => {
+    it('should return all information of the participant with given Id', (done) => {
       let paymentToken = 'a token';
       participants.save(aParticipant, paymentToken, secureId)
         .then(function (participantId) {
           participants.getById(participantId)
             .then(function (participant) {
-              expect(participant.name).toEqual(aParticipant.firstname);
+              expect(participant.id).toEqual(participantId);
+              expect(participant.firstname).toEqual(aParticipant.firstname);
+              expect(participant.lastname).toEqual(aParticipant.lastname);
               expect(participant.email).toEqual(aParticipant.email);
+              expect(participant.category).toEqual(aParticipant.category);
+              expect(participant.birthyear).toEqual(aParticipant.birthyear);
+              expect(participant.visibility).toEqual(aParticipant.visibility);
+              expect(participant.discount).toEqual(aParticipant.discount);
+              expect(participant.team).toEqual(aParticipant.team);
+              expect(participant.paymenttoken).toEqual(paymentToken);
+              expect(participant.has_payed).toEqual(false);
+              expect(participant.secureid).toEqual(secureId);
+
               done();
             })
             .fail(fail);
@@ -316,11 +327,11 @@ describe('participants service', () => {
             birthyear: 1981,
             team: 'Crazy runners updated'
           };
-          participants.getFullInfoById(id)
+          participants.getById(id)
           .then((p) => {
             participants.update(updatedParticipant, p.secureid)
               .then(() => {
-                participants.getFullInfoById(id)
+                participants.getById(id)
                   .then(function (participant) {
                     expect(participant.firstname).toBe('Hertha updated');
                     expect(participant.lastname).toBe('Mustermann updated');

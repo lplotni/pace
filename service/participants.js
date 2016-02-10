@@ -154,22 +154,6 @@ service.getByToken = function (paymentToken) {
 };
 
 service.getById = function (id) {
-  return db.select('SELECT id, firstname, lastname, email FROM participants WHERE id = $1', [id])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('Es konnte kein Teilnehmer mit ID: ' + id + ' gefunden werden.');
-      }
-      return result;
-    })
-    .then(result => {
-      return {
-        name: result[0].firstname,
-        email: result[0].email
-      };
-    });
-};
-
-service.getFullInfoById = function (id) {
   return db.select('SELECT * FROM participants WHERE id = $1', [id])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -180,7 +164,7 @@ service.getFullInfoById = function (id) {
     .then(result => result[0]);
 };
 
-service.getFullInfoBySecureId = function (id) {
+service.getBySecureId = function (id) {
   return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -208,8 +192,10 @@ service.confirmParticipant = function (participantId) {
     .then(() => {
       service.getById(participantId)
         .then(result => {
-          jade.renderFile('views/admin/paymentValidation/text.jade', {name: result.name}, (error, html) =>
-            service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
+          jade.renderFile('views/admin/paymentValidation/text.jade',
+            {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},
+            (error, html) =>
+              service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
           );
           deferred.resolve();
         });

@@ -15,7 +15,7 @@ let canDeleteUser = function (role) {
 
 router.get('/:secureId', (req, res) => {
   const participantId = req.params.secureId;
-  participants.getFullInfoBySecureId(participantId)
+  participants.getBySecureId(participantId)
   .then(p => res.render('participants/editParticipant', {participant: p, participantid: participantId, isAdmin: true}))
     .catch( () =>
       res.render('error', {

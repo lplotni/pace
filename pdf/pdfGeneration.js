@@ -3,19 +3,26 @@
 'use strict';
 
 const PDFDocument = require('pdfkit');
-const fs=require('file-system');
 const _ = require('lodash');
 const Q = require('q');
 const participants = require('../service/participants');
 
 let pdfGeneration = {};
 
-pdfGeneration.generate = function() {
+let fileName = 'start_numbers.pdf';
+
+pdfGeneration.generate = function(res) {
   const deferred = Q.defer();
   participants.getConfirmed().then(confirmed =>
     participants.getRegistered().then(unconfirmed => {
       let doc = new PDFDocument();
-      doc.pipe( fs.createWriteStream('start_numbers.pdf') );
+      res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Access-Control-Allow-Origin': '*',
+        'Content-Disposition': 'attachment; filename=' + fileName
+      });
+      doc.pipe(res);
+
       _.forEach(confirmed, participant => {
         let content = participant.firstname + ' ' + participant.lastname;
         doc.text(content, 100, 100);
@@ -35,7 +42,7 @@ pdfGeneration.generate = function() {
 };
 
 pdfGeneration.download = function(res) {
-  res.download('start_numbers.pdf');
+  res.download(fileName);
 };
 
 module.exports = pdfGeneration;

@@ -32,16 +32,16 @@ block content
                             form#payment-details(method='POST', action='/paymentValidation/confirm')
                                 input(type='hidden', name='_csrf', value=_csrf)
                                 input(type='hidden', name='participantid', value='#{p.id}')
-                                button(id = p.has_payed ? 'confirm-registration-done' : 'confirm-registration', type='submit').icon.button-primary
+                                button(id = p.has_payed ? 'confirm-registration-done' : 'confirm-registration', type='submit').bigfont.button-primary
                                   span.lnr.lnr-checkmark-circle
                         td
                             form#user-delete(method='POST', action='editparticipant/delete')
                                 input(type='hidden', name='_csrf', value=_csrf)
                                 input(type='hidden', name='participantid', value='#{p.id}')
-                                button#delete-user.icon.button-primary(type='submit')
+                                button#delete-user.bigfont.button-primary(type='submit')
                                     span.lnr.lnr-trash
                         td
                             form
-                                 a#edit.edit-button.button.icon(href='#{p.editUrl}')
+                                 a#edit.edit-button.button.bigfont(href='#{p.editUrl}')
                                     span.lnr.lnr-pencil
     script(src='/javascript/searchAndSort.js')

@@ -52,4 +52,21 @@ describe('registration journey', () => {
       .end(done);
   });
 
+  it('shows a message when the registration is closed', (done) => {
+    const registration = require('../service/registration');
+    registration.close();
+
+    client.url(helper.paceUrl)
+      .click('a#registration')
+      .isVisible('form#registrationForm')
+      .then( (isVisible) => {
+        expect(isVisible).toBe(false);
+      })
+      .isVisible('p#registration-closed-message')
+      .then( (isVisible) => {
+        expect(isVisible).toBe(true);
+      })
+      .end(done);
+  });
+
 });

@@ -1,81 +1,85 @@
 extends ../layout
 
 block content
-    h4.black.centered Melde dich hier zum Lauf an
-    form#registrationForm(method='POST', action='/registration')
-        input(type='hidden', name='_csrf', value=_csrf)
-        .row
-            p.slim.u-pull-right * Pflichtfelder
-        .row
-            .six.columns.padding
-                label(for='firstname') Vorname*
-                input#firstname.u-full-width(type='text', name='firstname', required=true)
-            .six.columns.padding
-                label(for='lastname') Nachname*
-                input#lastname.u-full-width(type='text', name='lastname', required=true)
-        .row
-            .twelve.columns.padding
-                label(for='email') Email*
-                input#email.u-full-width(type='email', name='email', required=true)
-        .row
-            .twelve.columns.padding
-                label(for='birthyear') Geburtsjahr*
-                input#birthyear.u-full-width(type='number', name='birthyear', required=true)
-        .row
-            .twelve.columns.padding
-                label(for='team') Name des Teams:
-                input#team.u-full-width(type='text', name='team')
-        .row
-            .twelve.columns.padding
-                label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
-                select#category.u-full-width(name='category')
-                    option(value='m') m
-                    option(value='f') f
-        .row
-            .twelve.columns.padding
-                label(for='visibility') Möchtest du in der Liste der Teilnehmer*innen aufgelistet werden*
-                select#visibility.u-full-width(name='visibility', required=true)
-                    option(value='yes') Ja
-                    option(value='no') Nein
-        .row
-            .twelve.columns.padding
-                label(for='discount') Welchen Preis m&ouml;chtest du zahlen
-                select#discount.u-full-width(name='discount', required=true)
-                    option(value='no') Ich zahle den vollen Preis (10 Euro)
-                    option(value='yes') Ich m&ouml;chte den erm&auml;ssigten Preis zahlen (5 Euro)
+    if registrationClosed
+      h4.black.centered Anmeldung geschlossen
+      p#registration-closed-message Die Online-Anmeldung ist bereits geschlossen. Du kannst dich noch vor Ort anmelden.
+    else
+      h4.black.centered Melde dich hier zum Lauf an
+      form#registrationForm(method='POST', action='/registration')
+          input(type='hidden', name='_csrf', value=_csrf)
+          .row
+              p.slim.u-pull-right * Pflichtfelder
+          .row
+              .six.columns.padding
+                  label(for='firstname') Vorname*
+                  input#firstname.u-full-width(type='text', name='firstname', required=true)
+              .six.columns.padding
+                  label(for='lastname') Nachname*
+                  input#lastname.u-full-width(type='text', name='lastname', required=true)
+          .row
+              .twelve.columns.padding
+                  label(for='email') Email*
+                  input#email.u-full-width(type='email', name='email', required=true)
+          .row
+              .twelve.columns.padding
+                  label(for='birthyear') Geburtsjahr*
+                  input#birthyear.u-full-width(type='number', name='birthyear', required=true)
+          .row
+              .twelve.columns.padding
+                  label(for='team') Name des Teams:
+                  input#team.u-full-width(type='text', name='team')
+          .row
+              .twelve.columns.padding
+                  label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
+                  select#category.u-full-width(name='category')
+                      option(value='m') m
+                      option(value='f') f
+          .row
+              .twelve.columns.padding
+                  label(for='visibility') Möchtest du in der Liste der Teilnehmer*innen aufgelistet werden*
+                  select#visibility.u-full-width(name='visibility', required=true)
+                      option(value='yes') Ja
+                      option(value='no') Nein
+          .row
+              .twelve.columns.padding
+                  label(for='discount') Welchen Preis m&ouml;chtest du zahlen
+                  select#discount.u-full-width(name='discount', required=true)
+                      option(value='no') Ich zahle den vollen Preis (10 Euro)
+                      option(value='yes') Ich m&ouml;chte den erm&auml;ssigten Preis zahlen (5 Euro)
 
-        .row
-            .twelve.columns.black.padding(style='height: 36px')
-                label(for='shirt') Laufshirt f&uuml;r 10 Euro gewünscht
-                    input#shirt(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='shirt')
-        .row#shirt-details(style='display: none')
-            .six.columns.center
-                img.center.tshirt.u-max-full-width(src='/images/tshirt.png')
-                div.small Nicht originalgetreue Darstellung; Abweichungen m&ouml;glich, &Auml;nderungen vorbehalten
-            .six.columns
-                .row
-                    label(for='model') Model:
-                    select#model.u-full-width(name='model')
-                        option(value='Normal fit') Normal fit
-                        option(value='Slim fit') Tailliert
-                .row
-                    label(for='size') Size:
-                    select#size.u-full-width(name='size')
-                        option(value='XS') XS
-                        option(value='S') S
-                        option(value='M') M
-                        option(value='L') L
-                        option(value='XL') XL
-        button#submit.primary.button-primary.u-full-width.pace(type='submit') Absenden
+          .row
+              .twelve.columns.black.padding(style='height: 36px')
+                  label(for='shirt') Laufshirt f&uuml;r 10 Euro gewünscht
+                      input#shirt(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='shirt')
+          .row#shirt-details(style='display: none')
+              .six.columns.center
+                  img.center.tshirt.u-max-full-width(src='/images/tshirt.png')
+                  div.small Nicht originalgetreue Darstellung; Abweichungen m&ouml;glich, &Auml;nderungen vorbehalten
+              .six.columns
+                  .row
+                      label(for='model') Model:
+                      select#model.u-full-width(name='model')
+                          option(value='Normal fit') Normal fit
+                          option(value='Slim fit') Tailliert
+                  .row
+                      label(for='size') Size:
+                      select#size.u-full-width(name='size')
+                          option(value='XS') XS
+                          option(value='S') S
+                          option(value='M') M
+                          option(value='L') L
+                          option(value='XL') XL
+          button#submit.primary.button-primary.u-full-width.pace(type='submit') Absenden
 
-    script(type='text/javascript').
-        var shirtSelection = document.getElementById('shirt');
-        var shirtDetails = document.getElementById('shirt-details');
-        shirtSelection.onclick = function () {
-            if (shirtSelection.checked) {
-                shirtDetails.style.display = 'block';
-            } else {
-                shirtDetails.style.display = 'none';
-            }
-        };
+      script(type='text/javascript').
+          var shirtSelection = document.getElementById('shirt');
+          var shirtDetails = document.getElementById('shirt-details');
+          shirtSelection.onclick = function () {
+              if (shirtSelection.checked) {
+                  shirtDetails.style.display = 'block';
+              } else {
+                  shirtDetails.style.display = 'none';
+              }
+          };
 

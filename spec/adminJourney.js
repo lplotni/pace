@@ -31,13 +31,17 @@ describe('admin page', () => {
     .click('button#submit');
   }
 
-  it('should go to admin page and show statistics', (done) => {
+  it('should go to admin page and show statistics and generate start number button', (done) => {
     loginAdmin().url(helper.paceUrl+'admin')
-    .isVisible('h3#admin_tshirts_count')
-    .then(function (isVisible) {
-      expect(isVisible).toBe(true);
-    })
-    .end(done);
+      .isVisible('h3#admin_tshirts_count')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .isVisible('button#generate-start-numbers')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .end(done);
   });
 
   it('should redirect to login page if the user is not logged in', (done) => {

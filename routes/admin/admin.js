@@ -5,6 +5,7 @@
 const router = require('express').Router();
 const accesscontrol = require('../../acl/accesscontrol');
 const isAuthenticated = require('../../acl/authentication');
+const pdfGeneration = require('../../pdf/pdfGeneration');
 
 let canViewAdminPage = function (role) {
   return accesscontrol.hasPermissionTo(role, 'view admin page');
@@ -15,7 +16,7 @@ router.get('/', isAuthenticated, (req, res) => {
     let admininfo = require('../../service/admininfo');
     admininfo.getShirtOrders().then(orders =>
       admininfo.getConfirmedParticipants().then(confirmed =>
-        admininfo.getUnonfirmedParticipants().then(unconfirmed =>
+        admininfo.getUnconfirmedParticipants().then(unconfirmed =>
           res.render('admin/admin', {orders, confirmed ,unconfirmed, isAdmin: true}))));
   } else {
     res.render('error', {
@@ -24,6 +25,20 @@ router.get('/', isAuthenticated, (req, res) => {
         status: 'Nur Administratoren können diese Seite einsehen'
       }
     });
+  }
+});
+
+router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
+  if (canViewAdminPage(req.user.role)) {
+    pdfGeneration.generate().then(() => {
+      res.redirect('/admin/download-pdf');
+    });
+  }
+});
+
+router.get('/download-pdf', isAuthenticated, (req, res) => {
+  if (canViewAdminPage(req.user.role)) {
+    res.download('start_numbers.pdf');
   }
 });
 

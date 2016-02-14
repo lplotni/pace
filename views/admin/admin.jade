@@ -27,3 +27,8 @@ block content
     tbody
       td #{confirmed[0].count}
       td #{unconfirmed[0].count}
+
+  h3 Registrierung schlie&szlig;en und Startnummern generieren
+    form(method='GET', action='admin/generate-start-numbers')
+      input(type='hidden', name='_csrf', value=_csrf)
+      button#generate-start-numbers.primary.button-primary.pace(type='submit') Startnummern generieren

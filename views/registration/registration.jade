@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-    if registrationClosed
+    if registrationClosed == "yes"
       h4.black.centered Anmeldung geschlossen
       p#registration-closed-message.bigfont Die Online-Anmeldung ist leider bereits geschlossen. Du kannst dich aber gerne noch am Tag des Laufes vor Ort f&uuml;r den Lauf anmelden.
     else

@@ -14,7 +14,8 @@ const editUrlHelper = require('../../domain/editUrlHelper');
 const registration = require('../../service/registration');
 
 router.get('/', (req, res) => {
-  res.render('registration/registration', { registrationClosed: registration.isClosed() });
+  registration.isClosed().then( isClosed =>
+    res.render('registration/registration', { registrationClosed: isClosed }) );
 });
 
 router.post('/', (req, res) => {

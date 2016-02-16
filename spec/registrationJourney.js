@@ -1,6 +1,6 @@
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeAll, beforeEach, afterAll, it, expect */
+/* global describe, beforeAll, beforeEach, afterEach, afterAll, it, expect */
 'use strict';
 
 const helper = require('./journeyHelper');

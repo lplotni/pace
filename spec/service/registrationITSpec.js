@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeEach, afterAll, spyOn, it, expect, fail */
+/* global describe, beforeEach, beforeAll, afterAll, spyOn, it, expect, fail */
 
 describe('registration', () => {
 

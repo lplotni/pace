@@ -3,6 +3,7 @@
 'use strict';
 
 const PDFDocument = require('pdfkit');
+const qr = require('qr-image');
 const _ = require('lodash');
 const Q = require('q');
 const participants = require('../service/participants');
@@ -12,10 +13,17 @@ let pdfGeneration = {};
 let fileName = 'start_numbers.pdf';
 
 const createStartNumberPage = function(startNumber, participant, paymentStatus, doc) {
-  doc.fontSize(250).text(startNumber, 0, 150, {align: 'center'});
   let name = participant.firstname + ' ' + participant.lastname;
+
+  doc.fontSize(250).text(startNumber, 0, 150, {align: 'center'});
   doc.fontSize(100).text(name, 0, 400, {align: 'center'});
   doc.fontSize(20).text('(' + paymentStatus + ')', {align: 'center'});
+
+  doc.scale(5)
+    .translate(130, 40)
+    .path(qr.svgObject(startNumber).path)
+    .fill('black', 'even-odd');
+
   doc.addPage();
 };
 

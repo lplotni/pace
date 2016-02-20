@@ -11,11 +11,19 @@ let pdfGeneration = {};
 
 let fileName = 'start_numbers.pdf';
 
+const createStartNumberPage = function(startNumber, participant, paymentStatus, doc) {
+  doc.fontSize(250).text(startNumber, 0, 150, {align: 'center'});
+  let name = participant.firstname + ' ' + participant.lastname;
+  doc.fontSize(100).text(name, 0, 400, {align: 'center'});
+  doc.fontSize(20).text('(' + paymentStatus + ')', {align: 'center'});
+  doc.addPage();
+};
+
 pdfGeneration.generate = function(res) {
   const deferred = Q.defer();
   participants.getConfirmed().then(confirmed =>
     participants.getRegistered().then(unconfirmed => {
-      let doc = new PDFDocument();
+      let doc = new PDFDocument({layout: 'landscape'});
       res.writeHead(200, {
         'Content-Type': 'application/pdf',
         'Access-Control-Allow-Origin': '*',
@@ -23,17 +31,13 @@ pdfGeneration.generate = function(res) {
       });
       doc.pipe(res);
 
+      let counter = 1;
+
       _.forEach(confirmed, participant => {
-        let content = participant.firstname + ' ' + participant.lastname;
-        doc.text(content, 100, 100);
-        doc.text('confirmed', 100, 200);
-        doc.addPage();
+        createStartNumberPage(counter++, participant, 'bestätigt', doc);
       });
       _.forEach(unconfirmed, participant => {
-        let content = participant.firstname + ' ' + participant.lastname;
-        doc.text(content, 100, 100);
-        doc.text('unconfirmed', 100, 200);
-        doc.addPage();
+        createStartNumberPage(counter++, participant, 'unbestätigt', doc);
       });
       doc.end();
       deferred.resolve();

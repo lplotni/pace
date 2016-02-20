@@ -30,17 +30,7 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    pdfGeneration.generate(res).then(() => {
-      res.redirect('/admin/download-pdf');
-    });
-  }
-});
-
-// TOFIX: somehow a redirect/new request is needed to open the file created by the pdfGenerator.
-// This entry point won't find the file if called by itself.
-router.get('/download-pdf', isAuthenticated, (req, res) => {
-  if (canViewAdminPage(req.user.role)) {
-    pdfGeneration.download(res);
+    pdfGeneration.generate(res);
   }
 });
 

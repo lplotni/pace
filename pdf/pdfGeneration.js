@@ -28,6 +28,7 @@ const createStartNumberPage = function(startNumber, participant, paymentStatus, 
 };
 
 pdfGeneration.generate = function(res) {
+  let counter = 1;
   const deferred = Q.defer();
   participants.getConfirmed().then(confirmed =>
     participants.getRegistered().then(unconfirmed => {
@@ -38,9 +39,6 @@ pdfGeneration.generate = function(res) {
         'Content-Disposition': 'attachment; filename=' + fileName
       });
       doc.pipe(res);
-
-      let counter = 1;
-
       _.forEach(confirmed, participant => {
         createStartNumberPage(counter++, participant, 'bestätigt', doc);
       });
@@ -51,10 +49,6 @@ pdfGeneration.generate = function(res) {
       deferred.resolve();
     }));
   return deferred.promise;
-};
-
-pdfGeneration.download = function(res) {
-  res.download(fileName);
 };
 
 module.exports = pdfGeneration;

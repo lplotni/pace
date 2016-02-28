@@ -2,7 +2,6 @@
 /* jshint esnext: true */
 'use strict';
 
-const _ = require('lodash');
 const db = require('../service/dbHelper');
 
 const admininfo = {};
@@ -13,7 +12,7 @@ admininfo.getShirtOrders = function () {
 admininfo.getConfirmedParticipants = function () {
     return db.select('select count(*) from participants where has_payed=true;');
 };
-admininfo.getUnonfirmedParticipants = function () {
+admininfo.getUnconfirmedParticipants = function () {
       return db.select('select count(*) from participants where has_payed=false;');
 };
 module.exports = admininfo;

@@ -10,13 +10,13 @@ const participants = require('../service/participants');
 
 let pdfGeneration = {};
 
-let fileName = 'start_numbers.pdf';
+const fileName = 'start_numbers.pdf';
 
-const createStartNumberPage = function(startNumber, participant, paymentStatus, doc) {
+pdfGeneration.createStartNumberPage = function(startNumber, participant, paymentStatus, doc) {
   let name = participant.firstname + ' ' + participant.lastname;
 
   doc.fontSize(250).text(startNumber, 0, 150, {align: 'center'});
-  doc.fontSize(100).text(name, 0, 400, {align: 'center'});
+  doc.fontSize(70).text(name, 0, 400, {align: 'center'});
   doc.fontSize(20).text('(' + paymentStatus + ')', {align: 'center'});
 
   doc.scale(5)
@@ -27,12 +27,12 @@ const createStartNumberPage = function(startNumber, participant, paymentStatus, 
   doc.addPage();
 };
 
-pdfGeneration.generate = function(res) {
+pdfGeneration.fillDocument = function(res, doc) {
   let counter = 1;
   const deferred = Q.defer();
+
   participants.getConfirmed().then(confirmed =>
     participants.getRegistered().then(unconfirmed => {
-      let doc = new PDFDocument({layout: 'landscape'});
       res.writeHead(200, {
         'Content-Type': 'application/pdf',
         'Access-Control-Allow-Origin': '*',
@@ -40,15 +40,21 @@ pdfGeneration.generate = function(res) {
       });
       doc.pipe(res);
       _.forEach(confirmed, participant => {
-        createStartNumberPage(counter++, participant, 'bestätigt', doc);
+        pdfGeneration.createStartNumberPage(counter++, participant, 'bestätigt', doc);
       });
       _.forEach(unconfirmed, participant => {
-        createStartNumberPage(counter++, participant, 'unbestätigt', doc);
+        pdfGeneration.createStartNumberPage(counter++, participant, 'unbestätigt', doc);
       });
       doc.end();
-      deferred.resolve();
+      deferred.resolve(doc);
     }));
+
   return deferred.promise;
+};
+
+pdfGeneration.generate = function(res) {
+  let doc = new PDFDocument({layout: 'landscape'});
+  return pdfGeneration.fillDocument(res, doc);
 };
 
 module.exports = pdfGeneration;

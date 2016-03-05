@@ -7,6 +7,8 @@ describe('participants service', () => {
 
   const participants = require('../../service/participants');
   const pg = require('pg');
+  let helper = require('../journeyHelper');
+
 
   const aParticipant = {
     firstname: 'Hertha',
@@ -38,36 +40,12 @@ describe('participants service', () => {
   };
 
   beforeEach((done) => {
-    let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace';
-    let jasmineDone = done;
-
-    pg.connect(connectionString, function (err, client, done) {
-        function errorFunction(error) {
-          console.error('DB statement problem: ', error);
-          done();
-          jasmineDone();
-        }
-
-        if (err) {
-          errorFunction(err);
-        } else {
-          let deleteShirts = client.query('delete from tshirts');
-          deleteShirts.on('end', () => {
-            let deleteParticipants = client.query('delete from participants');
-            deleteParticipants.on('end', () => {
-              done();
-              jasmineDone();
-            });
-            deleteParticipants.on('error', errorFunction);
-          });
-          deleteShirts.on('error', errorFunction);
-        }
-      }
-    );
-
+    helper.changeOriginalTimeout();
+    helper.setupDbConnection(done);
   });
 
   afterAll((done) => {
+    helper.resetToOriginalTimeout();
     pg.end();
     done();
   });

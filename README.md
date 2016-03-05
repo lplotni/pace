@@ -18,7 +18,7 @@ To look at the db in your terminal, just connect to the vagrant box (from the po
 ### If you really don't want to use vagrant
 it is possible to use docker instead. Run this to get the database up:
 
-`docker run -p 5432:5432 -d --name 'pace-postgres' -e POSTGRES_PASSWORD='' -e POSTGRES_DB='pace' -e POSTGRES_USER='vagrant' postgres`
+`docker run -p 5432:5432 -d --name 'pace-postgres' -e POSTGRES_PASSWORD='pgtester' -e POSTGRES_DB='pace' -e POSTGRES_USER='pgtester' postgres`
 
 #### Starting
 Just run `gulp` and open http://localhost:3000 in your browser.

@@ -34,21 +34,21 @@ describe('registration journey', () => {
       .selectByIndex('select#size', 1)
       .click('button#submit')
       .isVisible('div.thanks')
-      .then(function (isVisible) {
+      .then((isVisible) => {
         expect(isVisible).toBe(true);
       })
       .isVisible('a#editurl')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })
-      .getText('span.amount').
-      then(function (amount) {
+      .getText('span.amount')
+      .then((amount) => {
         expect(amount).toMatch(/20.00/);
       })
-      .url(helper.paceUrl + 'login')
-      .setValue('input#username', config.get('admin.username'))
-      .setValue('input#password', config.get('admin.password'))
-      .click('button#submit')
+      .getText('span.startNumber')
+      .then((number) => {
+        expect(number).toMatch(/1/);
+      })
       .end(done);
   });
 

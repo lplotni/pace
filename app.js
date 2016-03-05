@@ -4,7 +4,7 @@
 
 let express = require('express');
 let path = require('path');
-let favicon = require('static-favicon');
+let favicon = require('serve-favicon');
 let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
@@ -38,12 +38,12 @@ app.set('view engine', 'jade');
 app.disable("x-powered-by");
 app.set('trust proxy',config.get('proxy'));
 
-app.use(favicon());
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('tiny', {
   skip: (req, res) => { return res.statusCode < 400;}
 }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({'extended': false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

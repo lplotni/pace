@@ -21,6 +21,7 @@
     "password": "Blanch4rdst0wn"
   },
   "pace-url": "http://localhost:3000",
+  "metrics": false,
   "cookie-secret":"change this in your local config",
   "proxy":false,
   "https":false

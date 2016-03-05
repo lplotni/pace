@@ -69,6 +69,13 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+if (config.get('metrics')) {
+  let expressMetrics = require('express-metrics');
+  app.use(expressMetrics({
+      port: 8091
+  }));
+};
+
 passport.serializeUser(function (user, done) {
     done(null, {username: user.username, role: user.role});
 });

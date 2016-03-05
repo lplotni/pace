@@ -5,7 +5,7 @@
 const pg = require('pg');
 const Q = require('q');
 
-const connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
+const connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace';
 
 
 let db = {};

@@ -32,7 +32,7 @@ journeyHelper.resetToOriginalTimeout = function () {
 };
 
 journeyHelper.setupDbConnection = function (done) {
-  let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
+  let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace';
   let jasmineDone = done;
 
   pg.connect(connectionString,  (err, client, done) => {

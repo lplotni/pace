@@ -38,7 +38,7 @@ describe('participants service', () => {
   };
 
   beforeEach((done) => {
-    let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://vagrant@localhost/pace';
+    let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace';
     let jasmineDone = done;
 
     pg.connect(connectionString, function (err, client, done) {

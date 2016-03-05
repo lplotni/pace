@@ -2,9 +2,8 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "pgdevbox"
-  config.vm.box_url = "http://pgdevbox.com/pgdev.box"
+  config.vm.box = "wegtam/db-tester"
   config.vm.network :forwarded_port, guest: 5432, host: 5432
   config.vm.provision "shell",
-      inline: "su vagrant -c 'psql -c \"create database pace with owner=vagrant;\"'"
+      inline: "su vagrant -c 'psql postgresql://pgtester:pgtester@localhost/postgres -c \"create database pace with owner=pgtester;\"'"
 end

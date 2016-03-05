@@ -74,7 +74,7 @@ if (config.get('metrics')) {
   app.use(expressMetrics({
       port: 8091
   }));
-};
+}
 
 passport.serializeUser(function (user, done) {
     done(null, {username: user.username, role: user.role});

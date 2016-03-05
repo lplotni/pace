@@ -39,7 +39,9 @@ app.disable("x-powered-by");
 app.set('trust proxy',config.get('proxy'));
 
 app.use(favicon());
-app.use(logger('dev'));
+app.use(logger('tiny', {
+  skip: (req, res) => { return res.statusCode < 400;}
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());

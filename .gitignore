@@ -32,3 +32,6 @@ node_modules
 .idea/
 # ignoring OSX .DS_STORE files
 **/.DS_Store
+
+#Vim undo files
+*.un~

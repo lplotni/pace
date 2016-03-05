@@ -33,5 +33,6 @@ node_modules
 # ignoring OSX .DS_STORE files
 **/.DS_Store
 
-#Vim undo files
+#Vim undo & swp files
 *.un~
+*.swp

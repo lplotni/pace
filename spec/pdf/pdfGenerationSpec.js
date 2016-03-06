@@ -9,6 +9,7 @@ const Q = require('q');
 describe('pdfGeneration', () => {
 
   let pdfGeneration, res, participantsMock, documentMock;
+  let confirmedParticipant, unconfirmedParticipant;
 
   beforeEach(() => {
 
@@ -45,8 +46,10 @@ describe('pdfGeneration', () => {
     mockery.registerMock('../service/participants', participantsMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
-    participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [{ firstname: 'Bestaetigte', lastname: 'Person'}]));
-    participantsMock.getRegistered.and.returnValue(Q.fcall(() => [{ firstname: 'Unbestaetigte', lastname: 'Person'}]));
+    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person'};
+    unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person'};
+    participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
+    participantsMock.getRegistered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
   });
 
   it('should generate a page for every participant', function (done) {
@@ -65,6 +68,16 @@ describe('pdfGeneration', () => {
       expect(documentMock.text).toHaveBeenCalledWith(2, 0, 150, {align: 'center'});
       expect(documentMock.text).toHaveBeenCalledWith('Unbestaetigte', 0, 400, {align: 'center'});
       expect(documentMock.text).toHaveBeenCalledWith('(unbestätigt)', {align: 'center'});
+      done();
+    });
+  });
+
+  it('should add the barcode three times for easier scanning', function (done) {
+    participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
+    participantsMock.getRegistered.and.returnValue(Q.fcall(() => []));
+
+    pdfGeneration.fillDocument(res, documentMock).then( () => {
+      expect(documentMock.image).toHaveBeenCalledTimes(3);
       done();
     });
   });

@@ -13,10 +13,8 @@ let pdfGeneration = {};
 const fileName = 'start_numbers.pdf';
 
 pdfGeneration.createStartNumberPage = function(startNumber, participant, paymentStatus, doc) {
-  let name = participant.firstname + ' ' + participant.lastname;
-
   doc.fontSize(250).text(startNumber, 0, 150, {align: 'center'});
-  doc.fontSize(70).text(name, 0, 400, {align: 'center'});
+  doc.fontSize(70).text(participant.firstname, 0, 400, {align: 'center'});
   doc.fontSize(20).text('(' + paymentStatus + ')', {align: 'center'});
 
   doc.scale(5)

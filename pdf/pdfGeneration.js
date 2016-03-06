@@ -7,6 +7,7 @@ const qr = require('qr-image');
 const _ = require('lodash');
 const Q = require('q');
 const participants = require('../service/participants');
+const barcodeGeneration = require('./barcodeGeneration');
 
 let pdfGeneration = {};
 
@@ -17,10 +18,11 @@ pdfGeneration.createStartNumberPage = function(startNumber, participant, payment
   doc.fontSize(70).text(participant.firstname, 0, 400, {align: 'center'});
   doc.fontSize(20).text('(' + paymentStatus + ')', {align: 'center'});
 
-  doc.scale(5)
-    .translate(130, 40)
-    .path(qr.svgObject(startNumber).path)
-    .fill('black', 'even-odd');
+  let ean8Code = barcodeGeneration.ean8Code(startNumber);
+
+  doc.image(ean8Code, 100, 100);
+  doc.image(ean8Code, 200, 300);
+  doc.image(ean8Code, 300, 300);
 
   doc.addPage();
 };

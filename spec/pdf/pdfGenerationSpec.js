@@ -33,6 +33,7 @@ describe('pdfGeneration', () => {
       path: function () { return documentMock; },
       fill: jasmine.createSpy('fill'),
       addPage: jasmine.createSpy('addPage'),
+      image: jasmine.createSpy('image'),
       end: jasmine.createSpy('end')
     };
 
@@ -58,11 +59,11 @@ describe('pdfGeneration', () => {
   it('should add start number, name and payment status', function (done) {
     pdfGeneration.fillDocument(res, documentMock).then( () => {
       expect(documentMock.text).toHaveBeenCalledWith(1, 0, 150, {align: 'center'});
-      expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte Person', 0, 400, {align: 'center'});
+      expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte', 0, 400, {align: 'center'});
       expect(documentMock.text).toHaveBeenCalledWith('(bestätigt)', {align: 'center'});
 
       expect(documentMock.text).toHaveBeenCalledWith(2, 0, 150, {align: 'center'});
-      expect(documentMock.text).toHaveBeenCalledWith('Unbestaetigte Person', 0, 400, {align: 'center'});
+      expect(documentMock.text).toHaveBeenCalledWith('Unbestaetigte', 0, 400, {align: 'center'});
       expect(documentMock.text).toHaveBeenCalledWith('(unbestätigt)', {align: 'center'});
       done();
     });

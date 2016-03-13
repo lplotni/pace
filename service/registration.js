@@ -7,18 +7,19 @@ const db = require('../service/dbHelper');
 const registration = {};
 
 registration.isClosed = () => {
-  return db.select("select is_closed from registration limit 1;")
+  return db.select("SELECT data->>'is_closed' as is_closed FROM registration;")
     .then( result => {
       return result[0].is_closed;
     });
 };
 
 registration.close = () => {
-  return db.update("UPDATE registration set is_closed = 'yes' where is_closed = $1;", ['no']);
+  return db.update("UPDATE registration SET data = jsonb_set(data, '{is_closed}', 'true');");
+
 };
 
 registration.reopen = () => {
-  return db.update("UPDATE registration set is_closed = 'no' where is_closed = $1;", ['yes']);
+  return db.update("UPDATE registration SET data = jsonb_set(data, '{is_closed}', 'false');");
 };
 
 module.exports = registration;

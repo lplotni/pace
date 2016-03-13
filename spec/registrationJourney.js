@@ -14,7 +14,7 @@ describe('registration journey', () => {
   beforeAll((done) => {
     registration.isClosed().then(isClosed => {
       originalRegistrationStatus = isClosed;
-      if(isClosed === 'yes') {
+      if(isClosed) {
         registration.reopen().then( () => {
           done();
         });
@@ -34,7 +34,7 @@ describe('registration journey', () => {
   });
 
   afterAll((done) => {
-    if (originalRegistrationStatus === 'yes') {
+    if (originalRegistrationStatus) {
       registration.close().then( () => {
         done();
       });

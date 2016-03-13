@@ -12,7 +12,7 @@ describe('registration', () => {
   beforeAll((done) => {
     registration.isClosed().then(isClosed => {
       originalRegistrationStatus = isClosed;
-      if(isClosed  === 'true') {
+      if(isClosed) {
         registration.reopen().then( () => {
           done();
         });
@@ -23,7 +23,7 @@ describe('registration', () => {
   });
 
   afterAll((done) => {
-    if (originalRegistrationStatus === 'false') {
+    if (!originalRegistrationStatus) {
       registration.reopen().then( () => {
           done();
         });
@@ -33,7 +33,7 @@ describe('registration', () => {
   it('should close the registration', (done) => {
     registration.close().then( () => {
       registration.isClosed().then( (isClosed) => {
-        expect(isClosed).toEqual('true');
+        expect(isClosed).toEqual(true);
         done();
       });
     });

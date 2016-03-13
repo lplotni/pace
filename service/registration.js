@@ -9,7 +9,7 @@ const registration = {};
 registration.isClosed = () => {
   return db.select("SELECT data->>'is_closed' as is_closed FROM registration;")
     .then( result => {
-      return result[0].is_closed;
+      return result[0].is_closed === 'true';
     });
 };
 

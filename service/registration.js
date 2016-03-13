@@ -15,7 +15,6 @@ registration.isClosed = () => {
 
 registration.close = () => {
   return db.update("UPDATE registration SET data = jsonb_set(data, '{is_closed}', 'true');");
-
 };
 
 registration.reopen = () => {

@@ -38,7 +38,7 @@ router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
 router.post('/close-registration', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     registration.close().then( () =>
-      res.render('admin/closeRegistration/success')
+      res.render('admin/closeRegistration/success', {isAdmin: true})
     );
   }
 });

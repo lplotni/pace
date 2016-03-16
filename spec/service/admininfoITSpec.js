@@ -40,32 +40,37 @@ describe('admin service', () => {
   it('should count shirt orders', (done) => {
     participants.save(aParticipant, paymentToken)
       .then(function (participantId) {
-        participants.addTShirt(aParticipant.tshirt, participantId)
-          .then(() => {
-            admininfo.getShirtOrders()
-              .then(function(data){
-                expect(data.length).toBe(1);
-                expect(data[0].size).toEqual(aparticipant.tshirt.size);
-                expect(data[0].category).toEqual(aparticipant.category);
+        participants.confirmParticipant(participantId)
+          .then(function() {
+            participants.addTShirt(aParticipant.tshirt, participantId)
+              .then(() => {
+                admininfo.getShirtOrders()
+                  .then(function (data) {
+                    expect(data.length).toBe(1);
+                    expect(data[0].size).toBe(aParticipant.tshirt.size);
+                    expect(data[0].category).toBe(aParticipant.category);
+                    done();
+                  });
               });
-            done();
           })
           .fail(fail);
       });
-    });
+  });
+
   it('should count confirmed participants', (done) => {
     participants.save(aParticipant, paymentToken)
       .then(function (participantId) {
-         participants.confirmParticipant(participantId)
-           .then(function() {
-             admininfo.getConfirmedParticipants()
-               .then(function(data){
-                  console.log(data);
-                expect(data.length).toBe(5);
-               });
-               done();
-           })
-           .fail(fail);
-    });
+        participants.confirmParticipant(participantId)
+          .then(function() {
+            admininfo.getConfirmedParticipants()
+              .then(function(data){
+                expect(data[0].count).toBe('1'); // There is just 1 participant - why should it be 5?
+                done();
+              });
+          })
+          .fail(fail);
+      });
   });
+
+
 });

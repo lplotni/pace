@@ -5,6 +5,7 @@
 
 const mockery = require('mockery');
 const Q = require('q');
+const config = require('config');
 
 describe('pdfGeneration', () => {
 
@@ -57,14 +58,14 @@ describe('pdfGeneration', () => {
     mockery.disable();
   });
 
-  it('should generate a page for every participant', function (done) {
+  it('should generate a page for every participant', (done) => {
     pdfGeneration.fillDocument(res, documentMock).then( () => {
       expect(documentMock.addPage).toHaveBeenCalledTimes(2);
       done();
     });
   });
 
-  it('should add start number, name and payment status', function (done) {
+  it('should add start number, name and payment status', (done) => {
     pdfGeneration.fillDocument(res, documentMock).then( () => {
       expect(documentMock.text).toHaveBeenCalledWith(1, 0, 150, {align: 'center'});
       expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte', 0, 400, {align: 'center'});
@@ -77,7 +78,7 @@ describe('pdfGeneration', () => {
     });
   });
 
-  it('should add the barcode three times for easier scanning', function (done) {
+  it('should add the barcode three times for easier scanning', (done) => {
     participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.getRegistered.and.returnValue(Q.fcall(() => []));
 
@@ -87,7 +88,7 @@ describe('pdfGeneration', () => {
     });
   });
 
-  it('should automatically download a PDF file called start_numbers', function (done) {
+  it('should automatically download a PDF file called start_numbers', (done) => {
     const fileName = 'start_numbers.pdf';
     pdfGeneration.fillDocument(res, documentMock).then( () => {
       expect(res.writeHead).toHaveBeenCalledWith(200, {
@@ -97,6 +98,18 @@ describe('pdfGeneration', () => {
       });
       done();
     });
+  });
+
+  describe('isExcludedStartNumber', function() {
+
+    it('should return the next start number excluding the numbers from the config', () => {
+      expect(pdfGeneration.getNextStartNumber(1)).toBe(2);
+
+      config.get('startnumbers.excluded').map(function(number) {
+        expect(pdfGeneration.getNextStartNumber(number)).toBe(number+1);
+      });
+    });
+
   });
 
 });

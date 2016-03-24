@@ -30,6 +30,9 @@
     "username": "admin",
     "password": "Blanch4rdst0wn"
   },
+  "startnumbers": {
+    "excluded": [88,1933]
+  },
   "pace-url": "http://localhost:3000",
   "metrics": false,
   "cookie-secret":"change this in your local config",

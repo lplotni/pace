@@ -6,6 +6,7 @@ const PDFDocument = require('pdfkit');
 const qr = require('qr-image');
 const _ = require('lodash');
 const Q = require('q');
+const config = require('config');
 const participants = require('../service/participants');
 const barcodeGeneration = require('./barcodeGeneration');
 
@@ -27,8 +28,18 @@ pdfGeneration.createStartNumberPage = function(startNumber, participant, payment
   doc.addPage();
 };
 
+pdfGeneration.getNextStartNumber = function(lastNumber) {
+  lastNumber++;
+  let excludedNumbers = config.get('startnumbers.excluded');
+  if(excludedNumbers.indexOf(lastNumber) > -1) {
+    return lastNumber+1;
+  } else {
+    return lastNumber;
+  }
+};
+
 pdfGeneration.fillDocument = function(res, doc) {
-  let counter = 1;
+  let counter = 0;
   const deferred = Q.defer();
 
   participants.getConfirmed().then(confirmed =>
@@ -40,10 +51,12 @@ pdfGeneration.fillDocument = function(res, doc) {
       });
       doc.pipe(res);
       _.forEach(confirmed, participant => {
-        pdfGeneration.createStartNumberPage(counter++, participant, 'bestätigt', doc);
+        counter = this.getNextStartNumber(counter);
+        pdfGeneration.createStartNumberPage(counter, participant, 'bestätigt', doc);
       });
       _.forEach(unconfirmed, participant => {
-        pdfGeneration.createStartNumberPage(counter++, participant, 'unbestätigt', doc);
+        counter = this.getNextStartNumber(counter);
+        pdfGeneration.createStartNumberPage(counter, participant, 'unbestätigt', doc);
       });
       doc.end();
       deferred.resolve(doc);

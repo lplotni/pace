@@ -33,7 +33,8 @@ describe('pdfGeneration', () => {
       scale: function () { return documentMock; },
       translate: function () { return documentMock; },
       path: function () { return documentMock; },
-      fill: jasmine.createSpy('fill'),
+      lineWidth: function () { return documentMock; },
+      stroke: jasmine.createSpy('stroke'),
       addPage: jasmine.createSpy('addPage'),
       image: jasmine.createSpy('image'),
       end: jasmine.createSpy('end')
@@ -67,13 +68,11 @@ describe('pdfGeneration', () => {
 
   it('should add start number, name and payment status', (done) => {
     pdfGeneration.fillDocument(res, documentMock).then( () => {
-      expect(documentMock.text).toHaveBeenCalledWith(1, 0, 150, {align: 'center'});
+      expect(documentMock.text).toHaveBeenCalledWith(1, 0, 200, {align: 'center'});
       expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte', 0, 400, {align: 'center'});
-      expect(documentMock.text).toHaveBeenCalledWith('(bestätigt)', {align: 'center'});
 
-      expect(documentMock.text).toHaveBeenCalledWith(2, 0, 150, {align: 'center'});
+      expect(documentMock.text).toHaveBeenCalledWith(2, 0, 200, {align: 'center'});
       expect(documentMock.text).toHaveBeenCalledWith('Unbestaetigte', 0, 400, {align: 'center'});
-      expect(documentMock.text).toHaveBeenCalledWith('(unbestätigt)', {align: 'center'});
       done();
     });
   });
@@ -84,6 +83,13 @@ describe('pdfGeneration', () => {
 
     pdfGeneration.fillDocument(res, documentMock).then( () => {
       expect(documentMock.image).toHaveBeenCalledTimes(3);
+      done();
+    });
+  });
+
+  it('should add a checkmark symbol only if the participant has payed', (done) => {
+    pdfGeneration.fillDocument(res, documentMock).then( () => {
+      expect(documentMock.stroke).toHaveBeenCalledTimes(1);
       done();
     });
   });

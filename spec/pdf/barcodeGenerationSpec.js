@@ -14,8 +14,8 @@ describe('barcodeGeneration', () => {
   //});
 
   it('should transform to eight digits', function () {
-    let zeroPadded = barcodeGeneration.toEightDigits("1");
-    expect(zeroPadded).toBe("00000001");
+    let zeroPadded = barcodeGeneration.toSevenDigits("1");
+    expect(zeroPadded).toBe("0000001");
   });
 
 });

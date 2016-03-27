@@ -7,13 +7,13 @@ const barcode = require("rescode");
 
 let barcodeGeneration = {};
 
-barcodeGeneration.toEightDigits = function (content) {
-  return _.padStart(content, 8, '0');
+barcodeGeneration.toSevenDigits = function (content) {
+  return _.padStart(content, 7, '0');
 };
 
 barcodeGeneration.ean8Code = function (content) {
   barcode.loadModules(["ean2", "ean5", "ean8", "ean13"]);
-  return barcode.create("ean8",barcodeGeneration.toEightDigits(content));
+  return barcode.create("ean8",barcodeGeneration.toSevenDigits(content));
 };
 
 module.exports = barcodeGeneration;

@@ -206,6 +206,32 @@ service.confirmParticipant = function (participantId) {
   return deferred.promise;
 };
 
+service.bulkmail = function() {
+  const deferred = Q.defer();
+  service.getConfirmed().then(confirmed => {
+    service.getRegistered().then(unconfirmed => {
+      _.forEach(confirmed, participant => {
+        service.sendStatusEmail(participant,'hallo','views/participants/bulkmail.jade');
+      });
+      _.forEach(unconfirmed, participant => {
+        service.sendStatusEmail(participant,'hallo','views/participants/bulkmail.jade');
+      });
+      deferred.resolve();
+    });
+  });
+  return deferred.promise;
+};
+
+service.sendStatusEmail = function (participant,subject,jadefile) {
+  const jade = require('jade');
+  jade.renderFile(jadefile,
+    {name: participant.firstname, editUrl: editUrlHelper.generateUrl(participant.secureid)},
+    (error, html) =>
+       service.sendEmail(participant.email, subject, html, error)
+    )
+};
+
+
 service.sendEmail = function (address, subject, text, error) {
   if (error) {
     console.error(error);
@@ -213,8 +239,6 @@ service.sendEmail = function (address, subject, text, error) {
     let transporter = service._nodemailer.createTransport(sendmailTransport({
       path: '/usr/sbin/sendmail'
     }));
-
-
     transporter.sendMail({
       from: config.get('contact.email'),
       to: address,

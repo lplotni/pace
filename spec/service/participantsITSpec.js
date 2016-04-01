@@ -354,5 +354,21 @@ describe('participants service', () => {
 
     });
   });
+
+  describe('bulkmail', () => {
+    it('should send email to every participant', (done) => {
+      spyOn(participants, 'sendEmail');
+      participants.save(aParticipant,'tokenXX')
+        .then(participants.bulkmail)
+        .then((result) => {
+          expect(participants.sendEmail).toHaveBeenCalled();
+
+          let content = participants.sendEmail.calls.mostRecent().args[2];
+          expect(content).toMatch(/Startnummer/);
+          done();
+        })
+        .fail(fail);
+    });
+  });
 })
 ;

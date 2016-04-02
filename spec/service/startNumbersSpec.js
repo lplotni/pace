@@ -29,7 +29,7 @@ describe('startNumbers service', () => {
 
   describe('next()', ()=> {
     it('returns 1 if there are no participants in the database', (done) => {
-      dbHelperMock.select.and.returnValue(Q.fcall(() => []));
+      dbHelperMock.select.and.returnValue(Q.fcall(() => [{'max': null}]));
       startNumbers.next().then((startNr) => {
         expect(startNr).toBe(1);
         done();
@@ -37,7 +37,7 @@ describe('startNumbers service', () => {
     });
 
     it('returns +1 to the previous number', (done) => {
-      dbHelperMock.select.and.returnValue(Q.fcall(() => [221]));
+      dbHelperMock.select.and.returnValue(Q.fcall(() => [{'max': 221}]));
 
       startNumbers.next().then((startNr) => {
         expect(startNr).toBe(222);
@@ -47,7 +47,7 @@ describe('startNumbers service', () => {
     });
 
     it('skips blacklisted numbers as start number', (done) => {
-      [18, 28, 74, 84, 88, 444, 191, 192, 198, 420, 1919, 1488, 1681].forEach((blacklisted) => {
+      [18, 28, 74, 84, 88, 444, 191, 192, 198, 420, 1919, 1933, 1488, 1681].forEach((blacklisted) => {
           dbHelperMock.select.and.returnValue(Q.fcall(() => [blacklisted-1]));
 
           startNumbers.next().then((startNr) => {

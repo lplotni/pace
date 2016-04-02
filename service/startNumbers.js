@@ -7,8 +7,8 @@ const _ = require('lodash');
 let service = {};
 
 service.next = function () {
-  return db.select('SELECT MAX(start_number) FROM participants', []).then((max) => {
-    let number = parseInt(max);
+  return db.select('SELECT MAX(start_number) FROM participants', []).then((result) => {
+    let number = parseInt(result[0].max);
     if (number) {
       return service.escape(number + 1);
     } else {

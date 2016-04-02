@@ -44,7 +44,6 @@ service.save = function (participant, paymentToken, secureID) {
     [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, participant.discount, paymentToken, secureID]);
 };
 
-
 service.delete = function (participantid) {
   const deferred = Q.defer();
   db.select('delete from participants where id=$1', [participantid])
@@ -174,7 +173,6 @@ service.getBySecureId = function (id) {
     })
     .then(result => result[0]);
 };
-
 
 service.markPayed = function (participantId) {
   return db.update('update participants SET has_payed = true WHERE id = $1', [participantId])

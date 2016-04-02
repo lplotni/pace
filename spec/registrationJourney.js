@@ -1,14 +1,29 @@
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, beforeAll, beforeEach, afterEach, afterAll, it, expect */
 'use strict';
 
 const helper = require('./journeyHelper');
 const config = require('config');
+const registration = require('../service/registration');
 
 describe('registration journey', () => {
 
-  let client;
+  let client, originalRegistrationStatus;
+
+  beforeAll((done) => {
+    registration.isClosed().then(isClosed => {
+      originalRegistrationStatus = isClosed;
+      if(isClosed) {
+        registration.reopen().then( () => {
+          done();
+        });
+      } else {
+        done();
+      }
+    });
+  });
+
   beforeEach(() => {
     helper.changeOriginalTimeout();
     client = helper.setUpClient();
@@ -16,6 +31,16 @@ describe('registration journey', () => {
 
   afterEach(() => {
     helper.resetToOriginalTimeout();
+  });
+
+  afterAll((done) => {
+    if (originalRegistrationStatus) {
+      registration.close().then( () => {
+        done();
+      });
+    } else {
+      done();
+    }
   });
 
   it('allows to register via the registration page', (done) => {
@@ -50,6 +75,26 @@ describe('registration journey', () => {
         expect(number).toMatch(/d*/);
       })
       .end(done);
+  });
+
+  it('shows a message when the registration is closed', (done) => {
+    registration.close().then( () => {
+      helper.setUpClient().url(helper.paceUrl)
+        .click('a#registration')
+        .isVisible('form#registrationForm')
+        .then( (isVisible) => {
+          expect(isVisible).toBe(false);
+        })
+        .isVisible('p#registration-closed-message')
+        .then( function (isVisible) {
+          expect(isVisible).toBe(true);
+        })
+        .end().then( () => {
+        registration.reopen().then( () => {
+          done();
+        });
+      });
+    });
   });
 
 });

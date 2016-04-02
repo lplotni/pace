@@ -6,6 +6,7 @@ const router = require('express').Router();
 const accesscontrol = require('../../acl/accesscontrol');
 const isAuthenticated = require('../../acl/authentication');
 const pdfGeneration = require('../../pdf/pdfGeneration');
+const registration = require('../../service/registration');
 
 let canViewAdminPage = function (role) {
   return accesscontrol.hasPermissionTo(role, 'view admin page');
@@ -31,6 +32,22 @@ router.get('/', isAuthenticated, (req, res) => {
 router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     pdfGeneration.generate(res);
+  }
+});
+
+router.post('/close-registration', isAuthenticated, (req, res) => {
+  if (canViewAdminPage(req.user.role)) {
+    registration.close().then( () =>
+      res.render('admin/closeRegistration/success', {isAdmin: true})
+    );
+  }
+});
+
+router.post('/reopen-registration', isAuthenticated, (req, res) => {
+  if (canViewAdminPage(req.user.role)) {
+    registration.reopen().then( () =>
+      res.redirect('/admin')
+    );
   }
 });
 

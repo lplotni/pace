@@ -1,0 +1,12 @@
+extends ../../layout
+
+block content
+  h3 Registrierung geschlossen
+  p#registration-closed-message.bigfont Die Registrierung ist ab sofort geschlossen.
+    | Die Teilnehmer k&ouml;nnen sich nicht mehr &uuml;ber die Webseite anmelden.
+
+  p.bigfont Uuups! Doch nicht schlie&szlig;en? Dann hier klicken:
+
+  form(method='POST', action='reopen-registration')
+    input(type='hidden', name='_csrf', value=_csrf)
+    button#reopen-registration.primary.button-primary.pace(type='submit') Registrierung wieder &ouml;ffnen

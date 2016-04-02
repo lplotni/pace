@@ -1,6 +1,6 @@
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, beforeAll, beforeEach, afterEach, afterAll, it, expect */
 'use strict';
 
 let helper = require('./journeyHelper');
@@ -8,11 +8,20 @@ let config = require('config');
 let crypto = require('crypto');
 let pg = require('pg');
 let participants = require('../service/participants');
+const registration = require('../service/registration');
 let _ = require('lodash');
 
 describe('admin page', () => {
 
   let loginUrl = helper.paceUrl + 'login';
+  let originalRegistrationStatus;
+
+  beforeAll((done) => {
+    registration.isClosed().then( isClosed => {
+      originalRegistrationStatus = isClosed;
+      done();
+    });
+  });
 
   beforeEach((done) => {
     helper.changeOriginalTimeout();
@@ -24,6 +33,18 @@ describe('admin page', () => {
     pg.end();
   });
 
+  afterAll((done) => {
+    if (originalRegistrationStatus) {
+      registration.close().then( () => {
+        done();
+      });
+    } else {
+      registration.reopen().then( () => {
+        done();
+      });
+    }
+  });
+
   function loginAdmin() {
     return helper.setUpClient().url(loginUrl)
     .setValue('input#username', config.get('admin.username'))
@@ -31,13 +52,28 @@ describe('admin page', () => {
     .click('button#submit');
   }
 
-  it('should go to admin page and show statistics and generate start number button', (done) => {
+  it('should go to admin page, show statistics and generate start number button', (done) => {
     loginAdmin().url(helper.paceUrl+'admin')
       .isVisible('h3#admin_tshirts_count')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })
       .isVisible('button#generate-start-numbers')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .end(done);
+  });
+
+  it('should close and reopen the registration', (done) => {
+    loginAdmin().url(helper.paceUrl+'admin')
+      .click('button#close-registration')
+      .isVisible('p#registration-closed-message')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .click('button#reopen-registration')
+      .isVisible('h3#admin_tshirts_count')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })

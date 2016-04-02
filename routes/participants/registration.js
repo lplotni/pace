@@ -11,9 +11,11 @@ const participants = require('../../service/participants');
 const participant = require('../../domain/participant');
 const calculator = require('../../domain/costCalculator');
 const editUrlHelper = require('../../domain/editUrlHelper');
+const registration = require('../../service/registration');
 
 router.get('/', (req, res) => {
-  res.render('registration/registration', {});
+  registration.isClosed().then( isClosed =>
+    res.render('registration/registration', { registrationClosed: isClosed }) );
 });
 
 router.post('/', (req, res) => {

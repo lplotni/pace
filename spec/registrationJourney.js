@@ -47,7 +47,7 @@ describe('registration journey', () => {
       })
       .getText('span.startNumber')
       .then((number) => {
-        expect(number).toMatch(/1/);
+        expect(number).toMatch(/d*/);
       })
       .end(done);
   });

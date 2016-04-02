@@ -17,14 +17,15 @@ describe('participants service', () => {
     category: 'Unicorn',
     birthyear: 1980,
     visibility: 'yes',
-    discount:'no',
+    discount: 'no',
     team: 'Crazy runners'
   };
 
   const secureId = 'some_secure_id';
+  let startNr = 30;
   const paymentToken = 'a token';
 
-  const expectOnParticipantFields = function(participantFromDb, participantId) {
+  const expectOnParticipantFields = function (participantFromDb, participantId) {
     expect(participantFromDb.id).toEqual(participantId);
     expect(participantFromDb.firstname).toEqual(aParticipant.firstname);
     expect(participantFromDb.lastname).toEqual(aParticipant.lastname);
@@ -50,10 +51,11 @@ describe('participants service', () => {
     done();
   });
 
+
   it('should store and read participants', (done) => {
     const randomToken = '1234567';
 
-    participants.save(aParticipant, randomToken, secureId)
+    participants.save(aParticipant, randomToken, secureId, startNr++)
       .then(participants.getRegistered)
       .then(function (data) {
         expect(data.length).toBe(1);
@@ -72,7 +74,7 @@ describe('participants service', () => {
   describe('save', () => {
     it('should return the id', (done) => {
 
-      participants.save(aParticipant, paymentToken, secureId)
+      participants.save(aParticipant, paymentToken, secureId, startNr++)
         .then(function (participantId) {
           expect(participantId).toBeDefined();
           done();
@@ -83,7 +85,7 @@ describe('participants service', () => {
 
   describe('getById', () => {
     it('should return all information of the participant with given Id', (done) => {
-      participants.save(aParticipant, paymentToken, secureId)
+      participants.save(aParticipant, paymentToken, secureId, startNr++)
         .then(function (participantId) {
           participants.getById(participantId)
             .then(function (participant) {
@@ -109,7 +111,7 @@ describe('participants service', () => {
 
 
     it('should return participant\'s lastname and firstname and ordered tshirt for a given token', (done) => {
-      participants.save(aParticipantWithTshirt, paymentToken)
+      participants.save(aParticipantWithTshirt, paymentToken, secureId, startNr++)
         .then(function (participantId) {
           participants.addTShirt(aParticipantWithTshirt.tshirt, participantId)
             .then(() => {
@@ -128,7 +130,7 @@ describe('participants service', () => {
 
   describe('getBySecureId', () => {
     it('should return all information of the participant with given secureId', (done) => {
-      participants.save(aParticipant, paymentToken, secureId)
+      participants.save(aParticipant, paymentToken, secureId, startNr++)
         .then(function (participantId) {
           participants.getBySecureId(secureId)
             .then(function (participant) {
@@ -145,7 +147,7 @@ describe('participants service', () => {
       spyOn(participants, 'markPayed').and.callThrough();
       spyOn(participants, 'sendEmail');
 
-      participants.save(aParticipant, paymentToken, secureId)
+      participants.save(aParticipant, paymentToken, secureId, startNr++)
         .then(function (participantId) {
           participants.confirmParticipant(participantId)
             .then(() => {
@@ -170,7 +172,7 @@ describe('participants service', () => {
     it('should give error if ID is invalid', (done) => {
       let wrongId = '999';
 
-      participants.save(aParticipant, paymentToken, secureId)
+      participants.save(aParticipant, paymentToken, secureId, startNr++)
         .then(() => {
           participants.confirmParticipant(wrongId)
             .catch(() => {
@@ -182,28 +184,28 @@ describe('participants service', () => {
 
   describe('delete', () => {
     it('should delete a user', (done) => {
-      participants.save(aParticipant, paymentToken, secureId)
+      participants.save(aParticipant, paymentToken, secureId, startNr++)
         .then((id) => {
-            participants.delete(id).then(() => {
-              done();
-            });
+          participants.delete(id).then(() => {
+            done();
+          });
         });
     });
 
     it('should delete users with tshirts', (done) => {
       const aParticipantWithTshirt = {
-            firstname: 'Hertha',
-            lastname: 'Mustermann',
-            email: 'h.mustermann@example.com',
-            birthyear: 1980,
-            tshirt: {
-              size: 'XS',
-              model: 'Crazy cool fit'
-            }
+        firstname: 'Hertha',
+        lastname: 'Mustermann',
+        email: 'h.mustermann@example.com',
+        birthyear: 1980,
+        tshirt: {
+          size: 'XS',
+          model: 'Crazy cool fit'
+        }
       };
-      participants.save(aParticipantWithTshirt, paymentToken, secureId)
+      participants.save(aParticipantWithTshirt, paymentToken, secureId, startNr++)
         .then((participantid) => {
-            participants.delete(participantid).then(() => {
+          participants.delete(participantid).then(() => {
               done();
             })
             .fail(fail);
@@ -211,14 +213,14 @@ describe('participants service', () => {
     });
 
     it('should give error if accessing deleted user', (done) => {
-      participants.save(aParticipant, paymentToken)
+      participants.save(aParticipant, paymentToken, secureId, startNr++)
         .then((id) => {
-            let participantid = id;
-            participants.delete(participantid).then(() => {
-              participants.getById(participantid).catch(() => {
-                  done();
-              });
+          let participantid = id;
+          participants.delete(participantid).then(() => {
+            participants.getById(participantid).catch(() => {
+              done();
             });
+          });
         });
     });
   });
@@ -237,7 +239,9 @@ describe('participants service', () => {
           let token = participants.save.calls.mostRecent().args[1];
           expect(token).toBe(result.token);
           let secureId = participants.save.calls.mostRecent().args[2];
-          expect(secureId).not.toBeNull();
+          expect(secureId).toBe(result.secureid);
+          let startNr = participants.save.calls.mostRecent().args[3];
+          expect(startNr).toBe(result.startnr);
 
           expect(participants.sendEmail).toHaveBeenCalled();
 
@@ -281,30 +285,31 @@ describe('participants service', () => {
   describe('addTShirt', () => {
     it('stores tshirt', (done) => {
       participants.save({
-        firstname: 'Hertha',
-        lastname: 'With TShirt',
-        email: 'h.mustermann@example.com',
-        category: 'Unicorn',
-        birthyear: 1980,
-        team: 'Crazy runners'
-      }, 'tokenX').then(function (id) {
-        participants.addTShirt({size: 'M', model: 'Skin fit'}, id)
-          .then(() => {
-            participants.getTShirtFor(id)
-              .then(function (shirts) {
-                expect(shirts.length).toBe(1);
-                done();
-              })
-              .fail(fail);
-          });
-      });
+          firstname: 'Hertha',
+          lastname: 'With TShirt',
+          email: 'h.mustermann@example.com',
+          category: 'Unicorn',
+          birthyear: 1980,
+          team: 'Crazy runners'
+        }, 'tokenX', secureId, startNr++)
+        .then(function (id) {
+          participants.addTShirt({size: 'M', model: 'Skin fit'}, id)
+            .then(() => {
+              participants.getTShirtFor(id)
+                .then(function (shirts) {
+                  expect(shirts.length).toBe(1);
+                  done();
+                })
+                .fail(fail);
+            });
+        });
 
     });
   });
 
   describe('update', () => {
     it('should return the full information for a participant with given Id', (done) => {
-      participants.save(aParticipant, paymentToken, 'someSecureId')
+      participants.save(aParticipant, paymentToken, 'someSecureId', startNr++)
         .then(function (id) {
           const updatedParticipant = {
             firstname: 'Hertha updated',
@@ -315,29 +320,29 @@ describe('participants service', () => {
             team: 'Crazy runners updated'
           };
           participants.getById(id)
-          .then((p) => {
-            participants.update(updatedParticipant, p.secureid)
-              .then(() => {
-                participants.getById(id)
-                  .then(function (participant) {
-                    expect(participant.firstname).toBe('Hertha updated');
-                    expect(participant.lastname).toBe('Mustermann updated');
-                    expect(participant.email).toBe('h.mustermann@example.com updated');
-                    expect(participant.category).toBe('Unicorn updated');
-                    expect(participant.birthyear).toBe(1981);
-                    expect(participant.team).toBe('Crazy runners updated');
-                    done();
-                  })
-                  .fail(fail);
-              });
-          });
+            .then((p) => {
+              participants.update(updatedParticipant, p.secureid)
+                .then(() => {
+                  participants.getById(id)
+                    .then(function (participant) {
+                      expect(participant.firstname).toBe('Hertha updated');
+                      expect(participant.lastname).toBe('Mustermann updated');
+                      expect(participant.email).toBe('h.mustermann@example.com updated');
+                      expect(participant.category).toBe('Unicorn updated');
+                      expect(participant.birthyear).toBe(1981);
+                      expect(participant.team).toBe('Crazy runners updated');
+                      done();
+                    })
+                    .fail(fail);
+                });
+            });
         });
     });
   });
 
   describe('getPubliclyVisible', () => {
     it('returns only participants which are confirmed and OK with being visible to the public', (done) => {
-      participants.save(aParticipant, 'tokenXX')
+      participants.save(aParticipant, 'tokenXX', secureId, startNr++)
         .then(participants.markPayed)
         .then(participants.getPubliclyVisible)
         .then(function (data) {

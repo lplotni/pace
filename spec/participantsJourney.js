@@ -13,6 +13,9 @@ describe('participants page', () => {
   let participantsUrl = helper.paceUrl + 'participants';
   let loginUrl = helper.paceUrl + 'login';
 
+  let secureID = 'someSecureId';
+  let startNr = 30;
+
   beforeEach((done) => {
     helper.changeOriginalTimeout();
     helper.setupDbConnection(done);
@@ -41,9 +44,10 @@ describe('participants page', () => {
       lastname: 'Schiller',
       email: 'f.schiller@example.com'
     };
+
     let aToken = 'a token';
 
-    participants.save(aParticipant, aToken)
+    participants.save(aParticipant, aToken, secureID, startNr++)
       .then(() => {
         helper.setUpClient().url(participantsUrl)
           .elements('li.participant-line')
@@ -54,7 +58,7 @@ describe('participants page', () => {
           .setValue('input#username', config.get('admin.username'))
           .setValue('input#password', config.get('admin.password'))
           .click('button#submit')
-          .url(helper.paceUrl+'admin/participants')
+          .url(helper.paceUrl + 'admin/participants')
           .elements('tr.participant-line')
           .then(function (res) {
             expect(res.value.length).toBe(1);
@@ -81,28 +85,28 @@ describe('participants page', () => {
       email: 'f.schiller@example.com'
     };
 
-    participants.save(aParticipant, 'a token').then(participants.markPayed)
+    participants.save(aParticipant, 'a token', secureID, startNr++).then(participants.markPayed)
       .then(() => {
-        return participants.save(aPublicParticipant, 'b token');
+        return participants.save(aPublicParticipant, 'b token', secureID, startNr++);
       })
       .then(participants.markPayed)
       .then(() => {
-          helper.setUpClient().url(participantsUrl)
-            .elements('tr.participant-line')
-            .then(function (res) {
-              expect(res.value.length).toBe(1);
-            })
-            .end(done);
+        helper.setUpClient().url(participantsUrl)
+          .elements('tr.participant-line')
+          .then(function (res) {
+            expect(res.value.length).toBe(1);
+          })
+          .end(done);
       });
   });
 
   it('shows a search box', (done) => {
     helper.setUpClient().url(participantsUrl)
-     .isVisible('.dataTables_filter')
-     .then(function (isVisible) {
-       expect(isVisible).toBe(true);
-     })
-    .end(done);
+      .isVisible('.dataTables_filter')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .end(done);
   });
 
   it('searches for participants', (done) => {
@@ -122,24 +126,24 @@ describe('participants page', () => {
       visibility: 'yes'
     };
     let anotherToken = 'another token';
-    participants.save(aParticipant, aToken).then(participants.markPayed)
+    participants.save(aParticipant, aToken, secureID, startNr++).then(participants.markPayed)
 
-      .then( () => {
-        return  participants.save(anotherParticipant, anotherToken);
+      .then(() => {
+        return participants.save(anotherParticipant, anotherToken, secureID, startNr++);
       })
       .then(participants.markPayed)
-      .then( () => {
+      .then(() => {
         helper.setUpClient().url(participantsUrl)
-        .setValue('.dataTables_filter input', 'Friedrich')
-        .elements('tr.participant-line')
-        .then( (res) => {
-          expect(res.value.length).toBe(1);
-        })
-        .end(done);
+          .setValue('.dataTables_filter input', 'Friedrich')
+          .elements('tr.participant-line')
+          .then((res) => {
+            expect(res.value.length).toBe(1);
+          })
+          .end(done);
       });
   });
 
-describe('admin view', () => {
+  describe('admin view', () => {
 
     let setUpLoggedInClient = () => {
       return helper.setUpClient()
@@ -150,12 +154,12 @@ describe('admin view', () => {
     };
 
     it('shows a search box', (done) => {
-    setUpLoggedInClient().url(helper.paceUrl+'admin/participants')
-      .isVisible('.dataTables_filter')
-      .then(function (isVisible) {
-        expect(isVisible).toBe(true);
-      })
-      .end(done);
+      setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
+        .isVisible('.dataTables_filter')
+        .then(function (isVisible) {
+          expect(isVisible).toBe(true);
+        })
+        .end(done);
     });
 
     it('searches for participants', (done) => {
@@ -173,18 +177,18 @@ describe('admin view', () => {
         email: 'i.newton@example.com'
       };
       let anotherToken = 'another token';
-      participants.save(aParticipant, aToken)
-        .then( () => {
-          return  participants.save(anotherParticipant, anotherToken);
+      participants.save(aParticipant, aToken, secureID, startNr++)
+        .then(() => {
+          return participants.save(anotherParticipant, anotherToken, secureID, startNr++);
         })
-        .then( () => {
-          setUpLoggedInClient().url(helper.paceUrl+'admin/participants')
-          .setValue('.dataTables_filter input', 'Friedrich')
-          .elements('tr.participant-line')
-          .then( (res) => {
-            expect(res.value.length).toBe(1);
-          })
-          .end(done);
+        .then(() => {
+          setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
+            .setValue('.dataTables_filter input', 'Friedrich')
+            .elements('tr.participant-line')
+            .then((res) => {
+              expect(res.value.length).toBe(1);
+            })
+            .end(done);
         });
     });
 
@@ -196,9 +200,9 @@ describe('admin view', () => {
       };
       let aToken = 'a token';
 
-      participants.save(aParticipant, aToken)
+      participants.save(aParticipant, aToken, secureID, startNr++)
         .then(() => {
-          setUpLoggedInClient().url(helper.paceUrl+'admin/participants')
+          setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
             .isVisible('a#edit')
             .then(function (isVisible) {
               expect(isVisible).toBe(true);
@@ -215,11 +219,11 @@ describe('admin view', () => {
       };
       let aToken = 'a token';
 
-      participants.save(aParticipant, aToken)
+      participants.save(aParticipant, aToken, secureID, startNr++)
         .then(() => {
           let loggedInClient = setUpLoggedInClient();
 
-          loggedInClient.url(helper.paceUrl+'admin/participants')
+          loggedInClient.url(helper.paceUrl + 'admin/participants')
             .elements('td#tshirt-amount')
             .then(function (tshirtFields) {
               loggedInClient.elementIdText(tshirtFields.value[0].ELEMENT)
@@ -250,14 +254,14 @@ describe('admin view', () => {
         model: 'normal fit'
       };
 
-      participants.save(aParticipant, aToken)
+      participants.save(aParticipant, aToken, secureID, startNr++)
         .then(function (id) {
           participants.addTShirt(aTshirt, id);
         })
         .then(function () {
           var loggedInClient = setUpLoggedInClient();
 
-          loggedInClient.url(helper.paceUrl+'admin/participants')
+          loggedInClient.url(helper.paceUrl + 'admin/participants')
             .elements('td#tshirt-amount')
             .then(function (tshirtFields) {
               loggedInClient.elementIdText(tshirtFields.value[0].ELEMENT)

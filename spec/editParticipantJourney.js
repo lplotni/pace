@@ -33,9 +33,10 @@ describe('edit participant journey', () => {
       visibility: 'no'
     };
     let aToken = '23eF67i';
+    let startNr = 42;
     let secureid = editUrlHelper.generateSecureID();
 
-    participants.save(aParticipant, aToken, secureid)
+    participants.save(aParticipant, aToken, secureid, startNr)
       .then(() => {
         helper.setUpClient()
           .url(editParticipantUrl + '/' + secureid)

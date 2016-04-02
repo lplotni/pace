@@ -75,7 +75,7 @@ describe('admin page', () => {
       visibility: 'no'
     };
 
-    return participants.save(aParticipant, randomString, 'secureIdForTheEditLink');
+    return participants.save(aParticipant, randomString, 'secureIdForTheEditLink', 10);
   }
 
   it('should go to edit user when clicking edit button (admin is signed in)', (done) => {

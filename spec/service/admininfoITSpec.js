@@ -26,6 +26,7 @@ describe('admin service', () => {
   };
 
   const secureId = 'soecure_id';
+  let startNr = 42;
   const paymentToken = 'atoken';
 
   beforeEach((done) => {
@@ -38,7 +39,7 @@ describe('admin service', () => {
   });
 
   it('should count shirt orders', (done) => {
-    participants.save(aParticipant, paymentToken)
+    participants.save(aParticipant, paymentToken, secureId, startNr++)
       .then(function (participantId) {
         participants.confirmParticipant(participantId)
           .then(function() {
@@ -58,7 +59,7 @@ describe('admin service', () => {
   });
 
   it('should count confirmed participants', (done) => {
-    participants.save(aParticipant, paymentToken)
+    participants.save(aParticipant, paymentToken, secureId, startNr++)
       .then(function (participantId) {
         participants.confirmParticipant(participantId)
           .then(function() {

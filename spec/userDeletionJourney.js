@@ -40,8 +40,10 @@ describe('user deletion journey', () => {
         email: 'jvg@example.com'
       };
       let aToken = 'GLSKDJ';
+      let secureId= 'secureId';
+      let startNr= 100;
 
-      participants.save(aParticipant, aToken)
+      participants.save(aParticipant, aToken, secureId, startNr)
         .then(() => {
           loggedInClient.url(participantsListUrl)
             .isVisible('td=Johann-Wolfgang')

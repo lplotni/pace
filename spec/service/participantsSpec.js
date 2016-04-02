@@ -11,7 +11,7 @@ const secureId = 'secureId';
 
 describe('participants service', () => {
 
-    let participants, dbHelperMock, editUrlHelperMock, jadeMock, configMock;
+    let participants, dbHelperMock, editUrlHelperMock, startNumbersMock, jadeMock, configMock;
 
     beforeEach(() => {
       mockery.enable({
@@ -32,6 +32,10 @@ describe('participants service', () => {
         generateUrl: jasmine.createSpy()
       };
 
+      startNumbersMock = {
+        next: jasmine.createSpy()
+      };
+
       jadeMock = {
         renderFile: jasmine.createSpy()
       };
@@ -41,11 +45,12 @@ describe('participants service', () => {
       };
 
       mockery.registerMock('../service/dbHelper', dbHelperMock);
+      mockery.registerMock('../service/startNumbers', startNumbersMock);
       mockery.registerMock('../domain/editUrlHelper', editUrlHelperMock);
       mockery.registerMock('jade', jadeMock);
       mockery.registerMock('config', configMock);
 
-      mockery.registerAllowables(['q', '../../service/dbHelper.js', '../../service/editUrlHelper', 'jade', 'config']);
+      mockery.registerAllowables(['q', '../../service/dbHelper.js', '../../service/editUrlHelper', '../../service/startNumbers', 'jade', 'config']);
       participants = require('../../service/participants');
       dbHelperMock.select.and.returnValue(Q.fcall(() => []));
       dbHelperMock.insert.and.returnValue(Q.fcall(() => 'some id'));
@@ -83,7 +88,7 @@ describe('participants service', () => {
 
         function fakeSelect() {
           if (callCounter === 0) {
-            callCounter = callCounter+1;
+            callCounter = callCounter + 1;
             return Q.fcall(() => ['someToken']);
           }
           return Q.fcall(() => []);
@@ -99,9 +104,33 @@ describe('participants service', () => {
       });
     });
 
-  describe('register', () => {
+    describe('register', () => {
 
-    it('passes the newly generated secureId in the DB', (done) => {
+      it('passes the newly generated secureId in the DB', (done) => {
+        const aParticipant = {
+          firstname: 'Hertha',
+          lastname: 'Mustermann',
+          email: 'h.mustermann@example.com',
+          category: 'Unicorn',
+          birthyear: 1980,
+          visibility: 'yes',
+          team: 'Crazy runners'
+        };
+
+        editUrlHelperMock.generateSecureID.and.returnValue(secureId);
+        startNumbersMock.next.and.returnValue(Q.fcall(() => [10]));
+
+
+        participants.register(aParticipant).then(function () {
+          const params = dbHelperMock.insert.calls.mostRecent().args[1];
+          expect(params[params.length - 2]).toBe(secureId);
+          done();
+        });
+
+      });
+    });
+
+    it('passes the newly generated start_number in the DB', (done) => {
       const aParticipant = {
         firstname: 'Hertha',
         lastname: 'Mustermann',
@@ -113,14 +142,14 @@ describe('participants service', () => {
       };
 
       editUrlHelperMock.generateSecureID.and.returnValue(secureId);
+      startNumbersMock.next.and.returnValue(Q.fcall(() => 10));
 
-      participants.register(aParticipant).then(function() {
+      participants.register(aParticipant).then(function () {
         const params = dbHelperMock.insert.calls.mostRecent().args[1];
-        expect(params[params.length -1]).toBe(secureId);
+        expect(params[params.length - 1]).toBe(10);
         done();
       });
 
     });
-  });
   }
 );

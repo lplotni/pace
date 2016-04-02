@@ -12,6 +12,7 @@ const calculator = require('../domain/costCalculator');
 const db = require('../service/dbHelper');
 
 const editUrlHelper = require('../domain/editUrlHelper');
+const startNumbers = require('../service/startNumbers');
 
 let service = {};
 
@@ -39,9 +40,9 @@ service.getPubliclyVisible = function () {
   );
 };
 
-service.save = function (participant, paymentToken, secureID) {
-  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning id',
-    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, participant.discount, paymentToken, secureID]);
+service.save = function (participant, paymentToken, secureID, start_number) {
+  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id',
+    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, participant.discount, paymentToken, secureID, start_number]);
 };
 
 service.delete = function (participantid) {
@@ -100,28 +101,31 @@ service.register = function (participant) {
 
   service.createUniqueToken().then((paymentToken) => {
     const secureID = editUrlHelper.generateSecureID();
-    service.save(participant, paymentToken, secureID)
-      .then(id => {
-        if (!_.isEmpty(participant.tshirt)) {
-          service.addTShirt(participant.tshirt, id);
-        }
-
-        jade.renderFile('views/registration/text.jade',
-          {
-            name: participant.firstname,
-            token: paymentToken,
-            bank: config.get('contact.bank'),
-            amount: calculator.priceFor(participant),
-            editUrl: editUrlHelper.generateUrl(secureID)
-          },
-          (error, html) => {
-            service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
+    startNumbers.next().then((nr) => {
+      service.save(participant, paymentToken, secureID, nr)
+        .then(id => {
+          if (!_.isEmpty(participant.tshirt)) {
+            service.addTShirt(participant.tshirt, id);
           }
-        );
 
-        deferred.resolve({'id': id, 'token': paymentToken, secureid: secureID});
-      })
-      .fail(err => deferred.reject(err));
+          jade.renderFile('views/registration/text.jade',
+            {
+              name: participant.firstname,
+              token: paymentToken,
+              bank: config.get('contact.bank'),
+              amount: calculator.priceFor(participant),
+              editUrl: editUrlHelper.generateUrl(secureID)
+            },
+            (error, html) => {
+              service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
+            }
+          );
+
+          deferred.resolve({'id': id, 'token': paymentToken, secureid: secureID});
+        })
+        .fail(err => deferred.reject(err));
+    });
+
   }).fail(deferred.reject);
 
   return deferred.promise;

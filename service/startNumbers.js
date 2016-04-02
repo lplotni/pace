@@ -18,7 +18,7 @@ service.next = function () {
 };
 
 service.escape = function (nr) {
-  if (_.includes([18, 28, 74, 84, 88, 444, 191, 192, 198, 420, 1919, 1488, 1681], nr)) {
+  if (_.includes([18, 28, 74, 84, 88, 444, 191, 192, 198, 420, 1919, 1933, 1488, 1681], nr)) {
     return service.escape(nr + 1);
   }
   return nr;

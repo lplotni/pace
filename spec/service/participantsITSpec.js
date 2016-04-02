@@ -21,6 +21,18 @@ describe('participants service', () => {
     team: 'Crazy runners'
   };
 
+  const aSecondParticipant = {
+    firstname: 'Michel',
+    lastname: 'Mueller',
+    email: 'm.mueller@example.com',
+    category: 'Unicorn',
+    birthyear: 1982,
+    visibility: 'no',
+    discount:'no',
+    team: 'Crazy runners'
+  };
+
+
   const secureId = 'some_secure_id';
   const paymentToken = 'a token';
 
@@ -356,14 +368,17 @@ describe('participants service', () => {
   });
 
   describe('bulkmail', () => {
-    it('should send email to every participant', (done) => {
+    it('should send the correct email to every participant', (done) => {
       spyOn(participants, 'sendEmail');
+      spyOn(participants, 'sendStatusEmail').and.callThrough();
       participants.save(aParticipant,'tokenXX')
+        .then(participants.markPayed)
+        .then(participants.save(aSecondParticipant,'tokenYY'))
         .then(participants.bulkmail)
         .then((result) => {
-          expect(participants.sendEmail).toHaveBeenCalled();
-
-          let content = participants.sendEmail.calls.mostRecent().args[2];
+          expect(participants.sendEmail).toHaveBeenCalledTimes(2);
+          expect(participants.sendStatusEmail).toHaveBeenCalledTimes(2);
+          let content =       participants.sendEmail.calls.mostRecent().args[2];
           expect(content).toMatch(/Startnummer/);
           done();
         })

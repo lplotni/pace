@@ -74,6 +74,10 @@ describe('edit participant journey', () => {
           .getText('p#paymentStatus')
           .then(function (value) {
             expect(value).toBe('Zahlung noch nicht eingegangen');
+          })
+          .getText('p#startNumber')
+          .then(function (value) {
+            expect(value).toBe('42');
           }).click("#submit")
           .isVisible('.thanks')
           .then(function (isVisible) {

@@ -114,14 +114,15 @@ service.register = function (participant) {
               token: paymentToken,
               bank: config.get('contact.bank'),
               amount: calculator.priceFor(participant),
-              editUrl: editUrlHelper.generateUrl(secureID)
+              editUrl: editUrlHelper.generateUrl(secureID),
+              startnr: nr
             },
             (error, html) => {
               service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
             }
           );
 
-          deferred.resolve({'id': id, 'token': paymentToken, secureid: secureID});
+          deferred.resolve({'id': id, 'token': paymentToken, secureid: secureID, startnr: nr});
         })
         .fail(err => deferred.reject(err));
     });

@@ -40,6 +40,9 @@ block content
        .twelve.columns.padding
          label Zahlungsstatus:
          p#paymentStatus #{participant.has_payed ? 'Zahlung eingegangen' : 'Zahlung noch nicht eingegangen' }
+       .twelve.columns.padding
+         label Deine Startnummer:
+         p#startNumber #{participant.start_number}
 
     input(type='hidden', name='participantid', value='#{participantid}')
     input(type='hidden', name='_csrf', value=_csrf)

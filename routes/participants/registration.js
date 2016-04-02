@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
           token: result.token,
           amount: new Intl.NumberFormat('de-DE', {minimumFractionDigits: '2'}).format(calculator.priceFor(newParticipant)),
           editUrl: editUrlHelper.generateUrl(result.secureid),
-          startNumber: 1
+          startnr: result.startnr
         }), err => res.send(err.message));
   } catch (err) {
     res.send(err.message);

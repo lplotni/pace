@@ -34,11 +34,15 @@ describe('registration', () => {
   });
 
   it('should close the registration', (done) => {
-    registration.close().then(() => {
-      registration.isClosed().then((isClosed) => {
-        expect(isClosed).toEqual(true);
-        done();
-      });
-    });
+    registration.close()
+      .then(() => {
+        registration.isClosed()
+          .then((isClosed) => {
+            expect(isClosed).toEqual(true);
+            done();
+          })
+          .fail(fail);
+      })
+      .fail(fail);
   });
 });

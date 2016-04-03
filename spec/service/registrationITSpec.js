@@ -6,14 +6,15 @@
 describe('registration', () => {
 
   const registration = require('../../service/registration');
+  const helper = require('../journeyHelper');
 
   let originalRegistrationStatus;
 
   beforeAll((done) => {
     registration.isClosed().then(isClosed => {
       originalRegistrationStatus = isClosed;
-      if(isClosed) {
-        registration.reopen().then( () => {
+      if (isClosed) {
+        registration.reopen().then(() => {
           done();
         });
       } else {
@@ -24,15 +25,17 @@ describe('registration', () => {
 
   afterAll((done) => {
     if (!originalRegistrationStatus) {
-      registration.reopen().then( () => {
-          done();
-        });
+      registration.reopen().then(() => {
+        helper.closeDbConnection(done);
+      });
+    } else {
+      helper.closeDbConnection(done);
     }
   });
 
   it('should close the registration', (done) => {
-    registration.close().then( () => {
-      registration.isClosed().then( (isClosed) => {
+    registration.close().then(() => {
+      registration.isClosed().then((isClosed) => {
         expect(isClosed).toEqual(true);
         done();
       });

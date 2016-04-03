@@ -35,7 +35,7 @@ journeyHelper.setupDbConnection = function (done) {
   let connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace';
   let jasmineDone = done;
 
-  pg.connect(connectionString,  (err, client, done) => {
+  pg.connect(connectionString, (err, client, done) => {
       function errorFunction(error) {
         console.error('DB statement problem: ', error);
         done();
@@ -46,7 +46,7 @@ journeyHelper.setupDbConnection = function (done) {
         errorFunction(err);
       } else {
         let deleteShirts = client.query('delete from tshirts');
-        deleteShirts.on('end',  () => {
+        deleteShirts.on('end', () => {
           let deleteParticipants = client.query('delete from participants');
           deleteParticipants.on('end', () => {
             done();
@@ -58,6 +58,11 @@ journeyHelper.setupDbConnection = function (done) {
       }
     }
   );
+};
+
+journeyHelper.closeDbConnection = function (done) {
+  pg.end();
+  done();
 };
 
 module.exports = journeyHelper;

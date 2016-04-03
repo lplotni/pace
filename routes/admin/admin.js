@@ -35,6 +35,23 @@ router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   }
 });
 
+router.get('/bulkmail', isAuthenticated, (req, res) => {
+  if (canViewAdminPage(req.user.role)) {
+    let participants = require('../../service/participants');
+    participants.bulkmail().then(result  =>
+      res.render('admin/bulkmail', {count: result})
+    );
+
+  } else {
+    res.render('error', {
+      message: 'Bitte anmelden',
+      error: {
+        status: 'Nur Administratoren können diese Seite einsehen'
+      }
+    });
+  }
+});
+
 router.post('/close-registration', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     registration.close().then( () =>

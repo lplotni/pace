@@ -1,15 +1,15 @@
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeAll, beforeEach, afterEach, afterAll, it, expect */
+/* global describe, beforeAll, beforeEach, afterEach, afterAll, it, xit, expect */
 'use strict';
 
-let helper = require('./journeyHelper');
-let config = require('config');
-let crypto = require('crypto');
-let pg = require('pg');
-let participants = require('../service/participants');
+const helper = require('./journeyHelper');
+const config = require('config');
+const crypto = require('crypto');
+const participants = require('../service/participants');
 const registration = require('../service/registration');
-let _ = require('lodash');
+const participant = require('../domain/participant');
+const _ = require('lodash');
 
 describe('admin page', () => {
 
@@ -17,7 +17,7 @@ describe('admin page', () => {
   let originalRegistrationStatus;
 
   beforeAll((done) => {
-    registration.isClosed().then( isClosed => {
+    registration.isClosed().then(isClosed => {
       originalRegistrationStatus = isClosed;
       done();
     });
@@ -28,9 +28,9 @@ describe('admin page', () => {
     helper.setupDbConnection(done);
   });
 
-  afterEach(() => {
+  afterEach((done) => {
     helper.resetToOriginalTimeout();
-    pg.end();
+    helper.closeDbConnection(done);
   });
 
   afterAll((done) => { //TODO re-anable (together with the test) as soon as we have postgres 9.5 on snap
@@ -47,13 +47,13 @@ describe('admin page', () => {
 
   function loginAdmin() {
     return helper.setUpClient().url(loginUrl)
-    .setValue('input#username', config.get('admin.username'))
-    .setValue('input#password', config.get('admin.password'))
-    .click('button#submit');
+      .setValue('input#username', config.get('admin.username'))
+      .setValue('input#password', config.get('admin.password'))
+      .click('button#submit');
   }
 
   it('should go to admin page, show statistics and generate start number button', (done) => {
-    loginAdmin().url(helper.paceUrl+'admin')
+    loginAdmin().url(helper.paceUrl + 'admin')
       .isVisible('h3#admin_tshirts_count')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
@@ -66,7 +66,7 @@ describe('admin page', () => {
   });
 
   xit('should close and reopen the registration', (done) => {
-    loginAdmin().url(helper.paceUrl+'admin')
+    loginAdmin().url(helper.paceUrl + 'admin')
       .click('button#close-registration')
       .isVisible('p#registration-closed-message')
       .then(function (isVisible) {
@@ -81,27 +81,27 @@ describe('admin page', () => {
   });
 
   it('should redirect to login page if the user is not logged in', (done) => {
-    helper.setUpClient().url(helper.paceUrl+'admin')
-    .isVisible('form#loginForm')
-    .then(function (isVisible) {
-      expect(isVisible).toBe(true);
-    })
-    .end(done);
+    helper.setUpClient().url(helper.paceUrl + 'admin')
+      .isVisible('form#loginForm')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .end(done);
   });
 
   it('should redirect to the start page after logout', (done) => {
-    helper.setUpClient().url(helper.paceUrl+'logout')
-    .isVisible('h3*=Online-Anmeldung')
-    .then(function (isVisible) {
-      expect(isVisible).toBe(true);
-    })
-    .end(done);
+    helper.setUpClient().url(helper.paceUrl + 'logout')
+      .isVisible('h3*=Online-Anmeldung')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .end(done);
   });
 
   function givenAValidUserExists() {
     let randomString = crypto.randomBytes(8).toString('hex');
 
-    let aParticipant = {
+    let aParticipant = participant.from({
       firstname: 'Friedrich',
       lastname: 'Schiller',
       email: randomString + '@example.com',
@@ -109,17 +109,17 @@ describe('admin page', () => {
       birthyear: 1980,
       team: 'Crazy runners',
       visibility: 'no'
-    };
+    }).withToken(randomString).withSecureId('secureIdForTheEditLink').withStartNr(10);
 
-    return participants.save(aParticipant, randomString, 'secureIdForTheEditLink', 10);
+    return participants.save(aParticipant);
   }
 
   it('should go to edit user when clicking edit button (admin is signed in)', (done) => {
     var firstName = 'not set yet';
     var lastName = 'not set yet';
 
-      givenAValidUserExists().then(() => {
-        loginAdmin().url(helper.paceUrl+'admin/participants')
+    givenAValidUserExists().then(() => {
+      loginAdmin().url(helper.paceUrl + 'admin/participants')
         .getText('.first-name')
         .then(function (firstNames) {
           firstName = _.isArray(firstNames) ? firstNames[0] : firstNames;
@@ -138,6 +138,6 @@ describe('admin page', () => {
           expect(value).toBe(lastName);
         })
         .end(done);
-      });
     });
+  });
 });

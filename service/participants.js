@@ -40,9 +40,20 @@ service.getPubliclyVisible = function () {
   );
 };
 
-service.save = function (participant, paymentToken, secureID, start_number) {
+service.save = function (participant) {
   return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id',
-    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, participant.discount, paymentToken, secureID, start_number]);
+    [participant.firstname, 
+     participant.lastname, 
+     participant.email, 
+     participant.category, 
+     participant.birthyear, 
+     participant.team, 
+     participant.visibility, 
+     participant.discount, 
+     participant.paymentToken, 
+     participant.secureID,
+     participant.start_number]
+  );
 };
 
 service.delete = function (participantid) {
@@ -100,29 +111,32 @@ service.register = function (participant) {
   const jade = require('jade');
 
   service.createUniqueToken().then((paymentToken) => {
-    const secureID = editUrlHelper.generateSecureID();
     startNumbers.next().then((nr) => {
-      service.save(participant, paymentToken, secureID, nr)
+      let p = participant
+        .withToken(paymentToken)
+        .withSecureId(editUrlHelper.generateSecureID())
+        .withStartNr(nr);
+      service.save(p)
         .then(id => {
-          if (!_.isEmpty(participant.tshirt)) {
-            service.addTShirt(participant.tshirt, id);
+          if (!_.isEmpty(p.tshirt)) {
+            service.addTShirt(p.tshirt, id);
           }
 
           jade.renderFile('views/registration/text.jade',
             {
-              name: participant.firstname,
+              name: p.firstname,
               token: paymentToken,
               bank: config.get('contact.bank'),
-              amount: calculator.priceFor(participant),
-              editUrl: editUrlHelper.generateUrl(secureID),
-              startnr: nr
+              amount: calculator.priceFor(p),
+              editUrl: editUrlHelper.generateUrl(p.secureID),
+              startnr: p.start_number
             },
             (error, html) => {
-              service.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
+              service.sendEmail(p.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
             }
           );
 
-          deferred.resolve({'id': id, 'token': paymentToken, secureid: secureID, startnr: nr});
+          deferred.resolve({'id': id, 'token': paymentToken, secureid: p.secureID, startnr: p.start_number});
         })
         .fail(err => deferred.reject(err));
     });
@@ -231,7 +245,7 @@ service.sendStatusEmail = function (participant,subject,jadefile) {
     {name: participant.firstname, editUrl: editUrlHelper.generateUrl(participant.secureid)},
     (error, html) =>
        service.sendEmail(participant.email, subject, html, error)
-    )
+    );
 };
 
 
@@ -250,5 +264,5 @@ service.sendEmail = function (address, subject, text, error) {
     });
   }
 };
-
+//split into multiple services  TOOD
 module.exports = service;

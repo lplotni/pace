@@ -24,7 +24,8 @@ participant.from = function (body) {
   if (invalidData(body)) {
     throw new TypeError('Required attributes are not present');
   }
-  return {
+  
+  let p = {
     firstname: body.firstname,
     lastname: body.lastname,
     email: body.email,
@@ -35,7 +36,24 @@ participant.from = function (body) {
     team: body.team,
     tshirt: tshirt.from(body)
   };
-
+  
+  p.with = function (property) {
+    return _.assignIn(p, property);
+  };
+  
+  p.withStartNr = (nr) => {
+   return p.with({start_number: nr});
+  };
+  
+  p.withToken = (token) => {
+   return p.with({paymentToken: token});
+  };
+  
+  p.withSecureId = (id) => {
+   return p.with({secureID: id});
+  };
+  
+  return p;
 };
 
 participant.addTshirtDetailsTo = function (participant) {

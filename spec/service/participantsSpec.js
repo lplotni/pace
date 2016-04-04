@@ -5,6 +5,7 @@
 const mockery = require('mockery');
 const Q = require('q');
 const editUrlHelper = require('../../domain/editUrlHelper');
+const participant = require('../../domain/participant');
 
 const secureId = 'secureId';
 
@@ -107,7 +108,7 @@ describe('participants service', () => {
     describe('register', () => {
 
       it('passes the newly generated secureId in the DB', (done) => {
-        const aParticipant = {
+        const aParticipant = participant.from({
           firstname: 'Hertha',
           lastname: 'Mustermann',
           email: 'h.mustermann@example.com',
@@ -115,7 +116,7 @@ describe('participants service', () => {
           birthyear: 1980,
           visibility: 'yes',
           team: 'Crazy runners'
-        };
+        });
 
         editUrlHelperMock.generateSecureID.and.returnValue(secureId);
         startNumbersMock.next.and.returnValue(Q.fcall(() => [10]));
@@ -131,7 +132,7 @@ describe('participants service', () => {
     });
 
     it('passes the newly generated start_number in the DB', (done) => {
-      const aParticipant = {
+      const aParticipant = participant.from({
         firstname: 'Hertha',
         lastname: 'Mustermann',
         email: 'h.mustermann@example.com',
@@ -139,7 +140,7 @@ describe('participants service', () => {
         birthyear: 1980,
         visibility: 'yes',
         team: 'Crazy runners'
-      };
+      });
 
       editUrlHelperMock.generateSecureID.and.returnValue(secureId);
       startNumbersMock.next.and.returnValue(Q.fcall(() => 10));

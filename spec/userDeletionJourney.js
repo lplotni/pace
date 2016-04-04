@@ -4,6 +4,7 @@
 'use strict';
 
 const participants = require('../service/participants');
+const participant = require('../domain/participant');
 const pg = require('pg');
 const helper = require('./journeyHelper');
 const config = require('config');
@@ -18,9 +19,9 @@ describe('user deletion journey', () => {
     helper.setupDbConnection(done);
   });
 
-  afterAll(() => {
+  afterAll((done) => {
     helper.resetToOriginalTimeout();
-    pg.end();
+    helper.closeDbConnection(done);
   });
 
   describe('when logged in', () => {
@@ -34,16 +35,18 @@ describe('user deletion journey', () => {
     });
 
     it('allows to delete a participant', (done) => {
-      let aParticipant = {
+      let aParticipant = participant.from({
         firstname: 'Johann-Wolfgang',
         lastname: 'von Goethe',
-        email: 'jvg@example.com'
-      };
-      let aToken = 'GLSKDJ';
-      let secureId= 'secureId';
-      let startNr= 100;
+        email: 'jvg@example.com',
+        category: 'f',
+        birthyear: 1980,
+        team: 'Crazy runners',
+        visibility: 'yes',
+        discount: 'no'
+      }).withToken('GLSKDJ').withSecureId('secureId').withStartNr(100);
 
-      participants.save(aParticipant, aToken, secureId, startNr)
+      participants.save(aParticipant)
         .then(() => {
           loggedInClient.url(participantsListUrl)
             .isVisible('td=Johann-Wolfgang')
@@ -55,7 +58,7 @@ describe('user deletion journey', () => {
             .then(function (isVisible) {
               expect(isVisible).toBe(false);
             })
-           .end(done);
+            .end(done);
         });
     });
   });

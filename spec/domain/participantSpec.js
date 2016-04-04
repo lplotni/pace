@@ -10,21 +10,21 @@ describe('participant', () => {
 
   const _ = require('lodash');
   const participant = require('../../domain/participant.js');
+  const body = {
+    firstname: 'Mark',
+    lastname: 'Mueller',
+    email: 'm.mueller@example.com',
+    category: 'Unicorn',
+    birthyear: 1980,
+    team: 'Crazy runners',
+    visibility: 'public',
+    discount: 'yes',
+    shirt: 'Yes',
+    model: 'Normal fit',
+    size: 'M'
+  };
 
   describe('from()', () => {
-    const body = {
-      firstname: 'Mark',
-      lastname: 'Mueller',
-      email: 'm.mueller@example.com',
-      category: 'Unicorn',
-      birthyear: 1980,
-      team: 'Crazy runners',
-      visibility: 'public',
-      discount: 'yes',
-      shirt: 'Yes',
-      model: 'Normal fit',
-      size: 'M'
-    };
     const invalid_email_body = {
       firstname: 'Mark',
       lastname: 'Mueller',
@@ -38,7 +38,6 @@ describe('participant', () => {
       model: 'Normal fit',
       size: 'M'
     };
-
 
     it('should extract firstname from the request body', () => {
       expect(participant.from(body).firstname).toBe('Mark');
@@ -125,7 +124,7 @@ describe('participant', () => {
       expect(participant.from(body).visibility).toBe('public');
     });
 
-    it('should throw an error if no visibility can be found', function() {
+    it('should throw an error if no visibility can be found', function () {
       function callWithNoVisibility() {
         participant.from(_.omit(body, 'visibility'));
       }
@@ -134,27 +133,30 @@ describe('participant', () => {
     });
 
     it('should extract discount from the request body', () => {
-     expect(participant.from(body).discount).toBe('yes');
+      expect(participant.from(body).discount).toBe('yes');
     });
 
-    it('should not throw an error if no discount can be found, but use NO instead', function() {
+    it('should not throw an error if no discount can be found, but use NO instead', function () {
       var bodyWithoutDiscout = _.omit(body, 'discount');
       expect(participant.from(bodyWithoutDiscout).discount).toBe('no');
     });
   });
 
-  describe('addTshirtDetailsTo', () => {
+  describe('addTshirtDetailsTo()', () => {
 
     let participant, participantsMock;
 
-    let returnPromiseAndResolveWith = function(data) {
+    let returnPromiseAndResolveWith = function (data) {
       function successResolve() {
-        return Q.fcall(function() { return data;});
+        return Q.fcall(function () {
+          return data;
+        });
       }
+
       return successResolve;
     };
 
-    let setupMocks = function() {
+    let setupMocks = function () {
 
       mockery.enable({
         useCleanCache: true,
@@ -212,5 +214,32 @@ describe('participant', () => {
         done();
       });
     });
+  });
+
+  describe('with()', () => {
+
+    const p = participant.from({
+      firstname: 'Mark',
+      lastname: 'Mueller',
+      email: 'm.mueller@example.com',
+      category: 'Unicorn',
+      birthyear: 1980,
+      team: 'Crazy runners',
+      visibility: 'public',
+      discount: 'yes',
+      shirt: 'Yes',
+      model: 'Normal fit',
+      size: 'M'
+    });
+
+    it('adds the property to the participant', () => {
+      let pWithNewProperty = p.with({paymentToken: 'token'}).with({otherProperty: 'x'});
+
+      expect(pWithNewProperty.paymentToken).toBe('token');
+      expect(pWithNewProperty.otherProperty).toBe('x');
+      expect(pWithNewProperty.firstname).toBe('Mark');
+      expect(pWithNewProperty.tshirt).toBe(p.tshirt);
+    });
+
   });
 });

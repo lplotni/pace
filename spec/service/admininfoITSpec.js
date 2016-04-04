@@ -6,43 +6,39 @@
 describe('admin service', () => {
 
   const participants = require('../../service/participants');
+  const participant = require('../../domain/participant');
   const admininfo = require('../../service/admininfo');
   const pg = require('pg');
   let helper = require('../journeyHelper');
 
-  const aParticipant = {
+  let startNr = 42;
+  const aParticipant = participant.from({
     firstname: 'Hertha',
     lastname: 'Mustermann',
     email: 'h.mustermann@example.com',
     category: 'Unicorn',
     birthyear: 1980,
     visibility: 'yes',
-    discount:'no',
+    discount: 'no',
     team: 'Crazy runners',
-    tshirt: {
-        size: 'XS',
-        model: 'Normal Fit'
-    }
-  };
-
-  const secureId = 'soecure_id';
-  let startNr = 42;
-  const paymentToken = 'atoken';
+    shirt: 'yes',
+    size: 'XS',
+    model: 'Normal Fit'
+  }).withSecureId('secure_id').withToken('atoken');
 
   beforeEach((done) => {
     helper.setupDbConnection(done);
   });
 
   afterAll((done) => {
-    pg.end();
-    done();
+    helper.closeDbConnection(done);
   });
 
   it('should count shirt orders', (done) => {
-    participants.save(aParticipant, paymentToken, secureId, startNr++)
+    participants.save(aParticipant.withStartNr(startNr++))
       .then(function (participantId) {
         participants.confirmParticipant(participantId)
-          .then(function() {
+          .then(function () {
             participants.addTShirt(aParticipant.tshirt, participantId)
               .then(() => {
                 admininfo.getShirtOrders()
@@ -59,12 +55,12 @@ describe('admin service', () => {
   });
 
   it('should count confirmed participants', (done) => {
-    participants.save(aParticipant, paymentToken, secureId, startNr++)
+    participants.save(aParticipant.withStartNr(startNr++))
       .then(function (participantId) {
         participants.confirmParticipant(participantId)
-          .then(function() {
+          .then(function () {
             admininfo.getConfirmedParticipants()
-              .then(function(data){
+              .then(function (data) {
                 expect(data[0].count).toBe('1'); // There is just 1 participant - why should it be 5?
                 done();
               });
@@ -74,4 +70,5 @@ describe('admin service', () => {
   });
 
 
-});
+})
+;

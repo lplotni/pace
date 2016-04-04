@@ -3,10 +3,11 @@
 /* global describe, beforeAll, beforeEach, afterEach, it, expect */
 'use strict';
 
-let helper = require('./journeyHelper');
-let pg = require('pg');
-let participants = require('../service/participants');
-let editUrlHelper = require('../domain/editUrlHelper');
+const helper = require('./journeyHelper');
+const pg = require('pg');
+const participants = require('../service/participants');
+const participant = require('../domain/participant');
+const editUrlHelper = require('../domain/editUrlHelper');
 
 describe('edit participant journey', () => {
 
@@ -23,23 +24,21 @@ describe('edit participant journey', () => {
   });
 
   it('allows to edit a participant', (done) => {
-    let aParticipant = {
+    let aParticipant = participant.from({
       firstname: 'Friedrich',
       lastname: 'Schiller',
       email: 'f.schiller@example.com',
       category: 'f',
       birthyear: 1980,
       team: 'Crazy runners',
-      visibility: 'no'
-    };
-    let aToken = '23eF67i';
-    let startNr = 42;
-    let secureid = editUrlHelper.generateSecureID();
+      visibility: 'no',
+      discount: 'yes'
+    }).withToken('23eF67i').withStartNr(42).withSecureId(editUrlHelper.generateSecureID());
 
-    participants.save(aParticipant, aToken, secureid, startNr)
+    participants.save(aParticipant)
       .then(() => {
         helper.setUpClient()
-          .url(editParticipantUrl + '/' + secureid)
+          .url(editParticipantUrl + '/' + aParticipant.secureID)
           .isVisible('form#editParticipantForm')
           .then(function (isVisible) {
             expect(isVisible).toBe(true);

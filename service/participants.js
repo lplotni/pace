@@ -5,18 +5,15 @@
 const crypto = require('crypto');
 const Q = require('q');
 const _ = require('lodash');
-const nodemailer = require('nodemailer');
-const sendmailTransport = require('nodemailer-sendmail-transport');
 const config = require('config');
 const calculator = require('../domain/costCalculator');
 const db = require('../service/dbHelper');
 
 const editUrlHelper = require('../domain/editUrlHelper');
 const startNumbers = require('../service/startNumbers');
+const mails = require('../service/mails');
 
 let service = {};
-
-service._nodemailer = nodemailer;
 
 service.getAllWithPaymentStatus = function (paymentStatus) {
   if (typeof paymentStatus !== 'undefined') {
@@ -132,7 +129,7 @@ service.register = function (participant) {
               startnr: p.start_number
             },
             (error, html) => {
-              service.sendEmail(p.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
+              mails.sendEmail(p.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
             }
           );
 
@@ -212,7 +209,7 @@ service.confirmParticipant = function (participantId) {
           jade.renderFile('views/admin/paymentValidation/text.jade',
             {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},
             (error, html) =>
-              service.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
+              mails.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
           );
           deferred.resolve();
         });
@@ -225,44 +222,21 @@ service.confirmParticipant = function (participantId) {
 
 service.bulkmail = function() {
   const deferred = Q.defer();
+
   service.getConfirmed().then(confirmed => {
     service.getRegistered().then(unconfirmed => {
       _.forEach(confirmed, participant => {
-        service.sendStatusEmail(participant,'hallo','views/participants/bulkmail.jade');
+        mails.sendStatusEmail(participant,'hallo','views/participants/bulkmail.jade');
       });
       _.forEach(unconfirmed, participant => {
-        service.sendStatusEmail(participant,'hallo','views/participants/bulkmail.jade');
+        mails.sendStatusEmail(participant,'hallo','views/participants/bulkmail.jade');
       });
       deferred.resolve();
     });
-  });
+  }).fail(deferred.reject);
+
   return deferred.promise;
 };
 
-service.sendStatusEmail = function (participant,subject,jadefile) {
-  const jade = require('jade');
-  jade.renderFile(jadefile,
-    {name: participant.firstname, editUrl: editUrlHelper.generateUrl(participant.secureid)},
-    (error, html) =>
-       service.sendEmail(participant.email, subject, html, error)
-    );
-};
-
-
-service.sendEmail = function (address, subject, text, error) {
-  if (error) {
-    console.error(error);
-  } else {
-    let transporter = service._nodemailer.createTransport(sendmailTransport({
-      path: '/usr/sbin/sendmail'
-    }));
-    transporter.sendMail({
-      from: config.get('contact.email'),
-      to: address,
-      subject: subject,
-      html: text
-    });
-  }
-};
 //split into multiple services  TOOD
 module.exports = service;

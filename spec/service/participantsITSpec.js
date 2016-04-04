@@ -6,9 +6,9 @@
 describe('participants service', () => {
 
   const participants = require('../../service/participants');
+  const mails = require('../../service/mails');
   const participant = require('../../domain/participant');
-  const pg = require('pg');
-  let helper = require('../journeyHelper');
+  const helper = require('../journeyHelper');
 
   let startNr = 30;
 
@@ -155,7 +155,7 @@ describe('participants service', () => {
   describe('confirmParticipant', () => {
     it('should mark the participant as payed and send a confirmation mail which includes the edit link', (done) => {
       spyOn(participants, 'markPayed').and.callThrough();
-      spyOn(participants, 'sendEmail');
+      spyOn(mails, 'sendEmail');
 
       participants.save(aParticipant.withStartNr(startNr++))
         .then(function (participantId) {
@@ -163,12 +163,12 @@ describe('participants service', () => {
             .then(() => {
               expect(participants.markPayed).toHaveBeenCalledWith(participantId);
 
-              expect(participants.sendEmail).toHaveBeenCalled();
-              let partcipantsEmail = participants.sendEmail.calls.mostRecent().args[0];
+              expect(mails.sendEmail).toHaveBeenCalled();
+              let partcipantsEmail = mails.sendEmail.calls.mostRecent().args[0];
               expect(partcipantsEmail).toBe(aParticipant.email);
-              let subject = participants.sendEmail.calls.mostRecent().args[1];
+              let subject = mails.sendEmail.calls.mostRecent().args[1];
               expect(subject).toBe('Lauf gegen Rechts: Zahlung erhalten');
-              let content = participants.sendEmail.calls.mostRecent().args[2];
+              let content = mails.sendEmail.calls.mostRecent().args[2];
               expect(content).toMatch(aParticipant.firstname);
               expect(content).toMatch(/eingegangen/);
               expect(content).toMatch(secureId);
@@ -228,7 +228,7 @@ describe('participants service', () => {
   describe('registration', () => {
     it('should save the participant and send confirmation email', (done) => {
       spyOn(participants, 'save').and.callThrough();
-      spyOn(participants, 'sendEmail');
+      spyOn(mails, 'sendEmail');
       spyOn(participants, 'addTShirt');
 
       const p = participant.from({
@@ -252,15 +252,15 @@ describe('participants service', () => {
           expect(participant.secureID).toBe(result.secureid);
           expect(participant.start_number).toBe(result.startnr);
 
-          expect(participants.sendEmail).toHaveBeenCalled();
+          expect(mails.sendEmail).toHaveBeenCalled();
 
-          let participantsEmail = participants.sendEmail.calls.mostRecent().args[0];
+          let participantsEmail = mails.sendEmail.calls.mostRecent().args[0];
           expect(participantsEmail).toBe(p.email);
 
-          let subject = participants.sendEmail.calls.mostRecent().args[1];
+          let subject = mails.sendEmail.calls.mostRecent().args[1];
           expect(subject).toBe('Lauf Gegen Rechts: Registrierung erfolgreich');
 
-          let content = participants.sendEmail.calls.mostRecent().args[2];
+          let content = mails.sendEmail.calls.mostRecent().args[2];
           expect(content).toMatch(/Danke/);
 
           expect(participants.addTShirt).not.toHaveBeenCalled();
@@ -367,16 +367,16 @@ describe('participants service', () => {
 
   describe('bulkmail', () => {
     it('should send the correct email to every participant', (done) => {
-      spyOn(participants, 'sendEmail');
-      spyOn(participants, 'sendStatusEmail').and.callThrough();
+      spyOn(mails, 'sendEmail');
+      spyOn(mails, 'sendStatusEmail').and.callThrough();
       participants.save(aParticipant.withStartNr(startNr++))
         .then(participants.markPayed)
         .then(participants.save(aSecondParticipant.withToken('tokenYY').withStartNr(startNr++)))
         .then(participants.bulkmail)
         .then(() => {
-          expect(participants.sendEmail).toHaveBeenCalledTimes(2);
-          expect(participants.sendStatusEmail).toHaveBeenCalledTimes(2);
-          let content = participants.sendEmail.calls.mostRecent().args[2];
+          expect(mails.sendEmail).toHaveBeenCalledTimes(2);
+          expect(mails.sendStatusEmail).toHaveBeenCalledTimes(2);
+          let content = mails.sendEmail.calls.mostRecent().args[2];
           expect(content).toMatch(/Startnummer/);
           done();
         })

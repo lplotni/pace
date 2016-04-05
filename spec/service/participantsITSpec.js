@@ -6,7 +6,7 @@
 describe('participants service', () => {
 
   const participants = require('../../service/participants');
-  const mails = require('../../service/mails');
+  const mails = require('../../service/util/mails');
   const participant = require('../../domain/participant');
   const helper = require('../journeyHelper');
 

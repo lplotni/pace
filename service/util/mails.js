@@ -6,7 +6,7 @@ const sendmailTransport = require('nodemailer-sendmail-transport');
 const config = require('config');
 const jade = require('jade');
 
-const editUrlHelper = require('../domain/editUrlHelper');
+const editUrlHelper = require('../../domain/editUrlHelper');
 
 let service = {};
 service._nodemailer = nodemailer;

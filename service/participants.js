@@ -11,7 +11,7 @@ const db = require('../service/util/dbHelper');
 
 const editUrlHelper = require('../domain/editUrlHelper');
 const startNumbers = require('../service/startNumbers');
-const mails = require('../service/mails');
+const mails = require('../service/util/mails');
 
 let service = {};
 

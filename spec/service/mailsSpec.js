@@ -10,7 +10,7 @@ describe('mails service', () => {
   let realNodeMailer;
 
   beforeEach(() => {
-      service = require('../../service/mails');
+      service = require('../../service/../service/util/mails');
       realNodeMailer = service._nodemailer;
       service._nodemailer = {
         createTransport: () => {

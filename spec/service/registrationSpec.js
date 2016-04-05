@@ -49,12 +49,31 @@ describe('registration service', () => {
       mockery.registerMock('jade', jadeMock);
       mockery.registerMock('config', configMock);
 
-      mockery.registerAllowables(['q', '../../service/editUrlHelper', '../../service/participants', '../../service/startNumbers', 'jade', 'config']);
+
+      let dbMock = {
+        save: jasmine.createSpy(),
+        insert: jasmine.createSpy()
+      };
+
+      let tokensMock = {
+        createUniqueToken: jasmine.createSpy()
+      };
+
+      let mailsMock = {
+        sendEmail: jasmine.createSpy(),
+        sendStatusEmail: jasmine.createSpy()
+      };
+
+      mockery.registerMock('../service/util/dbHelper', dbMock);
+      mockery.registerMock('..../service/util/mails', mailsMock);
+      mockery.registerMock('../service/tokens', tokensMock);
+
+      mockery.registerAllowables(['q','lodash','../domain/costCalculator','../../service/registration']);
 
       registration = require('../../service/registration');
 
       editUrlHelperMock.generateSecureID.and.returnValue(secureId);
-      participantsMock.createUniqueToken.and.returnValue(Q.fcall(() => 'uniqueToken'));
+      tokensMock.createUniqueToken.and.returnValue(Q.fcall(() => 'uniqueToken'));
       participantsMock.save.and.returnValue(Q.fcall(() => 10));
       startNumbersMock.next.and.returnValue(Q.fcall(() => 1));
     });

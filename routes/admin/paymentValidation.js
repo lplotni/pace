@@ -3,7 +3,7 @@
 'use strict';
 
 const router = require('express').Router();
-const participants = require('../../service/participants');
+const registration = require('../../service/registration');
 const accesscontrol = require('../../acl/accesscontrol');
 const isAuthenticated = require('../../acl/authentication');
 
@@ -13,7 +13,7 @@ let canConfirmPayments = function (role) {
 
 router.post('/confirm', isAuthenticated, (req, res) => {
   if (canConfirmPayments(req.user.role)) {
-    participants.confirmParticipant(req.body.participantid)
+    registration.confirm(req.body.participantid)
       .then(() => res.redirect(req.get('referer')))
       .catch(() =>
         res.render('error', {

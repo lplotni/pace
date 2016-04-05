@@ -152,46 +152,6 @@ describe('participants service', () => {
     });
   });
 
-  describe('confirmParticipant', () => {
-    it('should mark the participant as payed and send a confirmation mail which includes the edit link', (done) => {
-      spyOn(participants, 'markPayed').and.callThrough();
-      spyOn(mails, 'sendEmail');
-
-      participants.save(aParticipant.withStartNr(startNr++))
-        .then(function (participantId) {
-          participants.confirmParticipant(participantId)
-            .then(() => {
-              expect(participants.markPayed).toHaveBeenCalledWith(participantId);
-
-              expect(mails.sendEmail).toHaveBeenCalled();
-              let partcipantsEmail = mails.sendEmail.calls.mostRecent().args[0];
-              expect(partcipantsEmail).toBe(aParticipant.email);
-              let subject = mails.sendEmail.calls.mostRecent().args[1];
-              expect(subject).toBe('Lauf gegen Rechts: Zahlung erhalten');
-              let content = mails.sendEmail.calls.mostRecent().args[2];
-              expect(content).toMatch(aParticipant.firstname);
-              expect(content).toMatch(/eingegangen/);
-              expect(content).toMatch(secureId);
-
-              done();
-            })
-            .fail(fail);
-        });
-    });
-
-    it('should give error if ID is invalid', (done) => {
-      let wrongId = '999';
-
-      participants.save(aParticipant.withStartNr(startNr++))
-        .then(() => {
-          participants.confirmParticipant(wrongId)
-            .catch(() => {
-              done();
-            });
-        });
-    });
-  });
-
   describe('delete', () => {
     it('should delete a user', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
@@ -225,74 +185,7 @@ describe('participants service', () => {
     });
   });
 
-  describe('registration', () => {
-    it('should save the participant and send confirmation email', (done) => {
-      spyOn(participants, 'save').and.callThrough();
-      spyOn(mails, 'sendEmail');
-      spyOn(participants, 'addTShirt');
-
-      const p = participant.from({
-        firstname: 'Hertha',
-        lastname: 'Mustermann',
-        email: 'h.mustermann@example.com',
-        category: 'Unicorn',
-        birthyear: 1980,
-        visibility: 'yes',
-        discount: 'no',
-        team: 'Crazy runners'
-      });
-
-      participants.register(p)
-        .then((result) => {
-          expect(participants.save).toHaveBeenCalled();
-
-          let participant = participants.save.calls.mostRecent().args[0];
-          expect(participant.firstname).toBe(p.firstname);
-          expect(participant.paymentToken).toBe(result.token);
-          expect(participant.secureID).toBe(result.secureid);
-          expect(participant.start_number).toBe(result.startnr);
-
-          expect(mails.sendEmail).toHaveBeenCalled();
-
-          let participantsEmail = mails.sendEmail.calls.mostRecent().args[0];
-          expect(participantsEmail).toBe(p.email);
-
-          let subject = mails.sendEmail.calls.mostRecent().args[1];
-          expect(subject).toBe('Lauf Gegen Rechts: Registrierung erfolgreich');
-
-          let content = mails.sendEmail.calls.mostRecent().args[2];
-          expect(content).toMatch(/Danke/);
-
-          expect(participants.addTShirt).not.toHaveBeenCalled();
-          done();
-        })
-        .fail(fail);
-    });
-
-    it('should call addTShirt if one ordered', (done) => {
-      spyOn(participants, 'addTShirt');
-
-      const pWithShirt = participant.from({
-        firstname: 'Hertha',
-        lastname: 'Mustermann',
-        email: 'h.mustermann@example.com',
-        birthyear: 1980,
-        category: 'Horse',
-        visibility: 'yes',
-        discount: 'no',
-        shirt: 'yes',
-        size: 'XS',
-        model: 'Crazy cool fit'
-      });
-
-      participants.register(pWithShirt)
-        .then(() => {
-          expect(participants.addTShirt).toHaveBeenCalled();
-          done();
-        })
-        .fail(fail);
-    });
-  });
+  
 
   describe('addTShirt', () => {
     it('stores tshirt', (done) => {

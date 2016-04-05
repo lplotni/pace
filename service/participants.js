@@ -2,15 +2,11 @@
 /* jshint esnext: true */
 'use strict';
 
-const crypto = require('crypto');
 const Q = require('q');
 const _ = require('lodash');
-const config = require('config');
+
 const calculator = require('../domain/costCalculator');
 const db = require('../service/util/dbHelper');
-
-const editUrlHelper = require('../domain/editUrlHelper');
-const startNumbers = require('../service/startNumbers');
 const mails = require('../service/util/mails');
 
 let service = {};
@@ -77,72 +73,6 @@ service.getTShirtFor = function (participantId) {
   return db.select('SELECT * FROM tshirts WHERE participantid = $1', [participantId]);
 };
 
-function randomString() {
-  let text = "";
-  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  for (let i = 0; i < 5; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
-}
-
-service.createUniqueToken = function () {
-  const deferred = Q.defer();
-  const token = randomString();
-
-  db.select('select * from participants where paymenttoken like $1', [token])
-    .then((result) => {
-      if (_.isEmpty(result)) {
-        deferred.resolve(token);
-      } else {
-        return deferred.resolve(service.createUniqueToken());
-      }
-    })
-    .catch(deferred.reject);
-
-  return deferred.promise;
-};
-
-service.register = function (participant) {
-  const deferred = Q.defer();
-  const jade = require('jade');
-
-  service.createUniqueToken().then((paymentToken) => {
-    startNumbers.next().then((nr) => {
-      let p = participant
-        .withToken(paymentToken)
-        .withSecureId(editUrlHelper.generateSecureID())
-        .withStartNr(nr);
-      service.save(p)
-        .then(id => {
-          if (!_.isEmpty(p.tshirt)) {
-            service.addTShirt(p.tshirt, id);
-          }
-
-          jade.renderFile('views/registration/text.jade',
-            {
-              name: p.firstname,
-              token: paymentToken,
-              bank: config.get('contact.bank'),
-              amount: calculator.priceFor(p),
-              editUrl: editUrlHelper.generateUrl(p.secureID),
-              startnr: p.start_number
-            },
-            (error, html) => {
-              mails.sendEmail(p.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
-            }
-          );
-
-          deferred.resolve({'id': id, 'token': paymentToken, secureid: p.secureID, startnr: p.start_number});
-        })
-        .fail(err => deferred.reject(err));
-    });
-
-  }).fail(deferred.reject);
-
-  return deferred.promise;
-};
-
 service.getByToken = function (paymentToken) {
   return db.select('SELECT id, firstname, lastname FROM participants WHERE upper(paymenttoken) = $1', [paymentToken.toUpperCase()])
     .then(result => {
@@ -199,27 +129,6 @@ service.markPayed = function (participantId) {
     });
 };
 
-service.confirmParticipant = function (participantId) {
-  const deferred = Q.defer();
-  const jade = require('jade');
-  service.markPayed(participantId)
-    .then(() => {
-      service.getById(participantId)
-        .then(result => {
-          jade.renderFile('views/admin/paymentValidation/text.jade',
-            {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},
-            (error, html) =>
-              mails.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
-          );
-          deferred.resolve();
-        });
-    })
-    .fail(err =>
-      deferred.reject(err)
-    );
-  return deferred.promise;
-};
-
 service.bulkmail = function() {
   const deferred = Q.defer();
 
@@ -238,5 +147,4 @@ service.bulkmail = function() {
   return deferred.promise;
 };
 
-//split into multiple services  TOOD
 module.exports = service;

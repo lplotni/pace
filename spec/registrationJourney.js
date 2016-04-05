@@ -1,6 +1,6 @@
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeAll, beforeEach, afterEach, afterAll, it, expect */
+/* global describe, beforeAll, beforeEach, afterEach, afterAll, xit, it, expect */
 'use strict';
 
 const helper = require('./journeyHelper');
@@ -43,7 +43,7 @@ describe('registration journey', () => {
   //   }
   // });
 
-  it('allows to register via the registration page', (done) => {
+  it('allows to start via the registration page', (done) => {
     client.url(helper.paceUrl)
       .click('a#registration')
       .isVisible('form#registrationForm')

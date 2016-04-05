@@ -5,6 +5,7 @@
 
 describe('admin service', () => {
 
+  const registration = require('../../service/registration');
   const participants = require('../../service/participants');
   const participant = require('../../domain/participant');
   const admininfo = require('../../service/admininfo');
@@ -37,7 +38,7 @@ describe('admin service', () => {
   it('should count shirt orders', (done) => {
     participants.save(aParticipant.withStartNr(startNr++))
       .then(function (participantId) {
-        participants.confirmParticipant(participantId)
+        registration.confirm(participantId)
           .then(function () {
             participants.addTShirt(aParticipant.tshirt, participantId)
               .then(() => {
@@ -57,7 +58,7 @@ describe('admin service', () => {
   it('should count confirmed participants', (done) => {
     participants.save(aParticipant.withStartNr(startNr++))
       .then(function (participantId) {
-        participants.confirmParticipant(participantId)
+        registration.confirm(participantId)
           .then(function () {
             admininfo.getConfirmedParticipants()
               .then(function (data) {

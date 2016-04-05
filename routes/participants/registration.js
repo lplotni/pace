@@ -7,7 +7,6 @@ const express = require('express');
 const config = require('config');
 const router = express.Router();
 
-const participants = require('../../service/participants');
 const participant = require('../../domain/participant');
 const calculator = require('../../domain/costCalculator');
 const editUrlHelper = require('../../domain/editUrlHelper');
@@ -21,7 +20,7 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
   try {
     const newParticipant = participant.from(req.body);
-    participants.register(newParticipant)
+    registration.start(newParticipant)
       .done((result)  =>
         res.render('registration/success', {
           name: newParticipant.firstname + ' ' + newParticipant.lastname,

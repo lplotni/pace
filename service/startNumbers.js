@@ -1,7 +1,7 @@
 /* jshint node: true */
 /* jshint esnext: true */
 'use strict';
-const db = require('../service/dbHelper');
+const db = require('../service/util/dbHelper');
 const _ = require('lodash');
 
 let service = {};

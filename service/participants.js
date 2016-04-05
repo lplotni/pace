@@ -7,7 +7,7 @@ const Q = require('q');
 const _ = require('lodash');
 const config = require('config');
 const calculator = require('../domain/costCalculator');
-const db = require('../service/dbHelper');
+const db = require('../service/util/dbHelper');
 
 const editUrlHelper = require('../domain/editUrlHelper');
 const startNumbers = require('../service/startNumbers');

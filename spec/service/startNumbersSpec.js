@@ -22,8 +22,8 @@ describe('startNumbers service', () => {
       select: jasmine.createSpy()
     };
 
-    mockery.registerMock('../service/dbHelper', dbHelperMock);
-    mockery.registerAllowables(['../../service/dbHelper.js']);
+    mockery.registerMock('../service/util/dbHelper', dbHelperMock);
+    mockery.registerAllowables(['../../service/util/dbHelper.js']);
     startNumbers = require('../../service/startNumbers');
   });
 

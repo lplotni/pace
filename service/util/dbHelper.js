@@ -7,7 +7,6 @@ const Q = require('q');
 
 const connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace';
 
-
 let db = {};
 
 db.select = function (querystring, params) {

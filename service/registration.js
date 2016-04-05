@@ -2,7 +2,7 @@
 /* jshint esnext: true */
 'use strict';
 
-const db = require('../service/dbHelper');
+const db = require('../service/util/dbHelper');
 
 const registration = {};
 

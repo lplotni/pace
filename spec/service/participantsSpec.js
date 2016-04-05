@@ -45,13 +45,13 @@ describe('participants service', () => {
         get: jasmine.createSpy()
       };
 
-      mockery.registerMock('../service/dbHelper', dbHelperMock);
+      mockery.registerMock('../service/util/dbHelper', dbHelperMock);
       mockery.registerMock('../service/startNumbers', startNumbersMock);
       mockery.registerMock('../domain/editUrlHelper', editUrlHelperMock);
       mockery.registerMock('jade', jadeMock);
       mockery.registerMock('config', configMock);
 
-      mockery.registerAllowables(['q', '../../service/dbHelper.js', '../../service/editUrlHelper', '../../service/startNumbers', 'jade', 'config']);
+      mockery.registerAllowables(['q', '../../service/util/dbHelper.js', '../../service/editUrlHelper', '../../service/startNumbers', 'jade', 'config']);
       participants = require('../../service/participants');
       dbHelperMock.select.and.returnValue(Q.fcall(() => []));
       dbHelperMock.insert.and.returnValue(Q.fcall(() => 'some id'));

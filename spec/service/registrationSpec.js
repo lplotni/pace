@@ -50,7 +50,9 @@ describe('registration service', () => {
       mockery.registerMock('config', configMock);
 
       mockery.registerAllowables(['q', '../../service/editUrlHelper', '../../service/participants', '../../service/startNumbers', 'jade', 'config']);
+
       registration = require('../../service/registration');
+
       editUrlHelperMock.generateSecureID.and.returnValue(secureId);
       participantsMock.createUniqueToken.and.returnValue(Q.fcall(() => 'uniqueToken'));
       participantsMock.save.and.returnValue(Q.fcall(() => 10));
@@ -58,6 +60,7 @@ describe('registration service', () => {
     });
 
     afterAll(() => {
+      mockery.deregisterAll();
       mockery.disable();
     });
 

@@ -180,6 +180,7 @@ describe('participant', () => {
     });
 
     afterAll(() => {
+      mockery.deregisterAll();
       mockery.disable();
     });
 

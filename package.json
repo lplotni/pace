@@ -43,6 +43,6 @@
     "selenium-standalone": "^4.9.0",
     "webdriverio": "^3.2.6",
     "yargs": "^3.27.0",
-    "mockery": "^1.4.0"
+    "mockery": "^1.4.1"
   }
 }

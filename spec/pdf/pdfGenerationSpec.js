@@ -49,6 +49,7 @@ describe('pdfGeneration', () => {
   });
 
   afterAll(() => {
+    mockery.deregisterAll();
     mockery.disable();
   });
 

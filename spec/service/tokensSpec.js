@@ -34,6 +34,7 @@ describe('token service', () => {
     });
 
     afterAll(() => {
+      mockery.deregisterAll();
       mockery.disable();
     });
 

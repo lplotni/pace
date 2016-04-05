@@ -34,6 +34,7 @@ service.getPubliclyVisible = function () {
 };
 
 service.save = function (participant) {
+  console.log('p.save');
   return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id',
     [participant.firstname, 
      participant.lastname, 

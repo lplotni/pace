@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global jasmine, describe, it, expect, beforeEach, spyOn */
+/* global jasmine, describe, it, expect, beforeEach, afterAll, spyOn */
 
 const mockery = require('mockery');
 const Q = require('q');
@@ -46,6 +46,10 @@ describe('pdfGeneration', () => {
 
     participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [{ firstname: 'Bestaetigte', lastname: 'Person'}]));
     participantsMock.getRegistered.and.returnValue(Q.fcall(() => [{ firstname: 'Unbestaetigte', lastname: 'Person'}]));
+  });
+
+  afterAll(() => {
+    mockery.disable();
   });
 
   it('should generate a page for every participant', function (done) {

@@ -4,18 +4,19 @@
 
 const Q = require('q');
 const _ = require('lodash');
-const config = require('config');
+const jade = require('jade');
 
+const config = require('config');
 const calculator = require('../domain/costCalculator');
 const db = require('../service/util/dbHelper');
 const mails = require('../service/util/mails');
 const participants = require('../service/participants');
 const startNumbers = require('../service/startNumbers');
 const tokens = require('../service/tokens');
+
 const editUrlHelper = require('../domain/editUrlHelper');
 
 const registration = {};
-
 registration.isClosed = () => {
   return db.select("SELECT data->>'is_closed' as is_closed FROM registration;")
     .then( result => {
@@ -33,7 +34,7 @@ registration.reopen = () => {
 
 registration.confirm = function (participantId) {
   const deferred = Q.defer();
-  const jade = require('jade');
+
   participants.markPayed(participantId)
     .then(() => {
       participants.getById(participantId)
@@ -54,7 +55,6 @@ registration.confirm = function (participantId) {
 
 registration.start = function (participant) {
   const deferred = Q.defer();
-  const jade = require('jade');
 
   tokens.createUniqueToken().then((paymentToken) => {
     startNumbers.next().then((nr) => {
@@ -84,9 +84,8 @@ registration.start = function (participant) {
 
           deferred.resolve({'id': id, 'token': paymentToken, secureid: p.secureID, startnr: p.start_number});
         })
-        .fail(err => deferred.reject(err));
+        .fail(deferred.reject);
     });
-
   }).fail(deferred.reject);
 
   return deferred.promise;

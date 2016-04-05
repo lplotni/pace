@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global jasmine, describe, it, expect, beforeEach */
+/* global jasmine, describe, it, expect, afterAll, beforeEach */
 
 const mockery = require('mockery');
 const Q = require('q');
@@ -177,6 +177,10 @@ describe('participant', () => {
 
     beforeEach(() => {
       setupMocks();
+    });
+
+    afterAll(() => {
+      mockery.disable();
     });
 
     let anySize = 'M';

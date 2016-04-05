@@ -33,6 +33,10 @@ describe('token service', () => {
       dbHelperMock.insert.and.returnValue(Q.fcall(() => 'some id'));
     });
 
+    afterAll(() => {
+      mockery.disable();
+    });
+
     describe('createUniqueToken', () => {
       it('returns a string with 5 upper case characters', (done) => {
 

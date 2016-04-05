@@ -1,3 +1,8 @@
+/* jshint node: true */
+/* jshint esnext: true */
+'use strict';
+
+
 var gulp = require('gulp');
 var jasmine = require('gulp-jasmine');
 var jshint = require('gulp-jshint');
@@ -57,7 +62,7 @@ function startSelenium() {
   var deferred = Q.defer();
   selenium.start(function (err, child) {
     if (err) {
-      console.log(err)
+      console.log(err);
       deferred.reject(err);
     } else {
       selenium.child = child;
@@ -71,11 +76,19 @@ function startSelenium() {
 gulp.task('express', express);
 
 gulp.task('test', function () {
-  return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*Journey.js']).pipe(jasmine({verbose: true}));
+  if (argv.single) {
+    return gulp.src([argv.single]).pipe(jasmine({verbose: true}));
+  } else {
+    return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*Journey.js']).pipe(jasmine({verbose: true}));
+  }
 });
 
 gulp.task('test-integration', function () {
-  return gulp.src('spec/**/*IT*.js').pipe(jasmine({verbose: true}));
+  if (argv.single) {
+    return gulp.src([argv.single]).pipe(jasmine({verbose: true}));
+  } else {
+    return gulp.src('spec/**/*IT*.js').pipe(jasmine({verbose: true}));
+  }
 });
 
 gulp.task('selenium-install', function (done) {
@@ -84,9 +97,11 @@ gulp.task('selenium-install', function (done) {
       gutil.log(message);
     }
   }, function (err) {
-    if (err) gutil.log(err);
+    if (err) {
+      gutil.log(err);
+    }
     done();
-  })
+  });
 });
 
 gulp.task('test-functional', function () {
@@ -112,7 +127,7 @@ gulp.task('test-functional', function () {
         console.log(e);
         cleanUp(selenium, server, deferred.reject);
       });
-    })
+    });
   });
 });
 

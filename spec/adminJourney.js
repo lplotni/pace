@@ -1,6 +1,6 @@
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeAll, beforeEach, afterEach, afterAll, it, xit, expect */
+/* global describe, beforeAll, beforeEach, afterEach, afterAll, it, expect */
 'use strict';
 
 const helper = require('./journeyHelper');
@@ -33,16 +33,16 @@ describe('admin page', () => {
     helper.closeDbConnection(done);
   });
 
-  afterAll((done) => { //TODO re-anable (together with the test) as soon as we have postgres 9.5 on snap
-    // if (originalRegistrationStatus) {
-    //   registration.close().then( () => {
-    //     done();
-    //   });
-    // } else {
-    //   registration.reopen().then( () => {
-    //     done();
-    //   });
-    // }
+  afterAll((done) => {
+    if (originalRegistrationStatus) {
+      registration.close().then( () => {
+        done();
+      });
+    } else {
+      registration.reopen().then( () => {
+        done();
+      });
+    }
   });
 
   function loginAdmin() {
@@ -65,8 +65,8 @@ describe('admin page', () => {
       .end(done);
   });
 
-  xit('should close and reopen the registration', (done) => {
-    loginAdmin().url(helper.paceUrl + 'admin')
+  it('should close and reopen the registration', (done) => {
+    loginAdmin().url(helper.paceUrl+'admin')
       .click('button#close-registration')
       .isVisible('p#registration-closed-message')
       .then(function (isVisible) {

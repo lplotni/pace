@@ -14,8 +14,8 @@ describe('registration journey', () => {
   beforeAll((done) => {
     registration.isClosed().then(isClosed => {
       originalRegistrationStatus = isClosed;
-      if (isClosed) {
-        registration.reopen().then(() => {
+      if(isClosed) {
+        registration.reopen().then( () => {
           done();
         });
       } else {
@@ -32,16 +32,16 @@ describe('registration journey', () => {
   afterEach(() => {
     helper.resetToOriginalTimeout();
   });
-  //TODO re-anable (together with the test) as soon as we have postgres 9.5 on snap
-  // afterAll((done) => {
-  //   if (originalRegistrationStatus) {
-  //     registration.close().then( () => {
-  //       done();
-  //     });
-  //   } else {
-  //     done();
-  //   }
-  // });
+
+  afterAll((done) => {
+    if (originalRegistrationStatus) {
+      registration.close().then( () => {
+        done();
+      });
+    } else {
+      done();
+    }
+  });
 
   it('allows to start via the registration page', (done) => {
     client.url(helper.paceUrl)
@@ -77,20 +77,20 @@ describe('registration journey', () => {
       .end(done);
   });
 
-  xit('shows a message when the registration is closed', (done) => {
-    registration.close().then(() => {
+  it('shows a message when the registration is closed', (done) => {
+    registration.close().then( () => {
       helper.setUpClient().url(helper.paceUrl)
         .click('a#registration')
         .isVisible('form#registrationForm')
-        .then((isVisible) => {
+        .then( (isVisible) => {
           expect(isVisible).toBe(false);
         })
         .isVisible('p#registration-closed-message')
-        .then(function (isVisible) {
+        .then( function (isVisible) {
           expect(isVisible).toBe(true);
         })
-        .end().then(() => {
-        registration.reopen().then(() => {
+        .end().then( () => {
+        registration.reopen().then( () => {
           done();
         });
       });

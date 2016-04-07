@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeEach, beforeAll, afterAll, spyOn, xit, it, expect, fail */
+/* global describe, beforeEach, beforeAll, afterAll, spyOn, it, expect, fail */
 
 describe('registration', () => {
 
@@ -48,7 +48,7 @@ describe('registration', () => {
       helper.closeDbConnection(done);
     }
   });
-
+  
   describe('start()', () => {
     it('should save the participant and send confirmation email', (done) => {
       spyOn(participants, 'save').and.callThrough();
@@ -157,9 +157,8 @@ describe('registration', () => {
         }).fail(fail);
     });
   });
-
-  //TODO as soon as we can use postgres 9.5 on snap -> re-enable
-  xit('should close the registration', (done) => {
+  
+  it('should close the registration', (done) => {
     registration.close()
       .then(() => {
         registration.isClosed()

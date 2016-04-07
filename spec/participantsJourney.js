@@ -3,6 +3,7 @@
 /* global describe, beforeEach, beforeAll, afterAll, it, expect, fail */
 'use strict';
 
+const tshirts = require('../service/tshirts');
 const participants = require('../service/participants');
 const participant = require('../domain/participant');
 const editUrlHelper = require('../domain/editUrlHelper');
@@ -238,7 +239,7 @@ describe('participants page', () => {
 
       participants.save(aParticipant.withToken('h Token').withStartNr(751))
         .then(function (id) {
-          participants.addTShirt(tshirt, id);
+          tshirts.addTShirt(tshirt, id);
         })
         .then(function () {
           var loggedInClient = setUpLoggedInClient();

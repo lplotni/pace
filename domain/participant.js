@@ -5,6 +5,7 @@
 const _ = require('lodash');
 const validator = require('validator');
 const tshirt = require('./tshirt');
+const tshirts = require('../service/tshirts');
 const participants = require('../service/participants');
 
 const participant = {};
@@ -57,7 +58,7 @@ participant.from = function (body) {
 };
 
 participant.addTshirtDetailsTo = function (participant) {
-  return participants.getTShirtFor(participant.id)
+  return tshirts.getTShirtFor(participant.id)
     .then(tshirtDetails => {
       let tshirtAmount = tshirtDetails.length;
       if(tshirtAmount > 0) {

@@ -6,6 +6,7 @@
 describe('participants service', () => {
 
   const participants = require('../../service/participants');
+  const tshirts = require('../../service/tshirts');
   const mails = require('../../service/util/mails');
   const participant = require('../../domain/participant');
   const helper = require('../journeyHelper');
@@ -123,7 +124,7 @@ describe('participants service', () => {
     it('should return participant\'s lastname and firstname and ordered tshirt for a given token', (done) => {
       participants.save(aParticipantWithTshirt.withStartNr(startNr++))
         .then(function (participantId) {
-          participants.addTShirt(aParticipantWithTshirt.tshirt, participantId)
+          tshirts.addTShirt(aParticipantWithTshirt.tshirt, participantId)
             .then(() => {
               participants.getByToken(paymentToken)
                 .then(function (participant) {
@@ -182,26 +183,6 @@ describe('participants service', () => {
             });
           });
         });
-    });
-  });
-
-  
-
-  describe('addTShirt', () => {
-    it('stores tshirt', (done) => {
-      participants.save(aParticipant.withStartNr(startNr++))
-        .then((id) => {
-          participants.addTShirt({size: 'M', model: 'Skin fit'}, id)
-            .then(() => {
-              participants.getTShirtFor(id)
-                .then(function (shirts) {
-                  expect(shirts.length).toBe(1);
-                  done();
-                })
-                .fail(fail);
-            });
-        });
-
     });
   });
 

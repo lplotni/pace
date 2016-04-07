@@ -13,6 +13,7 @@ const mails = require('../service/util/mails');
 const participants = require('../service/participants');
 const startNumbers = require('../service/startNumbers');
 const tokens = require('../service/tokens');
+const tshirts = require('../service/tshirts');
 
 const editUrlHelper = require('../domain/editUrlHelper');
 
@@ -65,7 +66,7 @@ registration.start = function (participant) {
       participants.save(p)
         .then(id => {
           if (!_.isEmpty(p.tshirt)) {
-            participants.addTShirt(p.tshirt, id);
+            tshirts.addTShirt(p.tshirt, id);
           }
 
           jade.renderFile('views/registration/text.jade',

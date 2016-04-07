@@ -7,6 +7,7 @@ describe('admin service', () => {
 
   const registration = require('../../service/registration');
   const participants = require('../../service/participants');
+  const tshirts = require('../../service/tshirts');
   const participant = require('../../domain/participant');
   const admininfo = require('../../service/admininfo');
   const pg = require('pg');
@@ -40,7 +41,7 @@ describe('admin service', () => {
       .then(function (participantId) {
         registration.confirm(participantId)
           .then(function () {
-            participants.addTShirt(aParticipant.tshirt, participantId)
+            tshirts.addTShirt(aParticipant.tshirt, participantId)
               .then(() => {
                 admininfo.getShirtOrders()
                   .then(function (data) {

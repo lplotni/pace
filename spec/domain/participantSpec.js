@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global jasmine, describe, it, expect, afterAll, beforeEach */
+/* global jasmine, describe, it, expect, afterAll, beforeEach, fail */
 
 const mockery = require('mockery');
 const Q = require('q');
@@ -144,7 +144,7 @@ describe('participant', () => {
 
   describe('addTshirtDetailsTo()', () => {
 
-    let participant, participantsMock;
+    let participant, tshirtsMock;
 
     let returnPromiseAndResolveWith = function (data) {
       function successResolve() {
@@ -166,11 +166,11 @@ describe('participant', () => {
       mockery.resetCache();
       mockery.registerAllowables(['q', '../../domain/participant.js']);
 
-      participantsMock = {
+      tshirtsMock = {
         getTShirtFor: jasmine.createSpy()
       };
 
-      mockery.registerMock('../service/participants', participantsMock);
+      mockery.registerMock('../service/tshirts', tshirtsMock);
 
       participant = require('../../domain/participant.js');
     };
@@ -191,33 +191,33 @@ describe('participant', () => {
 
     it('should not add tshirt details if the participant did not order a tshirt', function (done) {
       let anyParticipant = {};
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([]));
+      tshirtsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([]));
 
       participant.addTshirtDetailsTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt).toBeUndefined();
         done();
-      });
+      }).fail(fail);
     });
 
     it('should add the tshirt details to a participant', function (done) {
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails]));
+      tshirtsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails]));
 
       participant.addTshirtDetailsTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt.amount).toBe(1);
         expect(anyParticipant.tshirt.details).toEqual([{size: anySize, model: anyModel}]);
         done();
-      });
+      }).fail(fail);
     });
 
     it('should add multiple tshirt details to a participant', function (done) {
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails, tshirtDetails]));
+      tshirtsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails, tshirtDetails]));
 
       participant.addTshirtDetailsTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt.amount).toBe(2);
         expect(anyParticipant.tshirt.details).toEqual([{size: anySize, model: anyModel},
           {size: anySize, model: anyModel}]);
         done();
-      });
+      }).fail(fail);
     });
   });
 

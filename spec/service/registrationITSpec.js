@@ -7,6 +7,7 @@ describe('registration', () => {
 
   const registration = require('../../service/registration');
   const participants = require('../../service/participants');
+  const tshirts = require('../../service/tshirts');
   const participant = require('../../domain/participant');
 
   const mails = require('../../service/util/mails');
@@ -53,7 +54,7 @@ describe('registration', () => {
     it('should save the participant and send confirmation email', (done) => {
       spyOn(participants, 'save').and.callThrough();
       spyOn(mails, 'sendEmail');
-      spyOn(participants, 'addTShirt');
+      spyOn(tshirts, 'addTShirt');
 
       const p = participant.from({
         firstname: 'Hertha',
@@ -87,14 +88,14 @@ describe('registration', () => {
           let content = mails.sendEmail.calls.mostRecent().args[2];
           expect(content).toMatch(/Danke/);
 
-          expect(participants.addTShirt).not.toHaveBeenCalled();
+          expect(tshirts.addTShirt).not.toHaveBeenCalled();
           done();
         })
         .fail(fail);
     });
 
     it('should call addTShirt if one ordered', (done) => {
-      spyOn(participants, 'addTShirt');
+      spyOn(tshirts, 'addTShirt');
 
       const pWithShirt = participant.from({
         firstname: 'Hertha',
@@ -111,7 +112,7 @@ describe('registration', () => {
 
       registration.start(pWithShirt)
         .then(() => {
-          expect(participants.addTShirt).toHaveBeenCalled();
+          expect(tshirts.addTShirt).toHaveBeenCalled();
           done();
         })
         .fail(fail);

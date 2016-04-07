@@ -8,6 +8,7 @@ const _ = require('lodash');
 const calculator = require('../domain/costCalculator');
 const db = require('../service/util/dbHelper');
 const mails = require('../service/util/mails');
+const tshirts = require('../service/tshirts');
 
 let service = {};
 
@@ -35,19 +36,19 @@ service.getPubliclyVisible = function () {
 
 service.save = function (participant) {
   return db.insert('INSERT INTO participants ' +
-                    '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number) ' +
-                    'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id',
-    [participant.firstname, 
-     participant.lastname, 
-     participant.email, 
-     participant.category, 
-     participant.birthyear, 
-     participant.team, 
-     participant.visibility, 
-     participant.discount, 
-     participant.paymentToken, 
-     participant.secureID,
-     participant.start_number]
+    '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number) ' +
+    'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id',
+    [participant.firstname,
+      participant.lastname,
+      participant.email,
+      participant.category,
+      participant.birthyear,
+      participant.team,
+      participant.visibility,
+      participant.discount,
+      participant.paymentToken,
+      participant.secureID,
+      participant.start_number]
   );
 };
 
@@ -57,29 +58,16 @@ service.delete = function (participantid) {
 
 service.update = function (participant, id) {
   return db.update('UPDATE participants SET ' +
-                   '(firstname, lastname, email, category, birthyear, team, visibility) = ' +
-                   '($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
+    '(firstname, lastname, email, category, birthyear, team, visibility) = ' +
+    '($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
     [participant.firstname,
-     participant.lastname,
-     participant.email,
-     participant.category,
-     participant.birthyear,
-     participant.team,
-     participant.visibility,
-     id]);
-};
-
-service.addTShirt = function (tshirt, participantId) {
-  return db.insert('insert into tshirts ' +
-                    '(size, model, participantId) ' +
-                    'values($1, $2, $3) returning id',
-    [tshirt.size,
-     tshirt.model,
-     participantId]);
-};
-
-service.getTShirtFor = function (participantId) {
-  return db.select('SELECT * FROM tshirts WHERE participantid = $1', [participantId]);
+      participant.lastname,
+      participant.email,
+      participant.category,
+      participant.birthyear,
+      participant.team,
+      participant.visibility,
+      id]);
 };
 
 service.getByToken = function (paymentToken) {
@@ -98,7 +86,7 @@ service.getByToken = function (paymentToken) {
       };
     })
     .then(participantDetails => {
-        return db.select('SELECT * from tshirts where participantid = $1', [participantDetails.id])
+        return tshirts.getTShirtFor(participantDetails.id)
           .then(result => {
             participantDetails.tshirt = result[0];
             return participantDetails;
@@ -138,16 +126,16 @@ service.markPayed = function (participantId) {
     });
 };
 
-service.bulkmail = function() {
+service.bulkmail = function () {
   const deferred = Q.defer();
 
   service.getConfirmed().then(confirmed => {
     service.getRegistered().then(unconfirmed => {
       _.forEach(confirmed, participant => {
-        mails.sendStatusEmail(participant,'hallo','views/participants/bulkmail.jade');
+        mails.sendStatusEmail(participant, 'hallo', 'views/participants/bulkmail.jade');
       });
       _.forEach(unconfirmed, participant => {
-        mails.sendStatusEmail(participant,'hallo','views/participants/bulkmail.jade');
+        mails.sendStatusEmail(participant, 'hallo', 'views/participants/bulkmail.jade');
       });
       deferred.resolve();
     });

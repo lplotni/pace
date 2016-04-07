@@ -12,10 +12,10 @@ const mails = require('../service/util/mails');
 let service = {};
 
 service.getAllWithPaymentStatus = function (paymentStatus) {
-  if (typeof paymentStatus !== 'undefined') {
-    return db.select('select * from participants where has_payed = $1 order by firstname,lastname', [paymentStatus]);
-  } else {
+  if (_.isUndefined(paymentStatus)) {
     return db.select('select * from participants order by firstname,lastname');
+  } else {
+    return db.select('select * from participants where has_payed = $1 order by firstname,lastname', [paymentStatus]);
   }
 };
 
@@ -34,7 +34,9 @@ service.getPubliclyVisible = function () {
 };
 
 service.save = function (participant) {
-  return db.insert('insert into participants (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id',
+  return db.insert('INSERT INTO participants ' +
+                    '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number) ' +
+                    'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id',
     [participant.firstname, 
      participant.lastname, 
      participant.email, 
@@ -50,23 +52,30 @@ service.save = function (participant) {
 };
 
 service.delete = function (participantid) {
-  const deferred = Q.defer();
-  db.select('delete from participants where id=$1', [participantid])
-    .then((result) => {
-      deferred.resolve(result);
-    })
-    .catch(deferred.reject);
-  return deferred.promise;
+  return db.delete('delete from participants where id=$1', [participantid]);
 };
 
 service.update = function (participant, id) {
-  return db.update('UPDATE participants SET (firstname, lastname, email, category, birthyear, team, visibility) = ($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
-    [participant.firstname, participant.lastname, participant.email, participant.category, participant.birthyear, participant.team, participant.visibility, id]);
+  return db.update('UPDATE participants SET ' +
+                   '(firstname, lastname, email, category, birthyear, team, visibility) = ' +
+                   '($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
+    [participant.firstname,
+     participant.lastname,
+     participant.email,
+     participant.category,
+     participant.birthyear,
+     participant.team,
+     participant.visibility,
+     id]);
 };
 
 service.addTShirt = function (tshirt, participantId) {
-  return db.insert('insert into tshirts (size, model, participantId) values($1, $2, $3) returning id',
-    [tshirt.size, tshirt.model, participantId]);
+  return db.insert('insert into tshirts ' +
+                    '(size, model, participantId) ' +
+                    'values($1, $2, $3) returning id',
+    [tshirt.size,
+     tshirt.model,
+     participantId]);
 };
 
 service.getTShirtFor = function (participantId) {

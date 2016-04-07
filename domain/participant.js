@@ -58,7 +58,7 @@ participant.from = function (body) {
 };
 
 participant.addTshirtDetailsTo = function (participant) {
-  return tshirts.getTShirtFor(participant.id)
+  return tshirts.getFor(participant.id)
     .then(tshirtDetails => {
       let tshirtAmount = tshirtDetails.length;
       if(tshirtAmount > 0) {

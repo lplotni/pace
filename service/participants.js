@@ -10,9 +10,9 @@ const db = require('../service/util/dbHelper');
 const mails = require('../service/util/mails');
 const tshirts = require('../service/tshirts');
 
-let service = {};
+let participants = {};
 
-service.getAllWithPaymentStatus = function (paymentStatus) {
+participants.allWithPaymentStatus = function (paymentStatus) {
   if (_.isUndefined(paymentStatus)) {
     return db.select('select * from participants order by firstname,lastname');
   } else {
@@ -20,21 +20,21 @@ service.getAllWithPaymentStatus = function (paymentStatus) {
   }
 };
 
-service.getRegistered = function () {
-  return service.getAllWithPaymentStatus(false);
+participants.registered = function () {
+  return participants.allWithPaymentStatus(false);
 };
 
-service.getConfirmed = function () {
-  return service.getAllWithPaymentStatus(true);
+participants.confirmed = function () {
+  return participants.allWithPaymentStatus(true);
 };
 
-service.getPubliclyVisible = function () {
-  return service.getConfirmed().then(confirmed =>
+participants.publiclyVisible = function () {
+  return participants.confirmed().then(confirmed =>
     _.filter(confirmed, p => p.visibility === 'yes')
   );
 };
 
-service.save = function (participant) {
+participants.save = function (participant) {
   return db.insert('INSERT INTO participants ' +
     '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number) ' +
     'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id',
@@ -52,11 +52,11 @@ service.save = function (participant) {
   );
 };
 
-service.delete = function (participantid) {
+participants.delete = function (participantid) {
   return db.delete('delete from participants where id=$1', [participantid]);
 };
 
-service.update = function (participant, id) {
+participants.update = function (participant, id) {
   return db.update('UPDATE participants SET ' +
     '(firstname, lastname, email, category, birthyear, team, visibility) = ' +
     '($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
@@ -70,7 +70,7 @@ service.update = function (participant, id) {
       id]);
 };
 
-service.getByToken = function (paymentToken) {
+participants.byToken = function (paymentToken) {
   return db.select('SELECT id, firstname, lastname FROM participants WHERE upper(paymenttoken) = $1', [paymentToken.toUpperCase()])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -86,7 +86,7 @@ service.getByToken = function (paymentToken) {
       };
     })
     .then(participantDetails => {
-        return tshirts.getTShirtFor(participantDetails.id)
+        return tshirts.getFor(participantDetails.id)
           .then(result => {
             participantDetails.tshirt = result[0];
             return participantDetails;
@@ -95,7 +95,7 @@ service.getByToken = function (paymentToken) {
     );
 };
 
-service.getById = function (id) {
+participants.byId = function (id) {
   return db.select('SELECT * FROM participants WHERE id = $1', [id])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -106,7 +106,7 @@ service.getById = function (id) {
     .then(result => result[0]);
 };
 
-service.getBySecureId = function (id) {
+participants.bySecureId = function (id) {
   return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -117,7 +117,7 @@ service.getBySecureId = function (id) {
     .then(result => result[0]);
 };
 
-service.markPayed = function (participantId) {
+participants.markPayed = function (participantId) {
   return db.update('update participants SET has_payed = true WHERE id = $1', [participantId])
     .then(result => {
       if (result < 1) {
@@ -126,11 +126,11 @@ service.markPayed = function (participantId) {
     });
 };
 
-service.bulkmail = function () {
+participants.bulkmail = function () {
   const deferred = Q.defer();
 
-  service.getConfirmed().then(confirmed => {
-    service.getRegistered().then(unconfirmed => {
+  participants.confirmed().then(confirmed => {
+    participants.registered().then(unconfirmed => {
       _.forEach(confirmed, participant => {
         mails.sendStatusEmail(participant, 'hallo', 'views/participants/bulkmail.jade');
       });
@@ -144,4 +144,4 @@ service.bulkmail = function () {
   return deferred.promise;
 };
 
-module.exports = service;
+module.exports = participants;

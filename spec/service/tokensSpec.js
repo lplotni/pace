@@ -38,10 +38,10 @@ describe('token service', () => {
       mockery.disable();
     });
 
-    describe('createUniqueToken', () => {
+    describe('createUnique', () => {
       it('returns a string with 5 upper case characters', (done) => {
 
-        tokens.createUniqueToken()
+        tokens.createUnique()
           .then((uniqueToken) => {
             expect(uniqueToken.length).toBe(5);
             expect(uniqueToken).toBe(uniqueToken.toUpperCase());
@@ -51,7 +51,7 @@ describe('token service', () => {
       });
 
       it('checks if the token exists in the DB', (done) => {
-        tokens.createUniqueToken().then((uniqueToken) => {
+        tokens.createUnique().then((uniqueToken) => {
           expect(dbHelperMock.select).toHaveBeenCalledWith('select * from participants where paymenttoken like $1', [uniqueToken]);
           done();
         }).fail(fail);
@@ -70,7 +70,7 @@ describe('token service', () => {
 
         dbHelperMock.select.and.callFake(fakeSelect);
 
-        tokens.createUniqueToken().then((uniqueToken) => {
+        tokens.createUnique().then((uniqueToken) => {
           expect(uniqueToken).toBeDefined();
           expect(dbHelperMock.select.calls.count()).toBe(2);
           done();

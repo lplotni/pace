@@ -239,7 +239,7 @@ describe('participants page', () => {
 
       participants.save(aParticipant.withToken('h Token').withStartNr(751))
         .then(function (id) {
-          tshirts.addTShirt(tshirt, id);
+          tshirts.addFor(tshirt, id);
         })
         .then(function () {
           var loggedInClient = setUpLoggedInClient();

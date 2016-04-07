@@ -30,13 +30,13 @@ describe('tshirt service', () => {
     helper.closeDbConnection(done);
   });
 
-  describe('addTShirt', () => {
+  describe('addFor', () => {
     it('stores tshirt', (done) => {
       participants.save(aParticipant.withStartNr(10))
         .then((id) => {
-          tshirts.addTShirt({size: 'M', model: 'Skin fit'}, id)
+          tshirts.addFor({size: 'M', model: 'Skin fit'}, id)
             .then(() => {
-              tshirts.getTShirtFor(id)
+              tshirts.getFor(id)
                 .then(function (shirts) {
                   expect(shirts.length).toBe(1);
                   done();

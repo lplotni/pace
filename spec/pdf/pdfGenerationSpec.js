@@ -37,15 +37,15 @@ describe('pdfGeneration', () => {
     };
 
     participantsMock = {
-      getConfirmed: jasmine.createSpy(),
-      getRegistered: jasmine.createSpy()
+      confirmed: jasmine.createSpy(),
+      registered: jasmine.createSpy()
     };
 
     mockery.registerMock('../service/participants', participantsMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
-    participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [{ firstname: 'Bestaetigte', lastname: 'Person'}]));
-    participantsMock.getRegistered.and.returnValue(Q.fcall(() => [{ firstname: 'Unbestaetigte', lastname: 'Person'}]));
+    participantsMock.confirmed.and.returnValue(Q.fcall(() => [{ firstname: 'Bestaetigte', lastname: 'Person'}]));
+    participantsMock.registered.and.returnValue(Q.fcall(() => [{ firstname: 'Unbestaetigte', lastname: 'Person'}]));
   });
 
   afterAll(() => {

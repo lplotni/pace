@@ -29,9 +29,9 @@ let addAmountTo = function (participants) {
 
 
 router.get('/', isAuthenticated, (req, res) => {
-  participants.getConfirmed().then(result => {
+  participants.confirmed().then(result => {
     let allParticipants = result;
-    participants.getRegistered().then(result => {
+    participants.registered().then(result => {
       allParticipants = allParticipants.concat(result);
       addEditUrlTo(allParticipants);
       Q.all(allParticipants.map(participant.addTshirtDetailsTo))

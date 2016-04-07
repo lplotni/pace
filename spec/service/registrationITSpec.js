@@ -54,7 +54,7 @@ describe('registration', () => {
     it('should save the participant and send confirmation email', (done) => {
       spyOn(participants, 'save').and.callThrough();
       spyOn(mails, 'sendEmail');
-      spyOn(tshirts, 'addTShirt');
+      spyOn(tshirts, 'addFor');
 
       const p = participant.from({
         firstname: 'Hertha',
@@ -88,14 +88,14 @@ describe('registration', () => {
           let content = mails.sendEmail.calls.mostRecent().args[2];
           expect(content).toMatch(/Danke/);
 
-          expect(tshirts.addTShirt).not.toHaveBeenCalled();
+          expect(tshirts.addFor).not.toHaveBeenCalled();
           done();
         })
         .fail(fail);
     });
 
-    it('should call addTShirt if one ordered', (done) => {
-      spyOn(tshirts, 'addTShirt');
+    it('should call addFor if one ordered', (done) => {
+      spyOn(tshirts, 'addFor');
 
       const pWithShirt = participant.from({
         firstname: 'Hertha',
@@ -112,7 +112,7 @@ describe('registration', () => {
 
       registration.start(pWithShirt)
         .then(() => {
-          expect(tshirts.addTShirt).toHaveBeenCalled();
+          expect(tshirts.addFor).toHaveBeenCalled();
           done();
         })
         .fail(fail);

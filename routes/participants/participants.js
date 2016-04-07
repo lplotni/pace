@@ -16,7 +16,7 @@ let useDefaultAuthentication = function (req, res, next) {
 };
 
 router.get('/', useDefaultAuthentication, (req, res) => {
-  participants.getPubliclyVisible().then(result  =>
+  participants.publiclyVisible().then(result  =>
     res.render('participants/list', {participants: result})
   );
 });

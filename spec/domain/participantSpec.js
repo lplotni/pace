@@ -167,7 +167,7 @@ describe('participant', () => {
       mockery.registerAllowables(['q', '../../domain/participant.js']);
 
       tshirtsMock = {
-        getTShirtFor: jasmine.createSpy()
+        getFor: jasmine.createSpy()
       };
 
       mockery.registerMock('../service/tshirts', tshirtsMock);
@@ -191,7 +191,7 @@ describe('participant', () => {
 
     it('should not add tshirt details if the participant did not order a tshirt', function (done) {
       let anyParticipant = {};
-      tshirtsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([]));
+      tshirtsMock.getFor.and.callFake(returnPromiseAndResolveWith([]));
 
       participant.addTshirtDetailsTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt).toBeUndefined();
@@ -200,7 +200,7 @@ describe('participant', () => {
     });
 
     it('should add the tshirt details to a participant', function (done) {
-      tshirtsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails]));
+      tshirtsMock.getFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails]));
 
       participant.addTshirtDetailsTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt.amount).toBe(1);
@@ -210,7 +210,7 @@ describe('participant', () => {
     });
 
     it('should add multiple tshirt details to a participant', function (done) {
-      tshirtsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails, tshirtDetails]));
+      tshirtsMock.getFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails, tshirtDetails]));
 
       participant.addTshirtDetailsTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt.amount).toBe(2);

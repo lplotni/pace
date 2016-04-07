@@ -79,7 +79,7 @@ describe('participants service', () => {
 
   it('should store and read participants', (done) => {
     participants.save(aParticipant.withStartNr(startNr++))
-      .then(participants.getRegistered)
+      .then(participants.registered)
       .then(function (data) {
         expect(data.length).toBe(1);
         expect(data[0].firstname).toBe(aParticipant.firstname);
@@ -106,11 +106,11 @@ describe('participants service', () => {
     });
   });
 
-  describe('getById', () => {
+  describe('byId', () => {
     it('should return all information of the participant with given Id', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then(function (participantId) {
-          participants.getById(participantId)
+          participants.byId(participantId)
             .then(function (participant) {
               expectOnParticipantFields(participant, participantId);
               done();
@@ -120,13 +120,13 @@ describe('participants service', () => {
     });
   });
 
-  describe('getByToken', () => {
+  describe('byToken', () => {
     it('should return participant\'s lastname and firstname and ordered tshirt for a given token', (done) => {
       participants.save(aParticipantWithTshirt.withStartNr(startNr++))
         .then(function (participantId) {
-          tshirts.addTShirt(aParticipantWithTshirt.tshirt, participantId)
+          tshirts.addFor(aParticipantWithTshirt.tshirt, participantId)
             .then(() => {
-              participants.getByToken(paymentToken)
+              participants.byToken(paymentToken)
                 .then(function (participant) {
                   expect(participant.name).toEqual(aParticipantWithTshirt.lastname + ', ' + aParticipantWithTshirt.firstname);
                   expect(participant.tshirt.size).toEqual(aParticipantWithTshirt.tshirt.size);
@@ -139,11 +139,11 @@ describe('participants service', () => {
     });
   });
 
-  describe('getBySecureId', () => {
+  describe('bySecureId', () => {
     it('should return all information of the participant with given secureId', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then(function (participantId) {
-          participants.getBySecureId(secureId)
+          participants.bySecureId(secureId)
             .then(function (participant) {
               expectOnParticipantFields(participant, participantId);
               done();
@@ -178,7 +178,7 @@ describe('participants service', () => {
         .then((id) => {
           let participantid = id;
           participants.delete(participantid).then(() => {
-            participants.getById(participantid).catch(() => {
+            participants.byId(participantid).catch(() => {
               done();
             });
           });
@@ -198,11 +198,11 @@ describe('participants service', () => {
             birthyear: 1981,
             team: 'Crazy runners updated'
           };
-          participants.getById(id)
+          participants.byId(id)
             .then((p) => {
               participants.update(updatedParticipant, p.secureid)
                 .then(() => {
-                  participants.getById(id)
+                  participants.byId(id)
                     .then(function (participant) {
                       expect(participant.firstname).toBe('Hertha updated');
                       expect(participant.lastname).toBe('Mustermann updated');
@@ -219,11 +219,11 @@ describe('participants service', () => {
     });
   });
 
-  describe('getPubliclyVisible', () => {
+  describe('publiclyVisible', () => {
     it('returns only participants which are confirmed and OK with being visible to the public', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then(participants.markPayed)
-        .then(participants.getPubliclyVisible)
+        .then(participants.publiclyVisible)
         .then(function (data) {
           expect(data.length).toBe(1);
           expect(data[0].firstname).toBe(aParticipant.firstname);

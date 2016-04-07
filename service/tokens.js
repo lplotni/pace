@@ -6,7 +6,7 @@ const Q = require('q');
 const _ = require('lodash');
 const db = require('../service/util/dbHelper');
 
-let service = {};
+let tokens = {};
 
 function randomString() {
   let text = "";
@@ -17,7 +17,7 @@ function randomString() {
   return text;
 }
 
-service.createUniqueToken = function () {
+tokens.createUnique = function () {
   const deferred = Q.defer();
   const token = randomString();
 
@@ -26,7 +26,7 @@ service.createUniqueToken = function () {
       if (_.isEmpty(result)) {
         deferred.resolve(token);
       } else {
-        return deferred.resolve(service.createUniqueToken());
+        return deferred.resolve(tokens.createUnique());
       }
     })
     .catch(deferred.reject);
@@ -34,4 +34,4 @@ service.createUniqueToken = function () {
   return deferred.promise;
 };
 
-module.exports = service;
+module.exports = tokens;

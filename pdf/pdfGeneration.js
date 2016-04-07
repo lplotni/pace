@@ -31,8 +31,8 @@ pdfGeneration.fillDocument = function(res, doc) {
   let counter = 1;
   const deferred = Q.defer();
 
-  participants.getConfirmed().then(confirmed =>
-    participants.getRegistered().then(unconfirmed => {
+  participants.confirmed().then(confirmed =>
+    participants.registered().then(unconfirmed => {
       res.writeHead(200, {
         'Content-Type': 'application/pdf',
         'Access-Control-Allow-Origin': '*',

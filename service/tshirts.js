@@ -4,9 +4,9 @@
 
 const db = require('../service/util/dbHelper');
 
-let service = {};
+let tshirts = {};
 
-service.addTShirt = function (tshirt, participantId) {
+tshirts.addFor = function (tshirt, participantId) {
   return db.insert('insert into tshirts ' +
     '(size, model, participantId) ' +
     'values($1, $2, $3) returning id',
@@ -15,8 +15,8 @@ service.addTShirt = function (tshirt, participantId) {
       participantId]);
 };
 
-service.getTShirtFor = function (participantId) {
+tshirts.getFor = function (participantId) {
   return db.select('SELECT * FROM tshirts WHERE participantid = $1', [participantId]);
 };
 
-module.exports = service;
+module.exports = tshirts;

@@ -39,7 +39,7 @@ describe('registration service', () => {
       };
 
       participantsMock = {
-        createUniqueToken: jasmine.createSpy(),
+        createUnique: jasmine.createSpy(),
         save: jasmine.createSpy()
       };
 
@@ -56,7 +56,7 @@ describe('registration service', () => {
       };
 
       let tokensMock = {
-        createUniqueToken: jasmine.createSpy()
+        createUnique: jasmine.createSpy()
       };
 
       let mailsMock = {
@@ -73,7 +73,7 @@ describe('registration service', () => {
       registration = require('../../service/registration');
 
       editUrlHelperMock.generateSecureID.and.returnValue(secureId);
-      tokensMock.createUniqueToken.and.returnValue(Q.fcall(() => 'uniqueToken'));
+      tokensMock.createUnique.and.returnValue(Q.fcall(() => 'uniqueToken'));
       participantsMock.save.and.returnValue(Q.fcall(() => 10));
       startNumbersMock.next.and.returnValue(Q.fcall(() => 1));
     });

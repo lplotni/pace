@@ -38,7 +38,7 @@ registration.confirm = function (participantId) {
 
   participants.markPayed(participantId)
     .then(() => {
-      participants.getById(participantId)
+      participants.byId(participantId)
         .then(result => {
           jade.renderFile('views/admin/paymentValidation/text.jade',
             {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},
@@ -57,7 +57,7 @@ registration.confirm = function (participantId) {
 registration.start = function (participant) {
   const deferred = Q.defer();
 
-  tokens.createUniqueToken().then((paymentToken) => {
+  tokens.createUnique().then((paymentToken) => {
     startNumbers.next().then((nr) => {
       let p = participant
         .withToken(paymentToken)
@@ -66,7 +66,7 @@ registration.start = function (participant) {
       participants.save(p)
         .then(id => {
           if (!_.isEmpty(p.tshirt)) {
-            tshirts.addTShirt(p.tshirt, id);
+            tshirts.addFor(p.tshirt, id);
           }
 
           jade.renderFile('views/registration/text.jade',

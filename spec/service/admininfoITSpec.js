@@ -41,7 +41,7 @@ describe('admin service', () => {
       .then(function (participantId) {
         registration.confirm(participantId)
           .then(function () {
-            tshirts.addTShirt(aParticipant.tshirt, participantId)
+            tshirts.addFor(aParticipant.tshirt, participantId)
               .then(() => {
                 admininfo.getShirtOrders()
                   .then(function (data) {

@@ -6,7 +6,7 @@ const router = require('express').Router();
 const participants = require('../../service/participants');
 const accesscontrol = require('../../acl/accesscontrol');
 
-let useDefaultAuthentication = function (req, res, next) {
+let useDefaultAuthentication = (req, res, next) => {
   if (req.user) {
     return next();
   } else {

@@ -7,9 +7,8 @@ const registration = require('../../service/registration');
 const accesscontrol = require('../../acl/accesscontrol');
 const isAuthenticated = require('../../acl/authentication');
 
-let canConfirmPayments = function (role) {
-  return accesscontrol.hasPermissionTo(role, 'confirm payments');
-};
+let canConfirmPayments = (role) => accesscontrol.hasPermissionTo(role, 'confirm payments');
+
 
 router.post('/confirm', isAuthenticated, (req, res) => {
   if (canConfirmPayments(req.user.role)) {

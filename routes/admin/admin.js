@@ -15,9 +15,9 @@ let canViewAdminPage = function (role) {
 router.get('/', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     let admininfo = require('../../service/admininfo');
-    admininfo.getShirtOrders().then(orders =>
-      admininfo.getConfirmedParticipants().then(confirmed =>
-        admininfo.getUnconfirmedParticipants().then(unconfirmed =>
+    admininfo.shirtOrders().then(orders =>
+      admininfo.confirmedParticipantsCount().then(confirmed =>
+        admininfo.unconfirmedParticipantsCount().then(unconfirmed =>
           res.render('admin/admin', {orders, confirmed ,unconfirmed, isAdmin: true}))));
   } else {
     res.render('error', {

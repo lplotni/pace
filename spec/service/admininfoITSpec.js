@@ -43,7 +43,7 @@ describe('admin service', () => {
           .then(function () {
             tshirts.addFor(aParticipant.tshirt, participantId)
               .then(() => {
-                admininfo.getShirtOrders()
+                admininfo.shirtOrders()
                   .then(function (data) {
                     expect(data.length).toBe(1);
                     expect(data[0].size).toBe(aParticipant.tshirt.size);
@@ -61,7 +61,7 @@ describe('admin service', () => {
       .then(function (participantId) {
         registration.confirm(participantId)
           .then(function () {
-            admininfo.getConfirmedParticipants()
+            admininfo.confirmedParticipantsCount()
               .then(function (data) {
                 expect(data[0].count).toBe('1'); // There is just 1 participant - why should it be 5?
                 done();

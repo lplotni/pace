@@ -6,13 +6,22 @@ const db = require('../service/util/dbHelper');
 
 const admininfo = {};
 
-admininfo.getShirtOrders = function () {
-    return db.select('select tshirts.size as size,tshirts.model,count(participants.has_payed) as amount,participants.category as category from tshirts left join participants on participants.id = tshirts.participantid where participants.has_payed=true group by tshirts.model,tshirts.size,participants.category;');
+admininfo.shirtOrders = function () {
+  return db.select(
+    'SELECT tshirts.size AS size,' +
+    'tshirts.model,' +
+    'count(participants.has_payed) AS amount,' +
+    'participants.category AS category ' +
+    'FROM tshirts LEFT JOIN participants on participants.id = tshirts.participantid ' +
+    'WHERE participants.has_payed=true GROUP BY tshirts.model, tshirts.size, participants.category;');
 };
-admininfo.getConfirmedParticipants = function () {
-    return db.select('select count(*) from participants where has_payed=true;');
+
+admininfo.confirmedParticipantsCount = function () {
+  return db.select('SELECT count(*) FROM participants WHERE has_payed=true;');
 };
-admininfo.getUnconfirmedParticipants = function () {
-      return db.select('select count(*) from participants where has_payed=false;');
+
+admininfo.unconfirmedParticipantsCount = function () {
+  return db.select('SELECT count(*) FROM participants WHERE has_payed=false;');
 };
+
 module.exports = admininfo;

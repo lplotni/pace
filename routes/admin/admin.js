@@ -14,7 +14,7 @@ let canViewAdminPage = function (role) {
 
 router.get('/', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    let admininfo = require('../../service/admininfo');
+    let admininfo = require('../../service/stats');
     admininfo.shirtOrders().then(orders =>
       admininfo.confirmedParticipantsCount().then(confirmed =>
         admininfo.unconfirmedParticipantsCount().then(unconfirmed =>

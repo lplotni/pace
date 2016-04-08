@@ -9,7 +9,7 @@ describe('admin service', () => {
   const participants = require('../../service/participants');
   const tshirts = require('../../service/tshirts');
   const participant = require('../../domain/participant');
-  const admininfo = require('../../service/admininfo');
+  const admininfo = require('../../service/stats');
   const pg = require('pg');
   let helper = require('../journeyHelper');
 

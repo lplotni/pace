@@ -57,20 +57,4 @@ participant.from = function (body) {
   return p;
 };
 
-participant.addTshirtDetailsTo = function (participant) {
-  return tshirts.getFor(participant.id)
-    .then(tshirtDetails => {
-      let tshirtAmount = tshirtDetails.length;
-      if(tshirtAmount > 0) {
-        let details = tshirtDetails.map(function (element) {
-          return _.pick(element, 'size', 'model');
-        });
-        participant.tshirt = {
-          details: details,
-          amount: tshirtAmount
-        };
-      }
-    });
-};
-
 module.exports = participant;

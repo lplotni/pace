@@ -44,7 +44,15 @@ describe('tshirt service', () => {
                 .fail(fail);
             });
         });
+    });
+  });
 
+  describe('getFor', () => {
+    it('returns [] if no tshirt ordered', (done) => {
+      tshirts.getFor(200).then(result => {
+        expect(result.length).toBe(0);
+        done();
+      }).fail(fail);
     });
   });
 });

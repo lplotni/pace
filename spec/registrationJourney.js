@@ -55,8 +55,6 @@ describe('registration journey', () => {
       .setValue('input#team', 'Crazy runners')
       .selectByIndex('select#visibility', 1)
       .click('input#shirt')
-      .selectByIndex('select#model', 1)
-      .selectByIndex('select#size', 1)
       .click('button#submit')
       .isVisible('div.thanks')
       .then((isVisible) => {

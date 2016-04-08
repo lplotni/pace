@@ -23,11 +23,10 @@ block content
                         td=(p.has_payed ? 'ja' : 'nein')
                         td#amount=p.amount
                         td=p.paymenttoken
-                        td#tshirt-amount=(p.tshirt ? p.tshirt.amount : 0)
+                        td#tshirt-amount=(p.tshirt ? 1 : 0)
                         td
                             if p.tshirt
-                                each t in p.tshirt.details
-                                    span=t.size + ' (' + t.model + ')'
+                                span=p.tshirt.size + ' (' + p.tshirt.model + ')'
                         td
                             form#payment-details(method='POST', action='/paymentValidation/confirm')
                                 input(type='hidden', name='_csrf', value=_csrf)

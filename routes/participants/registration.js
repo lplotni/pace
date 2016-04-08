@@ -14,7 +14,7 @@ const registration = require('../../service/registration');
 
 router.get('/', (req, res) => {
   registration.isClosed().then( isClosed =>
-    res.render('registration/registration', { registrationClosed: isClosed }) );
+    res.render('registration/registration', { registrationClosed: isClosed , shirts: config.get('shirts.models')}) );
 });
 
 router.post('/', (req, res) => {

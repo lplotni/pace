@@ -7,7 +7,7 @@ const router = require('express').Router();
 const accesscontrol = require('../../acl/accesscontrol');
 const isAuthenticated = require('../../acl/authentication');
 const participants = require('../../service/participants');
-const participant = require('../../domain/participant');
+const tshirts = require('../../service/tshirts');
 const editUrlHelper = require('../../domain/editUrlHelper');
 const costCalculator = require('../../domain/costCalculator');
 
@@ -34,7 +34,7 @@ router.get('/', isAuthenticated, (req, res) => {
     participants.registered().then(result => {
       allParticipants = allParticipants.concat(result);
       addEditUrlTo(allParticipants);
-      Q.all(allParticipants.map(participant.addTshirtDetailsTo))
+      Q.all(allParticipants.map(tshirts.findAndAddTo))
         .then(() => {
             addAmountTo(allParticipants);
             res.render('admin/list', {participants: allParticipants, isAdmin: true});

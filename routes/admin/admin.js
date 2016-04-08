@@ -7,6 +7,7 @@ const accesscontrol = require('../../acl/accesscontrol');
 const isAuthenticated = require('../../acl/authentication');
 const pdfGeneration = require('../../pdf/pdfGeneration');
 const registration = require('../../service/registration');
+const stats = require('../../service/stats');
 
 let canViewAdminPage = function (role) {
   return accesscontrol.hasPermissionTo(role, 'view admin page');
@@ -14,10 +15,9 @@ let canViewAdminPage = function (role) {
 
 router.get('/', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    let admininfo = require('../../service/admininfo');
-    admininfo.shirtOrders().then(orders =>
-      admininfo.confirmedParticipantsCount().then(confirmed =>
-        admininfo.unconfirmedParticipantsCount().then(unconfirmed =>
+    stats.shirtOrders().then(orders =>
+      stats.confirmedParticipantsCount().then(confirmed =>
+        stats.unconfirmedParticipantsCount().then(unconfirmed =>
           res.render('admin/admin', {orders, confirmed ,unconfirmed, isAdmin: true}))));
   } else {
     res.render('error', {

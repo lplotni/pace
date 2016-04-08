@@ -4,9 +4,9 @@
 
 const db = require('../service/util/dbHelper');
 
-const admininfo = {};
+const stats = {};
 
-admininfo.shirtOrders = function () {
+stats.shirtOrders = function () {
   return db.select(
     'SELECT tshirts.size AS size,' +
     'tshirts.model,' +
@@ -16,12 +16,12 @@ admininfo.shirtOrders = function () {
     'WHERE participants.has_payed=true GROUP BY tshirts.model, tshirts.size, participants.category;');
 };
 
-admininfo.confirmedParticipantsCount = function () {
+stats.confirmedParticipantsCount = function () {
   return db.select('SELECT count(*) FROM participants WHERE has_payed=true;');
 };
 
-admininfo.unconfirmedParticipantsCount = function () {
+stats.unconfirmedParticipantsCount = function () {
   return db.select('SELECT count(*) FROM participants WHERE has_payed=false;');
 };
 
-module.exports = admininfo;
+module.exports = stats;

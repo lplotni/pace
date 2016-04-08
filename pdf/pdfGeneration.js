@@ -17,18 +17,23 @@ const fileName = 'start_numbers.pdf';
 const checkmarkSymbolSvg = 'M7.375,33.25 c0,0,10,11.375,14.125,11.375S44.875,8,44.875,8';
 
 pdfGeneration.createStartNumberPage = function(startNumber, participant, hasPayed, doc) {
-  doc.fontSize(250).text(startNumber, 0, 200, {align: 'center'});
-  doc.fontSize(70).text(participant.firstname, 0, 400, {align: 'center'});
+  doc.image(__dirname + '/images/background_light.jpg', {fit: [800, 800]});
+  doc.image(__dirname + '/images/lauf_gegen_rechts_logo.jpg', 20, 20, {fit: [150, 150]});
+  doc.image(__dirname + '/images/fc_st_pauli_marathon_logo.png', 450, 20, {fit: [130, 130]});
+
+  doc.font('Helvetica-Bold').fontSize(200).fillColor('saddlebrown').text(startNumber, 0, 130, {align: 'center'});
+  doc.fontSize(40).fillColor('red').text(participant.firstname, 0, 300, {align: 'center'});
+  doc.fontSize(30).fillColor('red').text(participant.team, 0, 350, {align: 'center'});
 
   let ean8Code = barcodeGeneration.ean8Code(startNumber);
 
-  doc.image(ean8Code, 300, 50);
-  doc.image(ean8Code, 50, 250);
-  doc.image(ean8Code, 600, 250);
+  doc.image(ean8Code, 260, 20, {fit: [70, 70]});
+  doc.image(ean8Code, 50, 220, {fit: [70, 70]});
+  doc.image(ean8Code, 470, 220, {fit: [70, 70]});
 
   if(hasPayed) {
-    doc.path(checkmarkSymbolSvg)
-      .translate(630, 350)
+    doc.translate(500, 300)
+      .path(checkmarkSymbolSvg)
       .lineWidth(3)
       .stroke();
   }
@@ -74,7 +79,7 @@ pdfGeneration.fillDocument = function(res, doc) {
 };
 
 pdfGeneration.generate = function(res) {
-  let doc = new PDFDocument({layout: 'landscape'});
+  let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
   return pdfGeneration.fillDocument(res, doc);
 };
 

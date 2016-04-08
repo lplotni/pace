@@ -29,6 +29,8 @@ describe('pdfGeneration', () => {
     documentMock = {
       pipe: jasmine.createSpy('pipe'),
       fontSize: function () { return documentMock; },
+      font: function () { return documentMock; },
+      fillColor: function () { return documentMock; },
       text: jasmine.createSpy('text'),
       scale: function () { return documentMock; },
       translate: function () { return documentMock; },
@@ -68,21 +70,23 @@ describe('pdfGeneration', () => {
 
   it('should add start number, name and payment status', (done) => {
     pdfGeneration.fillDocument(res, documentMock).then( () => {
-      expect(documentMock.text).toHaveBeenCalledWith(1, 0, 200, {align: 'center'});
-      expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte', 0, 400, {align: 'center'});
+      expect(documentMock.text).toHaveBeenCalledWith(1, 0, 130, {align: 'center'});
+      expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte', 0, 300, {align: 'center'});
 
-      expect(documentMock.text).toHaveBeenCalledWith(2, 0, 200, {align: 'center'});
-      expect(documentMock.text).toHaveBeenCalledWith('Unbestaetigte', 0, 400, {align: 'center'});
+      expect(documentMock.text).toHaveBeenCalledWith(2, 0, 130, {align: 'center'});
+      expect(documentMock.text).toHaveBeenCalledWith('Unbestaetigte', 0, 300, {align: 'center'});
       done();
     });
   });
 
   it('should add the barcode three times for easier scanning', (done) => {
+    let numberOfOtherImageCalls = 3;
+
     participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.getRegistered.and.returnValue(Q.fcall(() => []));
 
     pdfGeneration.fillDocument(res, documentMock).then( () => {
-      expect(documentMock.image).toHaveBeenCalledTimes(3);
+      expect(documentMock.image).toHaveBeenCalledTimes(3 + numberOfOtherImageCalls);
       done();
     });
   });

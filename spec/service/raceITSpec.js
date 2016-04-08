@@ -30,5 +30,13 @@ describe('race service', () => {
           .fail(fail);
       });
   });
+
+  it('should tell if race has started', (done) => {
+    race.hasStarted()
+      .then(function(result) {
+        expect(result).toBe(false)
+        done();
+      });
+  });
 })
 ;

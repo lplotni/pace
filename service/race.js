@@ -18,4 +18,12 @@ race.setStartTime = function (date) {
   return db.update(query);
 };
 
+race.hasStarted = () => {
+  return db.select("SELECT data->>'starttime' as starttime FROM race;")
+    .then( result => {
+      return result[0].startime === 'true';
+    });
+};
+
+
 module.exports = race;

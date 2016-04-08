@@ -3,14 +3,14 @@
 /* jshint esnext: true */
 /* global describe, beforeEach, afterEach, it, expect */
 
-describe('sendEmail', () => {
+describe('mails service', () => {
   let emailToBeSend;
 
   let service;
   let realNodeMailer;
 
   beforeEach(() => {
-      service = require('../../service/participants');
+      service = require('../../service/../service/util/mails');
       realNodeMailer = service._nodemailer;
       service._nodemailer = {
         createTransport: () => {

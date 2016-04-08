@@ -23,25 +23,24 @@ block content
                         td=(p.has_payed ? 'ja' : 'nein')
                         td#amount=p.amount
                         td=p.paymenttoken
-                        td#tshirt-amount=(p.tshirt ? p.tshirt.amount : 0)
+                        td#tshirt-amount=(p.tshirt ? 1 : 0)
                         td
                             if p.tshirt
-                                each t in p.tshirt.details
-                                    span=t.size + ' (' + t.model + ')'
+                                span=p.tshirt.size + ' (' + p.tshirt.model + ')'
                         td
                             form#payment-details(method='POST', action='/paymentValidation/confirm')
                                 input(type='hidden', name='_csrf', value=_csrf)
                                 input(type='hidden', name='participantid', value='#{p.id}')
-                                button(id = p.has_payed ? 'confirm-registration-done' : 'confirm-registration', type='submit').icon.button-primary
+                                button(id = p.has_payed ? 'confirm-registration-done' : 'confirm-registration', type='submit').bigfont.button-primary
                                   span.lnr.lnr-checkmark-circle
                         td
                             form#user-delete(method='POST', action='editparticipant/delete')
                                 input(type='hidden', name='_csrf', value=_csrf)
                                 input(type='hidden', name='participantid', value='#{p.id}')
-                                button#delete-user.icon.button-primary(type='submit')
+                                button#delete-user.bigfont.button-primary(type='submit')
                                     span.lnr.lnr-trash
                         td
                             form
-                                 a#edit.edit-button.button.icon(href='#{p.editUrl}')
+                                 a#edit.edit-button.button.bigfont(href='#{p.editUrl}')
                                     span.lnr.lnr-pencil
     script(src='/javascript/searchAndSort.js')

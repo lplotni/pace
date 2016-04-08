@@ -5,6 +5,7 @@
 const _ = require('lodash');
 const validator = require('validator');
 const tshirt = require('./tshirt');
+const tshirts = require('../service/tshirts');
 const participants = require('../service/participants');
 
 const participant = {};
@@ -24,7 +25,8 @@ participant.from = function (body) {
   if (invalidData(body)) {
     throw new TypeError('Required attributes are not present');
   }
-  return {
+  
+  let p = {
     firstname: body.firstname,
     lastname: body.lastname,
     email: body.email,
@@ -35,23 +37,24 @@ participant.from = function (body) {
     team: body.team,
     tshirt: tshirt.from(body)
   };
-
-};
-
-participant.addTshirtDetailsTo = function (participant) {
-  return participants.getTShirtFor(participant.id)
-    .then(tshirtDetails => {
-      let tshirtAmount = tshirtDetails.length;
-      if(tshirtAmount > 0) {
-        let details = tshirtDetails.map(function (element) {
-          return _.pick(element, 'size', 'model');
-        });
-        participant.tshirt = {
-          details: details,
-          amount: tshirtAmount
-        };
-      }
-    });
+  
+  p.with = function (property) {
+    return _.assignIn(p, property);
+  };
+  
+  p.withStartNr = (nr) => {
+   return p.with({start_number: nr});
+  };
+  
+  p.withToken = (token) => {
+   return p.with({paymentToken: token});
+  };
+  
+  p.withSecureId = (id) => {
+   return p.with({secureID: id});
+  };
+  
+  return p;
 };
 
 module.exports = participant;

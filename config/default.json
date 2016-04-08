@@ -1,8 +1,18 @@
 {
   "shirts": {
     "price": "10",
-    "sizes":  ["s","m","l","xl"],
-    "models": ["slim","normal"]
+    "models": [
+      {
+        "value": "Slim fit",
+        "description": "Tailliert/Schmächtige Menschen",
+        "sizes": ["S","M","L","XL"]
+      },
+      {
+        "value": "Normal fit",
+        "description": "Normal fit",
+        "sizes": ["XS","S","M","L","XL"]
+      }
+    ]
   },
   "costs": {
     "standard": "10",

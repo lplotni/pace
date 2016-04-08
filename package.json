@@ -12,8 +12,8 @@
     "cookie-parser": "~1.4.1",
     "cryptico": "~1.0.2",
     "csurf": "^1.8.3",
-    "db-migrate": "~0.9.22",
-    "db-migrate-pg": "^0.1.7",
+    "db-migrate": "~0.9.23",
+    "db-migrate-pg": "^0.1.9",
     "debug": "~0.7.4",
     "express": "~4.13.4",
     "express-metrics": "^1.1.0",
@@ -37,13 +37,13 @@
   },
   "devDependencies": {
     "gulp": "^3.9.0",
-    "gulp-jasmine": "^2.2.0",
+    "gulp-jasmine": "^2.3.0",
     "gulp-jshint": "^1.11.2",
     "gulp-shell": "^0.5.0",
     "gulp-util": "^3.0.7",
     "selenium-standalone": "^4.9.0",
     "webdriverio": "^3.2.6",
     "yargs": "^3.27.0",
-    "mockery": "^1.4.0"
+    "mockery": "^1.4.1"
   }
 }

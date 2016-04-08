@@ -1,30 +1,27 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global jasmine, describe, it, expect, beforeEach */
-
-const mockery = require('mockery');
-const Q = require('q');
+/* global jasmine, describe, it, expect, afterAll, beforeEach, fail */
 
 describe('participant', () => {
 
   const _ = require('lodash');
   const participant = require('../../domain/participant.js');
+  const body = {
+    firstname: 'Mark',
+    lastname: 'Mueller',
+    email: 'm.mueller@example.com',
+    category: 'Unicorn',
+    birthyear: 1980,
+    team: 'Crazy runners',
+    visibility: 'public',
+    discount: 'yes',
+    shirt: 'Yes',
+    model: 'Normal fit',
+    size: 'M'
+  };
 
   describe('from()', () => {
-    const body = {
-      firstname: 'Mark',
-      lastname: 'Mueller',
-      email: 'm.mueller@example.com',
-      category: 'Unicorn',
-      birthyear: 1980,
-      team: 'Crazy runners',
-      visibility: 'public',
-      discount: 'yes',
-      shirt: 'Yes',
-      model: 'Normal fit',
-      size: 'M'
-    };
     const invalid_email_body = {
       firstname: 'Mark',
       lastname: 'Mueller',
@@ -38,7 +35,6 @@ describe('participant', () => {
       model: 'Normal fit',
       size: 'M'
     };
-
 
     it('should extract firstname from the request body', () => {
       expect(participant.from(body).firstname).toBe('Mark');
@@ -125,7 +121,7 @@ describe('participant', () => {
       expect(participant.from(body).visibility).toBe('public');
     });
 
-    it('should throw an error if no visibility can be found', function() {
+    it('should throw an error if no visibility can be found', function () {
       function callWithNoVisibility() {
         participant.from(_.omit(body, 'visibility'));
       }
@@ -134,83 +130,39 @@ describe('participant', () => {
     });
 
     it('should extract discount from the request body', () => {
-     expect(participant.from(body).discount).toBe('yes');
+      expect(participant.from(body).discount).toBe('yes');
     });
 
-    it('should not throw an error if no discount can be found, but use NO instead', function() {
+    it('should not throw an error if no discount can be found, but use NO instead', function () {
       var bodyWithoutDiscout = _.omit(body, 'discount');
       expect(participant.from(bodyWithoutDiscout).discount).toBe('no');
     });
   });
 
-  describe('addTshirtDetailsTo', () => {
+  describe('with()', () => {
 
-    let participant, participantsMock;
-
-    let returnPromiseAndResolveWith = function(data) {
-      function successResolve() {
-        return Q.fcall(function() { return data;});
-      }
-      return successResolve;
-    };
-
-    let setupMocks = function() {
-
-      mockery.enable({
-        useCleanCache: true,
-        warnOnReplace: false,
-        warnOnUnregistered: false
-      });
-      mockery.resetCache();
-      mockery.registerAllowables(['q', '../../domain/participant.js']);
-
-      participantsMock = {
-        getTShirtFor: jasmine.createSpy()
-      };
-
-      mockery.registerMock('../service/participants', participantsMock);
-
-      participant = require('../../domain/participant.js');
-    };
-
-    beforeEach(() => {
-      setupMocks();
+    const p = participant.from({
+      firstname: 'Mark',
+      lastname: 'Mueller',
+      email: 'm.mueller@example.com',
+      category: 'Unicorn',
+      birthyear: 1980,
+      team: 'Crazy runners',
+      visibility: 'public',
+      discount: 'yes',
+      shirt: 'Yes',
+      model: 'Normal fit',
+      size: 'M'
     });
 
-    let anySize = 'M';
-    let anyModel = 'normal';
-    let tshirtDetails = {id: 0, size: anySize, model: anyModel, participantId: 0};
-    let anyParticipant = {};
+    it('adds the property to the participant', () => {
+      let pWithNewProperty = p.with({paymentToken: 'token'}).with({otherProperty: 'x'});
 
-    it('should not add tshirt details if the participant did not order a tshirt', function (done) {
-      let anyParticipant = {};
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([]));
-
-      participant.addTshirtDetailsTo(anyParticipant).then(() => {
-        expect(anyParticipant.tshirt).toBeUndefined();
-        done();
-      });
+      expect(pWithNewProperty.paymentToken).toBe('token');
+      expect(pWithNewProperty.otherProperty).toBe('x');
+      expect(pWithNewProperty.firstname).toBe('Mark');
+      expect(pWithNewProperty.tshirt).toBe(p.tshirt);
     });
 
-    it('should add the tshirt details to a participant', function (done) {
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails]));
-
-      participant.addTshirtDetailsTo(anyParticipant).then(() => {
-        expect(anyParticipant.tshirt.amount).toBe(1);
-        expect(anyParticipant.tshirt.details).toEqual([{size: anySize, model: anyModel}]);
-        done();
-      });
-    });
-
-    it('should add multiple tshirt details to a participant', function (done) {
-      participantsMock.getTShirtFor.and.callFake(returnPromiseAndResolveWith([tshirtDetails, tshirtDetails]));
-
-      participant.addTshirtDetailsTo(anyParticipant).then(() => {
-        expect(anyParticipant.tshirt.amount).toBe(2);
-        expect(anyParticipant.tshirt.details).toEqual([{size: anySize, model: anyModel},
-          {size: anySize, model: anyModel}]);
-        done();
-      });
-    });
   });
 });

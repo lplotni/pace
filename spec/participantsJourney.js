@@ -1,26 +1,43 @@
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, beforeEach, beforeAll, afterAll, it, expect, fail */
 'use strict';
 
-let participants = require('../service/participants');
-let pg = require('pg');
-let helper = require('./journeyHelper');
-let config = require('config');
+const tshirts = require('../service/tshirts');
+const participants = require('../service/participants');
+const participant = require('../domain/participant');
+const editUrlHelper = require('../domain/editUrlHelper');
+const helper = require('./journeyHelper');
+const config = require('config');
 
 describe('participants page', () => {
 
   let participantsUrl = helper.paceUrl + 'participants';
   let loginUrl = helper.paceUrl + 'login';
 
-  beforeEach((done) => {
+  let aParticipant = participant.from({
+    firstname: 'Friedrich',
+    lastname: 'Schiller',
+    email: 'f.schiller@example.com',
+    category: 'f',
+    birthyear: 1980,
+    team: 'Crazy runners',
+    visibility: 'yes',
+    discount: 'no'
+  }).withSecureId(editUrlHelper.generateSecureID());
+
+
+  beforeAll(() => {
     helper.changeOriginalTimeout();
+  });
+
+  beforeEach((done) => {
     helper.setupDbConnection(done);
   });
 
-  afterEach(() => {
+  afterAll((done) => {
     helper.resetToOriginalTimeout();
-    pg.end();
+    helper.closeDbConnection(done);
   });
 
   it('shows full participant list only if logged in as admin', (done) => {
@@ -36,14 +53,7 @@ describe('participants page', () => {
       'Löschen button',
       'Edit button'];
 
-    let aParticipant = {
-      firstname: 'Friedrich',
-      lastname: 'Schiller',
-      email: 'f.schiller@example.com'
-    };
-    let aToken = 'a token';
-
-    participants.save(aParticipant, aToken)
+    participants.save(aParticipant.withToken('a Token').withStartNr(42))
       .then(() => {
         helper.setUpClient().url(participantsUrl)
           .elements('li.participant-line')
@@ -54,7 +64,7 @@ describe('participants page', () => {
           .setValue('input#username', config.get('admin.username'))
           .setValue('input#password', config.get('admin.password'))
           .click('button#submit')
-          .url(helper.paceUrl+'admin/participants')
+          .url(helper.paceUrl + 'admin/participants')
           .elements('tr.participant-line')
           .then(function (res) {
             expect(res.value.length).toBe(1);
@@ -68,78 +78,74 @@ describe('participants page', () => {
   });
 
   it('shows registered participants only if they wished to be publicly visible', (done) => {
-    let aPublicParticipant = {
+    let hiddenParticipant = participant.from({
       firstname: 'Friedrich',
       lastname: 'Schiller',
       email: 'f.schiller@example.com',
-      visibility: 'yes'
-    };
+      category: 'f',
+      birthyear: 1980,
+      team: 'Crazy runners',
+      visibility: 'no',
+      discount: 'yes'
+    }).withSecureId(editUrlHelper.generateSecureID()).withToken('c Token').withStartNr(100);
 
-    let aParticipant = {
-      firstname: 'Friedrich',
-      lastname: 'Schiller',
-      email: 'f.schiller@example.com'
-    };
-
-    participants.save(aParticipant, 'a token').then(participants.markPayed)
+    participants.save(aParticipant.withToken('b Token').withStartNr(43))
+      .then(participants.markPayed)
       .then(() => {
-        return participants.save(aPublicParticipant, 'b token');
+        return participants.save(hiddenParticipant);
       })
       .then(participants.markPayed)
       .then(() => {
-          helper.setUpClient().url(participantsUrl)
-            .elements('tr.participant-line')
-            .then(function (res) {
-              expect(res.value.length).toBe(1);
-            })
-            .end(done);
-      });
+        helper.setUpClient().url(participantsUrl)
+          .elements('tr.participant-line')
+          .then(function (res) {
+            expect(res.value.length).toBe(1);
+          })
+          .end(done);
+      })
+      .fail(fail);
   });
 
   it('shows a search box', (done) => {
     helper.setUpClient().url(participantsUrl)
-     .isVisible('.dataTables_filter')
-     .then(function (isVisible) {
-       expect(isVisible).toBe(true);
-     })
-    .end(done);
+      .isVisible('.dataTables_filter')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .end(done);
   });
 
   it('searches for participants', (done) => {
-
-    let aParticipant = {
-      firstname: 'Friedrich',
-      lastname: 'Schiller',
-      email: 'f.schiller@example.com',
-      visibility: 'yes'
-    };
-    let aToken = 'a token';
-
-    let anotherParticipant = {
+    let anotherParticipant = participant.from({
       firstname: 'Issac',
       lastname: 'Newton',
       email: 'i.newton@example.com',
-      visibility: 'yes'
-    };
-    let anotherToken = 'another token';
-    participants.save(aParticipant, aToken).then(participants.markPayed)
+      category: 'f',
+      birthyear: 1980,
+      team: 'Crazy runners',
+      visibility: 'no',
+      discount: 'yes'
+    }).withSecureId(editUrlHelper.generateSecureID()).withToken('another token').withStartNr(1000);
 
-      .then( () => {
-        return  participants.save(anotherParticipant, anotherToken);
+    participants.save(aParticipant.withToken('d Token').withStartNr(431))
+      .then(participants.markPayed)
+      .then(() => {
+        return participants.save(anotherParticipant);
       })
       .then(participants.markPayed)
-      .then( () => {
+      .then(() => {
         helper.setUpClient().url(participantsUrl)
-        .setValue('.dataTables_filter input', 'Friedrich')
-        .elements('tr.participant-line')
-        .then( (res) => {
-          expect(res.value.length).toBe(1);
-        })
-        .end(done);
-      });
+          .setValue('.dataTables_filter input', 'Friedrich')
+          .elements('tr.participant-line')
+          .then((res) => {
+            expect(res.value.length).toBe(1);
+          })
+          .end(done);
+      })
+      .fail(fail);
   });
 
-describe('admin view', () => {
+  describe('admin view', () => {
 
     let setUpLoggedInClient = () => {
       return helper.setUpClient()
@@ -150,76 +156,62 @@ describe('admin view', () => {
     };
 
     it('shows a search box', (done) => {
-    setUpLoggedInClient().url(helper.paceUrl+'admin/participants')
-      .isVisible('.dataTables_filter')
-      .then(function (isVisible) {
-        expect(isVisible).toBe(true);
-      })
-      .end(done);
+      setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
+        .isVisible('.dataTables_filter')
+        .then(function (isVisible) {
+          expect(isVisible).toBe(true);
+        })
+        .end(done);
     });
 
     it('searches for participants', (done) => {
 
-      let aParticipant = {
-        firstname: 'Friedrich',
-        lastname: 'Schiller',
-        email: 'f.schiller@example.com'
-      };
-      let aToken = 'a token';
-
-      let anotherParticipant = {
+      let anotherParticipant = participant.from({
         firstname: 'Issac',
         lastname: 'Newton',
-        email: 'i.newton@example.com'
-      };
-      let anotherToken = 'another token';
-      participants.save(aParticipant, aToken)
-        .then( () => {
-          return  participants.save(anotherParticipant, anotherToken);
+        email: 'i.newton@example.com',
+        category: 'f',
+        birthyear: 1980,
+        team: 'Crazy runners',
+        visibility: 'no',
+        discount: 'yes'
+      }).withSecureId(editUrlHelper.generateSecureID()).withToken('z Token').withStartNr(1010);
+
+      participants.save(aParticipant.withToken('e Token').withStartNr(451))
+        .then(() => {
+          return participants.save(anotherParticipant);
         })
-        .then( () => {
-          setUpLoggedInClient().url(helper.paceUrl+'admin/participants')
-          .setValue('.dataTables_filter input', 'Friedrich')
-          .elements('tr.participant-line')
-          .then( (res) => {
-            expect(res.value.length).toBe(1);
-          })
-          .end(done);
-        });
+        .then(() => {
+          setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
+            .setValue('.dataTables_filter input', 'Friedrich')
+            .elements('tr.participant-line')
+            .then((res) => {
+              expect(res.value.length).toBe(1);
+            })
+            .end(done);
+        })
+        .fail(fail);
     });
 
     it('should have a link to edit a participant', (done) => {
-      let aParticipant = {
-        firstname: 'Friedrich',
-        lastname: 'Schiller',
-        email: 'f.schiller@example.com'
-      };
-      let aToken = 'a token';
-
-      participants.save(aParticipant, aToken)
+      participants.save(aParticipant.withToken('f Token').withStartNr(551))
         .then(() => {
-          setUpLoggedInClient().url(helper.paceUrl+'admin/participants')
+          setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
             .isVisible('a#edit')
             .then(function (isVisible) {
               expect(isVisible).toBe(true);
             })
             .end(done);
-        });
+        })
+        .fail(fail);
     });
 
     it('should show amount to pay - no tshirt', function (done) {
-      let aParticipant = {
-        firstname: 'Johann Wolfgang',
-        lastname: 'Goethe',
-        email: 'jwg@example.com'
-      };
-      let aToken = 'a token';
-
-      participants.save(aParticipant, aToken)
+      participants.save(aParticipant.withToken('g Token').withStartNr(651))
         .then(() => {
           let loggedInClient = setUpLoggedInClient();
 
-          loggedInClient.url(helper.paceUrl+'admin/participants')
+          loggedInClient.url(helper.paceUrl + 'admin/participants')
             .elements('td#tshirt-amount')
             .then(function (tshirtFields) {
               loggedInClient.elementIdText(tshirtFields.value[0].ELEMENT)
@@ -235,29 +227,24 @@ describe('admin view', () => {
                     });
                 });
             });
-        });
+        })
+        .fail(fail);
     });
 
     it('should show amount to pay - one tshirt', function (done) {
-      var aParticipant = {
-        firstname: 'Friedrich',
-        lastname: 'Schiller',
-        email: 'f.schiller@example.com'
-      };
-      var aToken = 'a token';
-      var aTshirt = {
+      let tshirt = {
         size: 'M',
         model: 'normal fit'
       };
 
-      participants.save(aParticipant, aToken)
+      participants.save(aParticipant.withToken('h Token').withStartNr(751))
         .then(function (id) {
-          participants.addTShirt(aTshirt, id);
+          tshirts.addFor(tshirt, id);
         })
         .then(function () {
           var loggedInClient = setUpLoggedInClient();
 
-          loggedInClient.url(helper.paceUrl+'admin/participants')
+          loggedInClient.url(helper.paceUrl + 'admin/participants')
             .elements('td#tshirt-amount')
             .then(function (tshirtFields) {
               loggedInClient.elementIdText(tshirtFields.value[0].ELEMENT)
@@ -273,7 +260,8 @@ describe('admin view', () => {
                     });
                 });
             });
-        });
+        })
+        .fail(fail);
     });
   });
 });

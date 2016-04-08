@@ -7,10 +7,9 @@ const Q = require('q');
 
 const connectionString = process.env.SNAP_DB_PG_URL || process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace';
 
-
 let db = {};
 
-db.select = function (querystring, params) {
+db.select = (querystring, params) => {
   let results = [];
   const deferred = Q.defer();
 
@@ -31,7 +30,9 @@ db.select = function (querystring, params) {
   return deferred.promise;
 };
 
-db.insert = function (insertString, params) {
+db.delete = (querystring, params) => db.select(querystring, params);
+
+db.insert = (insertString, params) => {
   const deferred = Q.defer();
 
   pg.connect(connectionString, (err, client, done) => {
@@ -50,7 +51,7 @@ db.insert = function (insertString, params) {
   return deferred.promise;
 };
 
-db.update = function (updateString, params) {
+db.update = (updateString, params) => {
   const deferred = Q.defer();
 
   pg.connect(connectionString, (err, client, done) => {

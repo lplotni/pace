@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global jasmine, describe, it, expect, beforeEach, spyOn */
+/* global jasmine, describe, it, expect, beforeEach, afterAll, spyOn */
 
 const mockery = require('mockery');
 const Q = require('q');
@@ -10,7 +10,7 @@ const config = require('config');
 describe('pdfGeneration', () => {
 
   let pdfGeneration, res, participantsMock, documentMock;
-  let confirmedParticipant, unconfirmedParticipant;
+  let confirmedParticipant;
 
   beforeEach(() => {
 
@@ -43,17 +43,21 @@ describe('pdfGeneration', () => {
     };
 
     participantsMock = {
-      getConfirmed: jasmine.createSpy(),
-      getRegistered: jasmine.createSpy()
+      confirmed: jasmine.createSpy(),
+      registered: jasmine.createSpy()
     };
 
     mockery.registerMock('../service/participants', participantsMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
     confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person'};
-    unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person'};
-    participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
-    participantsMock.getRegistered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
+    participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
+    participantsMock.registered.and.returnValue(Q.fcall(() => [{ firstname: 'Unbestaetigte', lastname: 'Person'}]));
+  });
+
+  afterAll(() => {
+    mockery.deregisterAll();
+    mockery.disable();
   });
 
   it('should generate a page for every participant', (done) => {
@@ -77,8 +81,8 @@ describe('pdfGeneration', () => {
   it('should add the barcode three times for easier scanning', (done) => {
     let numberOfOtherImageCalls = 3;
 
-    participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
-    participantsMock.getRegistered.and.returnValue(Q.fcall(() => []));
+    participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
+    participantsMock.registered.and.returnValue(Q.fcall(() => []));
 
     pdfGeneration.fillDocument(res, documentMock).then( () => {
       expect(documentMock.image).toHaveBeenCalledTimes(3 + numberOfOtherImageCalls);

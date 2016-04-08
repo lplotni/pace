@@ -8,20 +8,32 @@ describe('race service', () => {
   const helper = require('../journeyHelper');
   const race = require('../../service/race');
 
-  beforeEach((done) => {
-    helper.changeOriginalTimeout();
-    helper.setupDbConnection(done);
+  it('should return false if the race has not yet started', (done) => {
+    race.resetStarttime()
+      .then(function() {
+        race.hasStarted()
+          .then(function(result) {
+            expect(result).toBe(false);
+            done();
+          });
+    });
   });
-
-  afterAll((done) => {
-    helper.resetToOriginalTimeout();
-    helper.closeDbConnection(done);
+  it('should return true if the race has started', (done) => {
+    let starttime = Date.parse(Date());
+    race.setStartTime(starttime)
+      .then(function() {
+        race.hasStarted()
+          .then(function(result) {
+            expect(result).toBe(true);
+            done();
+          });
+      });
   });
 
   it('should store and read race start times', (done) => {
     let starttime = Date.parse(Date());
     race.setStartTime(starttime)
-      .then(function () {
+      .then(function() {
         race.startTime()
           .then(function(result){
             expect(String(starttime)).toEqual(result);
@@ -31,12 +43,5 @@ describe('race service', () => {
       });
   });
 
-  it('should tell if race has started', (done) => {
-    race.hasStarted()
-      .then(function(result) {
-        expect(result).toBe(false)
-        done();
-      });
-  });
-})
-;
+
+});

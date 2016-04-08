@@ -6,11 +6,11 @@ block content
 
   form#payment-details(method='POST', action='after')
    .row
-      input(type="text", size="2", name="hour") 
+      input(type="text", size="2", name="hours", value="#{hours}") 
       span :
-      input(type="text", size="2", name="minute")
+      input(type="text", size="2", name="minutes" value="#{minutes}")
       span :
-      input(type="text", size="2", name="seconds")
+      input(type="text", size="2", name="seconds" value="#{seconds}")
       input(type='hidden', name='_csrf', value=_csrf)
 
     button(id = 'set_race_starttime', type='submit').bigfont.button-primary Startzeit eintragen

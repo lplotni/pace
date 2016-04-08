@@ -8,7 +8,7 @@ const _ = require('lodash');
 const Q = require('q');
 const config = require('config');
 const participants = require('../service/participants');
-const barcodeGeneration = require('./barcodeGeneration');
+const barcode = require("rescode");
 
 let pdfGeneration = {};
 
@@ -25,7 +25,8 @@ pdfGeneration.createStartNumberPage = function(startNumber, participant, hasPaye
   doc.fontSize(40).fillColor('red').text(participant.firstname, 0, 300, {align: 'center'});
   doc.fontSize(30).fillColor('red').text(participant.team, 0, 350, {align: 'center'});
 
-  let ean8Code = barcodeGeneration.ean8Code(startNumber);
+  barcode.loadModules(["code128"]);
+  let ean8Code = barcode.create("code128", String(startNumber));
 
   doc.image(ean8Code, 260, 20, {fit: [70, 70]});
   doc.image(ean8Code, 50, 220, {fit: [70, 70]});

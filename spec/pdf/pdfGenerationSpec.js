@@ -90,6 +90,18 @@ describe('pdfGeneration', () => {
     });
   });
 
+  it('should add the background image and the logos', (done) => {
+    participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
+    participantsMock.registered.and.returnValue(Q.fcall(() => []));
+
+    pdfGeneration.fillDocument(res, documentMock).then( () => {
+      expect(documentMock.image.calls.argsFor(0)[0]).toMatch(/pdf\/images\/background_light\.jpg/);
+      expect(documentMock.image.calls.argsFor(1)[0]).toMatch(/pdf\/images\/lauf_gegen_rechts_logo\.jpg/);
+      expect(documentMock.image.calls.argsFor(2)[0]).toMatch(/pdf\/images\/fc_st_pauli_marathon_logo\.png/);
+      done();
+    });
+  });
+
   it('should add a checkmark symbol only if the participant has payed', (done) => {
     pdfGeneration.fillDocument(res, documentMock).then( () => {
       expect(documentMock.stroke).toHaveBeenCalledTimes(1);

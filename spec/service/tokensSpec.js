@@ -38,7 +38,7 @@ describe('token service', () => {
       mockery.disable();
     });
 
-    describe('createUnique', () => {
+    describe('createUnique()', () => {
       it('returns a string with 5 upper case characters', (done) => {
 
         tokens.createUnique()

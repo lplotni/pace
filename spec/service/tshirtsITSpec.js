@@ -30,7 +30,7 @@ describe('tshirt service', () => {
     helper.closeDbConnection(done);
   });
 
-  describe('addFor', () => {
+  describe('addFor()', () => {
     it('stores tshirt', (done) => {
       participants.save(aParticipant.withStartNr(10))
         .then((id) => {
@@ -47,7 +47,7 @@ describe('tshirt service', () => {
     });
   });
 
-  describe('getFor', () => {
+  describe('getFor()', () => {
     it('returns [] if no tshirt ordered', (done) => {
       tshirts.getFor(200).then(result => {
         expect(result.length).toBe(0);

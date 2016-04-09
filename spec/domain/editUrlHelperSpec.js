@@ -10,7 +10,7 @@ describe('editUrlHelper', () => {
 
   const editUrlHelper = require('../../domain/editUrlHelper.js');
 
-  describe('generateSecureID', () => {
+  describe('generateSecureID()', () => {
 
     it('should generate a cryptographically secure id', () => {
       spyOn(crypto, 'randomBytes').and.returnValue("testID");
@@ -24,7 +24,7 @@ describe('editUrlHelper', () => {
     });
   });
 
-  describe('generateUrl', () => {
+  describe('generateUrl()', () => {
     it('should produce absolute URI', () => {
       const secureID = editUrlHelper.generateUrl('secureId');
 
@@ -32,7 +32,7 @@ describe('editUrlHelper', () => {
     });
   });
 
-  describe('generateUrlForAdmin', () => {
+  describe('generateUrlForAdmin()', () => {
     it('should produce absolute URI', () => {
       const secureID = editUrlHelper.generateUrlForAdmin('secureId');
 

@@ -81,9 +81,9 @@ pdfGeneration.fillDocument = function(res, doc) {
           doc.end();
           deferred.resolve(doc);
       });
-
-      return deferred.promise;
     }));
+
+  return deferred.promise;
 };
 
 pdfGeneration.generate = (res) => {

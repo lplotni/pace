@@ -87,8 +87,8 @@ describe('pdfGeneration', () => {
   it('should add the barcode three times for easier scanning', (done) => {
     let numberOfOtherImageCalls = 3;
 
-    participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
-    participantsMock.getRegistered.and.returnValue(Q.fcall(() => []));
+    participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
+    participantsMock.registered.and.returnValue(Q.fcall(() => []));
 
     pdfGeneration.fillDocument(res, documentMock).then( () => {
       expect(documentMock.image).toHaveBeenCalledTimes(3 + numberOfOtherImageCalls);

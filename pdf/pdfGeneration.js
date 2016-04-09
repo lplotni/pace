@@ -8,6 +8,7 @@ const _ = require('lodash');
 const Q = require('q');
 const config = require('config');
 const participants = require('../service/participants');
+const tshirts = require('../service/tshirts');
 const barcode = require("rescode");
 
 let pdfGeneration = {};
@@ -41,6 +42,10 @@ pdfGeneration.createStartNumberPage = (participant, doc) => {
   doc.image(barcodeSvg, 20, 330, {fit: [70, 70]});
   doc.image(barcodeSvg, 500, 330, {fit: [70, 70]});
 
+  if(participant.tshirt) {
+    doc.fontSize(12).fillColor('black').text(participant.tshirt.size + ' ' + participant.tshirt.model, 500, 315);
+  }
+
   if(participant.has_payed) {
     pdfGeneration.addCheckmarkSymbol(doc);
   }
@@ -67,15 +72,18 @@ pdfGeneration.fillDocument = function(res, doc) {
       let allParticipants = confirmed.concat(unconfirmed);
       allParticipants = _.orderBy(allParticipants, ['start_number']);
 
-      _.forEach(allParticipants, participant => {
-        pdfGeneration.createStartNumberPage(participant, doc);
+      Q.all(allParticipants.map(tshirts.findAndAddTo))
+        .then(() => {
+          _.forEach(allParticipants, participant => {
+            pdfGeneration.createStartNumberPage(participant, doc);
+          });
+
+          doc.end();
+          deferred.resolve(doc);
       });
 
-      doc.end();
-      deferred.resolve(doc);
+      return deferred.promise;
     }));
-
-  return deferred.promise;
 };
 
 pdfGeneration.generate = (res) => {

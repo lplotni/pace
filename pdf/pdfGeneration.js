@@ -25,17 +25,17 @@ pdfGeneration.addCheckmarkSymbol = (doc) => {
     .stroke();
 };
 
-pdfGeneration.createStartNumberPage = (startNumber, participant, hasPayed, doc) => {
+pdfGeneration.createStartNumberPage = (participant, hasPayed, doc) => {
   doc.image(__dirname + pathToBackgroundImage, {fit: [800, 800]});
   doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [150, 150]});
   doc.image(__dirname + pathToLogoRight, 450, 20, {fit: [130, 130]});
 
-  doc.font('Helvetica-Bold').fontSize(200).fillColor('saddlebrown').text(startNumber, 0, 130, {align: 'center'});
+  doc.font('Helvetica-Bold').fontSize(200).fillColor('saddlebrown').text(participant.start_number, 0, 130, {align: 'center'});
   doc.fontSize(40).fillColor('red').text(participant.firstname, 0, 300, {align: 'center'});
   doc.fontSize(30).fillColor('red').text(participant.team, 0, 350, {align: 'center'});
 
   barcode.loadModules(["code128"]);
-  let ean8Code = barcode.create("code128", String(startNumber));
+  let ean8Code = barcode.create("code128", String(participant.start_number));
 
   doc.image(ean8Code, 260, 20, {fit: [70, 70]});
   doc.image(ean8Code, 50, 220, {fit: [70, 70]});
@@ -48,18 +48,7 @@ pdfGeneration.createStartNumberPage = (startNumber, participant, hasPayed, doc) 
   doc.addPage();
 };
 
-pdfGeneration.getNextStartNumber = (lastNumber) => {
-  lastNumber++;
-  let excludedNumbers = config.get('startnumbers.excluded');
-  if(excludedNumbers.indexOf(lastNumber) > -1) {
-    return lastNumber+1;
-  } else {
-    return lastNumber;
-  }
-};
-
 pdfGeneration.fillDocument = function(res, doc) {
-  let counter = 0;
   const deferred = Q.defer();
 
   participants.confirmed().then(confirmed =>
@@ -71,12 +60,10 @@ pdfGeneration.fillDocument = function(res, doc) {
       });
       doc.pipe(res);
       _.forEach(confirmed, participant => {
-        counter = this.getNextStartNumber(counter);
-        pdfGeneration.createStartNumberPage(counter, participant, true, doc);
+        pdfGeneration.createStartNumberPage(participant, true, doc);
       });
       _.forEach(unconfirmed, participant => {
-        counter = this.getNextStartNumber(counter);
-        pdfGeneration.createStartNumberPage(counter, participant, false, doc);
+        pdfGeneration.createStartNumberPage(participant, false, doc);
       });
       doc.end();
       deferred.resolve(doc);

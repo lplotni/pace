@@ -10,7 +10,7 @@ const config = require('config');
 describe('pdfGeneration', () => {
 
   let pdfGeneration, res, participantsMock, documentMock;
-  let confirmedParticipant, unconfirmedParticipant;
+  let confirmedParticipant;
 
   beforeEach(() => {
 
@@ -50,8 +50,8 @@ describe('pdfGeneration', () => {
     mockery.registerMock('../service/participants', participantsMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
-    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person'};
-    unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person'};
+    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', start_number: 1};
+    let unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', start_number: 2};
     participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.getRegistered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
   });
@@ -120,18 +120,6 @@ describe('pdfGeneration', () => {
       });
       done();
     });
-  });
-
-  describe('isExcludedStartNumber', function() {
-
-    it('should return the next start number excluding the numbers from the config', () => {
-      expect(pdfGeneration.getNextStartNumber(1)).toBe(2);
-
-      config.get('startnumbers.excluded').map(function(number) {
-        expect(pdfGeneration.getNextStartNumber(number)).toBe(number+1);
-      });
-    });
-
   });
 
 });

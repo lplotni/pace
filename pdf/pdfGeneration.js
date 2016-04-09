@@ -13,13 +13,22 @@ const barcode = require("rescode");
 let pdfGeneration = {};
 
 const fileName = 'start_numbers.pdf';
-
+const pathToBackgroundImage = '/images/background_light.jpg';
+const pathToLogoLeft = '/images/lauf_gegen_rechts_logo.jpg';
+const pathToLogoRight = '/images/fc_st_pauli_marathon_logo.png';
 const checkmarkSymbolSvg = 'M7.375,33.25 c0,0,10,11.375,14.125,11.375S44.875,8,44.875,8';
 
-pdfGeneration.createStartNumberPage = function(startNumber, participant, hasPayed, doc) {
-  doc.image(__dirname + '/images/background_light.jpg', {fit: [800, 800]});
-  doc.image(__dirname + '/images/lauf_gegen_rechts_logo.jpg', 20, 20, {fit: [150, 150]});
-  doc.image(__dirname + '/images/fc_st_pauli_marathon_logo.png', 450, 20, {fit: [130, 130]});
+pdfGeneration.addCheckmarkSymbol = (doc) => {
+  doc.translate(500, 300)
+    .path(checkmarkSymbolSvg)
+    .lineWidth(3)
+    .stroke();
+};
+
+pdfGeneration.createStartNumberPage = (startNumber, participant, hasPayed, doc) => {
+  doc.image(__dirname + pathToBackgroundImage, {fit: [800, 800]});
+  doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [150, 150]});
+  doc.image(__dirname + pathToLogoRight, 450, 20, {fit: [130, 130]});
 
   doc.font('Helvetica-Bold').fontSize(200).fillColor('saddlebrown').text(startNumber, 0, 130, {align: 'center'});
   doc.fontSize(40).fillColor('red').text(participant.firstname, 0, 300, {align: 'center'});
@@ -33,16 +42,13 @@ pdfGeneration.createStartNumberPage = function(startNumber, participant, hasPaye
   doc.image(ean8Code, 470, 220, {fit: [70, 70]});
 
   if(hasPayed) {
-    doc.translate(500, 300)
-      .path(checkmarkSymbolSvg)
-      .lineWidth(3)
-      .stroke();
+    pdfGeneration.addCheckmarkSymbol(doc);
   }
 
   doc.addPage();
 };
 
-pdfGeneration.getNextStartNumber = function(lastNumber) {
+pdfGeneration.getNextStartNumber = (lastNumber) => {
   lastNumber++;
   let excludedNumbers = config.get('startnumbers.excluded');
   if(excludedNumbers.indexOf(lastNumber) > -1) {
@@ -79,7 +85,7 @@ pdfGeneration.fillDocument = function(res, doc) {
   return deferred.promise;
 };
 
-pdfGeneration.generate = function(res) {
+pdfGeneration.generate = (res) => {
   let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
   return pdfGeneration.fillDocument(res, doc);
 };

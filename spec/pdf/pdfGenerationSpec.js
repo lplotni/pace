@@ -50,10 +50,10 @@ describe('pdfGeneration', () => {
     mockery.registerMock('../service/participants', participantsMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
-    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', start_number: 1};
-    let unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', start_number: 2};
-    participantsMock.getConfirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
-    participantsMock.getRegistered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
+    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', start_number: 1};
+    let unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: '', start_number: 2};
+    participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
+    participantsMock.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
   });
 
   afterAll(() => {

@@ -16,10 +16,10 @@ const fileName = 'start_numbers.pdf';
 const pathToBackgroundImage = '/images/background_light.jpg';
 const pathToLogoLeft = '/images/lauf_gegen_rechts_logo.jpg';
 const pathToLogoRight = '/images/fc_st_pauli_marathon_logo.png';
-const checkmarkSymbolSvg = 'M7.375,33.25 c0,0,10,11.375,14.125,11.375S44.875,8,44.875,8';
+const checkmarkSymbolSvg = 'M7.375,25 c0,0,10,11.375,14.125,11.375S44.875,8,44.875,8';
 
 pdfGeneration.addCheckmarkSymbol = (doc) => {
-  doc.translate(500, 300)
+  doc.translate(20, 280)
     .path(checkmarkSymbolSvg)
     .lineWidth(3)
     .stroke();
@@ -27,19 +27,19 @@ pdfGeneration.addCheckmarkSymbol = (doc) => {
 
 pdfGeneration.createStartNumberPage = (participant, hasPayed, doc) => {
   doc.image(__dirname + pathToBackgroundImage, {fit: [800, 800]});
-  doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [150, 150]});
-  doc.image(__dirname + pathToLogoRight, 450, 20, {fit: [130, 130]});
+  doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [130, 130]});
+  doc.image(__dirname + pathToLogoRight, 475, 20, {fit: [100, 100]});
 
   doc.font('Helvetica-Bold').fontSize(200).fillColor('saddlebrown').text(participant.start_number, 0, 130, {align: 'center'});
-  doc.fontSize(40).fillColor('red').text(participant.firstname, 0, 300, {align: 'center'});
-  doc.fontSize(30).fillColor('red').text(participant.team, 0, 350, {align: 'center'});
+  doc.fontSize(40).fillColor('red').text(participant.firstname.substring(0, 17), 0, 300, {align: 'center'});
+  doc.fontSize(30).fillColor('red').text(participant.team.substring(0, 25), 0, 350, {align: 'center'});
 
   barcode.loadModules(["code128"]);
-  let ean8Code = barcode.create("code128", String(participant.start_number));
+  let barcodeSvg = barcode.create("code128", String(participant.start_number));
 
-  doc.image(ean8Code, 260, 20, {fit: [70, 70]});
-  doc.image(ean8Code, 50, 220, {fit: [70, 70]});
-  doc.image(ean8Code, 470, 220, {fit: [70, 70]});
+  doc.image(barcodeSvg, 260, 20, {fit: [70, 70]});
+  doc.image(barcodeSvg, 20, 330, {fit: [70, 70]});
+  doc.image(barcodeSvg, 500, 330, {fit: [70, 70]});
 
   if(hasPayed) {
     pdfGeneration.addCheckmarkSymbol(doc);

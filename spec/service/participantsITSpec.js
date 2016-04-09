@@ -3,6 +3,8 @@
 /* jshint esnext: true */
 /* global describe, beforeEach, afterAll, spyOn, it, expect, fail */
 
+const _ = require('lodash');
+
 describe('participants service', () => {
 
   const participants = require('../../service/participants');
@@ -67,12 +69,10 @@ describe('participants service', () => {
   };
 
   beforeEach((done) => {
-    helper.changeOriginalTimeout();
     helper.setupDbConnection(done);
   });
 
   afterAll((done) => {
-    helper.resetToOriginalTimeout();
     helper.closeDbConnection(done);
   });
 
@@ -94,7 +94,7 @@ describe('participants service', () => {
       .fail(fail);
   });
 
-  describe('save', () => {
+  describe('save()', () => {
     it('should return the id', (done) => {
 
       participants.save(aParticipant.withStartNr(startNr++))
@@ -106,7 +106,7 @@ describe('participants service', () => {
     });
   });
 
-  describe('byId', () => {
+  describe('byId()', () => {
     it('should return all information of the participant with given Id', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then(function (participantId) {
@@ -120,7 +120,7 @@ describe('participants service', () => {
     });
   });
 
-  describe('byToken', () => {
+  describe('byToken()', () => {
     it('should return participant\'s lastname and firstname and ordered tshirt for a given token', (done) => {
       participants.save(aParticipantWithTshirt.withStartNr(startNr++))
         .then(function (participantId) {
@@ -139,7 +139,7 @@ describe('participants service', () => {
     });
   });
 
-  describe('bySecureId', () => {
+  describe('bySecureId()', () => {
     it('should return all information of the participant with given secureId', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then(function (participantId) {
@@ -153,13 +153,16 @@ describe('participants service', () => {
     });
   });
 
-  describe('delete', () => {
+  describe('delete()', () => {
     it('should delete a user', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then((id) => {
           participants.delete(id).then(() => {
-            done();
-          });
+            participants.byId(id).then(() => {
+              fail('Participant has not been deleted');
+              done();
+            }).catch(done);
+          }).fail(fail);
         });
     });
 
@@ -167,7 +170,14 @@ describe('participants service', () => {
       participants.save(aParticipantWithTshirt.withStartNr(startNr++))
         .then((participantid) => {
           participants.delete(participantid).then(() => {
-              done();
+              tshirts.getFor(participantid).then((shirts)=>{
+               if(_.isEmpty(shirts))   {
+                 done();
+               } else {
+                 fail('participant\'s tshirts have not been deleted');
+                 done();
+               }
+              });
             })
             .fail(fail);
         });
@@ -176,17 +186,16 @@ describe('participants service', () => {
     it('should give error if accessing deleted user', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then((id) => {
-          let participantid = id;
-          participants.delete(participantid).then(() => {
-            participants.byId(participantid).catch(() => {
+          participants.delete(id).then(() => {
+            participants.byId(id).catch(() => {
               done();
             });
-          });
+          }).fail(fail);
         });
     });
   });
 
-  describe('update', () => {
+  describe('update()', () => {
     it('should return the full information for a participant with given Id', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then(function (id) {
@@ -219,7 +228,7 @@ describe('participants service', () => {
     });
   });
 
-  describe('publiclyVisible', () => {
+  describe('publiclyVisible()', () => {
     it('returns only participants which are confirmed and OK with being visible to the public', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then(participants.markPayed)
@@ -239,7 +248,7 @@ describe('participants service', () => {
     });
   });
 
-  describe('bulkmail', () => {
+  describe('bulkmail()', () => {
     it('should send the correct email to every participant', (done) => {
       spyOn(mails, 'sendEmail');
       spyOn(mails, 'sendStatusEmail').and.callThrough();

@@ -25,7 +25,7 @@ pdfGeneration.addCheckmarkSymbol = (doc) => {
     .stroke();
 };
 
-pdfGeneration.createStartNumberPage = (participant, hasPayed, doc) => {
+pdfGeneration.createStartNumberPage = (participant, doc) => {
   doc.image(__dirname + pathToBackgroundImage, {fit: [800, 800]});
   doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [130, 130]});
   doc.image(__dirname + pathToLogoRight, 475, 20, {fit: [100, 100]});
@@ -41,7 +41,7 @@ pdfGeneration.createStartNumberPage = (participant, hasPayed, doc) => {
   doc.image(barcodeSvg, 20, 330, {fit: [70, 70]});
   doc.image(barcodeSvg, 500, 330, {fit: [70, 70]});
 
-  if(hasPayed) {
+  if(participant.has_payed) {
     pdfGeneration.addCheckmarkSymbol(doc);
   }
 
@@ -59,12 +59,18 @@ pdfGeneration.fillDocument = function(res, doc) {
         'Content-Disposition': 'attachment; filename=' + fileName
       });
       doc.pipe(res);
-      _.forEach(confirmed, participant => {
-        pdfGeneration.createStartNumberPage(participant, true, doc);
+
+      confirmed.map( (participant) => {
+        participant.has_payed = true;
       });
-      _.forEach(unconfirmed, participant => {
-        pdfGeneration.createStartNumberPage(participant, false, doc);
+
+      let allParticipants = confirmed.concat(unconfirmed);
+      allParticipants = _.orderBy(allParticipants, ['start_number']);
+
+      _.forEach(allParticipants, participant => {
+        pdfGeneration.createStartNumberPage(participant, doc);
       });
+
       doc.end();
       deferred.resolve(doc);
     }));

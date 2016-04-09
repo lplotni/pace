@@ -110,6 +110,22 @@ describe('pdfGeneration', () => {
     });
   });
 
+  it('should sort the pdf pages by start number in ascending order', (done) => {
+    participantsMock.confirmed.and.returnValue(Q.fcall(() => [
+      { firstname: 'Third', lastname: 'Person', team: '', start_number: 3},
+      { firstname: 'First', lastname: 'Person', team: '', start_number: 1},
+      { firstname: 'Second', lastname: 'Person', team: '', start_number: 2}
+    ]));
+    participantsMock.registered.and.returnValue(Q.fcall(() => []));
+
+    pdfGeneration.fillDocument(res, documentMock).then( () => {
+      expect(documentMock.text.calls.argsFor(1)[0]).toBe('First');
+      expect(documentMock.text.calls.argsFor(4)[0]).toBe('Second');
+      expect(documentMock.text.calls.argsFor(7)[0]).toBe('Third');
+      done();
+    });
+  });
+
   it('should automatically download a PDF file called start_numbers', (done) => {
     const fileName = 'start_numbers.pdf';
     pdfGeneration.fillDocument(res, documentMock).then( () => {

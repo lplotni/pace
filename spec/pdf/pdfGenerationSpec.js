@@ -9,7 +9,7 @@ const config = require('config');
 
 describe('pdfGeneration', () => {
 
-  let pdfGeneration, res, participantsMock, documentMock;
+  let pdfGeneration, res, participantsMock, documentMock, tshirtsMock;
   let confirmedParticipant;
 
   beforeEach(() => {
@@ -43,15 +43,20 @@ describe('pdfGeneration', () => {
     };
 
     participantsMock = {
-      confirmed: jasmine.createSpy(),
-      registered: jasmine.createSpy()
+      confirmed: jasmine.createSpy('confirmed'),
+      registered: jasmine.createSpy('registered')
+    };
+
+    tshirtsMock = {
+      findAndAddTo: jasmine.createSpy('findAndAddTo')
     };
 
     mockery.registerMock('../service/participants', participantsMock);
+    mockery.registerMock('../service/tshirts', tshirtsMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
     confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', start_number: 1};
-    let unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: '', start_number: 2};
+    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: '', start_number: 2};
     participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
   });
@@ -106,6 +111,22 @@ describe('pdfGeneration', () => {
   it('should add a checkmark symbol only if the participant has payed', (done) => {
     pdfGeneration.fillDocument(res, documentMock).then( () => {
       expect(documentMock.stroke).toHaveBeenCalledTimes(1);
+      done();
+    });
+  });
+
+  it('should add tshirt details', (done) => {
+    participantsMock.confirmed.and.returnValue(Q.fcall(() => [
+      { firstname: 'Third', lastname: 'Person', team: '', start_number: 3, tshirt: { size: 'XS', model: 'Normal fit' }}
+    ]));
+
+    // why is this mock not having any effect?
+    tshirtsMock.findAndAddTo.and.returnValue(Q.fcall(() => [
+      { firstname: 'Bestaetigte', lastname: 'Person', team: '', start_number: 1, tshirt: { size: 'XS', model: 'Normal fit' }}
+    ]));
+
+    pdfGeneration.fillDocument(res, documentMock).then( () => {
+      expect(documentMock.text).toHaveBeenCalledWith('XS Normal fit', 500, 315);
       done();
     });
   });

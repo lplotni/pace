@@ -42,6 +42,7 @@ describe('participants page', () => {
 
   it('shows full participant list only if logged in as admin', (done) => {
     let adminsListElements = [
+      'Startnummer',
       'Vorname',
       'Nachname',
       'Bezahlt',

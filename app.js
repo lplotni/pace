@@ -23,6 +23,7 @@ let editParticipantRoute = require('./routes/participants/editParticipant');
 let adminRoute = require('./routes/admin/admin');
 let adminParticipantsRoute = require('./routes/admin/participants');
 let adminEditParticipantRoute = require('./routes/admin/editParticipant');
+let adminAfterRoute = require('./routes/admin/after');
 let paymentValidationRoute = require('./routes/admin/paymentValidation');
 
 let config = require('config');
@@ -109,6 +110,7 @@ app.use('/logout', logoutRoute);
 app.use('/admin', adminRoute);
 app.use('/admin/participants', adminParticipantsRoute);
 app.use('/admin/editparticipant', adminEditParticipantRoute);
+app.use('/admin/after', adminAfterRoute);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {

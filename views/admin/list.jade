@@ -5,6 +5,7 @@ block content
         table.u-full-width
             thead
                 tr
+                    th Startnummer
                     th Vorname
                     th Nachname
                     th Bezahlt
@@ -18,6 +19,7 @@ block content
             tbody
                 each p in participants
                     tr.participant-line
+                        td.startnumber=p.start_number
                         td.first-name=p.firstname
                         td.last-name=p.lastname
                         td=(p.has_payed ? 'ja' : 'nein')

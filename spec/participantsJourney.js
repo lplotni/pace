@@ -42,6 +42,7 @@ describe('participants page', () => {
 
   it('shows full participant list only if logged in as admin', (done) => {
     let adminsListElements = [
+      'Startnummer',
       'Vorname',
       'Nachname',
       'Bezahlt',
@@ -197,7 +198,7 @@ describe('participants page', () => {
       participants.save(aParticipant.withToken('f Token').withStartNr(551))
         .then(() => {
           setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
-            .isVisible('a#edit')
+            .isVisible('a#edit.edit-button')
             .then(function (isVisible) {
               expect(isVisible).toBe(true);
             })

@@ -11,11 +11,13 @@ html
           .row
             h6.warning.centered DIES IST NUR EINE TESTUMGEBUNG. REGISTRIERUNGEN FUER 2016 SIND NOCH NICHT MOEGLICH
         .row
-          a.four.columns.no-link(href='/admin')
+          a.three.columns.no-link(href='/admin')
             h5.centered Information
-          a.four.columns.no-link(href='/admin/participants')
+          a.three.columns.no-link(href='/admin/participants')#edit
             h5.centered Teilnehmer*innen
-          a.four.columns.no-link(href='/logout')
+          a.three.columns.no-link(href='/admin/after')#after
+            h5.centered Nach dem Start
+          a.three.columns.no-link(href='/logout')#logout
             h5.centered Logout
         .row
           .offset-by-four.four.columns

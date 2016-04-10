@@ -197,7 +197,7 @@ describe('participants page', () => {
       participants.save(aParticipant.withToken('f Token').withStartNr(551))
         .then(() => {
           setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
-            .isVisible('a#edit')
+            .isVisible('a#edit.edit-button')
             .then(function (isVisible) {
               expect(isVisible).toBe(true);
             })

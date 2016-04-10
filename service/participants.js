@@ -175,8 +175,14 @@ participants.insertTime = function (startnumber, timestring) {
   const deferred = Q.defer();
   timeCalculator.timestamp(timestring)
     .then(finishtime => {
-      db.update('update participants set time=$2 where start_number=$1', [startnumber,finishtime]);
-      deferred.resolve();
+      participants.getTime(startnumber)
+        .then( old_time => {
+          if ((finishtime < old_time) || _.isEmpty(old_time)) {
+            deferred.resolve(db.update('update participants set time=$2 where start_number=$1', [startnumber,finishtime]));
+          } else {
+            deferred.resolve();
+          }
+        });
     });
   return deferred.promise;
 };
@@ -185,7 +191,7 @@ participants.getTime = function (startnumber) {
   const deferred = Q.defer();
   db.select('select time from participants where start_number=$1', [startnumber])
     .then((result) => {
-      deferred.resolve(result);
+      deferred.resolve(result[0].time);
     })
     .catch(deferred.reject);
   return deferred.promise;

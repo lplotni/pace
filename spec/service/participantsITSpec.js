@@ -292,34 +292,43 @@ describe('participants service', () => {
   describe('insertTime', () => {
     it('should add the time to a participant with given start number', (done) => {
       let time = '10:32:32';
-      participants.save(aParticipant.withStartNr(startNr))
-        .then(function(participantid) {
-          participants.insertTime(startNr++,time)
-          .then(function(result) {
-            participants.byId(participantid)
-              .then(function(participant) {
-                expect(participant.time).toBeDefined();
+      let nr = startNr++;
+      participants.save(aParticipant.withStartNr(nr))
+        .then((participantid) => {
+          participants.insertTime(nr,time)
+          .then(() => participants.byId(participantid))
+          .then((participant) => {
+                expect(participant.time).toBeGreaterThan(1460401097); 
                 done();
+          }).fail(fail);
+        });
+    });
+    
+    it('should not save if time is slower than saved time', (done) => {
+      let time = '10:32:32';
+      let slower_time = '11:32:32';
+      let nr = startNr++;
+      participants.save(aParticipant.withStartNr(nr))
+        .then((participantid) => {
+          participants.insertTime(nr,time)
+          .then(() => {
+            participants.byId(participantid)
+              .then((participant) => {
+                let saved_time = participant.time;
+                participants.insertTime(nr,slower_time)
+                  .then(() => {
+                    participants.byId(participantid)
+                      .then((new_participant) => {
+                        expect(saved_time).toBe(new_participant.time);
+                        done();
+                      })
+                      .fail(fail);
+                  });
               });
           });
         });
     });
 
-    xit('should not add the time to a participant when given time is larger than exisiting one', (done) => {
-      let time = '00:32:32';
-      let longer_time = '01:32:32';
-      participants.save(aParticipant.withStartNr(startNr))
-        .then(function(participantid) {
-          participants.insertTime(startNr,time)
-            .then(function() {
-              participants.insertTime(startNr,longer_time)
-              .then(function() {
-                  expect(participant.time).toEqual(time);
-                  done();
-              });
-            });
-        });
-    });
   });
 
   describe('bulkmail()', () => {

@@ -35,7 +35,7 @@ pdfGeneration.createStartNumberPage = (participant, doc) => {
   doc.fontSize(40).fillColor('red').text(participant.firstname.substring(0, 17), 0, 300, {align: 'center'});
   doc.fontSize(30).fillColor('red').text(participant.team.substring(0, 25), 0, 350, {align: 'center'});
 
-  barcode.loadModules(["code128"]);
+  barcode.loadModules(["code128"], {'includetext': false, 'scaleX': 2});
   let barcodeSvg = barcode.create("code128", String(participant.start_number));
 
   doc.image(barcodeSvg, 260, 20, {fit: [70, 70]});

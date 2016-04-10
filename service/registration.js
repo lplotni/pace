@@ -19,18 +19,18 @@ const editUrlHelper = require('../domain/editUrlHelper');
 
 const registration = {};
 registration.isClosed = () => {
-  return db.select("SELECT data->>'is_closed' as is_closed FROM registration;")
+  return db.select("SELECT data->>'is_closed' as is_closed FROM race;")
     .then( result => {
       return result[0].is_closed === 'true';
     });
 };
 
 registration.close = () => {
-  return db.update("UPDATE registration SET data = jsonb_set(data, '{is_closed}', 'true');");
+  return db.update("UPDATE race SET data = jsonb_set(data, '{is_closed}', 'true');");
 };
 
 registration.reopen = () => {
-  return db.update("UPDATE registration SET data = jsonb_set(data, '{is_closed}', 'false');");
+  return db.update("UPDATE race SET data = jsonb_set(data, '{is_closed}', 'false');");
 };
 
 registration.confirm = function (participantId) {

@@ -15,3 +15,9 @@ block content
 
     button(id = 'set_race_starttime', type='submit').bigfont.button-primary Startzeit eintragen
 
+  h3 Ergebnisse importieren
+    form(method="POST", action="after/import?_csrf=#{csrf}", enctype="multipart/form-data")
+      input(type="file", name="displayImage")
+      button#upload-results.primary.button-primary.pace(type='submit') Ergebnisse importieren
+
+

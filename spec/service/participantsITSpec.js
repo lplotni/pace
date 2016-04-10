@@ -275,7 +275,6 @@ describe('participants service', () => {
         .fail(fail);
 
     });
-  });
 
   describe('blancParticipants()', () => {
     it('returns only participants which are on-site registrations', (done) => {
@@ -286,6 +285,40 @@ describe('participants service', () => {
             done();
           })
           .fail(fail);
+        });
+    });
+  });
+
+  describe('insertTime', () => {
+    it('should add the time to a participant with given start number', (done) => {
+      let time = '10:32:32';
+      participants.save(aParticipant.withStartNr(startNr))
+        .then(function(participantid) {
+          participants.insertTime(startNr++,time)
+          .then(function(result) {
+            participants.byId(participantid)
+              .then(function(participant) {
+                expect(participant.time).toBeDefined();
+                done();
+              });
+          });
+        });
+    });
+
+    xit('should not add the time to a participant when given time is larger than exisiting one', (done) => {
+      let time = '00:32:32';
+      let longer_time = '01:32:32';
+      participants.save(aParticipant.withStartNr(startNr))
+        .then(function(participantid) {
+          participants.insertTime(startNr,time)
+            .then(function() {
+              participants.insertTime(startNr,longer_time)
+              .then(function() {
+                  expect(participant.time).toEqual(time);
+                  done();
+              });
+            });
+        });
     });
   });
 

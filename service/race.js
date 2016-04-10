@@ -2,9 +2,14 @@
 /* jshint esnext: true */
 'use strict';
 const db = require('../service/util/dbHelper');
+const participant = require('../service/participants');
 const _ = require('lodash');
 const Q = require('q');
 const moment = require('moment');
+const csv = require('fast-csv');
+const fs = require('fs');
+
+
 
 let race = {};
 
@@ -44,6 +49,20 @@ race.resetStarttime = () => {
   let query = 'UPDATE race SET data = jsonb_object(\'{"is_closed",false}\')'; 
   return db.update(query);
 };
+
+race.import = function (file) {
+  const deferred = Q.defer();
+  csv
+   .fromPath(file)
+   .on("data", function(data){
+      participant.insertTime(data[1],data[2]);
+      })
+   .on("end", function(){
+      deferred.resolve();
+      });
+  return deferred.promise;
+};
+
 
 
 module.exports = race;

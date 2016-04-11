@@ -9,6 +9,7 @@ const isAuthenticated = require('../../acl/authentication');
 const pdfGeneration = require('../../pdf/pdfGeneration');
 const registration = require('../../service/registration');
 const stats = require('../../service/stats');
+const participants = require('../../service/participants');
 
 let canViewAdminPage = (role) => accesscontrol.hasPermissionTo(role, 'view admin page');
 

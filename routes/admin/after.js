@@ -12,7 +12,7 @@ const race = require('../../service/race');
 router.get('/', isAuthenticated, (req, res) => {
   race.hasStarted()
     .then((result) => {
-      if (result == true) {
+      if (result === true) {
         race.startTime()
           .then( function(timestamp) {
             let time = moment(timestamp,'X');

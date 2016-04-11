@@ -17,13 +17,13 @@ race.startTime = function () {
 
 race.startTimeArray = function() {
   race.startTime()
-    .then( result => {
+    .then(result => {
       let time = moment(result,'x');
       return [time.hours(), time.minutes(), time.seconds()];
     });
 };
 race.setStartTime = function (date) {
-  let query = "UPDATE race SET data = jsonb_set(data, '{starttime}','" + date + "');"
+  let query = "UPDATE race SET data = jsonb_set(data, '{starttime}','" + date + "');";
   return db.update(query);
 };
 
@@ -31,11 +31,11 @@ race.hasStarted = () => {
   const deferred = Q.defer();
   db.select("SELECT data->>'starttime' as starttime FROM race;")
     .then( result => {
-      if(result[0].starttime == null) {
+      if(_.isEmpty(result[0].starttime)) {
         deferred.resolve(false);
       } else {
         deferred.resolve(true);
-      };
+      }
     });
     return deferred.promise;
 };

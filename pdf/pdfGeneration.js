@@ -10,6 +10,7 @@ const config = require('config');
 const participants = require('../service/participants');
 const tshirts = require('../service/tshirts');
 const barcode = require("rescode");
+const editUrlHelper = require('../domain/editUrlHelper');
 
 let pdfGeneration = {};
 
@@ -24,6 +25,17 @@ pdfGeneration.addCheckmarkSymbol = (doc) => {
     .path(checkmarkSymbolSvg)
     .lineWidth(3)
     .stroke();
+};
+
+pdfGeneration.addQrCodeWithSelfServiceLink = (doc, selfServiceUrl) => {
+  doc.fontSize(10).fillColor('black').text('Registriere dich', 300, 320);
+  doc.fontSize(10).fillColor('black').text('nach dem Lauf', 300, 330);
+  doc.fontSize(10).fillColor('black').text('unter diesem Link', 300, 340);
+
+  doc.scale(2)
+    .translate(100, 150)
+    .path(qr.svgObject(selfServiceUrl).path)
+    .fill('black', 'even-odd');
 };
 
 pdfGeneration.createStartNumberPage = (doc, participant) => {
@@ -48,6 +60,10 @@ pdfGeneration.createStartNumberPage = (doc, participant) => {
 
   if(participant.has_payed) {
     pdfGeneration.addCheckmarkSymbol(doc);
+  }
+
+  if(participant.isOnSiteRegistration) {
+    pdfGeneration.addQrCodeWithSelfServiceLink(doc, editUrlHelper.generateUrl(participant.secureid));
   }
 
   doc.addPage();
@@ -85,6 +101,31 @@ pdfGeneration.generateStartNumbers = (res, doc) => {
         });
     }));
 
+  return deferred.promise;
+};
+
+pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
+  const deferred = Q.defer();
+
+  let participants = [{start_number: 3,
+    firstname: '',
+    team: '',
+    secureid: 'c5addee54fc98aab234eb934b8743dcf4a9630449229184055e3b0c1672d54dd',
+    isOnSiteRegistration: true
+  }];
+
+  res.writeHead(200, {
+    'Content-Type': 'application/pdf',
+    'Access-Control-Allow-Origin': '*',
+    'Content-Disposition': 'attachment; filename=' + 'on_site_start_numbers.pdf'
+  });
+  doc.pipe(res);
+
+  pdfGeneration.fillDocument(doc, participants);
+
+  doc.end();
+
+  deferred.resolve(doc);
   return deferred.promise;
 };
 

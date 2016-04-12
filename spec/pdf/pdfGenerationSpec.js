@@ -9,7 +9,7 @@ const config = require('config');
 
 describe('pdfGeneration', () => {
 
-  let pdfGeneration, res, participantsMock, documentMock, tshirtsMock;
+  let pdfGeneration, res, participantsMock, documentMock, tshirtsMock, qrCodeMock;
   let confirmedParticipant;
 
   beforeEach(() => {
@@ -39,26 +39,35 @@ describe('pdfGeneration', () => {
       stroke: jasmine.createSpy('stroke'),
       addPage: jasmine.createSpy('addPage'),
       image: jasmine.createSpy('image'),
+      fill: jasmine.createSpy('fill'),
       end: jasmine.createSpy('end')
     };
 
     participantsMock = {
       confirmed: jasmine.createSpy('confirmed'),
-      registered: jasmine.createSpy('registered')
+      registered: jasmine.createSpy('registered'),
+      onSite: jasmine.createSpy('onSite')
     };
 
     tshirtsMock = {
       findAndAddTo: jasmine.createSpy('findAndAddTo')
     };
 
+    qrCodeMock = {
+      svgObject: () => {return qrCodeMock;},
+      path: jasmine.createSpy('path')
+    };
+
     mockery.registerMock('../service/participants', participantsMock);
     mockery.registerMock('../service/tshirts', tshirtsMock);
+    mockery.registerMock('qr-image', qrCodeMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
     confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', start_number: 1};
-    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: '', start_number: 2};
+    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', start_number: 2};
     participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
+    qrCodeMock.path.and.returnValue('some qr code path');
   });
 
   afterAll(() => {
@@ -136,6 +145,14 @@ describe('pdfGeneration', () => {
       });
     });
 
+    it('should add the team name if it exits', (done) => {
+      pdfGeneration.generateStartNumbers(res, documentMock).then( () => {
+        expect(documentMock.text).toHaveBeenCalledWith('', 0, 350, {align: 'center'});
+        expect(documentMock.text).toHaveBeenCalledWith('a team name', 0, 350, {align: 'center'});
+        done();
+      });
+    });
+
   });
 
   describe('fillDocument', () => {
@@ -151,6 +168,56 @@ describe('pdfGeneration', () => {
       expect(documentMock.text.calls.argsFor(1)[0]).toBe('First');
       expect(documentMock.text.calls.argsFor(4)[0]).toBe('Second');
       expect(documentMock.text.calls.argsFor(7)[0]).toBe('Third');
+    });
+
+  });
+
+  describe('generateOnSiteStartNumbers', () => {
+
+    beforeEach(() => {
+      let onSiteParticipant = {
+        firstname: '',
+        lastname: '',
+        team: '',
+        start_number: 3,
+        secureid: 'some secure id',
+        isOnSiteRegistration: true};
+      participantsMock.onSite.and.returnValue(Q.fcall(() => [onSiteParticipant]));
+    });
+
+    it('should add the start number, blank name and blank team name', (done) => {
+      pdfGeneration.generateOnSiteStartNumbers(res, documentMock).then( () => {
+        expect(documentMock.text).toHaveBeenCalledWith(3, 0, 130, {align: 'center'});
+        expect(documentMock.text).toHaveBeenCalledWith('', 0, 300, {align: 'center'});
+        expect(documentMock.text).toHaveBeenCalledWith('', 0, 350, {align: 'center'});
+        done();
+      });
+    });
+
+    it('should not add the payment checkmark', function (done) {
+      pdfGeneration.generateOnSiteStartNumbers(res, documentMock).then( () => {
+        expect(documentMock.stroke).not.toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it('should add the QR code to the self-service link', function (done) {
+      pdfGeneration.generateOnSiteStartNumbers(res, documentMock).then( () => {
+        expect(documentMock.fill).toHaveBeenCalledWith('black', 'even-odd');
+        done();
+      });
+    });
+
+    it('should automatically download a PDF file called on_site_start_numbers', (done) => {
+      const fileName = 'on_site_start_numbers.pdf';
+      pdfGeneration.generateOnSiteStartNumbers(res, documentMock).then( () => {
+        expect(res.writeHead).toHaveBeenCalledWith(200, {
+          'Content-Type': 'application/pdf',
+          'Access-Control-Allow-Origin': '*',
+          'Content-Disposition': 'attachment; filename='+fileName
+        });
+        done();
+      });
     });
 
   });

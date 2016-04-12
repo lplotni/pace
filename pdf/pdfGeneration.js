@@ -26,7 +26,7 @@ pdfGeneration.addCheckmarkSymbol = (doc) => {
     .stroke();
 };
 
-pdfGeneration.createStartNumberPage = (participant, doc) => {
+pdfGeneration.createStartNumberPage = (doc, participant) => {
   doc.image(__dirname + pathToBackgroundImage, {fit: [800, 800]});
   doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [130, 130]});
   doc.image(__dirname + pathToLogoRight, 475, 20, {fit: [100, 100]});
@@ -53,11 +53,17 @@ pdfGeneration.createStartNumberPage = (participant, doc) => {
   doc.addPage();
 };
 
-pdfGeneration.fillDocument = function(res, doc) {
+pdfGeneration.fillDocument = (doc, participants) => {
+  participants = _.orderBy(participants, ['start_number']);
+  _.forEach(participants, participant => pdfGeneration.createStartNumberPage(doc, participant) );
+};
+
+pdfGeneration.generateStartNumbers = (res, doc) => {
   const deferred = Q.defer();
 
   participants.confirmed().then(confirmed =>
     participants.registered().then(unconfirmed => {
+
       res.writeHead(200, {
         'Content-Type': 'application/pdf',
         'Access-Control-Allow-Origin': '*',
@@ -70,17 +76,13 @@ pdfGeneration.fillDocument = function(res, doc) {
       });
 
       let allParticipants = confirmed.concat(unconfirmed);
-      allParticipants = _.orderBy(allParticipants, ['start_number']);
 
       Q.all(allParticipants.map(tshirts.findAndAddTo))
         .then(() => {
-          _.forEach(allParticipants, participant => {
-            pdfGeneration.createStartNumberPage(participant, doc);
-          });
-
+          pdfGeneration.fillDocument(doc, allParticipants);
           doc.end();
           deferred.resolve(doc);
-      });
+        });
     }));
 
   return deferred.promise;
@@ -88,7 +90,7 @@ pdfGeneration.fillDocument = function(res, doc) {
 
 pdfGeneration.generate = (res) => {
   let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
-  return pdfGeneration.fillDocument(res, doc);
+  return pdfGeneration.generateStartNumbers(res, doc);
 };
 
 module.exports = pdfGeneration;

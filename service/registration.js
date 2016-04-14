@@ -20,7 +20,7 @@ const editUrlHelper = require('../domain/editUrlHelper');
 const registration = {};
 registration.isClosed = () => {
   return db.select("SELECT data->>'is_closed' as is_closed FROM race;")
-    .then( result => {
+    .then(result => {
       return result[0].is_closed === 'true';
     });
 };
@@ -54,6 +54,21 @@ registration.confirm = function (participantId) {
   return deferred.promise;
 };
 
+function sendConfirmationMail(participant, paymentToken) {
+  jade.renderFile('views/registration/text.jade',
+    {
+      name: participant.firstname,
+      token: paymentToken,
+      bank: config.get('contact.bank'),
+      amount: calculator.priceFor(participant),
+      editUrl: editUrlHelper.generateUrl(participant.secureID),
+      startnr: participant.start_number
+    },
+    (error, html) => {
+      mails.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
+    }
+  );
+}
 registration.start = function (participant) {
   const deferred = Q.defer();
 
@@ -68,21 +83,7 @@ registration.start = function (participant) {
           if (!_.isEmpty(p.tshirt)) {
             tshirts.addFor(p.tshirt, id);
           }
-
-          jade.renderFile('views/registration/text.jade',
-            {
-              name: p.firstname,
-              token: paymentToken,
-              bank: config.get('contact.bank'),
-              amount: calculator.priceFor(p),
-              editUrl: editUrlHelper.generateUrl(p.secureID),
-              startnr: p.start_number
-            },
-            (error, html) => {
-              mails.sendEmail(p.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
-            }
-          );
-
+          sendConfirmationMail(p, paymentToken);
           deferred.resolve({'id': id, 'token': paymentToken, secureid: p.secureID, startnr: p.start_number});
         })
         .fail(deferred.reject);

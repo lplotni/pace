@@ -62,7 +62,7 @@ pdfGeneration.createStartNumberPage = (doc, participant) => {
     pdfGeneration.addCheckmarkSymbol(doc);
   }
 
-  if(participant.isOnSiteRegistration) {
+  if(participant.is_on_site_registration) {
     pdfGeneration.addQrCodeWithSelfServiceLink(doc, editUrlHelper.generateUrl(participant.secureid));
   }
 
@@ -107,25 +107,24 @@ pdfGeneration.generateStartNumbers = (res, doc) => {
 pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
   const deferred = Q.defer();
 
-  let participants = [{start_number: 3,
-    firstname: '',
-    team: '',
-    secureid: 'c5addee54fc98aab234eb934b8743dcf4a9630449229184055e3b0c1672d54dd',
-    isOnSiteRegistration: true
-  }];
+  participants.saveBlancParticipant() // generating 1 participant on the fly for now. This call will be removed
+    .then(participants.blancParticipants)
+    .then( participants => {
 
-  res.writeHead(200, {
-    'Content-Type': 'application/pdf',
-    'Access-Control-Allow-Origin': '*',
-    'Content-Disposition': 'attachment; filename=' + 'on_site_start_numbers.pdf'
-  });
-  doc.pipe(res);
+      res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Access-Control-Allow-Origin': '*',
+        'Content-Disposition': 'attachment; filename=' + 'on_site_start_numbers.pdf'
+      });
+      doc.pipe(res);
 
-  pdfGeneration.fillDocument(doc, participants);
+      pdfGeneration.fillDocument(doc, participants);
 
-  doc.end();
+      doc.end();
 
-  deferred.resolve(doc);
+      deferred.resolve(doc);
+    });
+
   return deferred.promise;
 };
 

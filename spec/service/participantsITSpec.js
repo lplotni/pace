@@ -94,6 +94,31 @@ describe('participants service', () => {
       .fail(fail);
   });
 
+  describe('saveBlancParticipant()', () => {
+    it('should save a participant with blank values', (done) => {
+
+      participants.saveBlancParticipant().then( participantId => {
+        expect(participantId).toBeDefined();
+        participants.byId(participantId).then( participant => {
+          expect(participant.firstname).toBe('');
+          expect(participant.lastname).toBe('');
+          expect(participant.team).toBe('');
+          expect(participant.email).toBe('');
+          expect(participant.birthyear).toBe(0);
+          expect(participant.category).toBe('');
+          expect(participant.visibility).toBe('yes');
+          expect(participant.discount).toBe('no');
+
+          expect(participant.has_payed).toBe(false);
+          expect(participant.start_number).toBeDefined();
+          expect(participant.is_on_site_registration).toBe(true);
+          done();
+        });
+      });
+    });
+
+  });
+
   describe('save()', () => {
     it('should return the id', (done) => {
 
@@ -266,5 +291,4 @@ describe('participants service', () => {
         .fail(fail);
     });
   });
-})
-;
+});

@@ -6,9 +6,10 @@ const Q = require('q');
 const _ = require('lodash');
 
 const calculator = require('../domain/costCalculator');
-const db = require('../service/util/dbHelper');
-const mails = require('../service/util/mails');
-const tshirts = require('../service/tshirts');
+const db = require('./util/dbHelper');
+const mails = require('./util/mails');
+const tshirts = require('./tshirts');
+const startNumbers = require('./startNumbers');
 
 let participants = {};
 
@@ -50,6 +51,42 @@ participants.save = function (participant) {
       participant.secureID,
       participant.start_number]
   );
+};
+
+participants.saveBlancParticipant = function () {
+  return startNumbers.next().then( (nr) => {
+    let participant = {
+      firstname: '',
+      lastname: '',
+      email: '',
+      category: '',
+      birthyear: 0,
+      team: '',
+      visibility: 'yes',
+      discount: 'no',
+      paymentToken: '',
+      secureID: '',
+      start_number: nr,
+      is_on_site_registration: true
+    };
+
+    return db.insert('INSERT INTO participants ' +
+      '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, is_on_site_registration) ' +
+      'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning id',
+      [participant.firstname,
+        participant.lastname,
+        participant.email,
+        participant.category,
+        participant.birthyear,
+        participant.team,
+        participant.visibility,
+        participant.discount,
+        participant.paymentToken,
+        participant.secureID,
+        participant.start_number,
+        participant.is_on_site_registration]
+    );
+  });
 };
 
 participants.delete = function (participantid) {

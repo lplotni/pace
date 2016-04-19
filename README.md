@@ -12,7 +12,7 @@ Pace is currently based on [express.js](http://expressjs.com/) and [node](https:
 * To install Vagrant, go [here](https://www.vagrantup.com/). Or if you have **brew cask** on your machine, just do the following: `brew cask install vagrant`.
 * To install node, go either to https://nodejs.org/ or if you are using a mac & brew use the following command: `brew install node`. 
 * To get all the other dependencies and be able to start **pace** locally, just navigate to the pace folder and run: `npm install && gulp dev-setup`
-* To install the database: `gulp create-db`
+* To initialize the database: `gulp create-db`
 
 To look at the db in your terminal, just connect to the vagrant box (from the postgres directory) via `vagrant ssh` and type psql.
 

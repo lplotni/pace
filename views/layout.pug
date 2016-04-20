@@ -1,4 +1,26 @@
-if isAdmin
-    include adminLayout
-else
-    include guestLayout
+block variables
+doctype html
+html
+  head
+    title= title
+    include partials/head
+  body
+    .outer-container
+      .container
+        if (node_env) != "production"
+          .row
+            h6.warning.centered DIES IST NUR EINE TESTUMGEBUNG. REGISTRIERUNGEN FUER 2016 SIND NOCH NICHT MOEGLICH
+        .row
+          a.four.columns.no-link(href='http://fcstpauli-marathon.de/gegenrechts')
+            h5.centered Information
+          a#registration.four.columns.no-link(href='/registration')
+            h5.centered Anmeldung
+          a.four.columns.no-link(href='/participants')
+            h5.centered Teilnehmer*innen
+        .row
+          .offset-by-four.four.columns
+            object.logo(data='/images/logo.svg', type='image/svg+xml')
+      .outer-content-container
+        .container
+          block content
+      include partials/footer

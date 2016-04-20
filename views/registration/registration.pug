@@ -1,107 +1,107 @@
-extends ../layout
+extends ../layout.pug
 
 block content
-    if registrationClosed
-        h4.black.centered Anmeldung geschlossen
-        p#registration-closed-message.bigfont Die Online-Anmeldung ist leider bereits geschlossen. Du kannst dich aber gerne noch am Tag des Laufes vor Ort f&uuml;r den Lauf anmelden.
-    else
-        h4.black.centered Melde dich hier zum Lauf an
-        form#registrationForm(method='POST', action='/registration')
-            input(type='hidden', name='_csrf', value=_csrf)
-            .row
-                p.slim.u-pull-right * Pflichtfelder
-            .row
-                .six.columns.padding
-                    label(for='firstname') Vorname*
-                    input#firstname.u-full-width(type='text', name='firstname', required=true)
-                .six.columns.padding
-                    label(for='lastname') Nachname*
-                    input#lastname.u-full-width(type='text', name='lastname', required=true)
-            .row
-                .twelve.columns.padding
-                    label(for='email') Email*
-                    input#email.u-full-width(type='email', name='email', required=true)
-            .row
-                .twelve.columns.padding
-                    label(for='birthyear') Geburtsjahr*
-                    input#birthyear.u-full-width(type='number', name='birthyear', required=true)
-            .row
-                .twelve.columns.padding
-                    label(for='team') Name des Teams:
-                    input#team.u-full-width(type='text', name='team')
-            .row
-                .twelve.columns.padding
-                    label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
-                    select#category.u-full-width(name='category')
-                        option(value='m') m
-                        option(value='f') f
-            .row
-                .twelve.columns.padding
-                    label(for='visibility') Möchtest du in der Liste der Teilnehmer*innen aufgelistet werden*
-                    select#visibility.u-full-width(name='visibility', required=true)
-                        option(value='yes') Ja
-                        option(value='no') Nein
-            .row
-                .twelve.columns.padding
-                    label(for='discount') Welchen Preis möchtest du zahlen
-                    select#discount.u-full-width(name='discount', required=true)
-                        option(value='no') Ich zahle den vollen Preis (10 Euro)
-                        option(value='yes') Ich möchte den ermässigten Preis zahlen (5 Euro)
+  if registrationClosed
+    h4.black.centered Anmeldung geschlossen
+    p#registration-closed-message.bigfont Die Online-Anmeldung ist leider bereits geschlossen. Du kannst dich aber gerne noch am Tag des Laufes vor Ort f&uuml;r den Lauf anmelden.
+  else
+    h4.black.centered Melde dich hier zum Lauf an
+    form#registrationForm(method='POST', action='/registration')
+      input(type='hidden', name='_csrf', value=_csrf)
+      .row
+        p.slim.u-pull-right * Pflichtfelder
+      .row
+        .six.columns.padding
+          label(for='firstname') Vorname*
+          input#firstname.u-full-width(type='text', name='firstname', required=true)
+        .six.columns.padding
+          label(for='lastname') Nachname*
+          input#lastname.u-full-width(type='text', name='lastname', required=true)
+      .row
+        .twelve.columns.padding
+          label(for='email') Email*
+          input#email.u-full-width(type='email', name='email', required=true)
+      .row
+        .twelve.columns.padding
+          label(for='birthyear') Geburtsjahr*
+          input#birthyear.u-full-width(type='number', name='birthyear', required=true)
+      .row
+        .twelve.columns.padding
+          label(for='team') Name des Teams:
+          input#team.u-full-width(type='text', name='team')
+      .row
+        .twelve.columns.padding
+          label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
+          select#category.u-full-width(name='category')
+            option(value='m') m
+            option(value='f') f
+      .row
+        .twelve.columns.padding
+          label(for='visibility') Möchtest du in der Liste der Teilnehmer*innen aufgelistet werden*
+          select#visibility.u-full-width(name='visibility', required=true)
+            option(value='yes') Ja
+            option(value='no') Nein
+      .row
+        .twelve.columns.padding
+          label(for='discount') Welchen Preis möchtest du zahlen
+          select#discount.u-full-width(name='discount', required=true)
+            option(value='no') Ich zahle den vollen Preis (10 Euro)
+            option(value='yes') Ich möchte den ermässigten Preis zahlen (5 Euro)
 
-            .row
-                .twelve.columns.black.padding(style='height: 36px')
-                    label(for='shirt') Laufshirt für 10 Euro gewünscht
-                        input#shirt(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='shirt')
-            .row#shirt-details(style='display: none')
-                .six.columns.center
-                    img.center.tshirt.u-max-full-width(src='/images/tshirt.png')
-                    div.small Nicht originalgetreue Darstellung; Abweichungen möglich, Änderungen vorbehalten
-                .six.columns
-                    .row
-                        input#shirts(type='hidden' value=JSON.stringify(shirts))
-                        label(for='model') Model:
-                        select#model.u-full-width(name='model')
-                            each model in shirts
-                                option(value=model.value)=model.description
+      .row
+        .twelve.columns.black.padding(style='height: 36px')
+          label(for='shirt') Laufshirt für 10 Euro gewünscht
+            input#shirt(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='shirt')
+      .row#shirt-details(style='display: none')
+        .six.columns.center
+          img.center.tshirt.u-max-full-width(src='/images/tshirt.png')
+          div.small Nicht originalgetreue Darstellung; Abweichungen möglich, Änderungen vorbehalten
+        .six.columns
+          .row
+            input#shirts(type='hidden' value=JSON.stringify(shirts))
+            label(for='model') Model:
+            select#model.u-full-width(name='model')
+              each model in shirts
+                option(value=model.value)=model.description
 
-                        label(for='size') Size:
-                            select#size.u-full-width(name='size')
-                                each size in shirts[0].sizes
-                                    option(value=size)=size
-            button#submit.primary.button-primary.u-full-width.pace(type='submit') Absenden
+            label(for='size') Size:
+              select#size.u-full-width(name='size')
+                each size in shirts[0].sizes
+                  option(value=size)=size
+      button#submit.primary.button-primary.u-full-width.pace(type='submit') Absenden
 
-        script(type='text/javascript').
-            var shirtSelection = document.getElementById('shirt');
-            var shirtDetails = document.getElementById('shirt-details');
-            shirtSelection.onclick = function () {
-                if (shirtSelection.checked) {
-                    shirtDetails.style.display = 'block';
-                } else {
-                    shirtDetails.style.display = 'none';
-                }
-            };
+    script(type='text/javascript').
+      var shirtSelection = document.getElementById('shirt');
+      var shirtDetails = document.getElementById('shirt-details');
+      shirtSelection.onclick = function () {
+        if (shirtSelection.checked) {
+          shirtDetails.style.display = 'block';
+        } else {
+          shirtDetails.style.display = 'none';
+        }
+      };
 
-            var shirts = JSON.parse(document.getElementById('shirts').value);
+      var shirts = JSON.parse(document.getElementById('shirts').value);
 
-            var modelSelection = document.getElementById('model');
-            var selection = document.getElementById('size');
-            var option;
+      var modelSelection = document.getElementById('model');
+      var selection = document.getElementById('size');
+      var option;
 
-            modelSelection.onchange = function () {
-                var length = selection.options.length;
-                for (var i = 0; i < length; i++) {
-                    selection.options[0].remove();
-                }
+      modelSelection.onchange = function () {
+        var length = selection.options.length;
+        for (var i = 0; i < length; i++) {
+          selection.options[0].remove();
+        }
 
-                for (var s = 0; s < shirts.length; s++) {
-                    if (shirts[s].value === modelSelection.options[modelSelection.selectedIndex].value) {
-                        for (var x = 0; x < shirts[s].sizes.length; x++) {
-                            option = document.createElement("option");
-                            option.value = shirts[s].sizes[x];
-                            option.text = shirts[s].sizes[x];
-                            selection.appendChild(option)
-                        }
-                    }
-                }
-            };
+        for (var s = 0; s < shirts.length; s++) {
+          if (shirts[s].value === modelSelection.options[modelSelection.selectedIndex].value) {
+            for (var x = 0; x < shirts[s].sizes.length; x++) {
+              option = document.createElement("option");
+              option.value = shirts[s].sizes[x];
+              option.text = shirts[s].sizes[x];
+              selection.appendChild(option)
+            }
+          }
+        }
+      };
 

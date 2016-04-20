@@ -1,12 +1,12 @@
-extends ../layout
+extends ../adminLayout.pug
 
 block content
 
   h3 Startzeit
 
   form#starttime(method='POST', action='after')
-   .row
-      input(type="text", size="2", name="hours", value="#{hours}") 
+    .row
+      input(type="text", size="2", name="hours", value="#{hours}")
       span :
       input(type="text", size="2", name="minutes" value="#{minutes}")
       span :

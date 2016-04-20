@@ -1,18 +1,18 @@
 h3 Hey #{name}!
-    h5 Danke für deine Registrierung.
-        |  Bitte überweise den Betrag von&nbsp;
-        span.amount #{amount}
-        |  Euro auf folgendes Konto:
-        pre FC St. Pauli Marathon
-            | #{bank.name}
-            | IBAN #{bank.iban}
-            | BIC  #{bank.bic}
-            | Verwendungszweck: #{token}
-        |  Sobald die Gebühr beglichen ist,
-        |  wirst du in der Teilnehmer*innenliste hinzugefügt.
-    h5 Und übrigens, deine Startnummer:&nbsp;
-        span.startNumber #{startnr}
+  h5 Danke für deine Registrierung.
+    |  Bitte überweise den Betrag von&nbsp;
+    span.amount #{amount}
+    |  Euro auf folgendes Konto:
+    pre FC St. Pauli Marathon
+      | #{bank.name}
+      | IBAN #{bank.iban}
+      | BIC  #{bank.bic}
+      | Verwendungszweck: #{token}
+    |  Sobald die Gebühr beglichen ist,
+    |  wirst du in der Teilnehmer*innenliste hinzugefügt.
+  h5 Und übrigens, deine Startnummer:&nbsp;
+    span.startNumber #{startnr}
 
-    h5 Du kannst deine persönlichen Angaben unter folgendem Link* ändern:&nbsp;
-        a#editurl(href='#{editUrl}') Angaben ändern
+  h5 Du kannst deine persönlichen Angaben unter folgendem Link* ändern:&nbsp;
+    a#editurl(href=editUrl) Angaben ändern
     div * Dieser Link gibt Einsicht in persönliche Daten und sollte nicht weitergegeben werden.

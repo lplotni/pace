@@ -40,7 +40,7 @@ registration.confirm = function (participantId) {
     .then(() => {
       participants.byId(participantId)
         .then(result => {
-          jade.renderFile('views/admin/paymentValidation/text.jade',
+          jade.renderFile('views/admin/paymentValidation/text.pug',
             {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},
             (error, html) =>
               mails.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
@@ -55,7 +55,7 @@ registration.confirm = function (participantId) {
 };
 
 function sendConfirmationMail(participant, paymentToken) {
-  jade.renderFile('views/registration/text.jade',
+  jade.renderFile('views/registration/text.pug',
     {
       name: participant.firstname,
       token: paymentToken,

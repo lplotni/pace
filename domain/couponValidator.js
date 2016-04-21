@@ -5,8 +5,8 @@
 let validator = {};
 const config = require('config');
 
-validator.isValidCode = function (couponCode) {
-  return couponCode === config.get('coupon-code');
+validator.isValidCode = function (couponcode) {
+  return couponcode === config.get('coupon-code');
 };
 
 module.exports = validator;

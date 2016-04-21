@@ -25,8 +25,9 @@ describe('participants service', () => {
     category: 'Unicorn',
     birthyear: 1980,
     visibility: 'yes',
-    discount: 'no',
-    team: 'Crazy runners'
+    discount: 'free',
+    team: 'Crazy runners',
+    couponcode: 'Free2016',
   }).withToken(paymentToken).withSecureId(secureId);
 
   const aSecondParticipant = participant.from({
@@ -66,6 +67,7 @@ describe('participants service', () => {
     expect(participantFromDb.paymenttoken).toEqual(paymentToken);
     expect(participantFromDb.has_payed).toEqual(false);
     expect(participantFromDb.secureid).toEqual(secureId);
+    expect(participantFromDb.couponcode).toEqual(aParticipant.couponcode);
   };
 
   beforeEach((done) => {
@@ -89,6 +91,7 @@ describe('participants service', () => {
         expect(data[0].birthyear).toBe(aParticipant.birthyear);
         expect(data[0].discount).toBe(aParticipant.discount);
         expect(data[0].team).toBe(aParticipant.team);
+        expect(data[0].couponcode).toBe(aParticipant.couponcode);
         done();
       })
       .fail(fail);

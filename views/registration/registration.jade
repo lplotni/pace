@@ -113,13 +113,13 @@ block content
 
             var couponCodeInput = document.getElementById('coupon-input');
             var discountSelection = document.getElementById('discount');
-            var couponCode = document.getElementById('couponcode');
+            var couponcode = document.getElementById('couponcode');
             discountSelection.onchange= function () {
                 if (discountSelection.options[discountSelection.selectedIndex].value === 'free') {
                     couponCodeInput.style.display = 'block';
-                    couponCode.required = true;
+                    couponcode.required = true;
                 } else {
-                    couponCode.required = false;
+                    couponcode.required = false;
                     couponCodeInput.style.display = 'none';
                 }
             };

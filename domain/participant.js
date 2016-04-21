@@ -38,7 +38,7 @@ participant.from = function (body) {
     email: body.email,
     visibility: body.visibility,
     discount: _.isUndefined(body.discount) ? 'no' : body.discount,
-    couponCode: body.couponcode,
+    couponcode: body.couponcode,
     category: body.category,
     birthyear: body.birthyear,
     team: body.team,

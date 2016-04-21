@@ -47,6 +47,12 @@ block content
                     select#discount.u-full-width(name='discount', required=true)
                         option(value='no') Ich zahle den vollen Preis (10 Euro)
                         option(value='yes') Ich möchte den ermässigten Preis zahlen (5 Euro)
+                        option(value='free') Ich habe einen Coupon (0 Euro)
+
+            .row#coupon-input(style='display: none')
+                .twelve.columns.padding
+                    label(for='couponcode') Coupon Code*:
+                        input#couponcode.u-full-width(type='text', name='couponcode')
 
             .row
                 .twelve.columns.black.padding(style='height: 36px')
@@ -105,3 +111,15 @@ block content
                 }
             };
 
+            var couponCodeInput = document.getElementById('coupon-input');
+            var discountSelection = document.getElementById('discount');
+            var couponCode = document.getElementById('couponcode');
+            discountSelection.onchange= function () {
+                if (discountSelection.options[discountSelection.selectedIndex].value === 'free') {
+                    couponCodeInput.style.display = 'block';
+                    couponCode.required = true;
+                } else {
+                    couponCode.required = false;
+                    couponCodeInput.style.display = 'none';
+                }
+            };

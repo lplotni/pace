@@ -7,6 +7,7 @@ const validator = require('validator');
 const tshirt = require('./tshirt');
 const tshirts = require('../service/tshirts');
 const participants = require('../service/participants');
+const couponValidator = require('../domain/couponValidator');
 
 const participant = {};
 
@@ -26,6 +27,10 @@ participant.from = function (body) {
   if (invalidData(body)) {
     throw new TypeError('Required attributes are not present');
   }
+
+  if(body.discount === 'free' && !couponValidator.isValidCode(body.couponcode)) {
+    throw new TypeError('Invalid Coupon Code');
+  }
   
   let p = {
     firstname: body.firstname,
@@ -33,6 +38,7 @@ participant.from = function (body) {
     email: body.email,
     visibility: body.visibility,
     discount: _.isUndefined(body.discount) ? 'no' : body.discount,
+    couponCode: body.couponcode,
     category: body.category,
     birthyear: body.birthyear,
     team: body.team,

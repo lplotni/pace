@@ -170,6 +170,33 @@ describe('registration', () => {
         })
         .fail(fail);
     });
+
+    it('should not mark as payed if coupon user ordered a shirt', (done) => {
+      spyOn(tshirts, 'addFor');
+      spyOn(participants, 'markPayed');
+
+      const pWithShirt = participant.from({
+        firstname: 'Hertha',
+        lastname: 'Mustermann',
+        email: 'h.mustermann@example.com',
+        birthyear: 1980,
+        category: 'Horse',
+        visibility: 'yes',
+        discount: 'free',
+        couponcode: 'Free2016',
+        shirt: 'yes',
+        size: 'XS',
+        model: 'Crazy cool fit'
+      });
+
+      registration.start(pWithShirt)
+        .then(() => {
+          expect(participants.markPayed).not.toHaveBeenCalled();
+          expect(tshirts.addFor).toHaveBeenCalled();
+          done();
+        })
+        .fail(fail);
+    });
   });
 
   describe('confirm()', () => {

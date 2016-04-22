@@ -1,6 +1,6 @@
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, it, expect */
+/* global describe, it, expect,beforeEach  */
 'use strict';
 
 describe('costCalculator', () => {
@@ -10,7 +10,7 @@ describe('costCalculator', () => {
 
     let participant;
 
-    beforeEach(function () {
+    beforeEach(() => {
         participant = {
             firstname: 'Mark',
             lastname: 'Mueller',

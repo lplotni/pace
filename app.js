@@ -34,7 +34,7 @@ let app = express();
 app.locals.node_env = process.env.NODE_ENV;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.disable("x-powered-by");
 app.set('trust proxy',config.get('proxy'));

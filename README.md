@@ -27,9 +27,9 @@ Just run `gulp` and open http://localhost:3000 in your browser.
 #### Running tests
 For **unit** tests: `gulp test`
 
-For **integration** tests: `gulp test-integration` (and if your dev DB is already set up: `gulp test-integration`):
+For **integration** tests: `gulp test-integration`
 
-For **functional** tests: `gulp test-functional`
+For **functional** tests: `gulp test-functional` (install **selenium** if needed: `gulp selenium-install`)
 
 #### Running jshint
 Here you go: `gulp lint`

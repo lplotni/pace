@@ -53,6 +53,7 @@ describe('registration', () => {
   describe('start()', () => {
     it('should save the participant and send confirmation email', (done) => {
       spyOn(participants, 'save').and.callThrough();
+      spyOn(participants, 'markPayed').and.callThrough();
       spyOn(mails, 'sendEmail');
       spyOn(tshirts, 'addFor');
 
@@ -77,6 +78,8 @@ describe('registration', () => {
           expect(participant.secureID).toBe(result.secureid);
           expect(participant.start_number).toBe(result.startnr);
 
+          expect(participants.markPayed).not.toHaveBeenCalled();
+
           expect(mails.sendEmail).toHaveBeenCalled();
 
           let participantsEmail = mails.sendEmail.calls.mostRecent().args[0];
@@ -87,6 +90,56 @@ describe('registration', () => {
 
           let content = mails.sendEmail.calls.mostRecent().args[2];
           expect(content).toMatch(/Danke/);
+          expect(content).toMatch(/Bitte überweise den Betrag/);
+
+          expect(tshirts.addFor).not.toHaveBeenCalled();
+          done();
+        })
+        .fail(fail);
+    });
+
+    it('should mark the participant as payed if their amount is 0 and send the matching email', (done) => {
+      spyOn(participants, 'save').and.callThrough();
+      spyOn(participants, 'markPayed').and.callThrough();
+      spyOn(mails, 'sendEmail');
+      spyOn(tshirts, 'addFor');
+
+      const p = participant.from({
+        firstname: 'Hertha',
+        lastname: 'Mustermann',
+        email: 'h.mustermann@example.com',
+        category: 'Unicorn',
+        birthyear: 1980,
+        visibility: 'yes',
+        discount: 'free',
+        couponcode: 'Free2016',
+        team: 'Crazy runners'
+      });
+
+      registration.start(p)
+        .then((result) => {
+          expect(participants.save).toHaveBeenCalled();
+
+          let participant = participants.save.calls.mostRecent().args[0];
+          expect(participant.firstname).toBe(p.firstname);
+          expect(participant.paymentToken).toBe(result.token);
+          expect(participant.secureID).toBe(result.secureid);
+          expect(participant.start_number).toBe(result.startnr);
+
+          expect(participants.markPayed).toHaveBeenCalled();
+
+          expect(mails.sendEmail).toHaveBeenCalled();
+
+          let participantsEmail = mails.sendEmail.calls.mostRecent().args[0];
+          expect(participantsEmail).toBe(p.email);
+
+          let subject = mails.sendEmail.calls.mostRecent().args[1];
+          expect(subject).toBe('Lauf Gegen Rechts: Registrierung erfolgreich');
+
+          let content = mails.sendEmail.calls.mostRecent().args[2];
+          expect(content).toMatch(/Danke/);
+          expect(content).not.toMatch(/Bitte überweise den Betrag/);
+
 
           expect(tshirts.addFor).not.toHaveBeenCalled();
           done();

@@ -1,0 +1,19 @@
+extends ../guestLayout.pug
+
+block content
+  .row
+    table
+      thead
+        tr
+          th Startnummer
+          th Vorname
+          th Nachname
+          th Team name
+      tbody
+        each p in participants
+          tr.participant-line
+            td=p.start_number
+            td=p.firstname
+            td=p.lastname
+            td=p.team
+  script(src='/javascript/searchAndSort.js')

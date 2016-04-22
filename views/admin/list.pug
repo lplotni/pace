@@ -1,0 +1,50 @@
+extends ../adminLayout.pug
+
+block content
+  .row
+    table.u-full-width
+      thead
+        tr
+          th Startnummer
+          th Vorname
+          th Nachname
+          th Bezahlt
+          th Betrag
+          th Coupon Code
+          th Token
+          th Anzahl T-shirts
+          th T-shirt Größen
+          th Teilnehmer*in bestätigen
+          th Teilnehmer*in löschen
+          th Teilnehmer*in editieren
+      tbody
+        each p in participants
+          tr.participant-line
+            td.startnumber=p.start_number
+            td.first-name=p.firstname
+            td.last-name=p.lastname
+            td=(p.has_payed ? 'ja' : 'nein')
+            td#amount=p.amount
+            td=p.couponcode
+            td=p.paymenttoken
+            td#tshirt-amount=(p.tshirt ? 1 : 0)
+            td
+              if p.tshirt
+                span=p.tshirt.size + ' (' + p.tshirt.model + ')'
+            td
+              form#payment-details(method='POST', action='/paymentValidation/confirm')
+                input(type='hidden', name='_csrf', value=_csrf)
+                input(type='hidden', name='participantid', value='#{p.id}')
+                button(id = p.has_payed ? 'confirm-registration-done' : 'confirm-registration', type='submit').bigfont.button-primary
+                  span.lnr.lnr-checkmark-circle
+            td
+              form#user-delete(method='POST', action='editparticipant/delete')
+                input(type='hidden', name='_csrf', value=_csrf)
+                input(type='hidden', name='participantid', value='#{p.id}')
+                button#delete-user.bigfont.button-primary(type='submit')
+                  span.lnr.lnr-trash
+            td
+              form
+                a#edit.edit-button.button.bigfont(href=p.editUrl)
+                  span.lnr.lnr-pencil
+  script(src='/javascript/searchAndSort.js')

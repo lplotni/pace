@@ -4,7 +4,7 @@
 
 const Q = require('q');
 const _ = require('lodash');
-const jade = require('jade');
+const pug = require('pug');
 
 const config = require('config');
 const calculator = require('../domain/costCalculator');
@@ -40,7 +40,7 @@ registration.confirm = function (participantId) {
     .then(() => {
       participants.byId(participantId)
         .then(result => {
-          jade.renderFile('views/admin/paymentValidation/text.jade',
+          pug.renderFile('views/admin/paymentValidation/text.pug',
             {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},
             (error, html) =>
               mails.sendEmail(result.email, 'Lauf gegen Rechts: Zahlung erhalten', html, error)
@@ -55,7 +55,7 @@ registration.confirm = function (participantId) {
 };
 
 function sendConfirmationMail(participant, paymentToken) {
-  jade.renderFile('views/registration/text.jade',
+  pug.renderFile('views/registration/text.pug',
     {
       name: participant.firstname,
       token: paymentToken,

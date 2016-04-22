@@ -4,15 +4,15 @@
 const nodemailer = require('nodemailer');
 const sendmailTransport = require('nodemailer-sendmail-transport');
 const config = require('config');
-const jade = require('jade');
+const pug = require('pug');
 
 const editUrlHelper = require('../../domain/editUrlHelper');
 
 let service = {};
 service._nodemailer = nodemailer;
 
-service.sendStatusEmail = function (participant,subject,jadefile) {
-  jade.renderFile(jadefile,
+service.sendStatusEmail = function (participant,subject,pugfile) {
+  pug.renderFile(pugfile,
     {name: participant.firstname, editUrl: editUrlHelper.generateUrl(participant.secureid)},
     (error, html) =>
       service.sendEmail(participant.email, subject, html, error)

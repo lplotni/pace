@@ -25,6 +25,7 @@ let adminParticipantsRoute = require('./routes/admin/participants');
 let adminEditParticipantRoute = require('./routes/admin/editParticipant');
 let adminAfterRoute = require('./routes/admin/after');
 let paymentValidationRoute = require('./routes/admin/paymentValidation');
+let couponcodeRoute = require('./routes/admin/couponcodes');
 
 let config = require('config');
 let csrf = require('csurf');
@@ -111,6 +112,7 @@ app.use('/admin', adminRoute);
 app.use('/admin/participants', adminParticipantsRoute);
 app.use('/admin/editparticipant', adminEditParticipantRoute);
 app.use('/admin/after', adminAfterRoute);
+app.use('/admin/couponcodes', couponcodeRoute);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {

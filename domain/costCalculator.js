@@ -12,10 +12,11 @@ calculator.priceFor = function (participant) {
   if (!_.isEmpty(participant.tshirt)) {
     total = total + parseFloat(config.get('shirts.price'));
   }
-  if (participant.discount === 'yes' ) {
+  if (participant.discount === 'yes') {
     total = total + parseFloat(config.get('costs.discount'));
-  }
-  else {
+  } else if (participant.discount === 'free') {
+    // just the tshirt price
+  } else {
     total = total + parseFloat(config.get('costs.standard'));
   }
   return total;

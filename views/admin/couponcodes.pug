@@ -1,0 +1,60 @@
+extends ../adminLayout.pug
+
+block content
+
+  h3 Coupon Codes im Umlauf
+  table
+    thead
+      tr
+        th Nummer
+        th Code
+    tbody#codebody
+      each code, index in couponcodes
+        tr
+          td=index+1
+          td=code
+
+
+  input(type='hidden', name='_csrf', value=_csrf)
+  button#generate-code.primary.button-primary.pace(type='submit') Code generieren
+
+  script(type='text/javascript').
+    var generateCodeBtn = document.getElementById('generate-code');
+
+    var csrf = '#{_csrf}';
+    function httpCallAsync(theUrl, method, message, callback){
+
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.onreadystatechange = function () {
+        if(xmlHttp.readyState == 4 && xmlHttp.status == 200){
+          callback(xmlHttp.responseText);
+        }
+      };
+      xmlHttp.open(method, theUrl, true);
+      xmlHttp.send(message);
+    }
+
+    generateCodeBtn.onclick = function () {
+
+
+    httpCallAsync('/admin/couponcodes?_csrf='+csrf, 'POST', '', function(result){
+      var tr = document.createElement('tr');
+      var td1 = document.createElement('td');
+      var td2 = document.createElement('td');
+
+      var text1 = document.createTextNode('x');
+      var text2 = document.createTextNode(result);
+      td1.appendChild(text1);
+      td2.appendChild(text2);
+
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+
+      document.getElementById('codebody').appendChild(tr);
+
+    });
+
+
+
+
+    };

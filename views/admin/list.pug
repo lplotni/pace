@@ -32,13 +32,13 @@ block content
             td
               form#payment-details(method='POST', action='/paymentValidation/confirm')
                 input(type='hidden', name='_csrf', value=_csrf)
-                input(type='hidden', name='participantid', value='#{p.id}')
+                input(type='hidden', name='participantid', value=p.id)
                 button(id = p.has_payed ? 'confirm-registration-done' : 'confirm-registration', type='submit').bigfont.button-primary
                   span.lnr.lnr-checkmark-circle
             td
               form#user-delete(method='POST', action='editparticipant/delete')
                 input(type='hidden', name='_csrf', value=_csrf)
-                input(type='hidden', name='participantid', value='#{p.id}')
+                input(type='hidden', name='participantid', value=p.id)
                 button#delete-user.bigfont.button-primary(type='submit')
                   span.lnr.lnr-trash
             td

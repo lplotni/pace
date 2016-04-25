@@ -44,7 +44,7 @@ block content
         label Deine Startnummer:
         p#startNumber #{participant.start_number}
 
-    input(type='hidden', name='participantid', value='#{participantid}')
+    input(type='hidden', name='participantid', value=participantid)
     input(type='hidden', name='_csrf', value=_csrf)
 
     button#submit.button-primary.u-full-width(type='submit') Änderung speichern

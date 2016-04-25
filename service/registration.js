@@ -55,7 +55,7 @@ registration.confirm = function (participantId) {
 };
 
 function sendConfirmationMail(participant, paymentToken) {
-  pug.renderFile('views/registration/text.pug',
+  pug.renderFile('views/registration/confirmationText.pug',
     {
       name: participant.firstname,
       token: paymentToken,
@@ -83,6 +83,11 @@ registration.start = function (participant) {
           if (!_.isEmpty(p.tshirt)) {
             tshirts.addFor(p.tshirt, id);
           }
+          
+          if(calculator.priceFor(p) === 0){
+            participants.markPayed(id);
+          }
+
           sendConfirmationMail(p, paymentToken);
           deferred.resolve({'id': id, 'token': paymentToken, secureid: p.secureID, startnr: p.start_number});
         })

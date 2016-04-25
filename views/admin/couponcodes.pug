@@ -6,13 +6,15 @@ block content
   table
     thead
       tr
-        th Nummer
+        th ID
         th Code
+        th Benutzt
     tbody#codebody
-      each code, index in couponcodes
+      each code in couponcodes
         tr
-          td=index+1
-          td=code
+          td=code.id
+          td=code.code
+          td=code.used ? 'Ja' : 'Nein'
 
 
   input(type='hidden', name='_csrf', value=_csrf)
@@ -22,11 +24,11 @@ block content
     var generateCodeBtn = document.getElementById('generate-code');
 
     var csrf = '#{_csrf}';
-    function httpCallAsync(theUrl, method, message, callback){
+    function httpCallAsync(theUrl, method, message, callback) {
 
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.onreadystatechange = function () {
-        if(xmlHttp.readyState == 4 && xmlHttp.status == 200){
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           callback(xmlHttp.responseText);
         }
       };
@@ -36,25 +38,26 @@ block content
 
     generateCodeBtn.onclick = function () {
 
+      httpCallAsync('/admin/couponcodes?_csrf=' + csrf, 'POST', '', function (result) {
+        var couponcode = JSON.parse(result);
 
-    httpCallAsync('/admin/couponcodes?_csrf='+csrf, 'POST', '', function(result){
-      var tr = document.createElement('tr');
-      var td1 = document.createElement('td');
-      var td2 = document.createElement('td');
+        var tr = document.createElement('tr');
+        var td_ID = document.createElement('td');
+        var td_code = document.createElement('td');
+        var td_used = document.createElement('td');
 
-      var text1 = document.createTextNode('x');
-      var text2 = document.createTextNode(result);
-      td1.appendChild(text1);
-      td2.appendChild(text2);
+        var text_ID = document.createTextNode(couponcode.id);
+        var text_code = document.createTextNode(couponcode.code);
+        var text_used = document.createTextNode('Nein');
 
-      tr.appendChild(td1);
-      tr.appendChild(td2);
+        td_ID.appendChild(text_ID);
+        td_code.appendChild(text_code);
+        td_used.appendChild(text_used);
 
-      document.getElementById('codebody').appendChild(tr);
+        tr.appendChild(td_ID);
+        tr.appendChild(td_code);
+        tr.appendChild(td_used);
 
-    });
-
-
-
-
+        document.getElementById('codebody').appendChild(tr);
+      });
     };

@@ -8,17 +8,16 @@ const couponcodeService = require('../../service/couponcodes');
 
 
 router.get('/', isAuthenticated, (req, res) => {
-  let allCouponcodes = {'couponcodes': ['code1', 'code2']};
+  let allCouponcodes = couponcodeService.getAll();
 
-  res.render('admin/couponcodes', allCouponcodes);
+  allCouponcodes.then(codes => {
+      res.render('admin/couponcodes', {couponcodes: codes});
+  });
 });
-
 
 router.post('/', isAuthenticated, (req, res) => {
   let codePromise = couponcodeService.create();
-  console.log(codePromise);
   codePromise.then(code => {
-      console.log('code ' + code);
       res.send(code);
     }
   )

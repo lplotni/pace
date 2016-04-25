@@ -22,10 +22,17 @@ couponcodes.create = function () {
   const deferred = Q.defer();
 
   db.insert('INSERT INTO couponcodes (code, used) values($1, $2) returning id', [code, false]).then(
-    result => {
-      deferred.resolve(code);
+    id => {
+      let result = {id: id, code: code};  
+      deferred.resolve(result);
     });
   return deferred.promise;
 };
+
+couponcodes.getAll = function () {
+  return db.select('SELECT * from couponcodes');
+}; 
+  
+
 
 module.exports = couponcodes;

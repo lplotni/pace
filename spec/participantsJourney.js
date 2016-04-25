@@ -208,6 +208,20 @@ describe('participants page', () => {
         .fail(fail);
     });
 
+    it('should be able to confirm a participant participant', (done) => {
+      participants.save(aParticipant.withToken('f Token').withStartNr(555))
+        .then(() => {
+          setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
+            .click('button#confirm-registration')
+            .isVisible('#confirm-registration-done')
+            .then(function (isVisible) {
+              expect(isVisible).toBe(true);
+            })
+            .end(done);
+        })
+        .fail(fail);
+    });
+
     it('should show amount to pay - no tshirt', function (done) {
       participants.save(aParticipant.withToken('g Token').withStartNr(651))
         .then(() => {

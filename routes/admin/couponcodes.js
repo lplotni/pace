@@ -20,7 +20,7 @@ router.post('/', isAuthenticated, (req, res) => {
   codePromise.then(code => {
       res.send(code);
     }
-  )
+  );
 });
 
 module.exports = router;

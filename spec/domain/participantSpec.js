@@ -137,18 +137,6 @@ describe('participant', () => {
       expect(callWithNoVisibility).toThrow();
     });
 
-
-    it('should throw an error if discount is free but coupon code is wrong', function () {
-      body.couponcode = 'invalid';
-      body.discount = 'free';
-
-      function callWithWrongCouponCode() {
-        participant.from(body);
-      }
-
-      expect(callWithWrongCouponCode).toThrow();
-    });
-
     it('should extract discount from the request body', () => {
       expect(participant.from(body).discount).toBe('yes');
     });

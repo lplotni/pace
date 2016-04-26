@@ -12,7 +12,8 @@ const participant = {};
 
 
 function invalidData(body) {
-  return !(validator.isEmail(body.email)) ||
+  return _.isUndefined(body.email) || 
+    !validator.isEmail(body.email) ||
     _.isUndefined(body.firstname) ||
     _.isUndefined(body.lastname) ||
     _.isUndefined(body.email) ||

@@ -3,33 +3,32 @@
 'use strict';
 
 
-var gulp = require('gulp');
-var jasmine = require('gulp-jasmine');
-var jshint = require('gulp-jshint');
-var shell = require('gulp-shell');
-var selenium = require('selenium-standalone');
-var gutil = require('gulp-util');
-var argv = require('yargs').argv;
-var Q = require('q');
+const gulp = require('gulp');
+const jasmine = require('gulp-jasmine');
+const jshint = require('gulp-jshint');
+const shell = require('gulp-shell');
+const selenium = require('selenium-standalone');
+const gutil = require('gulp-util');
+const argv = require('yargs').argv;
+const Q = require('q');
 
 
 function express() {
-  var deferred = Q.defer();
-  var app = require('./app.js');
+  let deferred = Q.defer();
+  let app = require('./app.js');
   app.set('port', process.env.PORT || 3000);
 
-  var server = app.listen(app.get('port'), function () {
+  let server = app.listen(app.get('port'), () => {
     gutil.log('Express server listening on port ' + server.address().port);
     deferred.resolve(server);
   });
 
   return deferred.promise;
-
 }
 
 function vagrant() {
-  var deferred = Q.defer();
-  var task = shell.task('cd postgres; vagrant up')();
+  let deferred = Q.defer();
+  let task = shell.task('cd postgres; vagrant up')();
   task.on('end', deferred.resolve);
   task.on('error', deferred.reject);
 
@@ -46,12 +45,11 @@ function createdb() {
 }
 
 function testFunctional(pathToTest) {
-  var src = pathToTest || 'spec/**/*Journey.js';
-  var deferred = Q.defer();
-  var stream = gulp.src(src).pipe(jasmine({verbose: true}));
+  let src = pathToTest || 'spec/**/*Journey.js';
+  let deferred = Q.defer();
+  let stream = gulp.src(src).pipe(jasmine({verbose: true}));
 
-  stream.on('data', function () {
-  });
+  stream.on('data', () => {});
 
   stream.on('error', deferred.reject);
   stream.on('end', deferred.resolve);
@@ -59,10 +57,10 @@ function testFunctional(pathToTest) {
 }
 
 function startSelenium() {
-  var deferred = Q.defer();
-  selenium.start(function (err, child) {
+  let deferred = Q.defer();
+  selenium.start((err, child) => {
     if (err) {
-      console.log(err);
+      gutil.log(err);
       deferred.reject(err);
     } else {
       selenium.child = child;
@@ -92,11 +90,7 @@ gulp.task('test-integration', function () {
 });
 
 gulp.task('selenium-install', function (done) {
-  selenium.install({
-    logger: function (message) {
-      gutil.log(message);
-    }
-  }, function (err) {
+  selenium.install({}, (err) => {
     if (err) {
       gutil.log(err);
     }
@@ -105,11 +99,11 @@ gulp.task('selenium-install', function (done) {
 });
 
 gulp.task('test-functional', function () {
-  var deferred = Q.defer();
+  let deferred = Q.defer();
 
-  deferred.promise.then(function () {
+  deferred.promise.then(() => {
     process.exit(0);
-  }).fail(function () {
+  }).fail(() => {
     process.exit(1);
   });
 
@@ -119,12 +113,12 @@ gulp.task('test-functional', function () {
     server.close(done);
   }
 
-  express().then(function (server) {
-    startSelenium().then(function (selenium) {
-      testFunctional(argv.single).then(function () {
+  express().then((server) => {
+    startSelenium().then((selenium) => {
+      testFunctional(argv.single).then(() => {
         cleanUp(selenium, server, deferred.resolve);
-      }).fail(function (e) {
-        console.log(e);
+      }).fail((e) => {
+        gutil.log(e);
         cleanUp(selenium, server, deferred.reject);
       });
     });
@@ -133,18 +127,19 @@ gulp.task('test-functional', function () {
 
 gulp.task('create-db', createdb);
 
-gulp.task('lint', function () {
-  return gulp.src(['app.js', './spec/**/*.js', './service/*.js', './routes/*.js', './domain/*.js'])
+gulp.task('lint', () => {
+  return gulp.src(['app.js', './spec/**/*.js', './service/**/*.js', './routes/**/*.js', './domain/**/*.js'])
     .pipe(jshint())
-    .pipe(jshint.reporter('default', {verbose: true}));
+    .pipe(jshint.reporter(require("jshint-stylish")))
+    .pipe(jshint.reporter('fail'));
 });
 
 gulp.task('default', ['express']);
 
-gulp.task('database', function () {
-  var deferred = Q.defer();
-  vagrant().then(function () {
-    var task = createdb();
+gulp.task('database', () => {
+  let deferred = Q.defer();
+  vagrant().then(() => {
+    let task = createdb();
     task.on('end', deferred.resolve);
     task.on('error', deferred.reject);
   }).fail(deferred.reject);

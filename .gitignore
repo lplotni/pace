@@ -36,3 +36,6 @@ node_modules
 #Vim undo & swp files
 *.un~
 *.swp
+
+#Local config
+config/local.json

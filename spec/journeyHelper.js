@@ -18,8 +18,8 @@ let journeyHelper = {};
 
 journeyHelper.paceUrl = process.env.PACE_URL || 'http://localhost:3000/';
 
-journeyHelper.setUpClient = function () {
-  return webdriverio.remote(options).init();
+journeyHelper.setUpClient = function (done) {
+  return webdriverio.remote(options).init(done);
 };
 
 journeyHelper.changeOriginalTimeout = function () {

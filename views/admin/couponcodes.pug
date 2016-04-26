@@ -11,7 +11,7 @@ block content
         th Benutzt
     tbody#codebody
       each code in couponcodes
-        tr
+        tr(class=(code.used ? 'inactive' : ''))
           td=code.id
           td=code.code
           td=code.used ? 'Ja' : 'Nein'

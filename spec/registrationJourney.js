@@ -109,7 +109,6 @@ describe('registration journey', () => {
       .isVisible('p#failure-message')
       .then((isVisible) => {
         expect(isVisible).toBe(true);
-        done();
-      });
+      }).end(done);
   });
 });

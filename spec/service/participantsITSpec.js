@@ -25,8 +25,9 @@ describe('participants service', () => {
     category: 'Unicorn',
     birthyear: 1980,
     visibility: 'yes',
-    discount: 'no',
-    team: 'Crazy runners'
+    discount: 'free',
+    team: 'Crazy runners',
+    couponcode: 'Free2016',
   }).withToken(paymentToken).withSecureId(secureId);
 
   const aSecondParticipant = participant.from({
@@ -66,6 +67,7 @@ describe('participants service', () => {
     expect(participantFromDb.paymenttoken).toEqual(paymentToken);
     expect(participantFromDb.has_payed).toEqual(false);
     expect(participantFromDb.secureid).toEqual(secureId);
+    expect(participantFromDb.couponcode).toEqual(aParticipant.couponcode);
   };
 
   beforeEach((done) => {
@@ -89,9 +91,36 @@ describe('participants service', () => {
         expect(data[0].birthyear).toBe(aParticipant.birthyear);
         expect(data[0].discount).toBe(aParticipant.discount);
         expect(data[0].team).toBe(aParticipant.team);
+        expect(data[0].couponcode).toBe(aParticipant.couponcode);
         done();
       })
       .fail(fail);
+  });
+
+  describe('saveBlancParticipant()', () => {
+    it('should save a participant with blank values', (done) => {
+
+      participants.saveBlancParticipant().then( participantId => {
+        expect(participantId).toBeDefined();
+        participants.byId(participantId).then( participant => {
+          expect(participant.firstname).toBe('');
+          expect(participant.lastname).toBe('');
+          expect(participant.team).toBe('');
+          expect(participant.email).toBe('');
+          expect(participant.birthyear).toBe(0);
+          expect(participant.category).toBe('');
+          expect(participant.visibility).toBe('yes');
+          expect(participant.discount).toBe('no');
+
+          expect(participant.has_payed).toBe(false);
+          expect(participant.start_number).toBeDefined();
+          expect(participant.secureid).toBeDefined();
+          expect(participant.is_on_site_registration).toBe(true);
+          done();
+        });
+      });
+    });
+
   });
 
   describe('save()', () => {
@@ -248,6 +277,18 @@ describe('participants service', () => {
     });
   });
 
+  describe('blancParticipants()', () => {
+    it('returns only participants which are on-site registrations', (done) => {
+      participants.save(aParticipant.withStartNr(startNr++))
+        .then(participants.saveBlancParticipant)
+          .then(participants.blancParticipants).then(function (data) {
+            expect(data.length).toBe(1);
+            done();
+          })
+          .fail(fail);
+    });
+  });
+
   describe('bulkmail()', () => {
     it('should send the correct email to every participant', (done) => {
       spyOn(mails, 'sendEmail');
@@ -266,5 +307,4 @@ describe('participants service', () => {
         .fail(fail);
     });
   });
-})
-;
+});

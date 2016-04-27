@@ -6,15 +6,17 @@ const Q = require('q');
 const _ = require('lodash');
 
 const calculator = require('../domain/costCalculator');
-const db = require('../service/util/dbHelper');
-const mails = require('../service/util/mails');
-const tshirts = require('../service/tshirts');
+const db = require('./util/dbHelper');
+const mails = require('./util/mails');
+const tshirts = require('./tshirts');
+const startNumbers = require('./startNumbers');
+const editUrlHelper = require('../domain/editUrlHelper');
 
 let participants = {};
 
 participants.allWithPaymentStatus = function (paymentStatus) {
   if (_.isUndefined(paymentStatus)) {
-    return db.select('select * from participants order by firstname,lastname');
+    return db.select('select * from participants where is_on_site_registration = true order by firstname,lastname');
   } else {
     return db.select('select * from participants where has_payed = $1 order by firstname,lastname', [paymentStatus]);
   }
@@ -28,6 +30,10 @@ participants.confirmed = function () {
   return participants.allWithPaymentStatus(true);
 };
 
+participants.blancParticipants = function () {
+  return db.select('select * from participants where is_on_site_registration = true');
+};
+
 participants.publiclyVisible = function () {
   return participants.confirmed().then(confirmed =>
     _.filter(confirmed, p => p.visibility === 'yes')
@@ -36,8 +42,8 @@ participants.publiclyVisible = function () {
 
 participants.save = function (participant) {
   return db.insert('INSERT INTO participants ' +
-    '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number) ' +
-    'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning id',
+    '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, couponcode) ' +
+    'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning id',
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -48,8 +54,47 @@ participants.save = function (participant) {
       participant.discount,
       participant.paymentToken,
       participant.secureID,
-      participant.start_number]
+      participant.start_number,
+      participant.couponcode]
   );
+};
+
+participants.saveBlancParticipant = function () {
+  return startNumbers.next().then( nr => {
+      let participant = {
+        firstname: '',
+        lastname: '',
+        email: '',
+        category: '',
+        birthyear: 0,
+        team: '',
+        visibility: 'yes',
+        discount: 'no',
+        paymentToken: 'on-site Registrierung (' + nr + ')',
+        secureID: editUrlHelper.generateSecureID(),
+        start_number: nr,
+        is_on_site_registration: true,
+        has_payed: false
+      };
+
+      return db.insert('INSERT INTO participants ' +
+        '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, is_on_site_registration, has_payed) ' +
+        'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id',
+        [participant.firstname,
+          participant.lastname,
+          participant.email,
+          participant.category,
+          participant.birthyear,
+          participant.team,
+          participant.visibility,
+          participant.discount,
+          participant.paymentToken,
+          participant.secureID,
+          participant.start_number,
+          participant.is_on_site_registration,
+          participant.has_payed]
+      );
+    });
 };
 
 participants.delete = function (participantid) {

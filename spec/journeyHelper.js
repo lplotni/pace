@@ -41,20 +41,24 @@ journeyHelper.setupDbConnection = function (done) {
         done();
         jasmineDone();
       }
-
+    
       if (err) {
         errorFunction(err);
       } else {
-        let deleteShirts = client.query('delete from tshirts');
-        deleteShirts.on('end', () => {
-          let deleteParticipants = client.query('delete from participants');
-          deleteParticipants.on('end', () => {
-            done();
-            jasmineDone();
+        let deleteCouponcodes = client.query('delete from couponcodes');
+        deleteCouponcodes.on('end', () => {
+          let deleteShirts = client.query('delete from tshirts');
+          deleteShirts.on('end', () => {
+            let deleteParticipants = client.query('delete from participants');
+            deleteParticipants.on('end', () => {
+              done();
+              jasmineDone();
+            });
+            deleteParticipants.on('error', errorFunction);
           });
-          deleteParticipants.on('error', errorFunction);
+          deleteShirts.on('error', errorFunction);
         });
-        deleteShirts.on('error', errorFunction);
+        deleteCouponcodes.on('error', errorFunction);
       }
     }
   );

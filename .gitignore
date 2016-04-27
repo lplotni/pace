@@ -30,6 +30,7 @@ node_modules
 .vagrant/
 # Ignoring the idea folder
 .idea/
+*.iml
 # ignoring OSX .DS_STORE files
 **/.DS_Store
 

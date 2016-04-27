@@ -24,9 +24,9 @@ describe('registration journey', () => {
     });
   });
 
-  beforeEach(() => {
+  beforeEach((done) => {
     helper.changeOriginalTimeout();
-    client = helper.setUpClient();
+    client = helper.setUpClient(done);
   });
 
   afterEach(() => {
@@ -76,21 +76,19 @@ describe('registration journey', () => {
   });
 
   it('shows a message when the registration is closed', (done) => {
-    registration.close().then( () => {
-      helper.setUpClient().url(helper.paceUrl)
+    registration.close().then(() => {
+      client.url(helper.paceUrl)
         .click('a#registration')
         .isVisible('form#registrationForm')
-        .then( (isVisible) => {
+        .then((isVisible) => {
           expect(isVisible).toBe(false);
         })
         .isVisible('p#registration-closed-message')
-        .then( function (isVisible) {
+        .then(function (isVisible) {
           expect(isVisible).toBe(true);
         })
-        .end().then( () => {
-        registration.reopen().then( () => {
-          done();
-        });
+        .then(registration.reopen).then(() => {
+        client.end(done);
       });
     });
   });

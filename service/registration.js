@@ -11,6 +11,7 @@ const calculator = require('../domain/costCalculator');
 const db = require('../service/util/dbHelper');
 const mails = require('../service/util/mails');
 const participants = require('../service/participants');
+const couponcodes = require('../service/couponcodes');
 const startNumbers = require('../service/startNumbers');
 const tokens = require('../service/tokens');
 const tshirts = require('../service/tshirts');
@@ -55,7 +56,7 @@ registration.confirm = function (participantId) {
 };
 
 function sendConfirmationMail(participant, paymentToken) {
-  pug.renderFile('views/registration/text.pug',
+  pug.renderFile('views/registration/confirmationText.pug',
     {
       name: participant.firstname,
       token: paymentToken,
@@ -71,24 +72,36 @@ function sendConfirmationMail(participant, paymentToken) {
 }
 registration.start = function (participant) {
   const deferred = Q.defer();
+  var resultPromise = couponcodes.validateCode(participant.couponcode, participant.discount);
+  resultPromise.then(isValidCode => {
+    if (isValidCode) {
+      tokens.createUnique().then((paymentToken) => {
+        startNumbers.next().then((nr) => {
+          let p = participant
+            .withToken(paymentToken)
+            .withSecureId(editUrlHelper.generateSecureID())
+            .withStartNr(nr);
+          participants.save(p)
+            .then(id => {
+              if (!_.isEmpty(p.tshirt)) {
+                tshirts.addFor(p.tshirt, id);
+              }
 
-  tokens.createUnique().then((paymentToken) => {
-    startNumbers.next().then((nr) => {
-      let p = participant
-        .withToken(paymentToken)
-        .withSecureId(editUrlHelper.generateSecureID())
-        .withStartNr(nr);
-      participants.save(p)
-        .then(id => {
-          if (!_.isEmpty(p.tshirt)) {
-            tshirts.addFor(p.tshirt, id);
-          }
-          sendConfirmationMail(p, paymentToken);
-          deferred.resolve({'id': id, 'token': paymentToken, secureid: p.secureID, startnr: p.start_number});
-        })
-        .fail(deferred.reject);
-    });
-  }).fail(deferred.reject);
+              if (calculator.priceFor(p) === 0) {
+                participants.markPayed(id);
+              }
+              sendConfirmationMail(p, paymentToken);
+              deferred.resolve({'id': id, 'token': paymentToken, secureid: p.secureID, startnr: p.start_number});
+
+              couponcodes.markAsUsed(participant.couponcode);
+            })
+            .fail(deferred.reject);
+        });
+      }).fail(deferred.reject);
+    } else {
+      deferred.reject(new TypeError('Ungültiger Couponcode'));
+    }
+  });
 
   return deferred.promise;
 };

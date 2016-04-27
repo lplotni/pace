@@ -26,13 +26,14 @@ participant.from = function (body) {
   if (invalidData(body)) {
     throw new TypeError('Required attributes are not present');
   }
-  
+
   let p = {
     firstname: body.firstname,
     lastname: body.lastname,
     email: body.email,
     visibility: body.visibility,
     discount: _.isUndefined(body.discount) ? 'no' : body.discount,
+    couponcode: body.couponcode,
     category: body.category,
     birthyear: body.birthyear,
     team: body.team,

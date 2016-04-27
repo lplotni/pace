@@ -2,14 +2,15 @@ extends ../adminLayout.pug
 
 block content
   .row
-    table.u-full-width
+    table.u-full-width.compact
       thead
         tr
-          th Startnummer
+          th Startnr.
           th Vorname
           th Nachname
           th Bezahlt
           th Betrag
+          th Coupon Code
           th Token
           th Anzahl T-shirts
           th T-shirt Größen
@@ -24,6 +25,7 @@ block content
             td.last-name=p.lastname
             td=(p.has_payed ? 'ja' : 'nein')
             td#amount=p.amount
+            td=p.couponcode
             td=p.paymenttoken
             td#tshirt-amount=(p.tshirt ? 1 : 0)
             td

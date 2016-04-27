@@ -7,21 +7,28 @@ describe('participant', () => {
 
   const _ = require('lodash');
   const participant = require('../../domain/participant.js');
-  const body = {
-    firstname: 'Mark',
-    lastname: 'Mueller',
-    email: 'm.mueller@example.com',
-    category: 'Unicorn',
-    birthyear: 1980,
-    team: 'Crazy runners',
-    visibility: 'public',
-    discount: 'yes',
-    shirt: 'Yes',
-    model: 'Normal fit',
-    size: 'M'
-  };
+  let body;
+
+  beforeEach(function () {
+      body = {
+        firstname: 'Mark',
+        lastname: 'Mueller',
+        email: 'm.mueller@example.com',
+        category: 'Unicorn',
+        birthyear: 1980,
+        team: 'Crazy runners',
+        visibility: 'public',
+        discount: 'yes',
+        couponcode: '',
+        shirt: 'Yes',
+        model: 'Normal fit',
+        size: 'M'
+      };
+    }
+  );
 
   describe('from()', () => {
+
     const invalid_email_body = {
       firstname: 'Mark',
       lastname: 'Mueller',
@@ -31,6 +38,7 @@ describe('participant', () => {
       team: 'Crazy runners',
       visibility: 'public',
       discount: 'no',
+      couponcode: '',
       shirt: 'Yes',
       model: 'Normal fit',
       size: 'M'

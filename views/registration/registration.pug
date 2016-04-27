@@ -111,10 +111,8 @@ block content
         }
       };
 
-      var couponCodeInput = document.getElementById('coupon-input');
-      var discountSelection = document.getElementById('discount');
-      var couponcode = document.getElementById('couponcode');
-      discountSelection.onchange = function () {
+      var displayCouponcodeInput = function () {
+        var couponcode = document.getElementById('couponcode');
         if (discountSelection.options[discountSelection.selectedIndex].value === 'free') {
           couponCodeInput.style.display = 'block';
           couponcode.required = true;
@@ -123,3 +121,8 @@ block content
           couponCodeInput.style.display = 'none';
         }
       };
+
+      var couponCodeInput = document.getElementById('coupon-input');
+      var discountSelection = document.getElementById('discount');
+      discountSelection.onchange = displayCouponcodeInput;
+      window.onload = displayCouponcodeInput;

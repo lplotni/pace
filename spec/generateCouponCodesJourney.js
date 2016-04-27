@@ -32,18 +32,6 @@ describe('admin/couponcodes page', () => {
     helper.closeDbConnection(done);
   });
 
-  afterAll((done) => {
-    if (originalRegistrationStatus) {
-      registration.close().then(() => {
-        done();
-      });
-    } else {
-      registration.reopen().then(() => {
-        done();
-      });
-    }
-  });
-
   function loginAdmin() {
     return helper.setUpClient().url(loginUrl)
       .setValue('input#username', config.get('admin.username'))

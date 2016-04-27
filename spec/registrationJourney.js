@@ -95,4 +95,23 @@ describe('registration journey', () => {
     });
   });
 
+  it('should return failure page on wrong couponcode', (done) =>{
+    client.url(helper.paceUrl + 'registration')
+      .setValue('input#firstname', 'Max')
+      .setValue('input#lastname', 'Mustermann')
+      .setValue('input#email', 'max@example.com')
+      .setValue('input#birthyear', 2000)
+      .selectByIndex('select#discount', 2)
+      .isVisible('input#couponcode')
+        .then((isVisible) => {
+          expect(isVisible).toBe(true);
+        })
+      .setValue('input#couponcode', 'invalidCode')
+      .click('button#submit')
+      .isVisible('p#failure-message')
+      .then((isVisible) => {
+        expect(isVisible).toBe(true);
+        done();
+      });
+  });
 });

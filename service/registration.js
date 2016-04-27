@@ -99,7 +99,7 @@ registration.start = function (participant) {
         });
       }).fail(deferred.reject);
     } else {
-      deferred.reject(new TypeError('Wrong code'));
+      deferred.reject(new TypeError('Ungültiger Couponcode'));
     }
   });
 

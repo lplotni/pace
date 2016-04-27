@@ -29,9 +29,14 @@ router.post('/', (req, res) => {
           amount: new Intl.NumberFormat('de-DE', {minimumFractionDigits: '2'}).format(calculator.priceFor(newParticipant)),
           editUrl: editUrlHelper.generateUrl(result.secureid),
           startnr: result.startnr
-        }), err => res.send(err.message));
+        }), err => res.render('failure', {
+                        message: err.message
+                    })
+      );
   } catch (err) {
-    res.send(err.message);
+    res.render('failure', {
+      message: err.message
+    });
   }
 });
 

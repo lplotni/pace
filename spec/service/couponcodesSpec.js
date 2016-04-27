@@ -35,7 +35,11 @@ describe('couponcode service', () => {
       mockery.registerMock('../service/util/dbHelper', dbHelperMock);
 
       mockery.registerAllowables(['q', 'lodash', '../../service/util/dbHelper.js']);
-      dbHelperMock.select.and.returnValue(Q.fcall(() => [{id: 1, code: '123', used: false},{id: 2, code: '321', used: true}]));
+      dbHelperMock.select.and.returnValue(Q.fcall(() => [{id: 1, code: '123', used: false}, {
+        id: 2,
+        code: '321',
+        used: true
+      }]));
       dbHelperMock.insert.and.returnValue(Q.fcall(() => 'some id'));
       dbHelperMock.update.and.returnValue(Q.fcall(() => 'whatever'));
 
@@ -87,7 +91,7 @@ describe('couponcode service', () => {
       }).fail(fail);
     });
 
-      it('should return false if code is invalid and discount is free', (done) => {
+    it('should return false if code is invalid or used and discount is free', (done) => {
       let returnValue = [{count: 0}];
       dbHelperMock.select.and.returnValue(Q.fcall(() => returnValue));
       let couponcode = '123';

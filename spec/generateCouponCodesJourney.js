@@ -5,22 +5,10 @@
 
 const helper = require('./journeyHelper');
 const config = require('config');
-const crypto = require('crypto');
-const registration = require('../service/registration');
-const participant = require('../domain/participant');
-const _ = require('lodash');
 
 describe('admin/couponcodes page', () => {
 
   let loginUrl = helper.paceUrl + 'login';
-  let originalRegistrationStatus;
-
-  beforeAll((done) => {
-    registration.isClosed().then(isClosed => {
-      originalRegistrationStatus = isClosed;
-      done();
-    });
-  });
 
   beforeEach((done) => {
     helper.changeOriginalTimeout();

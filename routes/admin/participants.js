@@ -37,7 +37,7 @@ router.get('/', isAuthenticated, (req, res) => {
       Q.all(allParticipants.map(tshirts.findAndAddTo))
         .then(() => {
             addAmountTo(allParticipants);
-            res.render('admin/list', {participants: allParticipants, isAdmin: true});
+            res.render('admin/list', {participants: allParticipants});
           }
         );
     });

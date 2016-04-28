@@ -16,10 +16,10 @@ router.get('/', isAuthenticated, (req, res) => {
         race.startTime()
           .then( function(timestamp) {
             let time = moment(timestamp,'X');
-            res.render('admin/after', {hours:time.hours(), minutes: time.minutes(), seconds: time.seconds(),isAdmin: true});
+            res.render('admin/after', {hours:time.hours(), minutes: time.minutes(), seconds: time.seconds()});
           });
       } else {
-        res.render('admin/after', {hours:'', minutes: '', seconds:'',isAdmin: true});
+        res.render('admin/after', {hours:'', minutes: '', seconds:''});
       }
     });
 });

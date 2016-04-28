@@ -47,6 +47,7 @@ describe('participants page', () => {
       'Nachname',
       'Bezahlt',
       'Betrag',
+      'Coupon Code',
       'Token',
       'Anzahl T-shirts',
       'T-shirt Größen',

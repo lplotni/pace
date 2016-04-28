@@ -6,7 +6,6 @@ const Q = require('q');
 const router = require('express').Router();
 const moment = require('moment');
 const multiparty = require('multiparty');
-const form = new multiparty.Form();
 const accesscontrol = require('../../acl/accesscontrol');
 const isAuthenticated = require('../../acl/authentication');
 const race = require('../../service/race');
@@ -36,12 +35,17 @@ router.post('/', (req, res) => {
 });
 
 router.post('/import', isAuthenticated, (req, res) => {
-    var util = require('util');
-    form.parse(req);
-    form.on('file', function(name,file){
-      race.import(file.path)
-      .then( () => res.redirect('/admin/after'));
-    });
+  const form = new multiparty.Form();
+  form.parse(req);
+  form.on('file', function(name,file){
+    race.import(file.path);
+  });
+  form.on('close',function(){
+    res.redirect('/admin/after');
+  });
+  form.on('error',function(err){
+    console.log(err);
+  });
 });
 
 

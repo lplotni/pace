@@ -2,12 +2,10 @@
 /* jshint esnext: true */
 'use strict';
 const db = require('../service/util/dbHelper');
-const participant = require('../service/participants');
 const _ = require('lodash');
 const Q = require('q');
 const moment = require('moment');
 const csv = require('fast-csv');
-const fs = require('fs');
 
 
 
@@ -52,6 +50,7 @@ race.resetStarttime = () => {
 
 race.import = function (file) {
   const deferred = Q.defer();
+  const participant = require('../service/participants');
   csv
    .fromPath(file)
    .on("data", function(data){

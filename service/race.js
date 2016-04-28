@@ -48,18 +48,28 @@ race.resetStarttime = () => {
   return db.update(query);
 };
 
-race.import = function (file) {
+race.parse = function(file) {
   const deferred = Q.defer();
-  const participant = require('../service/participants');
+  var results = {};
   csv
    .fromPath(file)
    .on("data", function(data){
-      participant.insertTime(data[1],data[2]);
-      })
+     results[data[1]] = data[2];
+     })
    .on("end", function(){
-      deferred.resolve();
-      });
+      deferred.resolve(results);
+     });
   return deferred.promise;
+};
+
+race.import = function (file) {
+  const participant = require('../service/participants');
+  race.parse(file)
+    .then( result => {
+      Object.keys(result).forEach(function (key) {
+        participant.insertTime(key,result[key]);
+      });
+  });
 };
 
 

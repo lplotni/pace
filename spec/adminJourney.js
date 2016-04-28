@@ -129,6 +129,10 @@ describe('admin page', () => {
           lastName = _.isArray(lastNames) ? lastNames[0] : lastNames;
         })
         .click('a.edit-button')
+        .isVisible('#firstname')
+        .then(isVisible => {
+          expect(isVisible).toBe(true);
+        })
         .getValue('#firstname')
         .then(function (value) {
           expect(value).toBe(firstName);

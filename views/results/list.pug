@@ -1,11 +1,48 @@
 extends ../guestLayout.pug
 
 block content
-    h4.black.centered Herzlichen Gl&uumlckwunsch allen Teilnehmer*innen
-    h3 Platz 1-3 (w)
-    .span Mehr
-    h3 Platz 1-3 (m)
-    .span Mehr
+    h3 Damen
+    .row
+      table
+        thead
+          tr
+            th Platz
+            th Startnummer
+            th Vorname
+            th Nachname
+            th Team name
+            th Zeit
+        tbody
+          each p in participants_f
+            tr.participant-line
+              td=p.place
+              td=p.start_number
+              td=p.firstname
+              td=p.lastname
+              td=p.team
+              td=p.timestring
+    h3 Herren
+    .row
+     table
+       thead
+         tr
+           th Platz
+           th Startnummer
+           th Vorname
+           th Nachname
+           th Team name
+           th Zeit
+       tbody
+         each p in participants_m
+           tr.participant-line
+             td=p.place
+             td=p.start_number
+             td=p.firstname
+             td=p.lastname
+             td=p.team
+             td=p.timestring
+
+    script(src='/javascript/searchAndSort.js')
       
     
     

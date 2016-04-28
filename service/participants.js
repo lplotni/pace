@@ -12,6 +12,7 @@ const tshirts = require('./tshirts');
 const startNumbers = require('./startNumbers');
 const editUrlHelper = require('../domain/editUrlHelper');
 const timeCalculator = require('../domain/timeCalculator');
+const race = require('../service/race');
 let participants = {};
 
 participants.allWithPaymentStatus = function (paymentStatus) {
@@ -214,6 +215,28 @@ participants.bulkmail = function () {
     });
   }).fail(deferred.reject);
 
+  return deferred.promise;
+};
+
+participants.results = function (category) {
+  const deferred = Q.defer();
+  db.select('select id,firstname,lastname,team,start_number,time,visibility from participants where visibility=\'yes\' and time > 0 and category=$1 order by time',[category])
+    .then((result) => {
+      var place =1;
+      race.startTime()
+      .then (start => {
+        _.forEach(result, participant => {
+          participant.place = place++;
+          timeCalculator.relativeTime(start,participant.time)
+            .then((time) => {
+              participant.timestring = time[0] + ':' + time[1] + ':' + time[2];
+            });
+        });
+      })
+      .then(() => {
+        deferred.resolve(result);
+      });
+  });
   return deferred.promise;
 };
 

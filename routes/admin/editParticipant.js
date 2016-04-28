@@ -13,7 +13,7 @@ let canDeleteUser = (role) => accesscontrol.hasPermissionTo(role, 'delete');
 router.get('/:secureId', (req, res) => {
   const participantId = req.params.secureId;
   participants.bySecureId(participantId)
-  .then(p => res.render('admin/editParticipant', {participant: p, participantid: participantId}))
+  .then(p => res.render('admin/participants/editParticipant', {participant: p, participantid: participantId}))
     .catch( () =>
       res.render('error', {
         message: "Teilnehmer nicht bekannt",

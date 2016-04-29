@@ -1,4 +1,4 @@
-extends ../layout
+extends ../adminLayout.pug
 
 block content
 
@@ -29,6 +29,11 @@ block content
     tbody
       td #{confirmed[0].count}
       td #{unconfirmed[0].count}
+
+  h3 Coupon Codes
+    form(action="admin/couponcodes")
+      input(type='hidden', name='_csrf', value=_csrf)
+      button#goto-couponcodes.primary.button-primary.pace(type='submit') Coupon Codes
 
   h3 Registrierung schlie&szlig;en
     form(method='POST', action='admin/close-registration')

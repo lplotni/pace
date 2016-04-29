@@ -13,7 +13,7 @@ let canDeleteUser = (role) => accesscontrol.hasPermissionTo(role, 'delete');
 router.get('/:secureId', (req, res) => {
   const participantId = req.params.secureId;
   participants.bySecureId(participantId)
-  .then(p => res.render('participants/editParticipant', {participant: p, participantid: participantId, isAdmin: true}))
+  .then(p => res.render('admin/participants/editParticipant', {participant: p, participantid: participantId}))
     .catch( () =>
       res.render('error', {
         message: "Teilnehmer nicht bekannt",
@@ -24,7 +24,7 @@ router.get('/:secureId', (req, res) => {
 
 router.post('/', (req, res) => {
   participants.update(participant.from(req.body), req.body.participantid)
-    .then(() => res.render('participants/success', {name: req.body.firstname + ' ' + req.body.lastname, isAdmin: true}))
+    .then(() => res.render('participants/success', {name: req.body.firstname + ' ' + req.body.lastname}))
     .catch(() => res.render('error', {message: "Es ist ein Fehler aufgetreten", error: {status: "Bitte versuche es nochmal"}}));
 });
 
@@ -32,7 +32,7 @@ router.post('/delete', (req, res) => {
   if (canDeleteUser(req.user.role)) {
     participants.delete(req.body.participantid)
       .then(() => res.redirect('/admin/participants'))
-      .catch(() => res.render('error', {message: "Es ist ein Fehler aufgetreten", error: {status: "Bitte versuche es nochmal"}, isAdmin: true}));
+      .catch(() => res.render('error', {message: "Es ist ein Fehler aufgetreten", error: {status: "Bitte versuche es nochmal"}}));
   } else {
     res.render('error', {
       message: 'Bitte anmelden',

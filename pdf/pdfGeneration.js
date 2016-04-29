@@ -10,6 +10,7 @@ const config = require('config');
 const participants = require('../service/participants');
 const tshirts = require('../service/tshirts');
 const barcode = require("rescode");
+const editUrlHelper = require('../domain/editUrlHelper');
 
 let pdfGeneration = {};
 
@@ -26,7 +27,18 @@ pdfGeneration.addCheckmarkSymbol = (doc) => {
     .stroke();
 };
 
-pdfGeneration.createStartNumberPage = (participant, doc) => {
+pdfGeneration.addQrCodeWithSelfServiceLink = (doc, selfServiceUrl) => {
+  doc.fontSize(10).fillColor('black').text('Registriere dich', 300, 320);
+  doc.fontSize(10).fillColor('black').text('nach dem Lauf', 300, 330);
+  doc.fontSize(10).fillColor('black').text('unter diesem Link', 300, 340);
+
+  doc.scale(2)
+    .translate(100, 150)
+    .path(qr.svgObject(selfServiceUrl).path)
+    .fill('black', 'even-odd');
+};
+
+pdfGeneration.createStartNumberPage = (doc, participant) => {
   doc.image(__dirname + pathToBackgroundImage, {fit: [800, 800]});
   doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [130, 130]});
   doc.image(__dirname + pathToLogoRight, 475, 20, {fit: [100, 100]});
@@ -50,14 +62,24 @@ pdfGeneration.createStartNumberPage = (participant, doc) => {
     pdfGeneration.addCheckmarkSymbol(doc);
   }
 
+  if(participant.is_on_site_registration) {
+    pdfGeneration.addQrCodeWithSelfServiceLink(doc, editUrlHelper.generateUrl(participant.secureid));
+  }
+
   doc.addPage();
 };
 
-pdfGeneration.fillDocument = function(res, doc) {
+pdfGeneration.fillDocument = (doc, participants) => {
+  participants = _.orderBy(participants, ['start_number']);
+  _.forEach(participants, participant => pdfGeneration.createStartNumberPage(doc, participant) );
+};
+
+pdfGeneration.generateStartNumbers = (res, doc) => {
   const deferred = Q.defer();
 
   participants.confirmed().then(confirmed =>
     participants.registered().then(unconfirmed => {
+
       res.writeHead(200, {
         'Content-Type': 'application/pdf',
         'Access-Control-Allow-Origin': '*',
@@ -70,25 +92,45 @@ pdfGeneration.fillDocument = function(res, doc) {
       });
 
       let allParticipants = confirmed.concat(unconfirmed);
-      allParticipants = _.orderBy(allParticipants, ['start_number']);
 
       Q.all(allParticipants.map(tshirts.findAndAddTo))
         .then(() => {
-          _.forEach(allParticipants, participant => {
-            pdfGeneration.createStartNumberPage(participant, doc);
-          });
-
+          pdfGeneration.fillDocument(doc, allParticipants);
           doc.end();
           deferred.resolve(doc);
-      });
+        });
     }));
+
+  return deferred.promise;
+};
+
+pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
+  const deferred = Q.defer();
+
+  participants.saveBlancParticipant() // generating 1 participant on the fly for now. This call will be removed
+    .then(participants.blancParticipants)
+    .then( participants => {
+
+      res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Access-Control-Allow-Origin': '*',
+        'Content-Disposition': 'attachment; filename=' + 'on_site_start_numbers.pdf'
+      });
+      doc.pipe(res);
+
+      pdfGeneration.fillDocument(doc, participants);
+
+      doc.end();
+
+      deferred.resolve(doc);
+    });
 
   return deferred.promise;
 };
 
 pdfGeneration.generate = (res) => {
   let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
-  return pdfGeneration.fillDocument(res, doc);
+  return pdfGeneration.generateStartNumbers(res, doc);
 };
 
 module.exports = pdfGeneration;

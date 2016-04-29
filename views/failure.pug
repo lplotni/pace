@@ -1,0 +1,6 @@
+extends guestLayout.pug
+
+block content
+  h3 Leider ist ein Fehler aufgetreten
+  p#failure-message=message
+  button.primary.button-primary(onclick='window.history.go(-1);return false;') Zurück zur Anmeldung

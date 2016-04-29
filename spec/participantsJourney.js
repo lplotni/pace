@@ -47,6 +47,7 @@ describe('participants page', () => {
       'Nachname',
       'Bezahlt',
       'Betrag',
+      'Coupon Code',
       'Token',
       'Anzahl T-shirts',
       'T-shirt Größen',
@@ -199,6 +200,20 @@ describe('participants page', () => {
         .then(() => {
           setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
             .isVisible('a#edit.edit-button')
+            .then(function (isVisible) {
+              expect(isVisible).toBe(true);
+            })
+            .end(done);
+        })
+        .fail(fail);
+    });
+
+    it('should be able to confirm a participant participant', (done) => {
+      participants.save(aParticipant.withToken('f Token').withStartNr(555))
+        .then(() => {
+          setUpLoggedInClient().url(helper.paceUrl + 'admin/participants')
+            .click('button#confirm-registration')
+            .isVisible('#confirm-registration-done')
             .then(function (isVisible) {
               expect(isVisible).toBe(true);
             })

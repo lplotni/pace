@@ -9,7 +9,7 @@ const participant = require('../../domain/participant');
 describe('registration service', () => {
 
   describe('start()', () => {
-    let registration, participantsMock, editUrlHelperMock, startNumbersMock, jadeMock, configMock;
+    let registration, participantsMock, editUrlHelperMock, startNumbersMock, pugMock, configMock;
     const secureId = 'secureId';
 
     beforeAll(() => {
@@ -30,7 +30,7 @@ describe('registration service', () => {
         next: jasmine.createSpy()
       };
 
-      jadeMock = {
+      pugMock = {
         renderFile: jasmine.createSpy()
       };
 
@@ -46,7 +46,7 @@ describe('registration service', () => {
       mockery.registerMock('../service/startNumbers', startNumbersMock);
       mockery.registerMock('../service/participants', participantsMock);
       mockery.registerMock('../domain/editUrlHelper', editUrlHelperMock);
-      mockery.registerMock('jade', jadeMock);
+      mockery.registerMock('pug', pugMock);
       mockery.registerMock('config', configMock);
 
 

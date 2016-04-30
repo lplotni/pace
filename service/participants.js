@@ -218,9 +218,15 @@ participants.bulkmail = function () {
   return deferred.promise;
 };
 
-participants.results = function (category) {
+participants.results = function (category,agegroup_start,agegroup_end) {
   const deferred = Q.defer();
-  db.select('select id,firstname,lastname,team,start_number,time,visibility from participants where visibility=\'yes\' and time > 0 and category=$1 order by time',[category])
+  if ( category === 'all')  { 
+    var query= 'select id,firstname,lastname,team,start_number,time,visibility from participants where visibility=\'yes\' and time > 0 and birthyear >= ' + agegroup_start + ' and birthyear <= '+ agegroup_end +' order by time';
+  } else {
+    var query= 'select id,firstname,lastname,team,start_number,time,visibility from participants where visibility=\'yes\' and time > 0 and category= \''+ category + '\' and birthyear >= ' + agegroup_start + ' and birthyear <= '+ agegroup_end +' order by time';
+  }
+  console.log(query);
+  db.select(query)
     .then((result) => {
       var place =1;
       race.startTime()

@@ -16,9 +16,9 @@ let participants = {};
 
 participants.allWithPaymentStatus = function (paymentStatus) {
   if (_.isUndefined(paymentStatus)) {
-    return db.select('select * from participants where is_on_site_registration = false order by firstname,lastname');
+    return db.select('select * from participants where firstname != \'\' order by firstname,lastname');
   } else {
-    return db.select('select * from participants where has_payed = $1 and is_on_site_registration = false order by firstname,lastname', [paymentStatus]);
+    return db.select('select * from participants where has_payed = $1 and firstname != \'\' order by firstname,lastname', [paymentStatus]);
   }
 };
 

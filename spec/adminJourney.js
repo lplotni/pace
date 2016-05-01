@@ -70,6 +70,10 @@ describe('admin page', () => {
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })
+      .isVisible('span#currentNumOfOnSite')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
       .end(done);
   });
 

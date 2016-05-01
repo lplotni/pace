@@ -27,7 +27,10 @@ router.get('/', isAuthenticated, (req, res) => {
       [stats.shirtOrders(), stats.confirmedParticipantsCount(), stats.unconfirmedParticipantsCount()])
       .then((results) => {
         let r = results.map(r => r.value);
-        res.render('admin/admin', {orders: r[0], confirmed: r[1], unconfirmed: r[2]});
+        participants.blancParticipants().then( (blancParticipants) => {
+          res.render('admin/admin', {orders: r[0], confirmed: r[1], unconfirmed: r[2],
+            numBlancParticipants: blancParticipants.length });
+        });
       });
   } else {
     renderNotAllowed(res);

@@ -52,13 +52,21 @@ describe('admin page', () => {
       .click('button#submit');
   }
 
-  it('should go to admin page, show statistics and generate start number button', (done) => {
+  it('should go to admin page, show statistics and generate start number buttons (registered and on-site numbers)', (done) => {
     loginAdmin().url(helper.paceUrl + 'admin')
       .isVisible('h3#admin_tshirts_count')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })
       .isVisible('button#generate-start-numbers')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .isVisible('button#generate-on-site-start-numbers')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .isVisible('input#amountOnSite')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })

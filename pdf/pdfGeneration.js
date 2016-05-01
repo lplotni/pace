@@ -107,10 +107,7 @@ pdfGeneration.generateStartNumbers = (res, doc) => {
 pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
   const deferred = Q.defer();
 
-  participants.saveBlancParticipant() // generating 1 participant on the fly for now. This call will be removed
-    .then(participants.blancParticipants)
-    .then( participants => {
-
+  participants.blancParticipants().then( participants => {
       res.writeHead(200, {
         'Content-Type': 'application/pdf',
         'Access-Control-Allow-Origin': '*',
@@ -128,9 +125,14 @@ pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
   return deferred.promise;
 };
 
-pdfGeneration.generate = (res) => {
+pdfGeneration.generateRegistered = (res) => {
   let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
   return pdfGeneration.generateStartNumbers(res, doc);
+};
+
+pdfGeneration.generateOnSite = (res) => {
+  let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
+  return pdfGeneration.generateOnSiteStartNumbers(res, doc);
 };
 
 module.exports = pdfGeneration;

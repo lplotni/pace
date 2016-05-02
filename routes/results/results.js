@@ -3,7 +3,7 @@
 'use strict';
 
 const router = require('express').Router();
-const participants = require('../../service/participants');
+const race = require('../../service/race');
 
 router.get('/', (req, res) => {
   var category_query='all';
@@ -69,7 +69,7 @@ router.get('/', (req, res) => {
       break;
   }
   console.log(req.query.agegroup);
-  participants.results(category_query,min_year,max_year).then(list  => {
+  race.results(category_query,min_year,max_year).then(list  => {
     res.render('results/list', {list: list});
   });
 });

@@ -360,25 +360,4 @@ describe('participants service', () => {
     });
   });
 
-
-  describe('result list', () => {
-    it('should show the first', (done) => {
-      let time = '10:32:32';
-      let nr = startNr++;
-      participants.save(aParticipant.withStartNr(nr))
-        .then((participantid) => {
-          participants.insertTime(nr,time)
-          .then(() => participants.results('Unicorn'))
-          .then((result) => {
-                expect(result.length).toBe(1); 
-                done();
-          }).fail(fail);
-        });
-    });
-  });
-
-
-
-
-
 });

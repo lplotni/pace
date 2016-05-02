@@ -49,5 +49,22 @@ describe('race service', () => {
   });
 
 
+/*  describe('result list', () => {*/
+    //it('should show the first', (done) => {
+      //let time = '10:32:32';
+      //let nr = 1;
+      //let starttime = Date.parse(new Date());
+      //participants.save(aParticipant.withStartNr(nr))
+      //.then(() => race.setStartTime(starttime))
+      //.then(() => participants.insertTime(nr,time))
+   ////   .then(() => race.results('Unicorn',1970,1990))
+      //.then((result) => {
+         //expect(result.length).toBe(1); 
+         //done();
+      //})
+      //.catch(done.fail);
+    //});
+  //});
+
 })
 ;

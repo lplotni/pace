@@ -218,32 +218,4 @@ participants.bulkmail = function () {
   return deferred.promise;
 };
 
-participants.results = function (category,agegroup_start,agegroup_end) {
-  const deferred = Q.defer();
-  if ( category === 'all')  { 
-    var query= 'select id,firstname,lastname,team,start_number,time,visibility from participants where visibility=\'yes\' and time > 0 and birthyear >= ' + agegroup_start + ' and birthyear <= '+ agegroup_end +' order by time';
-  } else {
-    var query= 'select id,firstname,lastname,team,start_number,time,visibility from participants where visibility=\'yes\' and time > 0 and category= \''+ category + '\' and birthyear >= ' + agegroup_start + ' and birthyear <= '+ agegroup_end +' order by time';
-  }
-  console.log(query);
-  db.select(query)
-    .then((result) => {
-      var place =1;
-      race.startTime()
-      .then (start => {
-        _.forEach(result, participant => {
-          participant.place = place++;
-          timeCalculator.relativeTime(start,participant.time)
-            .then((time) => {
-              participant.timestring = time[0] + ':' + time[1] + ':' + time[2];
-            });
-        });
-      })
-      .then(() => {
-        deferred.resolve(result);
-      });
-  });
-  return deferred.promise;
-};
-
 module.exports = participants;

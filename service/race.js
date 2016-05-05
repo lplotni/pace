@@ -5,6 +5,9 @@ const db = require('../service/util/dbHelper');
 const _ = require('lodash');
 const Q = require('q');
 const moment = require('moment');
+const csv = require('fast-csv');
+
+
 
 let race = {};
 
@@ -44,6 +47,31 @@ race.resetStarttime = () => {
   let query = 'UPDATE race SET data = jsonb_object(\'{"is_closed",false}\')'; 
   return db.update(query);
 };
+
+race.parse = function(file) {
+  const deferred = Q.defer();
+  var results = {};
+  csv
+   .fromPath(file)
+   .on("data", function(data){
+     results[data[1]] = data[2];
+     })
+   .on("end", function(){
+      deferred.resolve(results);
+     });
+  return deferred.promise;
+};
+
+race.import = function (file) {
+  const participant = require('../service/participants');
+  race.parse(file)
+    .then( result => {
+      Object.keys(result).forEach(function (key) {
+        participant.insertTime(key,result[key]);
+      });
+  });
+};
+
 
 
 module.exports = race;

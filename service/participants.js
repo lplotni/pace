@@ -11,7 +11,7 @@ const mails = require('./util/mails');
 const tshirts = require('./tshirts');
 const startNumbers = require('./startNumbers');
 const editUrlHelper = require('../domain/editUrlHelper');
-
+const timeCalculator = require('../domain/timeCalculator');
 let participants = {};
 
 participants.allWithPaymentStatus = function (paymentStatus) {
@@ -169,6 +169,32 @@ participants.markPayed = function (participantId) {
         throw new Error('Es konnte kein Teilnehmer mit ID: ' + participantId + ' gefunden werden.');
       }
     });
+};
+
+participants.insertTime = function (startnumber, timestring) {
+  const deferred = Q.defer();
+  timeCalculator.timestamp(timestring)
+    .then(finishtime => {
+      participants.getTime(startnumber)
+        .then( old_time => {
+          if ((finishtime < old_time) || _.isEmpty(old_time)) {
+            deferred.resolve(db.update('update participants set time=$2 where start_number=$1', [startnumber,finishtime]));
+          } else {
+            deferred.resolve();
+          }
+        });
+    });
+  return deferred.promise;
+};
+
+participants.getTime = function (startnumber) {
+  const deferred = Q.defer();
+  db.select('select time from participants where start_number=$1', [startnumber])
+    .then((result) => {
+      deferred.resolve(result[0].time);
+    })
+    .catch(deferred.reject);
+  return deferred.promise;
 };
 
 participants.bulkmail = function () {

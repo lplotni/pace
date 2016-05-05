@@ -12,6 +12,12 @@ block content
       span :
       input(type="text", size="2", name="seconds" value=seconds)
       input(type='hidden', name='_csrf', value=_csrf)
+    button(id = 'set_race_starttime', type='submit').button-primary Startzeit eintragen
 
-    button(id = 'set_race_starttime', type='submit').bigfont.button-primary Startzeit eintragen
+  h3 Ergebnisse importieren
+  form(method="POST", action="after/import?_csrf="+csrf, enctype="multipart/form-data")
+    .row
+      input(type="file", name="displayImage")
+    button#upload-results.primary.button-primary.pace(type='submit') Ergebnisse importieren
+
 

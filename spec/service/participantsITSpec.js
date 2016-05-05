@@ -275,7 +275,6 @@ describe('participants service', () => {
         .fail(fail);
 
     });
-  });
 
   describe('blancParticipants()', () => {
     it('returns only participants which are on-site registrations', (done) => {
@@ -286,7 +285,50 @@ describe('participants service', () => {
             done();
           })
           .fail(fail);
+        });
     });
+  });
+
+  describe('insertTime', () => {
+    it('should add the time to a participant with given start number', (done) => {
+      let time = '10:32:32';
+      let nr = startNr++;
+      participants.save(aParticipant.withStartNr(nr))
+        .then((participantid) => {
+          participants.insertTime(nr,time)
+          .then(() => participants.byId(participantid))
+          .then((participant) => {
+                expect(participant.time).toBeGreaterThan(1460401097); 
+                done();
+          }).fail(fail);
+        });
+    });
+    
+    it('should not save if time is slower than saved time', (done) => {
+      let time = '10:32:32';
+      let slower_time = '11:32:32';
+      let nr = startNr++;
+      participants.save(aParticipant.withStartNr(nr))
+        .then((participantid) => {
+          participants.insertTime(nr,time)
+          .then(() => {
+            participants.byId(participantid)
+              .then((participant) => {
+                let saved_time = participant.time;
+                participants.insertTime(nr,slower_time)
+                  .then(() => {
+                    participants.byId(participantid)
+                      .then((new_participant) => {
+                        expect(saved_time).toBe(new_participant.time);
+                        done();
+                      })
+                      .fail(fail);
+                  });
+              });
+          });
+        });
+    });
+
   });
 
   describe('bulkmail()', () => {

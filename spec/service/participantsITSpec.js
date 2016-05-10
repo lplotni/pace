@@ -27,7 +27,7 @@ describe('participants service', () => {
     visibility: 'yes',
     discount: 'free',
     team: 'Crazy runners',
-    couponcode: 'Free2016',
+    couponcode: 'Free2016'
   }).withToken(paymentToken).withSecureId(secureId);
 
   const aSecondParticipant = participant.from({
@@ -100,9 +100,9 @@ describe('participants service', () => {
   describe('saveBlancParticipant()', () => {
     it('should save a participant with blank values', (done) => {
 
-      participants.saveBlancParticipant().then( participantId => {
+      participants.saveBlancParticipant().then(participantId => {
         expect(participantId).toBeDefined();
-        participants.byId(participantId).then( participant => {
+        participants.byId(participantId).then(participant => {
           expect(participant.firstname).toBe('');
           expect(participant.lastname).toBe('');
           expect(participant.team).toBe('');
@@ -199,13 +199,13 @@ describe('participants service', () => {
       participants.save(aParticipantWithTshirt.withStartNr(startNr++))
         .then((participantid) => {
           participants.delete(participantid).then(() => {
-              tshirts.getFor(participantid).then((shirts)=>{
-               if(_.isEmpty(shirts))   {
-                 done();
-               } else {
-                 fail('participant\'s tshirts have not been deleted');
-                 done();
-               }
+              tshirts.getFor(participantid).then((shirts)=> {
+                if (_.isEmpty(shirts)) {
+                  done();
+                } else {
+                  fail('participant\'s tshirts have not been deleted');
+                  done();
+                }
               });
             })
             .fail(fail);
@@ -276,16 +276,16 @@ describe('participants service', () => {
 
     });
 
-  describe('blancParticipants()', () => {
-    it('returns only participants which are on-site registrations', (done) => {
-      participants.save(aParticipant.withStartNr(startNr++))
-        .then(participants.saveBlancParticipant)
+    describe('blancParticipants()', () => {
+      it('returns only participants which are on-site registrations', (done) => {
+        participants.save(aParticipant.withStartNr(startNr++))
+          .then(participants.saveBlancParticipant)
           .then(participants.blancParticipants).then(function (data) {
             expect(data.length).toBe(1);
             done();
           })
           .fail(fail);
-        });
+      });
     });
   });
 
@@ -295,37 +295,37 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          participants.insertTime(nr,time)
-          .then(() => participants.byId(participantid))
-          .then((participant) => {
-                expect(participant.time).toBeGreaterThan(1460401097); 
-                done();
-          }).fail(fail);
+          participants.insertTime(nr, time)
+            .then(() => participants.byId(participantid))
+            .then((participant) => {
+              expect(participant.time).toBeGreaterThan(1460401097);
+              done();
+            }).fail(fail);
         });
     });
-    
+
     it('should not save if time is slower than saved time', (done) => {
       let time = '10:32:32';
       let slower_time = '11:32:32';
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          participants.insertTime(nr,time)
-          .then(() => {
-            participants.byId(participantid)
-              .then((participant) => {
-                let saved_time = participant.time;
-                participants.insertTime(nr,slower_time)
-                  .then(() => {
-                    participants.byId(participantid)
-                      .then((new_participant) => {
-                        expect(saved_time).toBe(new_participant.time);
-                        done();
-                      })
-                      .fail(fail);
-                  });
-              });
-          });
+          participants.insertTime(nr, time)
+            .then(() => {
+              participants.byId(participantid)
+                .then((participant) => {
+                  let saved_time = participant.time;
+                  participants.insertTime(nr, slower_time)
+                    .then(() => {
+                      participants.byId(participantid)
+                        .then((new_participant) => {
+                          expect(saved_time).toBe(new_participant.time);
+                          done();
+                        })
+                        .fail(fail);
+                    });
+                });
+            });
         });
     });
 

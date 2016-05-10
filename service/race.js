@@ -12,10 +12,7 @@ const csv = require('fast-csv');
 let race = {};
 
 race.startTime = function () {
-  return db.select("SELECT data->>'starttime' as starttime FROM race;")
-    .then( result => {
-      return result[0].starttime;
-    });
+  return db.select("SELECT data->>'starttime' as starttime FROM race;").then(result => result[0].starttime);
 };
 
 race.startTimeArray = function() {

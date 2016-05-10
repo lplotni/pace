@@ -171,20 +171,16 @@ participants.markPayed = function (participantId) {
     });
 };
 
-participants.insertTime = function (startnumber, timestring) {
-  const deferred = Q.defer();
-  timeCalculator.timestamp(timestring)
-    .then(finishtime => {
-      participants.getTime(startnumber)
-        .then( old_time => {
-          if ((finishtime < old_time) || _.isEmpty(old_time)) {
-            deferred.resolve(db.update('update participants set time=$2 where start_number=$1', [startnumber,finishtime]));
-          } else {
-            deferred.resolve();
-          }
-        });
+function updateTime(startnumber, finishtime) {
+  return participants.getTime(startnumber)
+    .then(old_time => {
+      if ((finishtime < old_time) || _.isEmpty(old_time)) {
+        return db.update('update participants set time=$2 where start_number=$1', [startnumber, finishtime]);
+      }
     });
-  return deferred.promise;
+}
+participants.insertTime = function (startnumber, timestring) {
+  return timeCalculator.timestamp(timestring).then(finishtime => updateTime(startnumber, finishtime));
 };
 
 participants.getTime = function (startnumber) {

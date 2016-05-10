@@ -18,7 +18,8 @@ timeCalculator.timestamp = function(timestring) {
       timestamp.minutes(timestring.split(':')[1]);
       timestamp.seconds(timestring.split(':')[2]);
       deferred.resolve(timestamp.unix());
-    });
+    })
+    .fail(deferred.reject);
   return deferred.promise;
 };
 

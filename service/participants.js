@@ -16,9 +16,9 @@ let participants = {};
 
 participants.allWithPaymentStatus = function (paymentStatus) {
   if (_.isUndefined(paymentStatus)) {
-    return db.select('select * from participants where is_on_site_registration = true order by firstname,lastname');
+    return db.select('select * from participants where firstname != \'\' order by firstname,lastname');
   } else {
-    return db.select('select * from participants where has_payed = $1 order by firstname,lastname', [paymentStatus]);
+    return db.select('select * from participants where has_payed = $1 and firstname != \'\' order by firstname,lastname', [paymentStatus]);
   }
 };
 
@@ -59,42 +59,48 @@ participants.save = function (participant) {
   );
 };
 
-participants.saveBlancParticipant = function () {
-  return startNumbers.next().then( nr => {
-      let participant = {
-        firstname: '',
-        lastname: '',
-        email: '',
-        category: '',
-        birthyear: 0,
-        team: '',
-        visibility: 'yes',
-        discount: 'no',
-        paymentToken: 'on-site Registrierung (' + nr + ')',
-        secureID: editUrlHelper.generateSecureID(),
-        start_number: nr,
-        is_on_site_registration: true,
-        has_payed: false
-      };
+participants.saveBlancParticipants = function (amount) {
 
-      return db.insert('INSERT INTO participants ' +
-        '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, is_on_site_registration, has_payed) ' +
-        'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id',
-        [participant.firstname,
-          participant.lastname,
-          participant.email,
-          participant.category,
-          participant.birthyear,
-          participant.team,
-          participant.visibility,
-          participant.discount,
-          participant.paymentToken,
-          participant.secureID,
-          participant.start_number,
-          participant.is_on_site_registration,
-          participant.has_payed]
-      );
-    });
+  return startNumbers.next().then( nr => {
+    let startNumberList =  _.range(nr, nr + amount);
+    return Q.all(startNumberList.map(participants.saveBlancParticipant));
+  });
+};
+
+participants.saveBlancParticipant = function (startnumber) {
+  let participant = {
+    firstname: '',
+    lastname: '',
+    email: '',
+    category: '',
+    birthyear: 0,
+    team: '',
+    visibility: 'yes',
+    discount: 'no',
+    paymentToken: 'on-site Registrierung (' + startnumber + ')',
+    secureID: editUrlHelper.generateSecureID(),
+    start_number: startnumber,
+    is_on_site_registration: true,
+    has_payed: false
+  };
+
+  return db.insert('INSERT INTO participants ' +
+    '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, is_on_site_registration, has_payed) ' +
+    'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id',
+    [participant.firstname,
+      participant.lastname,
+      participant.email,
+      participant.category,
+      participant.birthyear,
+      participant.team,
+      participant.visibility,
+      participant.discount,
+      participant.paymentToken,
+      participant.secureID,
+      participant.start_number,
+      participant.is_on_site_registration,
+      participant.has_payed]
+  );
 };
 
 participants.delete = function (participantid) {

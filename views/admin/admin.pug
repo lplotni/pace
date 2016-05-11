@@ -30,17 +30,21 @@ block content
       td #{confirmed[0].count}
       td #{unconfirmed[0].count}
 
-  h3 Coupon Codes
-    form(action="admin/couponcodes")
-      input(type='hidden', name='_csrf', value=_csrf)
-      button#goto-couponcodes.primary.button-primary.pace(type='submit') Coupon Codes
+  form(action="admin/couponcodes")
+    input(type='hidden', name='_csrf', value=_csrf)
+    button#goto-couponcodes.primary.button-primary.pace(type='submit') Coupon Codes
 
-  h3 Registrierung schlie&szlig;en
-    form(method='POST', action='admin/close-registration')
-      input(type='hidden', name='_csrf', value=_csrf)
-      button#close-registration.primary.button-primary.pace(type='submit') Registrierung schlie&szlig;en
+  form(method='POST', action='admin/close-registration')
+    input(type='hidden', name='_csrf', value=_csrf)
+    button#close-registration.primary.button-primary.pace(type='submit') Registrierung schlie&szlig;en
 
-  h3 Startnummern generieren
-      form(method='GET', action='admin/generate-start-numbers')
-        input(type='hidden', name='_csrf', value=_csrf)
-        button#generate-start-numbers.primary.button-primary.pace(type='submit') Startnummern generieren
+  form(method='GET', action='admin/generate-start-numbers')
+    input(type='hidden', name='_csrf', value=_csrf)
+    button#generate-start-numbers.primary.button-primary.pace(type='submit') Startnummern für registrierte Teilnehmer generieren
+
+  form(method='POST', action='admin/generate-on-site-start-numbers')
+    input(type='hidden', name='_csrf', value=_csrf)
+    button#generate-on-site-start-numbers.primary.button-primary.pace(type='submit') Alle Startnummern für Vor-Ort-Registrierungen generieren
+    label(for='amountOnSite') Anzahl der zusätzlichen blanco Startnummern:
+      input#amountOnSite(name='amountOnSite', required=true, value='0')
+    span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf "Alle Startnummern für Vor-Ort-Registrierungen generieren" klicken.

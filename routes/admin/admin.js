@@ -3,6 +3,7 @@
 'use strict';
 
 const Q = require('q');
+const _ = require('lodash');
 const router = require('express').Router();
 const accesscontrol = require('../../acl/accesscontrol');
 const isAuthenticated = require('../../acl/authentication');
@@ -26,7 +27,10 @@ router.get('/', isAuthenticated, (req, res) => {
       [stats.shirtOrders(), stats.confirmedParticipantsCount(), stats.unconfirmedParticipantsCount()])
       .then((results) => {
         let r = results.map(r => r.value);
-        res.render('admin/admin', {orders: r[0], confirmed: r[1], unconfirmed: r[2]});
+        participants.blancParticipants().then( (blancParticipants) => {
+          res.render('admin/admin', {orders: r[0], confirmed: r[1], unconfirmed: r[2],
+            numBlancParticipants: blancParticipants.length });
+        });
       });
   } else {
     renderNotAllowed(res);
@@ -35,7 +39,15 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    pdfGeneration.generate(res);
+    pdfGeneration.generateRegistered(res);
+  }
+});
+
+router.post('/generate-on-site-start-numbers', isAuthenticated, (req, res) => {
+  if (canViewAdminPage(req.user.role)) {
+    participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then( () => {
+      pdfGeneration.generateOnSite(res);
+    });
   }
 });
 

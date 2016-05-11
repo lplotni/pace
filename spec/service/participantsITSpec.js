@@ -101,7 +101,8 @@ describe('participants service', () => {
   describe('saveBlancParticipant()', () => {
     it('should save a participant with blank values', (done) => {
 
-      participants.saveBlancParticipant().then(participantId => {
+      let startNumber = startNr++;
+      participants.saveBlancParticipant(startNumber).then(participantId => {
         expect(participantId).toBeDefined();
         participants.byId(participantId).then(participant => {
           expect(participant.firstname).toBe('');
@@ -114,14 +115,22 @@ describe('participants service', () => {
           expect(participant.discount).toBe('no');
 
           expect(participant.has_payed).toBe(false);
-          expect(participant.start_number).toBeDefined();
+          expect(participant.start_number).toBe(startNumber);
           expect(participant.secureid).toBeDefined();
           expect(participant.is_on_site_registration).toBe(true);
           done();
         });
-      });
+      }).catch(done.fail);
     });
 
+    it('should save multiple participants', function (done) {
+      participants.saveBlancParticipants(5)
+        .then(participants.blancParticipants)
+        .then( participants => {
+          expect(participants.length).toBe(5);
+          done();
+        }).catch(done.fail);
+    });
   });
 
   describe('save()', () => {

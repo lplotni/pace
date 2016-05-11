@@ -52,7 +52,7 @@ describe('admin service', () => {
                   });
               });
           })
-          .fail(fail);
+          .catch(done.fail);
       });
   });
 
@@ -67,7 +67,7 @@ describe('admin service', () => {
                 done();
               });
           })
-          .fail(fail);
+          .catch(done.fail);
       });
   });
 

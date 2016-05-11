@@ -41,7 +41,7 @@ describe('tshirt service', () => {
                   expect(shirts.length).toBe(1);
                   done();
                 })
-                .fail(fail);
+                .catch(done.fail);
             });
         });
     });
@@ -52,7 +52,7 @@ describe('tshirt service', () => {
       tshirts.getFor(200).then(result => {
         expect(result.length).toBe(0);
         done();
-      }).fail(fail);
+      }).catch(done.fail);
     });
   });
 });

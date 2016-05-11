@@ -51,14 +51,14 @@ describe('couponcode service', () => {
       couponcodes.create().then(couponcodeAndId => {
         expect(dbHelperMock.insert).toHaveBeenCalledWith('INSERT INTO couponcodes (code, used) values($1, $2) returning id', [couponcodeAndId.code, false]);
         done();
-      }).fail(fail);
+      }).catch(done.fail);
     });
 
     it('should get all codes', (done) => {
       couponcodes.getAll().then(couponcodeList => {
         expect(dbHelperMock.select).toHaveBeenCalledWith('SELECT * FROM couponcodes');
         done();
-      }).fail(fail);
+      }).catch(done.fail);
     });
 
     it('should mark as used', (done) => {
@@ -66,7 +66,7 @@ describe('couponcode service', () => {
       couponcodes.markAsUsed(couponcode).then(result => {
         expect(dbHelperMock.update).toHaveBeenCalledWith('UPDATE couponcodes SET used=$1 WHERE code=$2 ', [true, couponcode]);
         done();
-      }).fail(fail);
+      }).catch(done.fail);
     });
 
     it('should return true if code is valid and discount is free', (done) => {
@@ -78,7 +78,7 @@ describe('couponcode service', () => {
         expect(dbHelperMock.select).toHaveBeenCalledWith('SELECT COUNT(*) FROM couponcodes WHERE code = $1 AND used=false', [couponcode]);
         expect(result).toBe(true);
         done();
-      }).fail(fail);
+      }).catch(done.fail);
     });
 
     it('should return true if code is empty but discount is no', (done) => {
@@ -88,7 +88,7 @@ describe('couponcode service', () => {
         expect(dbHelperMock.select).not.toHaveBeenCalled();
         expect(result).toBe(true);
         done();
-      }).fail(fail);
+      }).catch(done.fail);
     });
 
     it('should return false if code is invalid or used and discount is free', (done) => {
@@ -100,7 +100,7 @@ describe('couponcode service', () => {
         expect(dbHelperMock.select).toHaveBeenCalledWith('SELECT COUNT(*) FROM couponcodes WHERE code = $1 AND used=false', [couponcode]);
         expect(result).toBe(false);
         done();
-      }).fail(fail);
+      }).catch(done.fail);
     });
   });
 });

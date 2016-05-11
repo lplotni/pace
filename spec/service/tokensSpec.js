@@ -47,14 +47,14 @@ describe('token service', () => {
             expect(uniqueToken).toBe(uniqueToken.toUpperCase());
             done();
           })
-          .fail(fail);
+          .catch(done.fail);
       });
 
       it('checks if the token exists in the DB', (done) => {
         tokens.createUnique().then((uniqueToken) => {
           expect(dbHelperMock.select).toHaveBeenCalledWith('select * from participants where paymenttoken like $1', [uniqueToken]);
           done();
-        }).fail(fail);
+        }).catch(done.fail);
       });
 
       it('regenerates the token if already present in the DB', (done) => {

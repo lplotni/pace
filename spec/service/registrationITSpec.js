@@ -96,7 +96,7 @@ describe('registration', () => {
           expect(tshirts.addFor).not.toHaveBeenCalled();
           done();
         })
-        .fail(fail);
+        .catch(done.fail);
     });
 
     it('should mark the participant as payed if their amount is 0 and send the matching email', (done) => {
@@ -149,8 +149,8 @@ describe('registration', () => {
             expect(tshirts.addFor).not.toHaveBeenCalled();
             done();
           })
-          .fail(fail);
-      }).fail(fail);
+          .catch(done.fail);
+      }).catch(done.fail);
     });
 
     it('should call addFor if one ordered', (done) => {
@@ -174,7 +174,7 @@ describe('registration', () => {
           expect(tshirts.addFor).toHaveBeenCalled();
           done();
         })
-        .fail(fail);
+        .catch(done.fail);
     });
 
     it('should not mark as payed if coupon user ordered a shirt', (done) => {
@@ -202,8 +202,8 @@ describe('registration', () => {
             expect(participants.markPayed).not.toHaveBeenCalled();
             expect(tshirts.addFor).toHaveBeenCalled();
             done();
-          }).fail(fail);
-      }).fail(fail);
+          }).catch(done.fail);
+      }).catch(done.fail);
     });
   });
 
@@ -230,8 +230,8 @@ describe('registration', () => {
 
               done();
             })
-            .fail(fail);
-        }).fail(fail);
+            .catch(done.fail);
+        }).catch(done.fail);
     });
 
     it('should give error if ID is invalid', (done) => {
@@ -243,7 +243,7 @@ describe('registration', () => {
             .catch(() => {
               done();
             });
-        }).fail(fail);
+        }).catch(done.fail);
     });
   });
 
@@ -255,8 +255,8 @@ describe('registration', () => {
             expect(isClosed).toEqual(true);
             done();
           })
-          .fail(fail);
+          .catch(done.fail);
       })
-      .fail(fail);
+      .catch(done.fail);
   });
 });

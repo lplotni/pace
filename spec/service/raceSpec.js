@@ -13,6 +13,6 @@ describe('race service', () => {
               expect(data[1]).toBe('09:24:04');
               done();
             })
-            .fail(fail);
+            .catch(done.fail);
       });
 });

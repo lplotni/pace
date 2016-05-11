@@ -60,7 +60,7 @@ describe('tshirt service', () => {
       tshirts.findAndAddTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt).toBeUndefined();
         done();
-      }).fail(fail);
+      }).catch(done.fail);
     });
 
     it('should add the tshirt to a participant', function (done) {
@@ -68,7 +68,7 @@ describe('tshirt service', () => {
       tshirts.findAndAddTo(anyParticipant).then(() => {
         expect(anyParticipant.tshirt).toEqual({size: anySize, model: anyModel});
         done();
-      }).fail(fail);
+      }).catch(done.fail);
     });
   });
 });

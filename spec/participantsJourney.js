@@ -105,7 +105,7 @@ describe('participants page', () => {
           })
           .end(done);
       })
-      .fail(fail);
+      .catch(done.fail);
   });
 
   it('shows a search box', (done) => {
@@ -144,7 +144,7 @@ describe('participants page', () => {
           })
           .end(done);
       })
-      .fail(fail);
+      .catch(done.fail);
   });
 
   describe('admin view', () => {
@@ -192,7 +192,7 @@ describe('participants page', () => {
             })
             .end(done);
         })
-        .fail(fail);
+        .catch(done.fail);
     });
 
     it('should have a link to edit a participant', (done) => {
@@ -205,7 +205,7 @@ describe('participants page', () => {
             })
             .end(done);
         })
-        .fail(fail);
+        .catch(done.fail);
     });
 
     it('should be able to confirm a participant participant', (done) => {
@@ -219,7 +219,7 @@ describe('participants page', () => {
             })
             .end(done);
         })
-        .fail(fail);
+        .catch(done.fail);
     });
 
     it('should show amount to pay - no tshirt', function (done) {
@@ -244,7 +244,7 @@ describe('participants page', () => {
                 });
             });
         })
-        .fail(fail);
+        .catch(done.fail);
     });
 
     it('should show amount to pay - one tshirt', function (done) {
@@ -277,7 +277,7 @@ describe('participants page', () => {
                 });
             });
         })
-        .fail(fail);
+        .catch(done.fail);
     });
   });
 });

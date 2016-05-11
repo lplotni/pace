@@ -23,7 +23,7 @@ describe('race service', () => {
         expect(result).toBe(false);
         done();
       })
-      .fail(fail);
+      .catch(done.fail);
   });
 
   it('should return true if the race has started', (done) => {
@@ -34,7 +34,7 @@ describe('race service', () => {
         expect(result).toBe(true);
         done();
       })
-      .fail(fail);
+      .catch(done.fail);
   });
 
   it('should store and read race start times', (done) => {
@@ -45,7 +45,7 @@ describe('race service', () => {
         expect(String(starttime)).toEqual(result);
         done();
       })
-      .fail(fail);
+      .catch(done.fail);
   });
 
 

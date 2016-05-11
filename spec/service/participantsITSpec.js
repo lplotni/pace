@@ -300,7 +300,8 @@ describe('participants service', () => {
             .then((participant) => {
               expect(participant.time).toBeGreaterThan(1460401097);
               done();
-            }).catch(fail);
+            })
+            .catch(fail);
         });
     });
 
@@ -319,8 +320,10 @@ describe('participants service', () => {
                 .then((new_participant) => {
                   expect(saved_time).toBe(new_participant.time);
                   done();
-                }).catch(fail);
-            }).catch(fail);
+                })
+                .catch(fail);
+            })
+            .catch(fail);
         });
     });
 

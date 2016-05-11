@@ -300,7 +300,7 @@ describe('participants service', () => {
             .then((participant) => {
               expect(participant.time).toBeGreaterThan(1460401097);
               done();
-            }).fail(fail);
+            }).catch(fail);
         });
     });
 
@@ -311,21 +311,16 @@ describe('participants service', () => {
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
           participants.insertTime(nr, time)
-            .then(() => {
-              participants.byId(participantid)
-                .then((participant) => {
-                  let saved_time = participant.time;
-                  participants.insertTime(nr, slower_time)
-                    .then(() => {
-                      participants.byId(participantid)
-                        .then((new_participant) => {
-                          expect(saved_time).toBe(new_participant.time);
-                          done();
-                        })
-                        .fail(fail);
-                    });
-                });
-            });
+            .then(() => participants.byId(participantid))
+            .then((participant) => {
+              let saved_time = participant.time;
+              participants.insertTime(nr, slower_time)
+                .then(() => participants.byId(participantid))
+                .then((new_participant) => {
+                  expect(saved_time).toBe(new_participant.time);
+                  done();
+                }).catch(fail);
+            }).catch(fail);
         });
     });
 

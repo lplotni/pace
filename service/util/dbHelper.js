@@ -23,6 +23,7 @@ db.select = (querystring, params) => {
       });
       query.on('end', () => {
         done();
+        console.log(results);
         deferred.resolve(results);
       });
     }

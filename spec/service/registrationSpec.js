@@ -100,7 +100,7 @@ describe('registration service', () => {
           expect(result.secureid).toBe(secureId);
           done();
         })
-        .fail(fail);
+        .catch(done.fail);
     });
 
     it('passes the newly generated start_number in the DB', (done) => {
@@ -109,7 +109,7 @@ describe('registration service', () => {
           expect(result.startnr).toBe(1);
           done();
         })
-        .fail(fail);
+        .catch(done.fail);
     });
   });
 

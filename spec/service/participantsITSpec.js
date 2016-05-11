@@ -95,7 +95,7 @@ describe('participants service', () => {
         expect(data[0].couponcode).toBe(aParticipant.couponcode);
         done();
       })
-      .fail(fail);
+      .catch(done.fail);
   });
 
   describe('saveBlancParticipant()', () => {
@@ -132,7 +132,7 @@ describe('participants service', () => {
           expect(participantId).toBeDefined();
           done();
         })
-        .fail(fail);
+        .catch(done.fail);
     });
   });
 
@@ -145,7 +145,7 @@ describe('participants service', () => {
               expectOnParticipantFields(participant, participantId);
               done();
             })
-            .fail(fail);
+            .catch(done.fail);
         });
     });
   });
@@ -163,7 +163,7 @@ describe('participants service', () => {
                   expect(participant.tshirt.model).toEqual(aParticipantWithTshirt.tshirt.model);
                   done();
                 })
-                .fail(fail);
+                .catch(done.fail);
             });
         });
     });
@@ -178,7 +178,7 @@ describe('participants service', () => {
               expectOnParticipantFields(participant, participantId);
               done();
             })
-            .fail(fail);
+            .catch(done.fail);
         });
     });
   });
@@ -192,7 +192,7 @@ describe('participants service', () => {
               fail('Participant has not been deleted');
               done();
             }).catch(done);
-          }).fail(fail);
+          }).catch(done.fail);
         });
     });
 
@@ -209,7 +209,7 @@ describe('participants service', () => {
                 }
               });
             })
-            .fail(fail);
+            .catch(done.fail);
         });
     });
 
@@ -220,7 +220,7 @@ describe('participants service', () => {
             participants.byId(id).catch(() => {
               done();
             });
-          }).fail(fail);
+          }).catch(done.fail);
         });
     });
   });
@@ -251,7 +251,7 @@ describe('participants service', () => {
                       expect(participant.team).toBe('Crazy runners updated');
                       done();
                     })
-                    .fail(fail);
+                    .catch(done.fail);
                 });
             });
         });
@@ -273,7 +273,7 @@ describe('participants service', () => {
           expect(data[0].team).toBe(aParticipant.team);
           done();
         })
-        .fail(fail);
+        .catch(done.fail);
 
     });
 
@@ -285,7 +285,7 @@ describe('participants service', () => {
             expect(data.length).toBe(1);
             done();
           })
-          .fail(fail);
+          .catch(done.fail);
       });
     });
   });
@@ -347,7 +347,7 @@ describe('participants service', () => {
           expect(content).toMatch(/Startnummer/);
           done();
         })
-        .fail(fail);
+        .catch(done.fail);
     });
   });
 });

@@ -2,7 +2,6 @@
 /* jshint esnext: true */
 'use strict';
 
-const Q = require('q');
 const router = require('express').Router();
 const moment = require('moment');
 const multiparty = require('multiparty');
@@ -30,7 +29,7 @@ router.post('/', (req, res) => {
   time.hours(req.body.hours);
   time.minutes(req.body.minutes);
   time.seconds(req.body.seconds);
-  race.setStartTime(time.unix());
+  race.setStartTime(time.unix()); //todo why do we ignore the result?
   res.redirect('/admin/after');
 });
 

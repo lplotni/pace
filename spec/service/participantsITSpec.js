@@ -9,6 +9,7 @@ describe('participants service', () => {
 
   const participants = require('../../service/participants');
   const tshirts = require('../../service/tshirts');
+  const race = require('../../service/race');
   const mails = require('../../service/util/mails');
   const participant = require('../../domain/participant');
   const helper = require('../journeyHelper');
@@ -295,13 +296,14 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          participants.insertTime(nr, time)
+          race.setStartTime(Date.parse(new Date()))
+            .then(() => participants.insertTime(nr, time))
             .then(() => participants.byId(participantid))
             .then((participant) => {
               expect(participant.time).toBeGreaterThan(1460401097);
               done();
             })
-            .catch(fail);
+            .catch(done.fail);
         });
     });
 
@@ -311,7 +313,8 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          participants.insertTime(nr, time)
+          race.setStartTime(Date.parse(new Date()))
+            .then(() => participants.insertTime(nr, time))
             .then(() => participants.byId(participantid))
             .then((participant) => {
               let saved_time = participant.time;
@@ -321,9 +324,9 @@ describe('participants service', () => {
                   expect(saved_time).toBe(new_participant.time);
                   done();
                 })
-                .catch(fail);
+                .catch(done.fail);
             })
-            .catch(fail);
+            .catch(done.fail);
         });
     });
 

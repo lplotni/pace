@@ -2,6 +2,7 @@
 /* jshint esnext: true */
 'use strict';
 
+const Q = require('q');
 const moment = require('moment');
 const race = require('../service/race');
 

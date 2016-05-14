@@ -7,7 +7,7 @@ const db = require('../service/util/dbHelper');
 
 let tshirts = {};
 
-tshirts.addFor = function (tshirt, participantId) {
+tshirts.addFor = (tshirt, participantId) => {
   return db.insert('insert into tshirts ' +
     '(size, model, participantId) ' +
     'values($1, $2, $3) returning id',
@@ -16,7 +16,7 @@ tshirts.addFor = function (tshirt, participantId) {
      participantId]);
 };
 
-tshirts.getFor = function (participantId) {
+tshirts.getFor = (participantId) => {
   return db.select('SELECT * FROM tshirts WHERE participantid = $1', [participantId]);
 };
 

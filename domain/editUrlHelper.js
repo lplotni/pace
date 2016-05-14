@@ -4,7 +4,7 @@
 const crypto = require('crypto');
 const config = require('config');
 
-const editUrlHelper = function () {
+const editUrlHelper = () => {
 
   return {
     generateUrl: (value) => {

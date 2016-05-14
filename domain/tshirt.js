@@ -10,7 +10,7 @@ function invalidData(body) {
   return _.isUndefined(body.size) || _.isUndefined(body.model);
 }
 
-tshirt.from = function (body) {
+tshirt.from = (body) => {
   if (_.isEmpty(body.shirt)) {
     return {};
   }

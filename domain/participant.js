@@ -22,7 +22,7 @@ function invalidData(body) {
     _.isUndefined(body.birthyear);
 }
 
-participant.from = function (body) {
+participant.from = (body) => {
   if (invalidData(body)) {
     throw new TypeError('Required attributes are not present');
   }

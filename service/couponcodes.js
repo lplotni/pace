@@ -3,12 +3,11 @@
 'use strict';
 
 const Q = require('q');
-const _ = require('lodash');
 const db = require('../service/util/dbHelper');
 
 let couponcodes = {};
 
-couponcodes.randomString = function() {
+couponcodes.randomString = () => {
   let text = "";
   const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   for (let i = 0; i < 5; i++) {
@@ -17,7 +16,7 @@ couponcodes.randomString = function() {
   return text;
 };
 
-couponcodes.create = function () {
+couponcodes.create = () => {
   var code = couponcodes.randomString();
   const deferred = Q.defer();
 
@@ -29,11 +28,11 @@ couponcodes.create = function () {
   return deferred.promise;
 };
 
-couponcodes.getAll = function () {
+couponcodes.getAll =  () => {
   return db.select('SELECT * FROM couponcodes');
 };
 
-couponcodes.validateCode = function (couponcode, discount) {
+couponcodes.validateCode = (couponcode, discount) => {
   const deferred = Q.defer();
 
   if (discount !== 'free') {
@@ -54,7 +53,7 @@ couponcodes.validateCode = function (couponcode, discount) {
   return deferred.promise;
 };
 
-couponcodes.markAsUsed = function (couponcode) {
+couponcodes.markAsUsed = (couponcode) => {
   return db.update('UPDATE couponcodes SET used=$1 WHERE code=$2 ', [true, couponcode]);
 };
 

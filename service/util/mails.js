@@ -11,7 +11,7 @@ const editUrlHelper = require('../../domain/editUrlHelper');
 let service = {};
 service._nodemailer = nodemailer;
 
-service.sendStatusEmail = function (participant,subject,pugfile) {
+service.sendStatusEmail = (participant, subject, pugfile) => {
   pug.renderFile(pugfile,
     {name: participant.firstname, editUrl: editUrlHelper.generateUrl(participant.secureid)},
     (error, html) =>
@@ -19,7 +19,7 @@ service.sendStatusEmail = function (participant,subject,pugfile) {
   );
 };
 
-service.sendEmail = function (address, subject, text, error) {
+service.sendEmail = (address, subject, text, error) => {
   if (error) {
     console.error(error);
   } else {

@@ -16,7 +16,7 @@ const race = require('./race');
 
 let participants = {};
 
-participants.allWithPaymentStatus = function (paymentStatus) {
+participants.allWithPaymentStatus = (paymentStatus) => {
   if (_.isUndefined(paymentStatus)) {
     return db.select('select * from participants where firstname != \'\' order by firstname,lastname');
   } else {
@@ -24,25 +24,25 @@ participants.allWithPaymentStatus = function (paymentStatus) {
   }
 };
 
-participants.registered = function () {
+participants.registered = () => {
   return participants.allWithPaymentStatus(false);
 };
 
-participants.confirmed = function () {
+participants.confirmed = () => {
   return participants.allWithPaymentStatus(true);
 };
 
-participants.blancParticipants = function () {
+participants.blancParticipants = () => {
   return db.select('select * from participants where is_on_site_registration = true');
 };
 
-participants.publiclyVisible = function () {
+participants.publiclyVisible = () => {
   return participants.confirmed().then(confirmed =>
     _.filter(confirmed, p => p.visibility === 'yes')
   );
 };
 
-participants.save = function (participant) {
+participants.save = (participant) => {
   return db.insert('INSERT INTO participants ' +
     '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, couponcode) ' +
     'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning id',
@@ -61,7 +61,7 @@ participants.save = function (participant) {
   );
 };
 
-participants.saveBlancParticipants = function (amount) {
+participants.saveBlancParticipants = (amount) => {
 
   return startNumbers.next().then( nr => {
     let startNumberList =  _.range(nr, nr + amount);
@@ -69,7 +69,7 @@ participants.saveBlancParticipants = function (amount) {
   });
 };
 
-participants.saveBlancParticipant = function (startnumber) {
+participants.saveBlancParticipant = (startnumber) => {
   let participant = {
     firstname: '',
     lastname: '',
@@ -105,11 +105,11 @@ participants.saveBlancParticipant = function (startnumber) {
   );
 };
 
-participants.delete = function (participantid) {
+participants.delete = (participantid) => {
   return db.delete('delete from participants where id=$1', [participantid]);
 };
 
-participants.update = function (participant, id) {
+participants.update = (participant, id) => {
   return db.update('UPDATE participants SET ' +
     '(firstname, lastname, email, category, birthyear, team, visibility) = ' +
     '($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
@@ -123,7 +123,7 @@ participants.update = function (participant, id) {
       id]);
 };
 
-participants.byToken = function (paymentToken) {
+participants.byToken = (paymentToken) => {
   return db.select('SELECT id, firstname, lastname FROM participants WHERE upper(paymenttoken) = $1', [paymentToken.toUpperCase()])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -148,7 +148,7 @@ participants.byToken = function (paymentToken) {
     );
 };
 
-participants.byId = function (id) {
+participants.byId = (id) => {
   return db.select('SELECT * FROM participants WHERE id = $1', [id])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -159,7 +159,7 @@ participants.byId = function (id) {
     .then(result => result[0]);
 };
 
-participants.bySecureId = function (id) {
+participants.bySecureId = (id) => {
   return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -170,7 +170,7 @@ participants.bySecureId = function (id) {
     .then(result => result[0]);
 };
 
-participants.markPayed = function (participantId) {
+participants.markPayed = (participantId) => {
   return db.update('update participants SET has_payed = true WHERE id = $1', [participantId])
     .then(result => {
       if (result < 1) {
@@ -187,11 +187,11 @@ function updateTime(startnumber, finishtime) {
       }
     });
 }
-participants.insertTime = function (startnumber, timestring) {
+participants.insertTime = (startnumber, timestring) => {
   return race.startTime().then((start) => updateTime(startnumber, timeCalculator.timestamp(start, timestring)));
 };
 
-participants.getTime = function (startnumber) {
+participants.getTime = (startnumber) => {
   const deferred = Q.defer();
   db.select('select time from participants where start_number=$1', [startnumber])
     .then((result) => {
@@ -201,7 +201,7 @@ participants.getTime = function (startnumber) {
   return deferred.promise;
 };
 
-participants.bulkmail = function () {
+participants.bulkmail = () => {
   const deferred = Q.defer();
 
   participants.confirmed().then(confirmed => {

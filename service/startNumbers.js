@@ -6,7 +6,7 @@ const _ = require('lodash');
 
 let numbers = {};
 
-numbers.next = function () {
+numbers.next = () => {
   return db.select('SELECT MAX(start_number) FROM participants', []).then((result) => {
     let number = parseInt(result[0].max);
     if (number) {
@@ -17,7 +17,7 @@ numbers.next = function () {
   });
 };
 
-numbers.escape = function (nr) {
+numbers.escape = (nr) => {
   if (_.includes([18, 28, 74, 84, 88, 444, 191, 192, 198, 420, 1919, 1933, 1488, 1681], nr)) {
     return numbers.escape(nr + 1);
   }

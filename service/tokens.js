@@ -17,7 +17,7 @@ function randomString() {
   return text;
 }
 
-tokens.createUnique = function () {
+tokens.createUnique = () => {
   const deferred = Q.defer();
   const token = randomString();
 

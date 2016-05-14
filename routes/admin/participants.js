@@ -13,15 +13,15 @@ const costCalculator = require('../../domain/costCalculator');
 
 
 //TODO Move those 2 method out of the Ctrl.
-let addEditUrlTo = function (participants) {
+let addEditUrlTo = (participants) => {
   participants.map(participant => {
     participant.editUrl = editUrlHelper.generateUrlForAdmin(participant.secureid);
     return participant;
   });
 };
 
-let addAmountTo = function (participants) {
-  participants.map(function(participant) {
+let addAmountTo = (participants) => {
+  participants.map((participant) => {
     participant.amount = costCalculator.priceFor(participant);
     return participant;
   });

@@ -7,7 +7,7 @@ const config = require('config');
 
 let calculator = {};
 
-calculator.priceFor = function (participant) {
+calculator.priceFor = (participant) => {
   let total = 0;
   if (!_.isEmpty(participant.tshirt)) {
     total = total + parseFloat(config.get('shirts.price'));

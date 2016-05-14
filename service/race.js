@@ -11,7 +11,7 @@ const timeCalculator = require('../domain/timeCalculator');
 
 let race = {};
 
-race.startTime = function () {
+race.startTime = () => {
   return db.select("SELECT data->>'starttime' as starttime FROM race;").then(result => {
     if (_.isNumber(_.toInteger(result[0].starttime))) {
       return result[0].starttime;
@@ -20,7 +20,7 @@ race.startTime = function () {
   });
 };
 
-race.setStartTime = function (date) {
+race.setStartTime = (date) => {
   return db.update(`UPDATE race SET data = jsonb_set(data, '{starttime}','${date}');`);
 };
 
@@ -33,21 +33,19 @@ race.resetStarttime = () => {
   return db.update(`UPDATE race SET data = jsonb_object('{"is_closed",false}')`);
 };
 
-race.parse = function (file) {
+race.parse = (file) => {
   const deferred = Q.defer();
   var results = {};
   csv
     .fromPath(file)
-    .on("data", function (data) {
+    .on("data", (data) => {
       results[data[1]] = data[2];
     })
-    .on("end", function () {
-      deferred.resolve(results);
-    });
+    .on("end", () => deferred.resolve(results));
   return deferred.promise;
 };
 
-race.import = function (file) {
+race.import = (file) => {
   const participant = require('../service/participants');
   race.parse(file)
     .then(result => {
@@ -65,7 +63,7 @@ function queryFor(category) {
   }
 }
 
-race.results = function (category, agegroup_start, agegroup_end) {
+race.results = (category, agegroup_start, agegroup_end) => {
   const deferred = Q.defer();
 
   let query = `select id,firstname,lastname,team,start_number,time,visibility from participants 

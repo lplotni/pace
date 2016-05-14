@@ -34,7 +34,7 @@ registration.reopen = () => {
   return db.update("UPDATE race SET data = jsonb_set(data, '{is_closed}', 'false');");
 };
 
-registration.confirm = function (participantId) {
+registration.confirm = (participantId) => {
   const deferred = Q.defer();
 
   participants.markPayed(participantId)
@@ -70,7 +70,7 @@ function sendConfirmationMail(participant, paymentToken) {
     }
   );
 }
-registration.start = function (participant) {
+registration.start = (participant) => {
   const deferred = Q.defer();
   var resultPromise = couponcodes.validateCode(participant.couponcode, participant.discount);
   resultPromise.then(isValidCode => {

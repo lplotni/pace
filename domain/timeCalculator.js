@@ -2,6 +2,7 @@
 /* jshint esnext: true */
 'use strict';
 
+const Q = require('q');
 const moment = require('moment');
 const race = require('../service/race');
 
@@ -17,6 +18,13 @@ timeCalculator.timestamp = function(timestring) {
       timestamp.seconds(timestring.split(':')[2]);
       return timestamp.unix();
     });
+};
+
+timeCalculator.relativeTime = function(race_starttime,participant_finishtime) {
+  const deferred = Q.defer();
+  var relative_time = moment.duration(participant_finishtime - race_starttime,'seconds');
+  deferred.resolve([relative_time.hours(),relative_time.minutes(),relative_time.seconds()]);
+  return deferred.promise;
 };
 
 module.exports = timeCalculator;

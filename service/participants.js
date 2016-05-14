@@ -12,6 +12,7 @@ const tshirts = require('./tshirts');
 const startNumbers = require('./startNumbers');
 const editUrlHelper = require('../domain/editUrlHelper');
 const timeCalculator = require('../domain/timeCalculator');
+const race = require('../service/race');
 let participants = {};
 
 participants.allWithPaymentStatus = function (paymentStatus) {

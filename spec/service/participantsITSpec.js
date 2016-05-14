@@ -359,4 +359,5 @@ describe('participants service', () => {
         .catch(done.fail);
     });
   });
+
 });

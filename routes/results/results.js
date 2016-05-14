@@ -21,7 +21,7 @@ function extractAgeGroup(req) {
     return {max_year: now - min, min_year: now - max};
   }
 
-  if (!_.isEmpty(req.query.agegroup) && validator.isIn(req.query.agegroup, ['20-29', '31-35', '36-35', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80-120'])) {
+  if (!_.isEmpty(req.query.agegroup) && validator.isIn(req.query.agegroup, ['20-29', '31-35', '36-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80-120'])) {
     let ages = req.query.agegroup.split('-');
     return calc(ages[0], ages[1]);
   }

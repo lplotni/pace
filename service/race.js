@@ -8,7 +8,6 @@ const moment = require('moment');
 const csv = require('fast-csv');
 const timeCalculator = require('../domain/timeCalculator');
 
-
 let race = {};
 
 race.startTime = function () {
@@ -74,32 +73,31 @@ race.import = function (file) {
     });
 };
 
-race.results = function (category,agegroup_start,agegroup_end) {
+race.results = function (category, agegroup_start, agegroup_end) {
   const deferred = Q.defer();
-  var query='';
-  if ( category === 'all')  { 
-    query = 'select id,firstname,lastname,team,start_number,time,visibility from participants where visibility=\'yes\' and time > 0 and birthyear >= ' + agegroup_start + ' and birthyear <= '+ agegroup_end +' order by time';
+  var query = '';
+  if (category === 'all') {
+    query = `select id,firstname,lastname,team,start_number,time,visibility from participants where visibility='yes' and time > 0 and birthyear >= ${agegroup_start} and birthyear <= ${agegroup_end} order by time`;
   } else {
-    query = 'select id,firstname,lastname,team,start_number,time,visibility from participants where visibility=\'yes\' and time > 0 and category= \''+ category + '\' and birthyear >= ' + agegroup_start + ' and birthyear <= '+ agegroup_end +' order by time';
+    query = `select id,firstname,lastname,team,start_number,time,visibility from participants where visibility='yes' and time > 0 and category= '${category}' and birthyear >= ${agegroup_start} and birthyear <= ${agegroup_end} order by time`;
   }
+
   db.select(query)
     .then((result) => {
-      var place =1;
+      var place = 1;
       race.startTime()
-      .then (start => {
-        _.forEach(result, participant => {
-          participant.place = place++;
-          timeCalculator.relativeTime(start,participant.time)
-            .then((time) => {
-              participant.timestring = time[0] + ':' + time[1] + ':' + time[2];
-            });
-        });
-      })
-      .then(() => {
-        deferred.resolve(result);
-      });
-  });
+        .then(start => {
+          _.forEach(result, participant => {
+            let time = timeCalculator.relativeTime(start, participant.time);
+            participant.place = place++;
+            participant.timestring = time[0] + ':' + time[1] + ':' + time[2];
+          });
+          deferred.resolve(result);
+        }).catch(deferred.reject);
+    }).catch(deferred.reject);
+
   return deferred.promise;
+
 };
 
 

@@ -7,6 +7,8 @@ describe('race service', () => {
 
   const helper = require('../journeyHelper');
   const race = require('../../service/race');
+  const participant = require('../../domain/participant');
+  const participants = require('../../service/participants');
 
   beforeAll((done) => {
     helper.setupDbConnection(done);
@@ -49,22 +51,35 @@ describe('race service', () => {
   });
 
 
-/*  describe('result list', () => {*/
-    //it('should show the first', (done) => {
-      //let time = '10:32:32';
-      //let nr = 1;
-      //let starttime = Date.parse(new Date());
-      //participants.save(aParticipant.withStartNr(nr))
-      //.then(() => race.setStartTime(starttime))
-      //.then(() => participants.insertTime(nr,time))
-   ////   .then(() => race.results('Unicorn',1970,1990))
-      //.then((result) => {
-         //expect(result.length).toBe(1); 
-         //done();
-      //})
-      //.catch(done.fail);
-    //});
-  //});
+  describe('result list', () => {
+    const aParticipant = participant.from({
+      firstname: 'Hertha',
+      lastname: 'Mustermann',
+      email: 'h.mustermann@example.com',
+      category: 'Unicorn',
+      birthyear: 1980,
+      visibility: 'yes',
+      discount: 'free',
+      team: 'Crazy runners',
+      couponcode: 'Free2016'
+    }).withToken('someToken').withSecureId('someCrazySecureId');
+
+
+    it('should show the first', (done) => {
+      let time = '10:32:32';
+      let nr = 1;
+      let start = Date.parse(new Date());
+      participants.save(aParticipant.withStartNr(nr))
+        .then(() => race.setStartTime(start))
+        .then(() => participants.insertTime(nr, time))
+        .then(() => race.results('Unicorn', 1970, 1990))
+        .then((result) => {
+          expect(result.length).toBe(1);
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
 
 })
 ;

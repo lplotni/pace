@@ -12,7 +12,8 @@ const tshirts = require('./tshirts');
 const startNumbers = require('./startNumbers');
 const editUrlHelper = require('../domain/editUrlHelper');
 const timeCalculator = require('../domain/timeCalculator');
-const race = require('../service/race');
+const race = require('./race');
+
 let participants = {};
 
 participants.allWithPaymentStatus = function (paymentStatus) {
@@ -187,7 +188,7 @@ function updateTime(startnumber, finishtime) {
     });
 }
 participants.insertTime = function (startnumber, timestring) {
-  return timeCalculator.timestamp(timestring).then(finishtime => updateTime(startnumber, finishtime));
+  return race.startTime().then((start) => updateTime(startnumber, timeCalculator.timestamp(start, timestring)));
 };
 
 participants.getTime = function (startnumber) {

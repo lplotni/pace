@@ -1,6 +1,7 @@
 /* jshint node: true */
 /* jshint esnext: true */
 'use strict';
+
 const db = require('../service/util/dbHelper');
 const _ = require('lodash');
 const Q = require('q');
@@ -19,34 +20,17 @@ race.startTime = function () {
   });
 };
 
-race.startTimeArray = function () {
-  race.startTime()
-    .then(result => {
-      let time = moment(result, 'x');
-      return [time.hours(), time.minutes(), time.seconds()];
-    });
-};
 race.setStartTime = function (date) {
-  let query = "UPDATE race SET data = jsonb_set(data, '{starttime}','" + date + "');";
-  return db.update(query);
+  return db.update(`UPDATE race SET data = jsonb_set(data, '{starttime}','${date}');`);
 };
 
 race.hasStarted = () => {
-  const deferred = Q.defer();
-  db.select("SELECT data->>'starttime' as starttime FROM race;")
-    .then(result => {
-      if (_.isEmpty(result[0].starttime)) {
-        deferred.resolve(false);
-      } else {
-        deferred.resolve(true);
-      }
-    });
-  return deferred.promise;
+  return db.select("SELECT data->>'starttime' as starttime FROM race;")
+    .then(result => !_.isEmpty(result[0].starttime));
 };
 
 race.resetStarttime = () => {
-  let query = 'UPDATE race SET data = jsonb_object(\'{"is_closed",false}\')';
-  return db.update(query);
+  return db.update(`UPDATE race SET data = jsonb_object('{"is_closed",false}')`);
 };
 
 race.parse = function (file) {
@@ -73,14 +57,23 @@ race.import = function (file) {
     });
 };
 
+function queryFor(category) {
+  if (category === 'all') {
+    return "";
+  } else {
+    return `and category= '${category}'`;
+  }
+}
+
 race.results = function (category, agegroup_start, agegroup_end) {
   const deferred = Q.defer();
-  var query = '';
-  if (category === 'all') {
-    query = `select id,firstname,lastname,team,start_number,time,visibility from participants where visibility='yes' and time > 0 and birthyear >= ${agegroup_start} and birthyear <= ${agegroup_end} order by time`;
-  } else {
-    query = `select id,firstname,lastname,team,start_number,time,visibility from participants where visibility='yes' and time > 0 and category= '${category}' and birthyear >= ${agegroup_start} and birthyear <= ${agegroup_end} order by time`;
-  }
+
+  let query = `select id,firstname,lastname,team,start_number,time,visibility from participants 
+               where visibility='yes' and time > 0 
+               ${queryFor(category)} 
+               and birthyear >= ${agegroup_start} 
+               and birthyear <= ${agegroup_end} 
+               order by time`;
 
   db.select(query)
     .then((result) => {
@@ -97,7 +90,6 @@ race.results = function (category, agegroup_start, agegroup_end) {
     }).catch(deferred.reject);
 
   return deferred.promise;
-
 };
 
 

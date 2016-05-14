@@ -13,7 +13,7 @@
     "cryptico": "~1.0.2",
     "csurf": "^1.8.3",
     "db-migrate": "~0.9.23",
-    "db-migrate-pg": "^0.1.9",
+    "db-migrate-pg": "^0.1.10",
     "debug": "~2.2.0",
     "express": "~4.13.4",
     "express-metrics": "^1.1.0",

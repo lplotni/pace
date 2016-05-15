@@ -47,6 +47,7 @@ describe('pdfGeneration', () => {
       confirmed: jasmine.createSpy('confirmed'),
       registered: jasmine.createSpy('registered'),
       saveBlanc: jasmine.createSpy('saveBlanc'),
+      byId: jasmine.createSpy('byId'),
       blancParticipants: jasmine.createSpy('blancParticipants')
     };
 
@@ -68,6 +69,7 @@ describe('pdfGeneration', () => {
     const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', start_number: 2};
     participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
+    participantsMock.byId.and.returnValue(Q.fcall(() => confirmedParticipant));
     qrCodeMock.path.and.returnValue('some qr code path');
   });
 
@@ -222,6 +224,17 @@ describe('pdfGeneration', () => {
       });
     });
 
+  });
+
+  describe('generateCertificate', () => {
+    it('should generate one certificate', (done) => {
+      pdfGeneration.generateCertificateDownload(res, documentMock).then( () => {
+        expect(documentMock.addPage).toHaveBeenCalledTimes(1);
+        expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte', 0, 300, {align: 'center'});
+        expect(documentMock.text).toHaveBeenCalledWith('Person', 0, 350, {align: 'center'});
+        done();
+      });
+    });
   });
 
 });

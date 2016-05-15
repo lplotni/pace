@@ -69,6 +69,13 @@ pdfGeneration.createStartNumberPage = (doc, participant) => {
   doc.addPage();
 };
 
+pdfGeneration.createCertificatePage = (doc,participant) => {
+  doc.fontSize(30).fillColor('red').text(participant.firstname.substring(0, 25), 0, 300, {align: 'center'});
+  doc.fontSize(40).fillColor('red').text(participant.lastname.substring(0, 17), 0, 350, {align: 'center'});
+  doc.addPage();
+};
+
+
 pdfGeneration.fillDocument = (doc, participants) => {
   participants = _.orderBy(participants, ['start_number']);
   _.forEach(participants, participant => pdfGeneration.createStartNumberPage(doc, participant) );
@@ -125,6 +132,26 @@ pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
   return deferred.promise;
 };
 
+pdfGeneration.generateCertificateDownload = (res, doc) => {
+  const deferred = Q.defer();
+  participants.byId(1).then( participant => {
+      res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Access-Control-Allow-Origin': '*',
+        'Content-Disposition': 'attachment; filename=' + 'urkunde.pdf'
+      });
+      doc.pipe(res);
+
+      pdfGeneration.createCertificatePage(doc, participant);
+
+      doc.end();
+
+      deferred.resolve(doc);
+    });
+
+  return deferred.promise;
+};
+
 pdfGeneration.generateRegistered = (res) => {
   let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
   return pdfGeneration.generateStartNumbers(res, doc);
@@ -135,4 +162,8 @@ pdfGeneration.generateOnSite = (res) => {
   return pdfGeneration.generateOnSiteStartNumbers(res, doc);
 };
 
+pdfGeneration.generateCertificate = (res) => {
+  let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
+  return pdfGeneration.generateCertificateDownload(res, doc);
+};
 module.exports = pdfGeneration;

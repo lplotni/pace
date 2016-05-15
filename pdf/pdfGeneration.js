@@ -11,6 +11,8 @@ const participants = require('../service/participants');
 const tshirts = require('../service/tshirts');
 const barcode = require("rescode");
 const editUrlHelper = require('../domain/editUrlHelper');
+const timeCalculator = require('../domain/timeCalculator');
+const race = require('../service/race');
 
 let pdfGeneration = {};
 
@@ -75,10 +77,13 @@ pdfGeneration.createCertificatePage = (doc,participant) => {
     if (_.isNull(time)) { 
       deferred.reject();
     } else {
-      doc.fontSize(30).fillColor('red').text(participant.firstname.substring(0, 25), 0, 300, {align: 'center'});
-      doc.fontSize(40).fillColor('red').text(participant.lastname.substring(0, 17), 0, 350, {align: 'center'});
-      doc.fontSize(40).fillColor('red').text(time, 0, 400, {align: 'center'});
-      deferred.resolve();
+      race.startTime().then( (starttime) => { 
+          let timearray = timeCalculator.relativeTime(starttime,time);
+          doc.fontSize(30).fillColor('red').text(participant.firstname.substring(0, 25), 0, 300, {align: 'center'});
+          doc.fontSize(40).fillColor('red').text(participant.lastname.substring(0, 17), 0, 350, {align: 'center'});
+          doc.fontSize(40).fillColor('red').text(timearray[0]+':'+timearray[1]+':'+timearray[2], 0, 400, {align: 'center'});
+          deferred.resolve();
+      });
     };
   });
   return deferred.promise;

@@ -9,7 +9,7 @@ const config = require('config');
 
 describe('pdfGeneration', () => {
 
-  let pdfGeneration, res, participantsMock, documentMock, tshirtsMock, qrCodeMock;
+  let pdfGeneration, res, participantsMock, documentMock, tshirtsMock, qrCodeMock, raceMock;
   let confirmedParticipant;
 
   beforeEach(() => {
@@ -62,8 +62,13 @@ describe('pdfGeneration', () => {
       path: jasmine.createSpy('path')
     };
 
+    raceMock = {
+      startTime: jasmine.createSpy('startTime')
+    };
+
     mockery.registerMock('../service/participants', participantsMock);
     mockery.registerMock('../service/tshirts', tshirtsMock);
+    mockery.registerMock('../service/race', raceMock);
     mockery.registerMock('qr-image', qrCodeMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
@@ -74,6 +79,7 @@ describe('pdfGeneration', () => {
     participantsMock.byStartnumber.and.returnValue(Q.fcall(() => confirmedParticipant));
     participantsMock.getTime.and.returnValue(Q.fcall(() => 10000));
     qrCodeMock.path.and.returnValue('some qr code path');
+    raceMock.startTime.and.returnValue(Q.fcall(() => 101));
   });
 
   afterAll(() => {
@@ -234,7 +240,7 @@ describe('pdfGeneration', () => {
       pdfGeneration.generateCertificateDownload(res, documentMock, '1').then( () => {
         expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte', 0, 300, {align: 'center'});
         expect(documentMock.text).toHaveBeenCalledWith('Person', 0, 350, {align: 'center'});
-        expect(documentMock.text).toHaveBeenCalledWith(10000, 0, 400, {align: 'center'});
+        expect(documentMock.text).toHaveBeenCalledWith('2:44:59', 0, 400, {align: 'center'});
         done();
       });
     });

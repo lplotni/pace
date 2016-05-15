@@ -135,20 +135,16 @@ pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
 pdfGeneration.generateCertificateDownload = (res, doc) => {
   const deferred = Q.defer();
   participants.byId(1).then( participant => {
-      res.writeHead(200, {
-        'Content-Type': 'application/pdf',
-        'Access-Control-Allow-Origin': '*',
-        'Content-Disposition': 'attachment; filename=' + 'urkunde.pdf'
-      });
-      doc.pipe(res);
-
-      pdfGeneration.createCertificatePage(doc, participant);
-
-      doc.end();
-
-      deferred.resolve(doc);
+    res.writeHead(200, {
+      'Content-Type': 'application/pdf',
+      'Access-Control-Allow-Origin': '*',
+      'Content-Disposition': 'attachment; filename=' + 'urkunde.pdf'
     });
-
+    doc.pipe(res);
+    pdfGeneration.createCertificatePage(doc, participant);
+    doc.end();
+    deferred.resolve(doc);
+  }).catch(deferred.reject);
   return deferred.promise;
 };
 

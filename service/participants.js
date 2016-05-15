@@ -159,6 +159,18 @@ participants.byId = (id) => {
     .then(result => result[0]);
 };
 
+participants.byStartnumber = (number) => {
+  return db.select('SELECT * FROM participants WHERE start_number = $1', [number])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
+
 participants.bySecureId = (id) => {
   return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
     .then(result => {

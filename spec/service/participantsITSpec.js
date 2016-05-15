@@ -159,6 +159,22 @@ describe('participants service', () => {
     });
   });
 
+  describe('byStartnumber()', () => {
+    it('should return all information of the participant with given Startnumber', (done) => {
+      let number = startNr++;
+      participants.save(aParticipant.withStartNr(number))
+        .then(function (participantId) {
+          participants.byStartnumber(number)
+            .then(function (participant) {
+              expectOnParticipantFields(participant, participantId);
+              done();
+            })
+            .catch(done.fail);
+        });
+    });
+  });
+
+
   describe('byToken()', () => {
     it('should return participant\'s lastname and firstname and ordered tshirt for a given token', (done) => {
       participants.save(aParticipantWithTshirt.withStartNr(startNr++))

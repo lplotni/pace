@@ -70,9 +70,14 @@ pdfGeneration.createStartNumberPage = (doc, participant) => {
 };
 
 pdfGeneration.createCertificatePage = (doc,participant) => {
-  doc.fontSize(30).fillColor('red').text(participant.firstname.substring(0, 25), 0, 300, {align: 'center'});
-  doc.fontSize(40).fillColor('red').text(participant.lastname.substring(0, 17), 0, 350, {align: 'center'});
-  doc.addPage();
+  const deferred = Q.defer();
+  participants.getTime(participant.start_number).then(time => {
+    doc.fontSize(30).fillColor('red').text(participant.firstname.substring(0, 25), 0, 300, {align: 'center'});
+    doc.fontSize(40).fillColor('red').text(participant.lastname.substring(0, 17), 0, 350, {align: 'center'});
+    doc.fontSize(40).fillColor('red').text(time, 0, 400, {align: 'center'});
+    deferred.resolve();
+  });
+  return deferred.promise;
 };
 
 
@@ -132,18 +137,20 @@ pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
   return deferred.promise;
 };
 
-pdfGeneration.generateCertificateDownload = (res, doc) => {
+pdfGeneration.generateCertificateDownload = (res, doc, startnumber) => {
   const deferred = Q.defer();
-  participants.byId(1).then( participant => {
+  participants.byStartnumber(startnumber).then( participant => {
     res.writeHead(200, {
       'Content-Type': 'application/pdf',
       'Access-Control-Allow-Origin': '*',
       'Content-Disposition': 'attachment; filename=' + 'urkunde.pdf'
     });
     doc.pipe(res);
-    pdfGeneration.createCertificatePage(doc, participant);
-    doc.end();
-    deferred.resolve(doc);
+    pdfGeneration.createCertificatePage(doc, participant)
+      .then(() => {
+        doc.end();
+        deferred.resolve(doc);
+      });
   }).catch(deferred.reject);
   return deferred.promise;
 };
@@ -158,8 +165,8 @@ pdfGeneration.generateOnSite = (res) => {
   return pdfGeneration.generateOnSiteStartNumbers(res, doc);
 };
 
-pdfGeneration.generateCertificate = (res) => {
-  let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
-  return pdfGeneration.generateCertificateDownload(res, doc);
+pdfGeneration.generateCertificate = (res,startnumber) => {
+  let doc = new PDFDocument({size: 'A4', margin: 0});
+  return pdfGeneration.generateCertificateDownload(res, doc, startnumber);
 };
 module.exports = pdfGeneration;

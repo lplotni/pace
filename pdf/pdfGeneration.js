@@ -72,10 +72,14 @@ pdfGeneration.createStartNumberPage = (doc, participant) => {
 pdfGeneration.createCertificatePage = (doc,participant) => {
   const deferred = Q.defer();
   participants.getTime(participant.start_number).then(time => {
-    doc.fontSize(30).fillColor('red').text(participant.firstname.substring(0, 25), 0, 300, {align: 'center'});
-    doc.fontSize(40).fillColor('red').text(participant.lastname.substring(0, 17), 0, 350, {align: 'center'});
-    doc.fontSize(40).fillColor('red').text(time, 0, 400, {align: 'center'});
-    deferred.resolve();
+    if (_.isNull(time)) { 
+      deferred.reject();
+    } else {
+      doc.fontSize(30).fillColor('red').text(participant.firstname.substring(0, 25), 0, 300, {align: 'center'});
+      doc.fontSize(40).fillColor('red').text(participant.lastname.substring(0, 17), 0, 350, {align: 'center'});
+      doc.fontSize(40).fillColor('red').text(time, 0, 400, {align: 'center'});
+      deferred.resolve();
+    };
   });
   return deferred.promise;
 };
@@ -140,17 +144,17 @@ pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
 pdfGeneration.generateCertificateDownload = (res, doc, startnumber) => {
   const deferred = Q.defer();
   participants.byStartnumber(startnumber).then( participant => {
-    res.writeHead(200, {
-      'Content-Type': 'application/pdf',
-      'Access-Control-Allow-Origin': '*',
-      'Content-Disposition': 'attachment; filename=' + 'urkunde.pdf'
-    });
-    doc.pipe(res);
     pdfGeneration.createCertificatePage(doc, participant)
       .then(() => {
+        res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Access-Control-Allow-Origin': '*',
+        'Content-Disposition': 'attachment; filename=' + 'urkunde.pdf'
+        });
+        doc.pipe(res);
         doc.end();
         deferred.resolve(doc);
-      });
+      }).catch(deferred.reject);
   }).catch(deferred.reject);
   return deferred.promise;
 };

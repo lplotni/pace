@@ -50,7 +50,9 @@ describe('pdfGeneration', () => {
       byId: jasmine.createSpy('byId'),
       byStartnumber: jasmine.createSpy('byStartnumber'),
       getTime: jasmine.createSpy('getTime'),
-      blancParticipants: jasmine.createSpy('blancParticipants')
+      blancParticipants: jasmine.createSpy('blancParticipants'),
+      rank: jasmine.createSpy('rank'),
+      rankByCategory: jasmine.createSpy('rankByCategory')
     };
 
     tshirtsMock = {
@@ -78,6 +80,8 @@ describe('pdfGeneration', () => {
     participantsMock.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
     participantsMock.byStartnumber.and.returnValue(Q.fcall(() => confirmedParticipant));
     participantsMock.getTime.and.returnValue(Q.fcall(() => 10000));
+    participantsMock.rank.and.returnValue(Q.fcall(() => 1));
+    participantsMock.rankByCategory.and.returnValue(Q.fcall(() => 1));
     qrCodeMock.path.and.returnValue('some qr code path');
     raceMock.startTime.and.returnValue(Q.fcall(() => 101));
   });

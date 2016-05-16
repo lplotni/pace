@@ -215,7 +215,7 @@ participants.getTime = (startnumber) => {
 
 participants.rank = (startnumber) => {
   const deferred = Q.defer();
-  db.select('select pos from (select time,start_number,rank() over (order by time) as pos from participants) as ss where start_number=$1;', [startnumber])
+  db.select("select pos from (select time,start_number,rank() over (order by time) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
     .then((result) => {
       deferred.resolve(result[0].pos);
     })
@@ -224,7 +224,7 @@ participants.rank = (startnumber) => {
 };
 participants.rankByCategory = (startnumber) => {
   const deferred = Q.defer();
-  db.select('select pos from (select time,start_number,rank() over (partition by category order by time) as pos from participants) as ss where start_number=$1;', [startnumber])
+  db.select("select pos from (select time,start_number,rank() over (partition by category order by time) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
     .then((result) => {
       deferred.resolve(result[0].pos);
     })

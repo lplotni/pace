@@ -18,6 +18,7 @@ let pdfGeneration = {};
 
 const fileName = 'start_numbers.pdf';
 const pathToBackgroundImage = '/images/background_light.jpg';
+const pathToCertificateBackgroundImage = '/images/certificate_background.jpg';
 const pathToLogoLeft = '/images/lauf_gegen_rechts_logo.jpg';
 const pathToLogoRight = '/images/fc_st_pauli_marathon_logo.png';
 const checkmarkSymbolSvg = 'M7.375,25 c0,0,10,11.375,14.125,11.375S44.875,8,44.875,8';
@@ -73,18 +74,26 @@ pdfGeneration.createStartNumberPage = (doc, participant) => {
 
 pdfGeneration.createCertificatePage = (doc,participant) => {
   const deferred = Q.defer();
-  participants.getTime(participant.start_number).then(time => {
-    if (_.isNull(time)) { 
-      deferred.reject();
-    } else {
-      race.startTime().then( (starttime) => { 
-          let timearray = timeCalculator.relativeTime(starttime,time);
-          doc.fontSize(30).fillColor('red').text(participant.firstname.substring(0, 25), 0, 300, {align: 'center'});
-          doc.fontSize(40).fillColor('red').text(participant.lastname.substring(0, 17), 0, 350, {align: 'center'});
-          doc.fontSize(40).fillColor('red').text(timearray[0]+':'+timearray[1]+':'+timearray[2], 0, 400, {align: 'center'});
-          deferred.resolve();
+  participants.rankByCategory(participant.start_number).then (category_rank => {
+    participants.rank(participant.start_number).then (rank => {
+      participants.getTime(participant.start_number).then(time => {
+        if (_.isNull(time)) { 
+          deferred.reject();
+        } else {
+          race.startTime().then( (starttime) => { 
+              let timearray = timeCalculator.relativeTime(starttime,time);
+              doc.image(__dirname + pathToCertificateBackgroundImage, {fit: [800, 800]});
+              doc.fontSize(30).fillColor('red').text(participant.firstname.substring(0, 30), 0, 300, {align: 'center'});
+              doc.fontSize(40).fillColor('red').text(participant.lastname.substring(0, 30), 0, 350, {align: 'center'});
+              doc.fontSize(40).fillColor('red').text(participant.team.substring(0, 30), 0, 375, {align: 'center'});
+              doc.fontSize(40).fillColor('red').text(timearray[0]+':'+timearray[1]+':'+timearray[2], 0, 400, {align: 'center'});
+              doc.fontSize(40).fillColor('red').text('Platz: '+ rank, 0, 450, {align: 'center'});
+              doc.fontSize(40).fillColor('red').text('Platz nach Kategorie : '+ category_rank, 0, 500, {align: 'center'});
+              deferred.resolve();
+          });
+        };
       });
-    };
+    });
   });
   return deferred.promise;
 };

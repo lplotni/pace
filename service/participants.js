@@ -213,6 +213,27 @@ participants.getTime = (startnumber) => {
   return deferred.promise;
 };
 
+participants.rank = (startnumber) => {
+  const deferred = Q.defer();
+  db.select('select pos from (select time,start_number,rank() over (order by time) as pos from participants) as ss where start_number=$1;', [startnumber])
+    .then((result) => {
+      deferred.resolve(result[0].pos);
+    })
+    .catch(deferred.reject);
+  return deferred.promise;
+};
+participants.rankByCategory = (startnumber) => {
+  const deferred = Q.defer();
+  db.select('select pos from (select time,start_number,rank() over (partition by category order by time) as pos from participants) as ss where start_number=$1;', [startnumber])
+    .then((result) => {
+      deferred.resolve(result[0].pos);
+    })
+    .catch(deferred.reject);
+  return deferred.promise;
+};
+
+
+
 participants.bulkmail = () => {
   const deferred = Q.defer();
 

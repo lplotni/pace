@@ -357,6 +357,39 @@ describe('participants service', () => {
 
   });
 
+  describe('rank', () => {
+    it('should return the rank of a participant with given start number', (done) => {
+      let time = '10:32:32';
+      let nr = startNr++;
+      participants.save(aParticipant.withStartNr(nr))
+        .then((participantid) => {
+          race.setStartTime(Date.parse(new Date()))
+            .then(() => participants.insertTime(nr, time))
+            .then(() => participants.rank(nr))
+            .then((rank) => {
+              expect(rank).toBe('1');
+              done();
+            })
+            .catch(done.fail);
+        });
+    });
+    it('should return the rank of a participant with given start number only for the participants category', (done) => {
+      let time = '10:32:32';
+      let nr = startNr++;
+      participants.save(aParticipant.withStartNr(nr))
+        .then((participantid) => {
+          race.setStartTime(Date.parse(new Date()))
+            .then(() => participants.insertTime(nr, time))
+            .then(() => participants.rankByCategory(nr))
+            .then((rank) => {
+              expect(rank).toBe('1');
+              done();
+            })
+            .catch(done.fail);
+        });
+    });
+  });
+ 
   describe('bulkmail()', () => {
     it('should send the correct email to every participant', (done) => {
       spyOn(mails, 'sendEmail');

@@ -65,11 +65,11 @@ participants.saveBlancParticipants = (amount) => {
 
   return startNumbers.next().then( nr => {
     let startNumberList =  _.range(nr, nr + amount);
-    return Q.all(startNumberList.map(participants.saveBlancParticipant));
+    return Q.all(startNumberList.map(participants.saveBlanc));
   });
 };
 
-participants.saveBlancParticipant = (startnumber) => {
+participants.saveBlanc = (startnumber) => {
   let participant = {
     firstname: '',
     lastname: '',
@@ -83,7 +83,7 @@ participants.saveBlancParticipant = (startnumber) => {
     secureID: editUrlHelper.generateSecureID(),
     start_number: startnumber,
     is_on_site_registration: true,
-    has_payed: false
+    has_payed: false //TODO false or true?
   };
 
   return db.insert('INSERT INTO participants ' +

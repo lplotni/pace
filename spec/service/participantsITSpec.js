@@ -98,11 +98,11 @@ describe('participants service', () => {
       .catch(done.fail);
   });
 
-  describe('saveBlancParticipant()', () => {
+  describe('saveBlanc()', () => {
     it('should save a participant with blank values', (done) => {
 
       let startNumber = startNr++;
-      participants.saveBlancParticipant(startNumber).then(participantId => {
+      participants.saveBlanc(startNumber).then(participantId => {
         expect(participantId).toBeDefined();
         participants.byId(participantId).then(participant => {
           expect(participant.firstname).toBe('');
@@ -289,7 +289,7 @@ describe('participants service', () => {
     describe('blancParticipants()', () => {
       it('returns only participants which are on-site registrations', (done) => {
         participants.save(aParticipant.withStartNr(startNr++))
-          .then(participants.saveBlancParticipant)
+          .then(participants.saveBlanc)
           .then(participants.blancParticipants).then(function (data) {
             expect(data.length).toBe(1);
             done();

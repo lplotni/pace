@@ -46,7 +46,7 @@ describe('pdfGeneration', () => {
     participantsMock = {
       confirmed: jasmine.createSpy('confirmed'),
       registered: jasmine.createSpy('registered'),
-      saveBlancParticipant: jasmine.createSpy('saveBlancParticipant'),
+      saveBlanc: jasmine.createSpy('saveBlanc'),
       blancParticipants: jasmine.createSpy('blancParticipants')
     };
 
@@ -184,7 +184,7 @@ describe('pdfGeneration', () => {
         secureid: 'some secure id',
         is_on_site_registration: true};
       participantsMock.blancParticipants.and.returnValue(Q.fcall(() => [onSiteParticipant]));
-      participantsMock.saveBlancParticipant.and.returnValue(Q.fcall(() => []));
+      participantsMock.saveBlanc.and.returnValue(Q.fcall(() => []));
     });
 
     it('should add the start number, blank name and blank team name', (done) => {

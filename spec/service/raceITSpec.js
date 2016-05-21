@@ -29,8 +29,12 @@ describe('race service', () => {
   });
 
   it('should return true if the race has started', (done) => {
-    let starttime = Date.parse(new Date());
-    race.setStartTime(starttime)
+    let startTimes = {
+      block1: Date.parse(new Date()),
+      block2: Date.parse(new Date())
+    };
+
+    race.setStartTime(startTimes)
       .then(race.hasStarted)
       .then(function (result) {
         expect(result).toBe(true);
@@ -40,11 +44,16 @@ describe('race service', () => {
   });
 
   it('should store and read race start times', (done) => {
-    let starttime = Date.parse(new Date());
-    race.setStartTime(starttime)
+    let startTimes = {
+      block1: Date.parse(new Date()),
+      block2: Date.parse(new Date())
+    };
+
+    race.setStartTime(startTimes)
       .then(race.startTime)
       .then((result) => {
-        expect(String(starttime)).toEqual(result);
+        expect(startTimes.block1).toEqual(result.block1);
+        expect(startTimes.block2).toEqual(result.block2);
         done();
       })
       .catch(done.fail);
@@ -68,9 +77,13 @@ describe('race service', () => {
     it('should show the first', (done) => {
       let time = '10:32:32';
       let nr = 1;
-      let start = Date.parse(new Date());
+      let startTimes = {
+        block1: Date.parse(new Date()),
+        block2: Date.parse(new Date())
+      };
+      
       participants.save(aParticipant.withStartNr(nr))
-        .then(() => race.setStartTime(start))
+        .then(() => race.setStartTime(startTimes))
         .then(() => participants.insertTime(nr, time))
         .then(() => race.results('Unicorn', 1970, 1990))
         .then((result) => {

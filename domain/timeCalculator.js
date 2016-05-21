@@ -6,7 +6,7 @@ const moment = require('moment');
 let timeCalculator = {};
 
 timeCalculator.timestamp = (startTime, timestring) => {
-  let timestamp = moment(startTime, 'X');
+  let timestamp = moment(startTime.block1, 'X'); //TODO use either block1 or block2
   timestamp.hours(timestring.split(':')[0]);
   timestamp.minutes(timestring.split(':')[1]);
   timestamp.seconds(timestring.split(':')[2]);

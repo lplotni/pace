@@ -6,12 +6,22 @@ block content
 
   form#starttime(method='POST', action='after')
     .row
-      input(type="text", size="2", name="hours", value=hours)
-      span :
-      input(type="text", size="2", name="minutes" value=minutes)
-      span :
-      input(type="text", size="2", name="seconds" value=seconds)
-      input(type='hidden', name='_csrf', value=_csrf)
+      .four.columns.padding#block1
+        label Startzeit für den Startblock 1:
+        input#hours1(type="text", size="2", name="hours1", value=hours1)
+        span :
+        input#minutes1(type="text", size="2", name="minutes1" value=minutes1)
+        span :
+        input#seconds1(type="text", size="2", name="seconds1" value=seconds1)
+      .four.columns.padding#block2
+        label Startzeit für den Startblock 2:
+        input#hours2(type="text", size="2", name="hours2", value=hours2)
+        span :
+        input#minutes2(type="text", size="2", name="minutes2" value=minutes2)
+        span :
+        input#seconds2(type="text", size="2", name="seconds2" value=seconds2)
+
+    input(type='hidden', name='_csrf', value=_csrf)
     button(id = 'set_race_starttime', type='submit').button-primary Startzeit eintragen
 
   h3 Ergebnisse importieren

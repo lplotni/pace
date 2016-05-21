@@ -12,21 +12,21 @@ const timeCalculator = require('../domain/timeCalculator');
 let race = {};
 
 race.startTime = () => {
-  return db.select("SELECT data->>'starttime' as starttime FROM race;").then(result => {
-    if (_.isNumber(_.toInteger(result[0].starttime))) {
-      return result[0].starttime;
+  return db.select("select data->>'startTimes' as times from race;").then(result => {
+    if (_.isNumber(_.toInteger(result[0].times.block1))) {
+      return JSON.parse(result[0].times);
     }
-    throw new Error(`StartTime not set or not a valid number: ${result[0].starttime}`);
+    throw new Error(`StartTime.block1 not set or not a valid number: ${result[0].times.block1}`);
   });
 };
 
-race.setStartTime = (date) => {
-  return db.update(`UPDATE race SET data = jsonb_set(data, '{starttime}','${date}');`);
+race.setStartTime = (times) => {
+  return db.update(`UPDATE race SET data = jsonb_set(data, '{startTimes}','{"block1": ${times.block1}, "block2": ${times.block2}}');`);
 };
 
-race.hasStarted = () => {
-  return db.select("SELECT data->>'starttime' as starttime FROM race;")
-    .then(result => !_.isEmpty(result[0].starttime));
+race.hasStarted = () => { //rename to something different?
+  return db.select("SELECT data->'startTimes'->>'block1' as block1 FROM race;")
+    .then(result =>  !_.isEmpty(result[0].block1));
 };
 
 race.resetStarttime = () => {

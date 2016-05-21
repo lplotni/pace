@@ -305,7 +305,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          race.setStartTime(Date.parse(new Date()))
+          race.setStartTime({block1: Date.parse(new Date()), block2: Date.parse(new Date())})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.byId(participantid))
             .then((participant) => {
@@ -322,7 +322,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          race.setStartTime(Date.parse(new Date()))
+          race.setStartTime({block1: Date.parse(new Date()), block2: Date.parse(new Date())})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.byId(participantid))
             .then((participant) => {

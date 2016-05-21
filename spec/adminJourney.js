@@ -35,11 +35,11 @@ describe('admin page', () => {
 
   afterAll((done) => {
     if (originalRegistrationStatus) {
-      registration.close().then( () => {
+      registration.close().then(() => {
         done();
       });
     } else {
-      registration.reopen().then( () => {
+      registration.reopen().then(() => {
         done();
       });
     }
@@ -78,15 +78,15 @@ describe('admin page', () => {
   });
 
   it('should close and reopen the registration', (done) => {
-    loginAdmin().url(helper.paceUrl+'admin')
+    loginAdmin().url(helper.paceUrl + 'admin')
       .click('button#close-registration')
       .isVisible('p#registration-closed-message')
-      .then(function (isVisible) {
+      .then((isVisible) => {
         expect(isVisible).toBe(true);
       })
       .click('button#reopen-registration')
       .isVisible('h3#admin_tshirts_count')
-      .then(function (isVisible) {
+      .then((isVisible) => {
         expect(isVisible).toBe(true);
       })
       .end(done);
@@ -104,7 +104,7 @@ describe('admin page', () => {
   it('should redirect to the start page after logout', (done) => {
     helper.setUpClient().url(helper.paceUrl + 'logout')
       .isVisible('h3*=Online-Anmeldung')
-      .then(function (isVisible) {
+      .then((isVisible) => {
         expect(isVisible).toBe(true);
       })
       .end(done);
@@ -133,11 +133,11 @@ describe('admin page', () => {
     givenAValidUserExists().then(() => {
       loginAdmin().url(helper.paceUrl + 'admin/participants')
         .getText('.first-name')
-        .then(function (firstNames) {
+        .then((firstNames) => {
           firstName = _.isArray(firstNames) ? firstNames[0] : firstNames;
         })
         .getText('.last-name')
-        .then(function (lastNames) {
+        .then((lastNames) => {
           lastName = _.isArray(lastNames) ? lastNames[0] : lastNames;
         })
         .click('a.edit-button')
@@ -146,14 +146,58 @@ describe('admin page', () => {
           expect(isVisible).toBe(true);
         })
         .getValue('#firstname')
-        .then(function (value) {
+        .then((value) => {
           expect(value).toBe(firstName);
         })
         .getValue('#lastname')
-        .then(function (value) {
+        .then((value) => {
           expect(value).toBe(lastName);
         })
         .end(done);
     });
+  });
+
+  it('should be able to define the start time of 2 blocks', (done) => {
+    loginAdmin().url(helper.paceUrl + 'admin')
+      .click('a#after')
+      .isVisible('div#block1')
+      .then((isVisible) => {
+        expect(isVisible).toBe(true);
+      })
+      .isVisible('div#block2')
+      .then((isVisible) => {
+        expect(isVisible).toBe(true);
+      })
+      .setValue('input#hours1', '10')
+      .setValue('input#minutes1', '15')
+      .setValue('input#seconds1', '10')
+      .setValue('input#hours2', '10')
+      .setValue('input#minutes2', '40')
+      .setValue('input#seconds2', '13')
+      .click('button#set_race_starttime')
+      .getValue('input#hours1')
+      .then((value) => {
+        expect(value).toBe('10');
+      })
+      .getValue('input#minutes1')
+      .then((value) => {
+        expect(value).toBe('15');
+      })
+      .getValue('input#seconds1')
+      .then((value) => {
+        expect(value).toBe('10');
+      })
+      .getValue('input#hours2')
+      .then((value) => {
+        expect(value).toBe('10');
+      })
+      .getValue('input#minutes2')
+      .then((value) => {
+        expect(value).toBe('40');
+      })
+      .getValue('input#seconds2')
+      .then((value) => {
+        expect(value).toBe('13');
+      }).end(done);
   });
 });

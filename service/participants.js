@@ -188,7 +188,7 @@ function updateTime(startnumber, finishtime) {
     });
 }
 participants.insertTime = (startnumber, timestring) => {
-  return race.startTime().then((start) => updateTime(startnumber, timeCalculator.timestamp(start, timestring)));
+  return race.startTime().then((startTimes) => updateTime(startnumber, timeCalculator.timestamp(startTimes, timestring)));
 };
 
 participants.getTime = (startnumber) => {

@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "body-parser": "~1.15.1",
-    "config": "^1.20.2",
+    "config": "^1.20.3",
     "connect-flash": "~0.1.1 ",
     "cookie-parser": "~1.4.2",
     "cryptico": "~1.0.2",

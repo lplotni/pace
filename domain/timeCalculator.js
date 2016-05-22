@@ -6,16 +6,24 @@ const moment = require('moment');
 let timeCalculator = {};
 
 timeCalculator.timestamp = (startTime, timestring) => {
-  let timestamp = moment(startTime.block1, 'X'); //TODO use either block1 or block2
+  let timestamp = moment(startTime.block1, 'X');
   timestamp.hours(timestring.split(':')[0]);
   timestamp.minutes(timestring.split(':')[1]);
   timestamp.seconds(timestring.split(':')[2]);
   return timestamp.unix();
 };
 
-timeCalculator.relativeTime = (race_starttime, participant_finishtime) => {
-  const relative_time = moment.duration(participant_finishtime - race_starttime, 'seconds');
-  return [relative_time.hours(), relative_time.minutes(), relative_time.seconds()];
+timeCalculator.getCorrectStartTime = (startTimes, startNumber) => {
+  if (startNumber < 1001) {
+    return startTimes.block1;
+  }
+  return startTimes.block2;
+};
+
+timeCalculator.relativeTime = (startTimes, finishTime, startNumber) => {
+  const relativeTime = moment.duration(
+    finishTime - timeCalculator.getCorrectStartTime(startTimes, startNumber), 'seconds');
+  return [relativeTime.hours(), relativeTime.minutes(), relativeTime.seconds()];
 };
 
 module.exports = timeCalculator;

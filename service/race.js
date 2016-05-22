@@ -77,9 +77,9 @@ race.results = (category, agegroup_start, agegroup_end) => {
     .then((result) => {
       var place = 1;
       race.startTime()
-        .then(start => {
+        .then(startTimes => {
           _.forEach(result, participant => {
-            let time = timeCalculator.relativeTime(start, participant.time);
+            let time = timeCalculator.relativeTime(startTimes, participant.time, participant.start_number);
             participant.place = place++;
             participant.timestring = time[0] + ':' + time[1] + ':' + time[2];
           });

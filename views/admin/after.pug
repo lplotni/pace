@@ -7,27 +7,36 @@ block content
   form#starttime(method='POST', action='after')
     .row
       .four.columns.padding#block1
-        label Startzeit für den Startblock 1:
-        input#hours1(type="text", size="2", name="hours1", value=hours1)
-        span :
-        input#minutes1(type="text", size="2", name="minutes1" value=minutes1)
-        span :
-        input#seconds1(type="text", size="2", name="seconds1" value=seconds1)
+        .row
+          label Startzeit für den Startblock 1:
+          input#hours1(type="text", size="2", name="hours1", value=hours1)
+          span :
+          input#minutes1(type="text", size="2", name="minutes1" value=minutes1)
+          span :
+          input#seconds1(type="text", size="2", name="seconds1" value=seconds1)
+        .row
+          span.small (Startnummern 1 - 1000)
       .four.columns.padding#block2
-        label Startzeit für den Startblock 2:
-        input#hours2(type="text", size="2", name="hours2", value=hours2)
-        span :
-        input#minutes2(type="text", size="2", name="minutes2" value=minutes2)
-        span :
-        input#seconds2(type="text", size="2", name="seconds2" value=seconds2)
-
-    input(type='hidden', name='_csrf', value=_csrf)
-    button(id = 'set_race_starttime', type='submit').button-primary Startzeit eintragen
+        .row
+          label Startzeit für den Startblock 2:
+          input#hours2(type="text", size="2", name="hours2", value=hours2)
+          span :
+          input#minutes2(type="text", size="2", name="minutes2" value=minutes2)
+          span :
+          input#seconds2(type="text", size="2", name="seconds2" value=seconds2)
+        .row
+          span.small (Startnummer ab 1001)
+    .row
+      .eight.columns.padding
+        input(type='hidden', name='_csrf', value=_csrf)
+        button(id = 'set_race_starttime', type='submit').button-primary.u-full-width.pace Startzeit eintragen
 
   h3 Ergebnisse importieren
   form(method="POST", action="after/import?_csrf="+csrf, enctype="multipart/form-data")
     .row
       input(type="file", name="displayImage")
-    button#upload-results.primary.button-primary.pace(type='submit') Ergebnisse importieren
+    .row
+      .eight.columns.padding
+        button#upload-results.primary.button-primary.pace.u-full-width(type='submit') Ergebnisse importieren
 
 

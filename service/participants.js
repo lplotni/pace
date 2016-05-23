@@ -207,10 +207,10 @@ participants.bulkmail = () => {
   participants.confirmed().then(confirmed => {
     participants.registered().then(unconfirmed => {
       _.forEach(confirmed, participant => {
-        mails.sendStatusEmail(participant, 'hallo', 'views/participants/bulkmail.pug');
+        mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');
       });
       _.forEach(unconfirmed, participant => {
-        mails.sendStatusEmail(participant, 'hallo', 'views/participants/bulkmail.pug');
+        mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');
       });
       deferred.resolve();
     });

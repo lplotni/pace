@@ -8,24 +8,24 @@ block content
     .row
       .four.columns.padding#block1
         .row
-          label Startzeit für den Startblock 1:
+          label Startblock 1:
+          span.small.slim.info (Startnummern 1 - 1000)
+        .row
           input#hours1(type="text", size="2", name="hours1", value=hours1)
           span :
           input#minutes1(type="text", size="2", name="minutes1" value=minutes1)
           span :
           input#seconds1(type="text", size="2", name="seconds1" value=seconds1)
-        .row
-          span.small (Startnummern 1 - 1000)
       .four.columns.padding#block2
         .row
-          label Startzeit für den Startblock 2:
+          label Startblock 2:
+          span.small.slim.info (Startnummer ab 1001)
+        .row
           input#hours2(type="text", size="2", name="hours2", value=hours2)
           span :
           input#minutes2(type="text", size="2", name="minutes2" value=minutes2)
           span :
           input#seconds2(type="text", size="2", name="seconds2" value=seconds2)
-        .row
-          span.small (Startnummer ab 1001)
     .row
       .eight.columns.padding
         input(type='hidden', name='_csrf', value=_csrf)

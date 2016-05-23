@@ -68,9 +68,14 @@ pre {
     color: white;
 }
 
-
 .small {
     font-size: 14px;
+}
+
+.info {
+    position: relative;
+    top: -10px;
+    color: grey;
 }
 
 button#confirm-registration{

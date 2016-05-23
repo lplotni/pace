@@ -33,13 +33,19 @@ form#editParticipantForm(method='POST', action=formAction)
         option(value='no', selected=(participant.visibility == 'no')) Nein
 
   .row
+    .six.columns.padding
+      label Deine Startnummer:
+      p#startNumber #{participant.start_number}
+    .six.columns.padding
+      label Deine Startzeit:
+      span.small.slim.info (Startnummer ab 1001)
+      select#startingBlock.u-full-width(name='startingBlock')
+        option(value='1' selected=(participant.startingBlock == '1')) 10:00 / Block1
+        option(value='2' selected=(participant.startingBlock == '2')) 10:30 / Block2
+  .row
     .twelve.columns.padding
       label Zahlungsstatus:
       p#paymentStatus #{participant.has_payed ? 'Zahlung eingegangen' : 'Zahlung noch nicht eingegangen' }
-    .twelve.columns.padding
-      label Deine Startnummer:
-      p#startNumber #{participant.start_number}
-
   input(type='hidden', name='participantid', value=participantid)
   input(type='hidden', name='_csrf', value=_csrf)
 

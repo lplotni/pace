@@ -40,46 +40,52 @@ describe('edit participant journey', () => {
         helper.setUpClient()
           .url(editParticipantUrl + '/' + aParticipant.secureID)
           .isVisible('form#editParticipantForm')
-          .then(function (isVisible) {
+          .then((isVisible) => {
             expect(isVisible).toBe(true);
           })
           .getValue('input#firstname')
-          .then(function (value) {
+          .then((value) => {
             expect(value).toBe('Friedrich');
           })
           .getValue('input#lastname')
-          .then(function (value) {
+          .then((value) => {
             expect(value).toBe('Schiller');
           })
           .getValue('input#email')
-          .then(function (value) {
+          .then((value) => {
             expect(value).toBe('f.schiller@example.com');
           })
           .getValue('select#visibility')
-          .then(function (value) {
+          .then((value) => {
             expect(value).toBe('no');
-          }).getValue('select#category')
-          .then(function (value) {
+          })
+          .getValue('select#category')
+          .then((value) => {
             expect(value).toBe('f');
           })
           .getValue('input#birthyear')
-          .then(function (value) {
+          .then((value) => {
             expect(value).toBe('1980');
           })
           .getValue('input#team')
-          .then(function (value) {
+          .then((value) => {
             expect(value).toBe('Crazy runners');
           })
           .getText('p#paymentStatus')
-          .then(function (value) {
+          .then((value) => {
             expect(value).toBe('Zahlung noch nicht eingegangen');
           })
           .getText('p#startNumber')
-          .then(function (value) {
+          .then((value) => {
             expect(value).toBe('42');
-          }).click("#submit")
+          })
+          .getValue('select#startingBlock')
+          .then((value) => {
+            expect(value).toBe('1');
+          })
+          .click("#submit")
           .isVisible('.thanks')
-          .then(function (isVisible) {
+          .then((isVisible) => {
             expect(isVisible).toBe(true);
           })
           .end(done);
@@ -90,11 +96,11 @@ describe('edit participant journey', () => {
     helper.setUpClient()
       .url(editParticipantUrl + '/invalidId')
       .getText('h1')
-      .then(function (text) {
+      .then((text) => {
         expect(text).toBe('Teilnehmer nicht bekannt');
       })
       .getText('h2')
-      .then(function (text) {
+      .then((text) => {
         expect(text).toBe('Möglicherweise wurde ein falscher Link verwendet');
       })
       .end(done);

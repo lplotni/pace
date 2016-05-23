@@ -242,9 +242,8 @@ describe('pdfGeneration', () => {
   describe('generateCertificate', () => {
     it('should generate one certificate', (done) => {
       pdfGeneration.generateCertificateDownload(res, documentMock, '1').then( () => {
-        expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte', 0, 300, {align: 'center'});
-        expect(documentMock.text).toHaveBeenCalledWith('Person', 0, 350, {align: 'center'});
-        expect(documentMock.text).toHaveBeenCalledWith('2:44:59', 0, 400, {align: 'center'});
+        expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte Person', 0, 345, {align: 'center'});
+        expect(documentMock.text).toHaveBeenCalledWith('2:44:59', 0, 460, {align: 'center'});
         done();
       });
     });

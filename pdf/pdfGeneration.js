@@ -83,12 +83,11 @@ pdfGeneration.createCertificatePage = (doc,participant) => {
           race.startTime().then( (starttime) => { 
               let timearray = timeCalculator.relativeTime(starttime,time);
               doc.image(__dirname + pathToCertificateBackgroundImage, {fit: [800, 800]});
-              doc.fontSize(30).fillColor('red').text(participant.firstname.substring(0, 30), 0, 300, {align: 'center'});
-              doc.fontSize(40).fillColor('red').text(participant.lastname.substring(0, 30), 0, 350, {align: 'center'});
-              doc.fontSize(40).fillColor('red').text(participant.team.substring(0, 30), 0, 375, {align: 'center'});
-              doc.fontSize(40).fillColor('red').text(timearray[0]+':'+timearray[1]+':'+timearray[2], 0, 400, {align: 'center'});
-              doc.fontSize(40).fillColor('red').text('Platz: '+ rank, 0, 450, {align: 'center'});
-              doc.fontSize(40).fillColor('red').text('Platz nach Kategorie : '+ category_rank, 0, 500, {align: 'center'});
+              doc.fontSize(30).fillColor('black').text(participant.firstname.substring(0, 30)+' '+ participant.lastname.substring(0, 30), 0, 345, {align: 'center'});
+              doc.fontSize(25).fillColor('black').text(participant.team.substring(0, 30), 0, 380, {align: 'center'});
+              doc.fontSize(30).fillColor('black').text(timearray[0]+':'+timearray[1]+':'+timearray[2], 0, 460, {align: 'center'});
+              doc.fontSize(30).fillColor('black').text(rank, 0, 528, {align: 'center'});
+              doc.fontSize(30).fillColor('black').text(category_rank, 0, 593, {align: 'center'});
               deferred.resolve();
           });
         };

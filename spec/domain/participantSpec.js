@@ -9,7 +9,7 @@ describe('participant', () => {
   const participant = require('../../domain/participant.js');
   let body;
 
-  beforeEach(function () {
+  beforeEach(() => {
       body = {
         firstname: 'Mark',
         lastname: 'Mueller',
@@ -22,7 +22,8 @@ describe('participant', () => {
         couponcode: '',
         shirt: 'Yes',
         model: 'Normal fit',
-        size: 'M'
+        size: 'M',
+        startBlock: 1
       };
     }
   );
@@ -144,6 +145,10 @@ describe('participant', () => {
     it('should not throw an error if no discount can be found, but use NO instead', function () {
       var bodyWithoutDiscout = _.omit(body, 'discount');
       expect(participant.from(bodyWithoutDiscout).discount).toBe('no');
+    });
+
+    it('should extract start_blcok from the request body', () => {
+      expect(participant.from(body).start_block).toBe(1);
     });
   });
 

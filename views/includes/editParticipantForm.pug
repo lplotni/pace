@@ -38,10 +38,10 @@ form#editParticipantForm(method='POST', action=formAction)
       p#startNumber #{participant.start_number}
     .six.columns.padding
       label Deine Startzeit:
-      span.small.slim.info (Startnummer ab 1001)
-      select#startingBlock.u-full-width(name='startingBlock')
-        option(value='1' selected=(participant.startingBlock == '1')) 10:00 / Block1
-        option(value='2' selected=(participant.startingBlock == '2')) 10:30 / Block2
+      span.small.slim.info Some Info [EDIT]
+      select#startBlock.u-full-width(name='startBlock')
+        option(value='1' selected=(participant.start_block == '1')) 10:00 / Block1
+        option(value='2' selected=(participant.start_block == '2')) 10:30 / Block2
   .row
     .twelve.columns.padding
       label Zahlungsstatus:

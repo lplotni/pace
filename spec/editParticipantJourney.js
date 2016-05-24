@@ -79,7 +79,7 @@ describe('edit participant journey', () => {
           .then((value) => {
             expect(value).toBe('42');
           })
-          .getValue('select#startingBlock')
+          .getValue('select#startBlock')
           .then((value) => {
             expect(value).toBe('1');
           })

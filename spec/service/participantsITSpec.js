@@ -244,7 +244,8 @@ describe('participants service', () => {
             email: 'h.mustermann@example.com updated',
             category: 'Unicorn updated',
             birthyear: 1981,
-            team: 'Crazy runners updated'
+            team: 'Crazy runners updated',
+            start_block: 2
           };
           participants.byId(id)
             .then((p) => {
@@ -258,6 +259,7 @@ describe('participants service', () => {
                       expect(participant.category).toBe('Unicorn updated');
                       expect(participant.birthyear).toBe(1981);
                       expect(participant.team).toBe('Crazy runners updated');
+                      expect(participant.start_block).toBe(2);
                       done();
                     })
                     .catch(done.fail);

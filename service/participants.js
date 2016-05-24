@@ -110,17 +110,19 @@ participants.delete = (participantid) => {
 };
 
 participants.update = (participant, id) => {
-  return db.update('UPDATE participants SET ' +
-    '(firstname, lastname, email, category, birthyear, team, visibility) = ' +
-    '($1, $2, $3, $4, $5, $6, $7) WHERE secureid = $8',
+  return db.update(`UPDATE participants SET 
+                    (firstname, lastname, email, category, birthyear, team, visibility, start_block) =
+                    ($1, $2, $3, $4, $5, $6, $7, $8) 
+                    WHERE secureid = $9`,
     [participant.firstname,
-      participant.lastname,
-      participant.email,
-      participant.category,
-      participant.birthyear,
-      participant.team,
-      participant.visibility,
-      id]);
+     participant.lastname,
+     participant.email,
+     participant.category,
+     participant.birthyear,
+     participant.team,
+     participant.visibility,
+     participant.start_block,
+     id]);
 };
 
 participants.byToken = (paymentToken) => {

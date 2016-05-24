@@ -37,7 +37,8 @@ participant.from = (body) => {
     category: body.category,
     birthyear: body.birthyear,
     team: body.team,
-    tshirt: tshirt.from(body)
+    tshirt: tshirt.from(body),
+    start_block: body.startBlock
   };
   
   p.with = function (property) {

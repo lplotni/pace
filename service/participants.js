@@ -168,6 +168,18 @@ participants.byId = (id) => {
     .then(result => result[0]);
 };
 
+participants.byStartnumber = (number) => {
+  return db.select('SELECT * FROM participants WHERE start_number = $1', [number])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
+
 participants.bySecureId = (id) => {
   return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
     .then(result => {
@@ -209,6 +221,27 @@ participants.getTime = (startnumber) => {
     .catch(deferred.reject);
   return deferred.promise;
 };
+
+participants.rank = (startnumber) => {
+  const deferred = Q.defer();
+  db.select("select pos from (select time,start_number,rank() over (order by time) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
+    .then((result) => {
+      deferred.resolve(result[0].pos);
+    })
+    .catch(deferred.reject);
+  return deferred.promise;
+};
+participants.rankByCategory = (startnumber) => {
+  const deferred = Q.defer();
+  db.select("select pos from (select time,start_number,rank() over (partition by category order by time) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
+    .then((result) => {
+      deferred.resolve(result[0].pos);
+    })
+    .catch(deferred.reject);
+  return deferred.promise;
+};
+
+
 
 participants.bulkmail = () => {
   const deferred = Q.defer();

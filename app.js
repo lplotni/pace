@@ -27,6 +27,7 @@ let adminAfterRoute = require('./routes/admin/after');
 let paymentValidationRoute = require('./routes/admin/paymentValidation');
 let couponcodeRoute = require('./routes/admin/couponcodes');
 let resultRoute = require('./routes/results/results');
+let certificateRoute = require('./routes/certificate');
 
 let config = require('config');
 let csrf = require('csurf');
@@ -104,6 +105,7 @@ app.use('/', indexRoute);
 app.use('/registration', registrationRoute);
 app.use('/participants', participantsRoute);
 app.use('/results',resultRoute);
+app.use('/certificate',certificateRoute);
 app.use('/paymentvalidation', paymentValidationRoute);
 app.use('/editparticipant', editParticipantRoute);
 

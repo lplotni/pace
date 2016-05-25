@@ -99,6 +99,18 @@ describe('participants service', () => {
       .catch(done.fail);
   });
 
+  describe('choseStartBlock', () => {
+    it('returns 1 for nr < 1001', () => {
+      expect(participants.choseStartBlock(1)).toBe(1);
+      expect(participants.choseStartBlock(1000)).toBe(1);
+    });
+
+    it('returns 2 for nr > 1000', () => {
+      expect(participants.choseStartBlock(1001)).toBe(2);
+      expect(participants.choseStartBlock(10000)).toBe(2);
+    });
+  });
+
   describe('saveBlanc()', () => {
     it('should save a participant with blank values', (done) => {
 
@@ -117,6 +129,7 @@ describe('participants service', () => {
 
           expect(participant.has_payed).toBe(false);
           expect(participant.start_number).toBe(startNumber);
+          expect(participant.start_block).not.toBe(null);
           expect(participant.secureid).toBeDefined();
           expect(participant.is_on_site_registration).toBe(true);
           done();

@@ -55,6 +55,7 @@ describe('registration', () => {
     it('should save the participant and send confirmation email', (done) => {
       spyOn(participants, 'save').and.callThrough();
       spyOn(participants, 'markPayed').and.callThrough();
+      spyOn(participants, 'choseStartBlock').and.callThrough();
       spyOn(mails, 'sendEmail');
       spyOn(tshirts, 'addFor');
 

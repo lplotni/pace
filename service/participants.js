@@ -44,8 +44,8 @@ participants.publiclyVisible = () => {
 
 participants.save = (participant) => {
   return db.insert(`INSERT INTO participants
-                  (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, couponcode)
-                  values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id`,
+                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, couponcode)
+                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id`,
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -70,6 +70,10 @@ participants.saveBlancParticipants = (amount) => {
   });
 };
 
+participants.choseStartBlock = (startNumber) => { //move this out of here TODO
+  return startNumber < 1001 ? 1 : 2;
+};
+
 participants.saveBlanc = (startnumber) => {
   let participant = {
     firstname: '',
@@ -83,13 +87,14 @@ participants.saveBlanc = (startnumber) => {
     paymentToken: 'on-site Registrierung (' + startnumber + ')',
     secureID: editUrlHelper.generateSecureID(),
     start_number: startnumber,
+    start_block: participants.choseStartBlock(startnumber),
     is_on_site_registration: true,
     has_payed: false //TODO false or true?
   };
 
-  return db.insert('INSERT INTO participants ' +
-    '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, is_on_site_registration, has_payed) ' +
-    'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id',
+  return db.insert(`INSERT INTO participants
+                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, is_on_site_registration, has_payed)
+                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning id`,
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -101,6 +106,7 @@ participants.saveBlanc = (startnumber) => {
       participant.paymentToken,
       participant.secureID,
       participant.start_number,
+      participant.start_block,
       participant.is_on_site_registration,
       participant.has_payed]
   );

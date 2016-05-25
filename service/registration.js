@@ -19,6 +19,7 @@ const tshirts = require('../service/tshirts');
 const editUrlHelper = require('../domain/editUrlHelper');
 
 const registration = {};
+
 registration.isClosed = () => {
   return db.select("SELECT data->>'is_closed' as is_closed FROM race;")
     .then(result => {
@@ -71,10 +72,6 @@ function sendConfirmationMail(participant, paymentToken) {
   );
 }
 
-registration.choseStartBlock = (startNumber) => {
-  return startNumber < 1001 ? 1 : 2;
-};
-
 registration.start = (participant) => {
   const deferred = Q.defer();
   var resultPromise = couponcodes.validateCode(participant.couponcode, participant.discount);
@@ -86,7 +83,7 @@ registration.start = (participant) => {
             .withToken(paymentToken)
             .withSecureId(editUrlHelper.generateSecureID())
             .withStartNr(nr)
-            .withStartBlock(registration.choseStartBlock(nr));
+            .withStartBlock(participants.choseStartBlock(nr));
           participants.save(p)
             .then(id => {
               if (!_.isEmpty(p.tshirt)) {

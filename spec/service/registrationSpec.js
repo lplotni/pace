@@ -36,6 +36,7 @@ describe('registration service', () => {
 
       participantsMock = {
         createUnique: jasmine.createSpy(),
+        choseStartBlock: jasmine.createSpy(),
         save: jasmine.createSpy()
       };
 
@@ -71,6 +72,7 @@ describe('registration service', () => {
       editUrlHelperMock.generateSecureID.and.returnValue(secureId);
       tokensMock.createUnique.and.returnValue(Q.fcall(() => 'uniqueToken'));
       participantsMock.save.and.returnValue(Q.fcall(() => 10));
+      participantsMock.choseStartBlock.and.returnValue(2);
       startNumbersMock.next.and.returnValue(Q.fcall(() => 1));
     });
 
@@ -109,18 +111,6 @@ describe('registration service', () => {
     });
   });
 
-  describe('choseStartBlock', () => {
-    let registration = require('../../service/registration');
-
-    it('returns 1 for nr < 1001', () => {
-      expect(registration.choseStartBlock(1)).toBe(1);
-      expect(registration.choseStartBlock(1000)).toBe(1);
-    });
-
-    it('returns 2 for nr > 1000', () => {
-      expect(registration.choseStartBlock(1001)).toBe(2);
-      expect(registration.choseStartBlock(10000)).toBe(2);
-    });
-  });
+  
 
 });

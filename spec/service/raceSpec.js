@@ -3,6 +3,7 @@
 /* jshint esnext: true */
 /* global describe, beforeAll, afterAll, spyOn, it, expect, fail, jasmine */
 const Q = require('q');
+const moment = require('moment');
 const mockery = require('mockery');
 
 describe('race service', () => {
@@ -40,13 +41,15 @@ describe('race service', () => {
   });
 
   it('returns also formated HH:MM startTimes', (done) => {
-    const startTimes = [ { times: '{"block1": 1464164110, "block2": 1464165613}' } ];
-    
+    let block1 = moment();
+    let block2 = moment().add(30, 'm');
+
+    const startTimes = [ { times: `{"block1": ${block1.unix()}, "block2": ${block2.unix()}}` } ];
     dbMock.select.and.returnValue(Q.fcall(() => startTimes));
 
     race.startTimesAsHHMM().then(formattedTimed => {
-      expect(formattedTimed.block1).toBe('10:15');
-      expect(formattedTimed.block2).toBe('10:40');
+      expect(formattedTimed.block1).toBe(block1.format('hh:mm'));
+      expect(formattedTimed.block2).toBe(block2.format('hh:mm'));
       done();
     }).catch(done.fail);
   });

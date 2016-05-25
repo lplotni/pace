@@ -40,8 +40,8 @@ form#editParticipantForm(method='POST', action=formAction)
       label Deine Startzeit:
       span.small.slim.info Some Info [EDIT]
       select#startBlock.u-full-width(name='startBlock')
-        option(value='1' selected=(participant.start_block == '1')) 10:00 / Block1
-        option(value='2' selected=(participant.start_block == '2')) 10:30 / Block2
+        option(value='1' selected=(participant.start_block == '1')) #{times.block1} / Block1
+        option(value='2' selected=(participant.start_block == '2')) #{times.block2} / Block2
   .row
     .twelve.columns.padding
       label Zahlungsstatus:

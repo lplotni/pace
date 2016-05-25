@@ -13,10 +13,23 @@ let race = {};
 
 race.startTime = () => {
   return db.select("select data->>'startTimes' as times from race;").then(result => {
-    if (_.isNumber(_.toInteger(result[0].times.block1))) {
-      return JSON.parse(result[0].times);
+    if (result[0].times) { //simplify those if's TODO
+      let times = JSON.parse(result[0].times);
+      if (_.isNumber(_.toInteger(times.block1))) {
+        return times;
+      }
+      throw new Error(`StartTime.block1 not set or not a valid number: ${times.block1}`);
     }
-    throw new Error(`StartTime.block1 not set or not a valid number: ${result[0].times.block1}`);
+    throw new Error(`No start time information`);
+  });
+};
+
+race.startTimesAsHHMM = () => {
+  return race.startTime().then(times => {
+   return {
+     block1: `${moment(times.block1, 'X').hour()}:${moment(times.block1, 'X').minute()}`,
+     block2: `${moment(times.block2, 'X').hour()}:${moment(times.block2, 'X').minute()}`
+    };
   });
 };
 
@@ -26,7 +39,7 @@ race.setStartTime = (times) => {
 
 race.hasStarted = () => { //rename to something different?
   return db.select("SELECT data->'startTimes'->>'block1' as block1 FROM race;")
-    .then(result =>  !_.isEmpty(result[0].block1));
+    .then(result => !_.isEmpty(result[0].block1));
 };
 
 race.resetStarttime = () => {

@@ -110,7 +110,4 @@ describe('registration service', () => {
         .catch(done.fail);
     });
   });
-
-  
-
 });

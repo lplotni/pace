@@ -43,9 +43,9 @@ participants.publiclyVisible = () => {
 };
 
 participants.save = (participant) => {
-  return db.insert('INSERT INTO participants ' +
-    '(firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, couponcode) ' +
-    'values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning id',
+  return db.insert(`INSERT INTO participants
+                  (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, couponcode)
+                  values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id`,
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -57,6 +57,7 @@ participants.save = (participant) => {
       participant.paymentToken,
       participant.secureID,
       participant.start_number,
+      participant.start_block,
       participant.couponcode]
   );
 };

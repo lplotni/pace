@@ -57,6 +57,10 @@ participant.from = (body) => {
    return p.with({secureID: id});
   };
   
+  p.withStartBlock = (block) => {
+   return p.with({start_block: block});
+  };
+  
   return p;
 };
 

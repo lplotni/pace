@@ -29,7 +29,7 @@ describe('participants service', () => {
     discount: 'free',
     team: 'Crazy runners',
     couponcode: 'Free2016'
-  }).withToken(paymentToken).withSecureId(secureId);
+  }).withToken(paymentToken).withSecureId(secureId).withStartBlock(1);
 
   const aSecondParticipant = participant.from({
     firstname: 'Michel',
@@ -93,6 +93,7 @@ describe('participants service', () => {
         expect(data[0].discount).toBe(aParticipant.discount);
         expect(data[0].team).toBe(aParticipant.team);
         expect(data[0].couponcode).toBe(aParticipant.couponcode);
+        expect(data[0].start_block).toBe(aParticipant.start_block);
         done();
       })
       .catch(done.fail);

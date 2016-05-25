@@ -70,6 +70,11 @@ function sendConfirmationMail(participant, paymentToken) {
     }
   );
 }
+
+registration.choseStartBlock = (startNumber) => {
+  return startNumber < 1001 ? 1 : 2;
+};
+
 registration.start = (participant) => {
   const deferred = Q.defer();
   var resultPromise = couponcodes.validateCode(participant.couponcode, participant.discount);
@@ -80,7 +85,8 @@ registration.start = (participant) => {
           let p = participant
             .withToken(paymentToken)
             .withSecureId(editUrlHelper.generateSecureID())
-            .withStartNr(nr);
+            .withStartNr(nr)
+            .withStartBlock(registration.choseStartBlock(nr));
           participants.save(p)
             .then(id => {
               if (!_.isEmpty(p.tshirt)) {

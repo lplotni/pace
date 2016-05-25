@@ -13,11 +13,7 @@ describe('registration service', () => {
     const secureId = 'secureId';
 
     beforeAll(() => {
-      mockery.enable({
-        useCleanCache: true,
-        warnOnReplace: false,
-        warnOnUnregistered: false
-      });
+      mockery.enable({useCleanCache: true, warnOnReplace: false, warnOnUnregistered: false});
 
       mockery.resetCache();
 
@@ -68,7 +64,7 @@ describe('registration service', () => {
       mockery.registerMock('..../service/util/mails', mailsMock);
       mockery.registerMock('../service/tokens', tokensMock);
 
-      mockery.registerAllowables(['q','lodash','../domain/costCalculator','../../service/registration']);
+      mockery.registerAllowables(['q', 'lodash', '../domain/costCalculator', '../../service/registration']);
 
       registration = require('../../service/registration');
 
@@ -110,6 +106,20 @@ describe('registration service', () => {
           done();
         })
         .catch(done.fail);
+    });
+  });
+
+  describe('choseStartBlock', () => {
+    let registration = require('../../service/registration');
+
+    it('returns 1 for nr < 1001', () => {
+      expect(registration.choseStartBlock(1)).toBe(1);
+      expect(registration.choseStartBlock(1000)).toBe(1);
+    });
+
+    it('returns 2 for nr > 1000', () => {
+      expect(registration.choseStartBlock(1001)).toBe(2);
+      expect(registration.choseStartBlock(10000)).toBe(2);
     });
   });
 

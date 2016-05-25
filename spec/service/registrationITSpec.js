@@ -78,6 +78,7 @@ describe('registration', () => {
           expect(participant.paymentToken).toBe(result.token);
           expect(participant.secureID).toBe(result.secureid);
           expect(participant.start_number).toBe(result.startnr);
+          expect(participant.start_block).toBeDefined();
 
           expect(participants.markPayed).not.toHaveBeenCalled();
 

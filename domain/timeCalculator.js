@@ -13,16 +13,19 @@ timeCalculator.timestamp = (startTime, timestring) => {
   return timestamp.unix();
 };
 
-timeCalculator.getCorrectStartTime = (startTimes, startNumber) => {
-  if (startNumber < 1001) {
+timeCalculator.getCorrectStartTime = (startTimes, block) => {
+  if (block === 1) {
     return startTimes.block1;
   }
-  return startTimes.block2;
+  if (block === 2) {
+    return startTimes.block2;
+  }
+  throw new Error(`Block not recognized: ${block}`);
 };
 
-timeCalculator.relativeTime = (startTimes, finishTime, startNumber) => {
+timeCalculator.relativeTime = (startTimes, finishTime, block) => {
   const relativeTime = moment.duration(
-    finishTime - timeCalculator.getCorrectStartTime(startTimes, startNumber), 'seconds');
+    finishTime - timeCalculator.getCorrectStartTime(startTimes, block), 'seconds');
   return [relativeTime.hours(), relativeTime.minutes(), relativeTime.seconds()];
 };
 

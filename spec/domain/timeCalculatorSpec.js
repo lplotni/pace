@@ -25,7 +25,7 @@ describe('timeCalculator service', () => {
     it('uses correct block start time', () => {
       let finishTime = _.cloneDeep(now).add(45, 'm').unix();
       
-      let result = timeCalculator.relativeTime(startTimes, finishTime, 1001);
+      let result = timeCalculator.relativeTime(startTimes, finishTime, 2);
 
       expect(result[0]).toBe(0);
       expect(result[1]).toBe(15);
@@ -35,20 +35,12 @@ describe('timeCalculator service', () => {
 
   describe('getCorrectStartTime', () => {
 
-    it('returns correct block start time for #1', () => {
+    it('returns correct block start time for block 1', () => {
       expect(timeCalculator.getCorrectStartTime(startTimes, 1)).toBe(startTimes.block1);
     });
 
-    it('returns correct block start time for #1000', () => {
-      expect(timeCalculator.getCorrectStartTime(startTimes, 1000)).toBe(startTimes.block1);
-    });
-
-    it('returns correct block start time for #1001', () => {
-      expect(timeCalculator.getCorrectStartTime(startTimes, 1001)).toBe(startTimes.block2);
-    });
-
-    it('returns correct block start time for #2001', () => {
-      expect(timeCalculator.getCorrectStartTime(startTimes, 2001)).toBe(startTimes.block2);
+    it('returns correct block start time for block 2', () => {
+      expect(timeCalculator.getCorrectStartTime(startTimes, 2)).toBe(startTimes.block2);
     });
   });
 });

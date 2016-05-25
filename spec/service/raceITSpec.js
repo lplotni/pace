@@ -82,7 +82,7 @@ describe('race service', () => {
         block2: Date.parse(new Date())
       };
       
-      participants.save(aParticipant.withStartNr(nr))
+      participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
         .then(() => race.setStartTime(startTimes))
         .then(() => participants.insertTime(nr, time))
         .then(() => race.results('Unicorn', 1970, 1990))

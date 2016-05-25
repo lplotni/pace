@@ -79,7 +79,7 @@ function queryFor(category) {
 race.results = (category, agegroup_start, agegroup_end) => {
   const deferred = Q.defer();
 
-  let query = `select id,firstname,lastname,team,start_number,time,visibility from participants 
+  let query = `select id,firstname,lastname,team,start_number,start_block,time,visibility from participants 
                where visibility='yes' and time > 0 
                ${queryFor(category)} 
                and birthyear >= ${agegroup_start} 
@@ -92,7 +92,7 @@ race.results = (category, agegroup_start, agegroup_end) => {
       race.startTime()
         .then(startTimes => {
           _.forEach(result, participant => {
-            let time = timeCalculator.relativeTime(startTimes, participant.time, participant.start_number);
+            let time = timeCalculator.relativeTime(startTimes, participant.time, participant.start_block);
             participant.place = place++;
             participant.timestring = time[0] + ':' + time[1] + ':' + time[2];
           });

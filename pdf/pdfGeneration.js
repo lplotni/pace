@@ -81,7 +81,7 @@ pdfGeneration.createCertificatePage = (doc,participant) => {
           deferred.reject();
         } else {
           race.startTime().then( (starttime) => { 
-              let timearray = timeCalculator.relativeTime(starttime,time);
+              let timearray = timeCalculator.relativeTime(starttime,time, participant.start_block);
               doc.image(__dirname + pathToCertificateBackgroundImage, {fit: [595, 842]});
               doc.fontSize(30).fillColor('black').text(participant.firstname.substring(0, 30)+' '+ participant.lastname.substring(0, 30), 0, 365, {align: 'center'});
               doc.fontSize(25).fillColor('black').text(participant.team.substring(0, 60), 0, 400, {align: 'center'});

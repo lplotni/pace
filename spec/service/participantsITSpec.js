@@ -377,9 +377,9 @@ describe('participants service', () => {
     it('should return the rank of a participant with given start number', (done) => {
       let time = '10:32:32';
       let nr = startNr++;
-      participants.save(aParticipant.withStartNr(nr))
+      participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
         .then((participantid) => {
-          race.setStartTime(Date.parse(new Date()))
+          race.setStartTime({block1: Date.parse(new Date()), block2: Date.parse(new Date())})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.rank(nr))
             .then((rank) => {
@@ -392,9 +392,9 @@ describe('participants service', () => {
     it('should return the rank of a participant with given start number only for the participants category', (done) => {
       let time = '10:32:32';
       let nr = startNr++;
-      participants.save(aParticipant.withStartNr(nr))
+      participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
         .then((participantid) => {
-          race.setStartTime(Date.parse(new Date()))
+          race.setStartTime({block1: Date.parse(new Date()), block2: Date.parse(new Date())})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.rankByCategory(nr))
             .then((rank) => {

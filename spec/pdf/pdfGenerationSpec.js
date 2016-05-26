@@ -74,8 +74,8 @@ describe('pdfGeneration', () => {
     mockery.registerMock('qr-image', qrCodeMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
-    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', start_number: 1};
-    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', start_number: 2};
+    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', start_number: 1, start_block: 1};
+    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', start_number: 2, start_block: 1};
     participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
     participantsMock.byStartnumber.and.returnValue(Q.fcall(() => confirmedParticipant));

@@ -173,6 +173,22 @@ describe('participants service', () => {
     });
   });
 
+  describe('byStartnumber()', () => {
+    it('should return all information of the participant with given Startnumber', (done) => {
+      let number = startNr++;
+      participants.save(aParticipant.withStartNr(number))
+        .then(function (participantId) {
+          participants.byStartnumber(number)
+            .then(function (participant) {
+              expectOnParticipantFields(participant, participantId);
+              done();
+            })
+            .catch(done.fail);
+        });
+    });
+  });
+
+
   describe('byToken()', () => {
     it('should return participant\'s lastname and firstname and ordered tshirt for a given token', (done) => {
       participants.save(aParticipantWithTshirt.withStartNr(startNr++))
@@ -357,6 +373,39 @@ describe('participants service', () => {
 
   });
 
+  describe('rank', () => {
+    it('should return the rank of a participant with given start number', (done) => {
+      let time = '10:32:32';
+      let nr = startNr++;
+      participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
+        .then((participantid) => {
+          race.setStartTime({block1: Date.parse(new Date()), block2: Date.parse(new Date())})
+            .then(() => participants.insertTime(nr, time))
+            .then(() => participants.rank(nr))
+            .then((rank) => {
+              expect(rank).toBe('1');
+              done();
+            })
+            .catch(done.fail);
+        });
+    });
+    it('should return the rank of a participant with given start number only for the participants category', (done) => {
+      let time = '10:32:32';
+      let nr = startNr++;
+      participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
+        .then((participantid) => {
+          race.setStartTime({block1: Date.parse(new Date()), block2: Date.parse(new Date())})
+            .then(() => participants.insertTime(nr, time))
+            .then(() => participants.rankByCategory(nr))
+            .then((rank) => {
+              expect(rank).toBe('1');
+              done();
+            })
+            .catch(done.fail);
+        });
+    });
+  });
+ 
   describe('bulkmail()', () => {
     it('should send the correct email to every participant', (done) => {
       spyOn(mails, 'sendEmail');

@@ -11,11 +11,14 @@ const participants = require('../service/participants');
 const tshirts = require('../service/tshirts');
 const barcode = require("rescode");
 const editUrlHelper = require('../domain/editUrlHelper');
+const timeCalculator = require('../domain/timeCalculator');
+const race = require('../service/race');
 
 let pdfGeneration = {};
 
 const fileName = 'start_numbers.pdf';
 const pathToBackgroundImage = '/images/background_light.jpg';
+const pathToCertificateBackgroundImage = '/images/certificate_background.jpg';
 const pathToLogoLeft = '/images/lauf_gegen_rechts_logo.jpg';
 const pathToLogoRight = '/images/fc_st_pauli_marathon_logo.png';
 const checkmarkSymbolSvg = 'M7.375,25 c0,0,10,11.375,14.125,11.375S44.875,8,44.875,8';
@@ -69,6 +72,32 @@ pdfGeneration.createStartNumberPage = (doc, participant) => {
 
   doc.addPage();
 };
+
+pdfGeneration.createCertificatePage = (doc,participant) => {
+  const deferred = Q.defer();
+  participants.rankByCategory(participant.start_number).then (category_rank => {
+    participants.rank(participant.start_number).then (rank => {
+      participants.getTime(participant.start_number).then(time => {
+        if (_.isNull(time)) { 
+          deferred.reject();
+        } else {
+          race.startTime().then( (starttime) => { 
+              let timearray = timeCalculator.relativeTime(starttime,time, participant.start_block);
+              doc.image(__dirname + pathToCertificateBackgroundImage, {fit: [595, 842]});
+              doc.fontSize(30).fillColor('black').text(participant.firstname.substring(0, 30)+' '+ participant.lastname.substring(0, 30), 0, 365, {align: 'center'});
+              doc.fontSize(25).fillColor('black').text(participant.team.substring(0, 60), 0, 400, {align: 'center'});
+              doc.fontSize(30).fillColor('black').text(timearray[0]+':'+timearray[1]+':'+timearray[2], 0, 487, {align: 'center'});
+              doc.fontSize(30).fillColor('black').text(rank, 0, 558, {align: 'center'});
+              doc.fontSize(30).fillColor('black').text(category_rank, 0, 628, {align: 'center'});
+              deferred.resolve();
+          });
+        };
+      });
+    });
+  });
+  return deferred.promise;
+};
+
 
 pdfGeneration.fillDocument = (doc, participants) => {
   participants = _.orderBy(participants, ['start_number']);
@@ -126,6 +155,24 @@ pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
   return deferred.promise;
 };
 
+pdfGeneration.generateCertificateDownload = (res, doc, startnumber) => {
+  const deferred = Q.defer();
+  participants.byStartnumber(startnumber).then( participant => {
+    pdfGeneration.createCertificatePage(doc, participant)
+      .then(() => {
+        res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Access-Control-Allow-Origin': '*',
+        'Content-Disposition': 'attachment; filename=' + 'urkunde.pdf'
+        });
+        doc.pipe(res);
+        doc.end();
+        deferred.resolve(doc);
+      }).catch(deferred.reject);
+  }).catch(deferred.reject);
+  return deferred.promise;
+};
+
 pdfGeneration.generateRegistered = (res) => {
   let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
   return pdfGeneration.generateStartNumbers(res, doc);
@@ -136,4 +183,8 @@ pdfGeneration.generateOnSite = (res) => {
   return pdfGeneration.generateOnSiteStartNumbers(res, doc);
 };
 
+pdfGeneration.generateCertificate = (res,startnumber) => {
+  let doc = new PDFDocument({size: 'A4', margin: 0});
+  return pdfGeneration.generateCertificateDownload(res, doc, startnumber);
+};
 module.exports = pdfGeneration;

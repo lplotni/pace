@@ -9,7 +9,7 @@ const config = require('config');
 
 describe('pdfGeneration', () => {
 
-  let pdfGeneration, res, participantsMock, documentMock, tshirtsMock, qrCodeMock;
+  let pdfGeneration, res, participantsMock, documentMock, tshirtsMock, qrCodeMock, raceMock;
   let confirmedParticipant;
 
   beforeEach(() => {
@@ -47,7 +47,12 @@ describe('pdfGeneration', () => {
       confirmed: jasmine.createSpy('confirmed'),
       registered: jasmine.createSpy('registered'),
       saveBlanc: jasmine.createSpy('saveBlanc'),
-      blancParticipants: jasmine.createSpy('blancParticipants')
+      byId: jasmine.createSpy('byId'),
+      byStartnumber: jasmine.createSpy('byStartnumber'),
+      getTime: jasmine.createSpy('getTime'),
+      blancParticipants: jasmine.createSpy('blancParticipants'),
+      rank: jasmine.createSpy('rank'),
+      rankByCategory: jasmine.createSpy('rankByCategory')
     };
 
     tshirtsMock = {
@@ -59,16 +64,26 @@ describe('pdfGeneration', () => {
       path: jasmine.createSpy('path')
     };
 
+    raceMock = {
+      startTime: jasmine.createSpy('startTime')
+    };
+
     mockery.registerMock('../service/participants', participantsMock);
     mockery.registerMock('../service/tshirts', tshirtsMock);
+    mockery.registerMock('../service/race', raceMock);
     mockery.registerMock('qr-image', qrCodeMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
-    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', start_number: 1};
-    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', start_block: 1, start_number: 2};
+    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', start_number: 1, start_block: 1};
+    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', start_number: 2, start_block: 1};
     participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
+    participantsMock.byStartnumber.and.returnValue(Q.fcall(() => confirmedParticipant));
+    participantsMock.getTime.and.returnValue(Q.fcall(() => 10000));
+    participantsMock.rank.and.returnValue(Q.fcall(() => 1));
+    participantsMock.rankByCategory.and.returnValue(Q.fcall(() => 1));
     qrCodeMock.path.and.returnValue('some qr code path');
+    raceMock.startTime.and.returnValue(Q.fcall(() => 101));
   });
 
   afterAll(() => {
@@ -153,6 +168,7 @@ describe('pdfGeneration', () => {
         done();
       });
     });
+    
     it('should add the startblock', (done) => {
       pdfGeneration.generateStartNumbers(res, documentMock).then( () => {
         expect(documentMock.text).toHaveBeenCalledWith('Startblock: 1', 20, 150, {align: 'left'});
@@ -228,6 +244,16 @@ describe('pdfGeneration', () => {
       });
     });
 
+  });
+
+  describe('generateCertificate', () => {
+    it('should generate one certificate', (done) => {
+      pdfGeneration.generateCertificateDownload(res, documentMock, '1').then( () => {
+        expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte Person', 0, 365, {align: 'center'});
+        //expect(documentMock.text).toHaveBeenCalledWith('2:44:59', 0, 487, {align: 'center'});
+        done();
+      });
+    });
   });
 
 });

@@ -65,7 +65,7 @@ describe('pdfGeneration', () => {
     pdfGeneration = require('../../pdf/pdfGeneration');
 
     confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', start_number: 1};
-    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', start_number: 2};
+    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', start_block: 1, start_number: 2};
     participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
     qrCodeMock.path.and.returnValue('some qr code path');
@@ -153,6 +153,12 @@ describe('pdfGeneration', () => {
         done();
       });
     });
+    it('should add the startblock', (done) => {
+      pdfGeneration.generateStartNumbers(res, documentMock).then( () => {
+        expect(documentMock.text).toHaveBeenCalledWith('Startblock: 1', 20, 150, {align: 'left'});
+        done();
+      });
+    });
 
   });
 
@@ -167,8 +173,8 @@ describe('pdfGeneration', () => {
 
       pdfGeneration.fillDocument(documentMock, unsortedParticipants);
       expect(documentMock.text.calls.argsFor(1)[0]).toBe('First');
-      expect(documentMock.text.calls.argsFor(4)[0]).toBe('Second');
-      expect(documentMock.text.calls.argsFor(7)[0]).toBe('Third');
+      expect(documentMock.text.calls.argsFor(5)[0]).toBe('Second');
+      expect(documentMock.text.calls.argsFor(9)[0]).toBe('Third');
     });
 
   });

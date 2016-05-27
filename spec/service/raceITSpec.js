@@ -75,11 +75,11 @@ describe('race service', () => {
 
 
     it('should show the first', (done) => {
-      let time = '10:32:32';
+      let time = '10:32:02';
       let nr = 1;
       let startTimes = {
-        block1: Date.parse(new Date()),
-        block2: Date.parse(new Date())
+        block1: Date.parse(new Date('May 29, 2016 10:00:00')),
+        block2: Date.parse(new Date('May 29, 2016 10:20:00'))
       };
       
       participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
@@ -88,6 +88,7 @@ describe('race service', () => {
         .then(() => race.results('Unicorn', 1970, 1990))
         .then((result) => {
           expect(result.length).toBe(1);
+          expect(result[0].timestring).toBe('00:32:02');
           done();
         })
         .catch(done.fail);

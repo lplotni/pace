@@ -5,8 +5,8 @@
 const moment = require('moment');
 let timeCalculator = {};
 
-timeCalculator.timestamp = (startTime, timestring) => {
-  let timestamp = moment(startTime.block1, 'X');
+timeCalculator.timestamp = (startTimes, timestring) => {
+  let timestamp = moment(startTimes.block1, 'X');
   timestamp.hours(timestring.split(':')[0]);
   timestamp.minutes(timestring.split(':')[1]);
   timestamp.seconds(timestring.split(':')[2]);
@@ -28,5 +28,11 @@ timeCalculator.relativeTime = (startTimes, finishTime, block) => {
     finishTime - timeCalculator.getCorrectStartTime(startTimes, block), 'seconds');
   return [relativeTime.hours(), relativeTime.minutes(), relativeTime.seconds()];
 };
+timeCalculator.relativeSeconds = (startTimes, finishTime, block) => {
+  const relativeTime = moment.duration(
+    finishTime - timeCalculator.getCorrectStartTime(startTimes, block), 'seconds');
+  return relativeTime.asSeconds();
+};
+
 
 module.exports = timeCalculator;

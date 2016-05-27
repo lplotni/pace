@@ -337,11 +337,12 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          race.setStartTime({block1: Date.parse(new Date()), block2: Date.parse(new Date())})
+          race.setStartTime({block1: Date.parse(new Date('May 29, 2016 10:00:00')), block2: Date.parse(new Date('May 29, 2016 10:20:00'))})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.byId(participantid))
             .then((participant) => {
               expect(participant.time).toBeGreaterThan(1460401097);
+              expect(participant.seconds).toBe('1952');
               done();
             })
             .catch(done.fail);

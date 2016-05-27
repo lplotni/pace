@@ -200,16 +200,17 @@ participants.markPayed = (participantId) => {
     });
 };
 
-function updateTime(startnumber, finishtime) {
-  return participants.getTime(startnumber)
-    .then(old_time => {
-      if ((finishtime < old_time) || _.isEmpty(old_time)) {
-        return db.update('update participants set time=$2 where start_number=$1', [startnumber, finishtime]);
+function updateTime(startnumber, finishtime,startTimes) {
+  return participants.byStartnumber(startnumber)
+    .then(participant => {
+      let seconds = timeCalculator.relativeSeconds(startTimes,finishtime,participant.start_block)
+      if ((finishtime < participant.time ) || _.isEmpty(participant.time)) {
+        return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [startnumber, finishtime, seconds]);
       }
     });
 }
 participants.insertTime = (startnumber, timestring) => {
-  return race.startTime().then((startTimes) => updateTime(startnumber, timeCalculator.timestamp(startTimes, timestring)));
+  return race.startTime().then((startTimes) => updateTime(startnumber, timeCalculator.timestamp(startTimes, timestring),startTimes));
 };
 
 participants.getTime = (startnumber) => {

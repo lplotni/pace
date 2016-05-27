@@ -41,15 +41,13 @@ describe('race service', () => {
   });
 
   it('returns also formated HH:MM startTimes', (done) => {
-    let block1 = moment();
-    let block2 = moment().add(30, 'm');
 
-    const startTimes = [ { times: `{"block1": ${block1.unix()}, "block2": ${block2.unix()}}` } ];
+    const startTimes = [ { times: `{"block1": 36000, "block2": 37200}` } ];
     dbMock.select.and.returnValue(Q.fcall(() => startTimes));
 
     race.startTimesAsHHMM().then(formattedTimed => {
-      expect(formattedTimed.block1).toBe(block1.format('hh:mm'));
-      expect(formattedTimed.block2).toBe(block2.format('hh:mm'));
+      expect(formattedTimed.block1).toBe('10:00');
+      expect(formattedTimed.block2).toBe('10:20');
       done();
     }).catch(done.fail);
   });

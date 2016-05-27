@@ -4,6 +4,7 @@
 /* global describe, beforeEach, afterAll, spyOn, it, expect, fail */
 
 const _ = require('lodash');
+const moment = require('moment');
 
 describe('participants service', () => {
 
@@ -337,11 +338,11 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          race.setStartTime({block1: Date.parse(new Date('May 29, 2016 10:00:00')), block2: Date.parse(new Date('May 29, 2016 10:20:00'))})
+          race.setStartTime({block1: moment.duration('10:00:00').asSeconds(), block2: moment.duration('10:20:10').asSeconds()})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.byId(participantid))
             .then((participant) => {
-              expect(participant.time).toBeGreaterThan(1460401097);
+              expect(participant.time).toBe('37952');
               expect(participant.seconds).toBe('1952');
               done();
             })
@@ -355,7 +356,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          race.setStartTime({block1: Date.parse(new Date()), block2: Date.parse(new Date())})
+          race.setStartTime({block1: 36000, block2: 37200})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.byId(participantid))
             .then((participant) => {
@@ -380,7 +381,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
         .then((participantid) => {
-          race.setStartTime({block1: Date.parse(new Date()), block2: Date.parse(new Date())})
+          race.setStartTime({block1: 36000, block2: 37200})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.rank(nr))
             .then((rank) => {
@@ -395,7 +396,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
         .then((participantid) => {
-          race.setStartTime({block1: Date.parse(new Date()), block2: Date.parse(new Date())})
+          race.setStartTime({block1: 36000, block2: 37200})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.rankByCategory(nr))
             .then((rank) => {

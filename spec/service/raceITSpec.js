@@ -5,6 +5,7 @@
 
 describe('race service', () => {
 
+  const moment = require('moment');
   const helper = require('../journeyHelper');
   const race = require('../../service/race');
   const participant = require('../../domain/participant');
@@ -30,8 +31,8 @@ describe('race service', () => {
 
   it('should return true if the race has started', (done) => {
     let startTimes = {
-      block1: Date.parse(new Date()),
-      block2: Date.parse(new Date())
+      block1: 36000,
+      block2: 37200
     };
 
     race.setStartTime(startTimes)
@@ -45,10 +46,9 @@ describe('race service', () => {
 
   it('should store and read race start times', (done) => {
     let startTimes = {
-      block1: Date.parse(new Date()),
-      block2: Date.parse(new Date())
+      block1: 36000,
+      block2: 37200
     };
-
     race.setStartTime(startTimes)
       .then(race.startTime)
       .then((result) => {
@@ -78,8 +78,8 @@ describe('race service', () => {
       let time = '10:32:02';
       let nr = 1;
       let startTimes = {
-        block1: Date.parse(new Date('May 29, 2016 10:00:00')),
-        block2: Date.parse(new Date('May 29, 2016 10:20:00'))
+        block1: 36000,
+        block2: 37200
       };
       
       participants.save(aParticipant.withStartNr(nr).withStartBlock(1))

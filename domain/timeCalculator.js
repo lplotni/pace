@@ -5,12 +5,13 @@
 const moment = require('moment');
 let timeCalculator = {};
 
-timeCalculator.timestamp = (startTimes, timestring) => {
-  let timestamp = moment(startTimes.block1, 'X');
-  timestamp.hours(timestring.split(':')[0]);
-  timestamp.minutes(timestring.split(':')[1]);
-  timestamp.seconds(timestring.split(':')[2]);
-  return timestamp.unix();
+timeCalculator.timestamp = (timestring) => {
+  let timestamp = moment.duration({
+    hours: timestring.split(':')[0],
+    minutes: timestring.split(':')[1],
+    seconds: timestring.split(':')[2]
+  });
+  return timestamp.asSeconds();
 };
 
 timeCalculator.getCorrectStartTime = (startTimes, block) => {

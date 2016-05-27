@@ -16,12 +16,12 @@ router.get('/', isAuthenticated, (req, res) => {
         race.startTime()
           .then((times) => {
             res.render('admin/after', {
-              hours1: moment(times.block1, 'X').hours(),  //TODO -> Extract to a proper object
-              minutes1: moment(times.block1, 'X').minutes(),
-              seconds1: moment(times.block1, 'X').seconds(),
-              hours2: moment(times.block2, 'X').hours(),
-              minutes2: moment(times.block2, 'X').minutes(),
-              seconds2: moment(times.block2, 'X').seconds(),
+              hours1: moment.duration(times.block1, 'seconds').hours(),  //TODO -> Extract to a proper object
+              minutes1: moment.duration(times.block1, 'seconds').minutes(),
+              seconds1: moment.duration(times.block1, 'seconds').seconds(),
+              hours2: moment.duration(times.block2, 'seconds').hours(),
+              minutes2: moment.duration(times.block2, 'seconds').minutes(),
+              seconds2: moment.duration(times.block2, 'seconds').seconds(),
               isAdmin: true,
               csrf: req.csrfToken()
             });
@@ -33,17 +33,9 @@ router.get('/', isAuthenticated, (req, res) => {
 });
 
 function extractTimes(req) { //TODO pull into the 'proper' object
-  let time1 = moment();
-  time1.hours(req.body.hours1);
-  time1.minutes(req.body.minutes1);
-  time1.seconds(req.body.seconds1);
-
-  let time2 = moment();
-  time2.hours(req.body.hours2);
-  time2.minutes(req.body.minutes2);
-  time2.seconds(req.body.seconds2);
-
-  return {block1: time1.unix(), block2: time2.unix()};
+  let time1 = moment.duration({seconds: req.body.seconds1, minutes: req.body.minutes1, hours: req.body.hours1}).asSeconds();
+  let time2 = moment.duration({seconds: req.body.seconds2, minutes: req.body.minutes2, hours: req.body.hours2}).asSeconds();
+  return {block1: time1, block2: time2};
 }
 
 router.post('/', (req, res) => {

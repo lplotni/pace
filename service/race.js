@@ -28,8 +28,8 @@ race.startTime = () => {
 race.startTimesAsHHMM = () => {
   return race.startTime().then(times => {
    return {
-     block1: moment(times.block1, 'X').format('hh:mm'),
-     block2: moment(times.block2, 'X').format('hh:mm')
+     block1: moment.duration(times.block1,'seconds').format("hh:mm", { trim: false}),
+     block2: moment.duration(times.block2,'seconds').format("hh:mm", { trim: false}),
     };
   });
 };

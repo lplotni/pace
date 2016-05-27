@@ -224,9 +224,9 @@ participants.insertTime = (startnumber, timestring) => {
 
 participants.getTime = (startnumber) => {
   const deferred = Q.defer();
-  db.select('select time from participants where start_number=$1', [startnumber])
+  db.select('select seconds from participants where start_number=$1', [startnumber])
     .then((result) => {
-      deferred.resolve(result[0].time);
+      deferred.resolve(result[0].seconds);
     })
     .catch(deferred.reject);
   return deferred.promise;
@@ -234,7 +234,7 @@ participants.getTime = (startnumber) => {
 
 participants.rank = (startnumber) => {
   const deferred = Q.defer();
-  db.select("select pos from (select time,start_number,rank() over (order by time) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
+  db.select("select pos from (select seconds,start_number,rank() over (order by seconds) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
     .then((result) => {
       deferred.resolve(result[0].pos);
     })
@@ -243,7 +243,7 @@ participants.rank = (startnumber) => {
 };
 participants.rankByCategory = (startnumber) => {
   const deferred = Q.defer();
-  db.select("select pos from (select time,start_number,rank() over (partition by category order by time) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
+  db.select("select pos from (select seconds,start_number,rank() over (partition by category order by seconds) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
     .then((result) => {
       deferred.resolve(result[0].pos);
     })

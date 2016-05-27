@@ -203,7 +203,7 @@ participants.markPayed = (participantId) => {
 function updateTime(startnumber, finishtime,startTimes) {
   return participants.byStartnumber(startnumber)
     .then(participant => {
-      let seconds = timeCalculator.relativeSeconds(startTimes,finishtime,participant.start_block)
+      let seconds = timeCalculator.relativeSeconds(startTimes,finishtime,participant.start_block);
       if ((finishtime < participant.time ) || _.isEmpty(participant.time)) {
         return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [startnumber, finishtime, seconds]);
       }

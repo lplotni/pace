@@ -83,7 +83,6 @@ pdfGeneration.createCertificatePage = (doc,participant) => {
         if (_.isNull(time)) { 
           deferred.reject();
         } else {
-          race.startTime().then( (starttime) => { 
               let timestring = moment.duration(_.toNumber(participant.seconds),'seconds').format("hh:mm:ss", { trim: false});
               doc.image(__dirname + pathToCertificateBackgroundImage, {fit: [595, 842]});
               doc.fontSize(30).fillColor('black').text(participant.firstname.substring(0, 30)+' '+ participant.lastname.substring(0, 30), 0, 365, {align: 'center'});
@@ -92,7 +91,6 @@ pdfGeneration.createCertificatePage = (doc,participant) => {
               doc.fontSize(30).fillColor('black').text(rank, 0, 558, {align: 'center'});
               doc.fontSize(30).fillColor('black').text(category_rank, 0, 628, {align: 'center'});
               deferred.resolve();
-          });
         };
       });
     });

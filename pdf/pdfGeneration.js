@@ -7,6 +7,8 @@ const qr = require('qr-image');
 const _ = require('lodash');
 const Q = require('q');
 const config = require('config');
+const moment = require('moment');
+require("moment-duration-format");
 const participants = require('../service/participants');
 const tshirts = require('../service/tshirts');
 const barcode = require("rescode");
@@ -82,11 +84,11 @@ pdfGeneration.createCertificatePage = (doc,participant) => {
           deferred.reject();
         } else {
           race.startTime().then( (starttime) => { 
-              let timearray = timeCalculator.relativeTime(starttime,time, participant.start_block);
+              let timestring = moment.duration(_.toNumber(participant.seconds),'seconds').format("hh:mm:ss", { trim: false});
               doc.image(__dirname + pathToCertificateBackgroundImage, {fit: [595, 842]});
               doc.fontSize(30).fillColor('black').text(participant.firstname.substring(0, 30)+' '+ participant.lastname.substring(0, 30), 0, 365, {align: 'center'});
               doc.fontSize(25).fillColor('black').text(participant.team.substring(0, 60), 0, 400, {align: 'center'});
-              doc.fontSize(30).fillColor('black').text(timearray[0]+':'+timearray[1]+':'+timearray[2], 0, 487, {align: 'center'});
+              doc.fontSize(30).fillColor('black').text(timestring, 0, 487, {align: 'center'});
               doc.fontSize(30).fillColor('black').text(rank, 0, 558, {align: 'center'});
               doc.fontSize(30).fillColor('black').text(category_rank, 0, 628, {align: 'center'});
               deferred.resolve();

@@ -74,8 +74,8 @@ describe('pdfGeneration', () => {
     mockery.registerMock('qr-image', qrCodeMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
-    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', start_number: 1, start_block: 1};
-    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', start_number: 2, start_block: 1};
+    confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', seconds: '1922', start_number: 1, start_block: 1};
+    const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', seconds: '1823', start_number: 2, start_block: 1};
     participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
     participantsMock.byStartnumber.and.returnValue(Q.fcall(() => confirmedParticipant));
@@ -250,7 +250,7 @@ describe('pdfGeneration', () => {
     it('should generate one certificate', (done) => {
       pdfGeneration.generateCertificateDownload(res, documentMock, '1').then( () => {
         expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte Person', 0, 365, {align: 'center'});
-        //expect(documentMock.text).toHaveBeenCalledWith('2:44:59', 0, 487, {align: 'center'});
+        expect(documentMock.text).toHaveBeenCalledWith('00:32:02', 0, 487, {align: 'center'});
         done();
       });
     });

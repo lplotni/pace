@@ -29,20 +29,14 @@ let addAmountTo = (participants) => {
 
 
 router.get('/', isAuthenticated, (req, res) => {
-  participants.confirmed().then(result => {
-    let allParticipants = result;
-    participants.registered().then(result => {
-      allParticipants = allParticipants.concat(result);
-      addEditUrlTo(allParticipants);
-      Q.all(allParticipants.map(tshirts.findAndAddTo))
-        .then(() => {
-            addAmountTo(allParticipants);
-            res.render('admin/list', {participants: allParticipants});
-          }
-        );
-    });
+  participants.all().then(allParticipants => {
+    addEditUrlTo(allParticipants);
+    Q.all(allParticipants.map(tshirts.findAndAddTo))
+      .then(() => {
+          addAmountTo(allParticipants);
+          res.render('admin/list', {participants: allParticipants});
+      });
   });
-
 });
 
 module.exports = router;

@@ -36,6 +36,9 @@ participants.blancParticipants = () => {
   return db.select('select * from participants where is_on_site_registration = true');
 };
 
+participants.all = () => {
+  return db.select('select * from participants');
+};
 participants.publiclyVisible = () => {
   return participants.confirmed().then(confirmed =>
     _.filter(confirmed, p => p.visibility === 'yes')

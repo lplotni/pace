@@ -39,15 +39,17 @@ block content
             th Nachname
             th Team name
             th Zeit
+            th Urkunde
         tbody
           each p in list
             tr.participant-line
               td=p.place
-              td
-                a(href='/certificate/'+p.start_number) #{p.start_number}
+              td=p.start_number
               td=p.firstname
               td=p.lastname
               td=p.team
               td=p.timestring
+              td
+                a(href='/certificate/'+p.start_number) PDF Download
       script(src='/javascript/searchAndSort.js')
 

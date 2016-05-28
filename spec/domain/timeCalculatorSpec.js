@@ -22,6 +22,12 @@ describe('timeCalculator service', () => {
       expect(result[2]).toBe(29);
     });
 
+    it('returns relative seconds', () => {
+      let finishTime = _.cloneDeep(now).add(31, 'm').add(29, 's').unix();
+      let result = timeCalculator.relativeSeconds(startTimes, finishTime, 1);
+      expect(result).toBe(1889);
+    });
+
     it('uses correct block start time', () => {
       let finishTime = _.cloneDeep(now).add(45, 'm').unix();
       

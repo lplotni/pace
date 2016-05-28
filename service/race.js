@@ -6,6 +6,7 @@ const db = require('../service/util/dbHelper');
 const _ = require('lodash');
 const Q = require('q');
 const moment = require('moment');
+require("moment-duration-format");
 const csv = require('fast-csv');
 const timeCalculator = require('../domain/timeCalculator');
 
@@ -27,8 +28,8 @@ race.startTime = () => {
 race.startTimesAsHHMM = () => {
   return race.startTime().then(times => {
    return {
-     block1: moment(times.block1, 'X').format('hh:mm'),
-     block2: moment(times.block2, 'X').format('hh:mm')
+     block1: moment.duration(times.block1,'seconds').format("hh:mm", { trim: false}),
+     block2: moment.duration(times.block2,'seconds').format("hh:mm", { trim: false}),
     };
   });
 };
@@ -79,12 +80,12 @@ function queryFor(category) {
 race.results = (category, agegroup_start, agegroup_end) => {
   const deferred = Q.defer();
 
-  let query = `select id,firstname,lastname,team,start_number,start_block,time,visibility from participants 
+  let query = `select id,firstname,lastname,team,start_number,start_block,seconds,visibility from participants 
                where visibility='yes' and time > 0 
                ${queryFor(category)} 
                and birthyear >= ${agegroup_start} 
                and birthyear <= ${agegroup_end} 
-               order by time`;
+               order by seconds`;
 
   db.select(query)
     .then((result) => {
@@ -92,9 +93,8 @@ race.results = (category, agegroup_start, agegroup_end) => {
       race.startTime()
         .then(startTimes => {
           _.forEach(result, participant => {
-            let time = timeCalculator.relativeTime(startTimes, participant.time, participant.start_block);
+            participant.timestring = moment.duration(_.toNumber(participant.seconds),'seconds').format("hh:mm:ss", { trim: false} );
             participant.place = place++;
-            participant.timestring = time[0] + ':' + time[1] + ':' + time[2];
           });
           deferred.resolve(result);
         }).catch(deferred.reject);

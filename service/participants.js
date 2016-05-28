@@ -117,7 +117,7 @@ participants.delete = (participantid) => {
 };
 
 participants.update = (participant, id) => {
-  return db.update(`UPDATE participants SET 
+    return db.update(`UPDATE participants SET 
                     (firstname, lastname, email, category, birthyear, team, visibility, start_block) =
                     ($1, $2, $3, $4, $5, $6, $7, $8) 
                     WHERE secureid = $9`,
@@ -129,7 +129,14 @@ participants.update = (participant, id) => {
      participant.team,
      participant.visibility,
      participant.start_block,
-     id]);
+     id])
+    .then((participant) => {
+      participants.bySecureId(id).then( saved_participant => {
+        if (saved_participant.time > 0) {
+          updateTime(saved_participant.start_number,saved_participant.time);
+        }
+      });
+    });
 };
 
 participants.byToken = (paymentToken) => {
@@ -201,22 +208,25 @@ participants.markPayed = (participantId) => {
 };
 
 function updateTime(startnumber, finishtime) {
-  return participants.getTime(startnumber)
-    .then(old_time => {
-      if ((finishtime < old_time) || _.isEmpty(old_time)) {
-        return db.update('update participants set time=$2 where start_number=$1', [startnumber, finishtime]);
-      }
+  return participants.byStartnumber(startnumber)
+    .then(participant => {
+      return race.startTime().then((startTimes) => {
+        let seconds = timeCalculator.relativeSeconds(startTimes,finishtime,participant.start_block);
+        if ((finishtime <= participant.time ) || _.isEmpty(participant.time)) {
+          return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [startnumber, finishtime, seconds]);
+        }
+      });
     });
 }
 participants.insertTime = (startnumber, timestring) => {
-  return race.startTime().then((startTimes) => updateTime(startnumber, timeCalculator.timestamp(startTimes, timestring)));
+  return updateTime(startnumber, timeCalculator.timestamp(timestring));
 };
 
 participants.getTime = (startnumber) => {
   const deferred = Q.defer();
-  db.select('select time from participants where start_number=$1', [startnumber])
+  db.select('select seconds from participants where start_number=$1', [startnumber])
     .then((result) => {
-      deferred.resolve(result[0].time);
+      deferred.resolve(result[0].seconds);
     })
     .catch(deferred.reject);
   return deferred.promise;
@@ -224,7 +234,7 @@ participants.getTime = (startnumber) => {
 
 participants.rank = (startnumber) => {
   const deferred = Q.defer();
-  db.select("select pos from (select time,start_number,rank() over (order by time) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
+  db.select("select pos from (select seconds,start_number,rank() over (order by seconds) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
     .then((result) => {
       deferred.resolve(result[0].pos);
     })
@@ -233,7 +243,7 @@ participants.rank = (startnumber) => {
 };
 participants.rankByCategory = (startnumber) => {
   const deferred = Q.defer();
-  db.select("select pos from (select time,start_number,rank() over (partition by category order by time) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
+  db.select("select pos from (select seconds,start_number,rank() over (partition by category order by seconds) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
     .then((result) => {
       deferred.resolve(result[0].pos);
     })

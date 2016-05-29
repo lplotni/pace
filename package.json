@@ -10,7 +10,7 @@
     "body-parser": "~1.15.1",
     "config": "^1.20.3",
     "connect-flash": "~0.1.1 ",
-    "cookie-parser": "~1.4.2",
+    "cookie-parser": "~1.4.3",
     "cryptico": "~1.0.2",
     "csurf": "^1.9.0",
     "db-migrate": "~0.9.25",

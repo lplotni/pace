@@ -51,7 +51,7 @@
     "mockery": "^1.7.0",
     "selenium-standalone": "^5.1.0",
     "wdio-jasmine-framework": "^0.1.9",
-    "webdriverio": "3.4.0",
+    "webdriverio": "4.0.8",
     "yargs": "^4.7.1"
   }
 }

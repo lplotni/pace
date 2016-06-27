@@ -11,19 +11,16 @@ const participants = require('../service/participants');
 const participant = {};
 
 
-function invalidData(body) {
-  return _.isUndefined(body.email) || 
-    !validator.isEmail(body.email) ||
-    _.isUndefined(body.firstname) ||
-    _.isUndefined(body.lastname) ||
-    _.isUndefined(body.email) ||
-    _.isUndefined(body.category) ||
-    _.isUndefined(body.visibility) ||
-    _.isUndefined(body.birthyear);
-}
+participant.invalidData = (body) => {
+  if (_.isEmpty(body.email) || _.isUndefined(body.email)) {
+    return _.isUndefined(body.category) || _.isUndefined(body.visibility) ;
+  } else {
+    return !validator.isEmail(body.email) || _.isUndefined(body.category) || _.isUndefined(body.visibility) ;
+  }
+};
 
 participant.from = (body) => {
-  if (invalidData(body)) {
+  if (participant.invalidData(body)) {
     throw new TypeError('Required attributes are not present');
   }
 
@@ -35,7 +32,7 @@ participant.from = (body) => {
     discount: _.isUndefined(body.discount) ? 'no' : body.discount,
     couponcode: body.couponcode,
     category: body.category,
-    birthyear: body.birthyear,
+    birthyear: _.isInteger(body.birthyear) ? body.birthyear : '0',
     team: body.team,
     tshirt: tshirt.from(body),
     start_block: body.startBlock

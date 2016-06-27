@@ -19,3 +19,9 @@ h3 Hey #{name}!
   h5 Du kannst deine persönlichen Angaben unter folgendem Link* ändern:&nbsp;
     a#editurl(href=editUrl) Angaben ändern
     div * Dieser Link gibt Einsicht in persönliche Daten und sollte nicht weitergegeben werden.
+
+  if email == ''
+    h5(style={color: 'red'})#no-email Du hast keine Email-Adresse angegeben. Bitte speichere den Link wirklich gut. 
+    | Wir haben keine Moeglichkeit dich zu kontaktieren und der Link ist der einzige Weg
+    | deine Daten zu bearbeiten.
+     

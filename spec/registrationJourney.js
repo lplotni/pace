@@ -75,6 +75,36 @@ describe('registration journey', () => {
       .end(done);
   });
 
+  it('allows to register without giving too much information', (done) => {
+    client.url(helper.paceUrl)
+      .click('a#registration')
+      .isVisible('form#registrationForm')
+      .selectByValue('select#category', 'f')
+      .selectByIndex('select#visibility', 1)
+      .click('button#submit')
+      .isVisible('div.thanks')
+      .then((isVisible) => {
+        expect(isVisible).toBe(true);
+      })
+      .isVisible('a#editurl')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .isVisible('h5#no-email')
+      .then((isVisible) => {
+        expect(isVisible).toBe(true);
+      })
+      .getText('span.amount')
+      .then((amount) => {
+        expect(amount).toMatch(/10.00/);
+      })
+      .getText('span.startNumber')
+      .then((number) => {
+        expect(number).toMatch(/d*/);
+      })
+      .end(done);
+  });
+
   it('shows a message when the registration is closed', (done) => {
     registration.close().then(() => {
       client.url(helper.paceUrl)

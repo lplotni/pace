@@ -49,32 +49,8 @@ describe('participant', () => {
       expect(participant.from(body).firstname).toBe('Mark');
     });
 
-    it('should throw an error if no firstname can be found', () => {
-      function callWithNoFirstname() {
-        participant.from(_.omit(body, 'firstname'));
-      }
-
-      expect(callWithNoFirstname).toThrow();
-    });
-
-    it('should throw an error if no lastname can be found', () => {
-      function callWithNoLastname() {
-        participant.from(_.omit(body, 'lastname'));
-      }
-
-      expect(callWithNoLastname).toThrow();
-    });
-
     it('should extract lastname from the request body', () => {
       expect(participant.from(body).lastname).toBe('Mueller');
-    });
-
-    it('should throw an error if no email can be found', () => {
-      function callWithNoEmail() {
-        participant.from(_.omit(body, 'email'));
-      }
-
-      expect(callWithNoEmail).toThrow();
     });
 
     it('should throw an error if email format is invalid', () => {
@@ -103,14 +79,6 @@ describe('participant', () => {
 
     it('should extract team name form the request body', () => {
       expect(participant.from(body).team).toBe('Crazy runners');
-    });
-
-    it('should throw an error if no birthyear can be found', () => {
-      function callWithNoBirthyear() {
-        participant.from(_.omit(body, 'birthyear'));
-      }
-
-      expect(callWithNoBirthyear).toThrow();
     });
 
     it('should extract birthyear form the request body', () => {
@@ -178,4 +146,17 @@ describe('participant', () => {
     });
 
   });
+  describe('anonymous registration', () => {
+
+    const almost_empty_body = {
+      category: 'Unicorn',
+      visibility: 'public',
+      email: '',
+    };
+
+    it('should handle almost empty body', () => {
+      expect(participant.invalidData(almost_empty_body)).toBe(false);
+    });
+  });
+
 });

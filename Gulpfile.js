@@ -104,14 +104,12 @@ gulp.task('test-functional', function () {
     server.close(done);
   }
 
-  express().then((server) => {
-    startSelenium().then((selenium) => {
-      testFunctional(argv.single).then(() => {
-        cleanUp(selenium, server, deferred.resolve);
-      }).fail((e) => {
-        gutil.log(e);
-        cleanUp(selenium, server, deferred.reject);
-      });
+  startSelenium().then((selenium) => {
+    testFunctional(argv.single).then(() => {
+      cleanUp(selenium, server, deferred.resolve);
+    }).fail((e) => {
+      gutil.log(e);
+      cleanUp(selenium, server, deferred.reject);
     });
   });
 });

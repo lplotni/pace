@@ -1,13 +1,20 @@
 db:  
   image: postgres
+  ports:
+    - "5432:5432"
+  environment:
+    - POSTGRES_USER=pgtester
+    - POSTGRES_PASSWORD=pgtester
+    - POSTGRES_DB=pace
+redis:
+  image: redis
 pace-app:  
   build: .
   ports:
     - "3000:3000"
   links:
     - db
+    - redis
   environment:
-    - DATABASE_URL=postgres://db:5432/postgres
-    - PGHOST=db
-    - PGDATABASE=postgres
-    - PGUSER=postgres
+    - DATABASE_URL=postgres://pgtester:pgtester@db/pace
+    - REDISHOST=redis

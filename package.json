@@ -7,7 +7,7 @@
     "test": "gulp test && gulp test-integration && gulp test-functional"
   },
   "dependencies": {
-    "body-parser": "~1.15.1",
+    "body-parser": "~1.15.2",
     "config": "^1.21.0",
     "connect-flash": "~0.1.1 ",
     "cookie-parser": "~1.4.3",

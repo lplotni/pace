@@ -1,9 +1,9 @@
 # pace
 
-[![Join the chat at https://gitter.im/lplotni/pace](https://badges.gitter.im/lplotni/pace.svg)](https://gitter.im/lplotni/pace?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Pace is a registration and management application for running events and competitions.
 
 [![Build Status](https://snap-ci.com/lplotni/pace/branch/master/build_image)](https://snap-ci.com/lplotni/pace/branch/master)
+[![Join the chat at https://gitter.im/lplotni/pace](https://badges.gitter.im/lplotni/pace.svg)](https://gitter.im/lplotni/pace?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Features
 The list of our issues/features can be found on our [trello board](https://trello.com/b/1gaDEa3O/pace-board).

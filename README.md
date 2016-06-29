@@ -40,6 +40,9 @@ For **integration** tests: `gulp test-integration`
 
 For **functional** tests: `gulp test-functional` (install **selenium** if needed: `gulp selenium-install`)
 
+To execute just a single spec, just pass `--single=/path/to/yourSpec.js` as
+additional argument.
+
 #### Running jshint
 Here you go: `gulp lint`
 

@@ -26,15 +26,6 @@ function express() {
   return deferred.promise;
 }
 
-function vagrant() {
-  let deferred = Q.defer();
-  let task = shell.task('cd postgres; vagrant up')();
-  task.on('end', deferred.resolve);
-  task.on('error', deferred.reject);
-
-  return deferred.promise;
-}
-
 function createdb() {
   if (argv.ci) {
     gutil.log('Adding -e ci');
@@ -125,7 +116,7 @@ gulp.task('test-functional', function () {
   });
 });
 
-gulp.task('create-db', createdb);
+gulp.task('create-pace-db', createdb);
 
 gulp.task('lint', () => {
   return gulp.src(['app.js', './spec/**/*.js', './service/**/*.js', './routes/**/*.js', './domain/**/*.js'])
@@ -136,15 +127,4 @@ gulp.task('lint', () => {
 
 gulp.task('default', ['express']);
 
-gulp.task('database', () => {
-  let deferred = Q.defer();
-  vagrant().then(() => {
-    let task = createdb();
-    task.on('end', deferred.resolve);
-    task.on('error', deferred.reject);
-  }).fail(deferred.reject);
-
-  return deferred.promise;
-});
-
-gulp.task('dev-setup', ['database', 'selenium-install']);
+gulp.task('start-db', shell.task(["docker run -p 5432:5432 -d --name 'pace-postgres' -e POSTGRES_PASSWORD='pgtester' -e POSTGRES_DB='pace' -e POSTGRES_USER='pgtester' postgres"]));

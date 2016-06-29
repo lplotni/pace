@@ -5,5 +5,5 @@ Vagrant.configure("2") do |config|
   config.vm.box = "wegtam/db-tester"
   config.vm.network :forwarded_port, guest: 5432, host: 5432
   config.vm.provision "shell",
-      inline: "su vagrant -c 'psql postgresql://pgtester:pgtester@localhost/postgres -c \"create database pace with owner=pgtester;\"'"
+      inline: "su vagrant -c 'psql postgresql://sa:vagrant@localhost/postgres -c \"create database pace with owner=sa;\"'"
 end

@@ -1,5 +1,5 @@
 {
-  "dev": "postgres://pgtester:pgtester@localhost/pace",
+  "dev": "postgres://sa:vagrant@localhost/pace",
   "ci": {"ENV": "DATABASE_URL"},
   "prod": {"ENV": "DATABASE_URL"}
 }

@@ -1,6 +1,7 @@
 /* jshint node: true */
 /* jshint esnext: true */
 'use strict';
+const _ = require('lodash');
 const nodemailer = require('nodemailer');
 const sendmailTransport = require('nodemailer-sendmail-transport');
 const config = require('config');
@@ -20,18 +21,20 @@ service.sendStatusEmail = (participant, subject, pugfile) => {
 };
 
 service.sendEmail = (address, subject, text, error) => {
-  if (error) {
-    console.error(error);
-  } else {
-    let transporter = service._nodemailer.createTransport(sendmailTransport({
-      path: '/usr/sbin/sendmail'
-    }));
-    transporter.sendMail({
-      from: config.get('contact.email'),
-      to: address,
-      subject: subject,
-      html: text
-    });
+  if  (!_.isEmpty(address)) {
+    if (error) {
+      console.error(error);
+    } else {
+      let transporter = service._nodemailer.createTransport(sendmailTransport({
+        path: '/usr/sbin/sendmail'
+      }));
+      transporter.sendMail({
+        from: config.get('contact.email'),
+        to: address,
+        subject: subject,
+        html: text
+      });
+    }
   }
 };
 

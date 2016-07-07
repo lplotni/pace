@@ -3,10 +3,10 @@ form#editParticipantForm(method='POST', action=formAction)
   .row
     .six.columns.padding
       label(for='firstname') Vorname:
-      input#firstname.u-full-width(type='text', name='firstname', required=true, value=participant.firstname)
+      input#firstname.u-full-width(type='text', name='firstname', value=participant.firstname)
     .six.columns.padding
       label(for='lastname') Nachname:
-      input#lastname.u-full-width(type='text', name='lastname', required=true, value=participant.lastname)
+      input#lastname.u-full-width(type='text', name='lastname', value=participant.lastname)
   .row
     .twelve.columns.padding
       label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
@@ -16,11 +16,11 @@ form#editParticipantForm(method='POST', action=formAction)
   .row
     .twelve.columns.padding
       label(for='birthyear') Geburtsjahr:
-      input#birthyear.u-full-width(type='number', name='birthyear', required=true, value=participant.birthyear)
+      input#birthyear.u-full-width(type='number', name='birthyear', value=participant.birthyear)
   .row
     .twelve.columns.padding
       label(for='email') Email:
-      input#email.u-full-width(type='email', name='email', required=true, value=participant.email)
+      input#email.u-full-width(type='email', name='email', value=participant.email)
   .row
     .twelve.columns.padding
       label(for='team') Name des Teams:

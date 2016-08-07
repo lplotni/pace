@@ -20,8 +20,8 @@ router.post('/scan', (req, res) => {
     })
     .catch((err) => {
      res.setHeader('Content-Type', 'application/json');
-     res.status(400) 
-       .send(JSON.stringify({ status: 'Bad Request' }));
+     res.status(404) 
+       .send(JSON.stringify({ status: 'Not Found' }));
    });
   } else {
      res.setHeader('Content-Type', 'application/json');

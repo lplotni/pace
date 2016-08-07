@@ -4,7 +4,7 @@
 const crypto = require('crypto');
 const config = require('config');
 
-const editUrlHelper = () => {
+const editUrlHelper = (() => {
 
   return {
     generateUrl: (value) => {
@@ -17,6 +17,6 @@ const editUrlHelper = () => {
       return crypto.randomBytes(32).toString('hex');
     }
   };
-}();
+})();
 
 module.exports = editUrlHelper;

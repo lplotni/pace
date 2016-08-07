@@ -28,7 +28,8 @@
   },
   "admin": {
     "username": "admin",
-    "password": "Blanch4rdst0wn"
+    "password": "Blanch4rdst0wn",
+    "token": "HeiYohhoo6quoh5"
   },
   "pace-url": "http://localhost:3000",
   "metrics": false,

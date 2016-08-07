@@ -136,7 +136,7 @@ participants.update = (participant, id) => {
     .then((participant) => {
       participants.bySecureId(id).then( saved_participant => {
         if (saved_participant.time > 0) {
-          updateTime(saved_participant.start_number,saved_participant.time);
+          participants.updateTime(saved_participant.start_number,saved_participant.time);
         }
       });
     });
@@ -210,7 +210,7 @@ participants.markPayed = (participantId) => {
     });
 };
 
-function updateTime(startnumber, finishtime) {
+participants.updateTime = (startnumber, finishtime) => {
   return participants.byStartnumber(startnumber)
     .then(participant => {
       return race.startTime().then((startTimes) => {
@@ -220,9 +220,10 @@ function updateTime(startnumber, finishtime) {
         }
       });
     });
-}
+};
+
 participants.insertTime = (startnumber, timestring) => {
-  return updateTime(startnumber, timeCalculator.timestamp(timestring));
+  return participants.updateTime(startnumber, timeCalculator.timestamp(timestring));
 };
 
 participants.getTime = (startnumber) => {

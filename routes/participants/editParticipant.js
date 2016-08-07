@@ -12,7 +12,7 @@ router.get('/:secureId', (req, res) => {
   const participantId = req.params.secureId;
   race.startTimesAsHHMM().then(startTimes => {
     participants.bySecureId(participantId)
-      .then(p => res.render('admin/participants/editParticipant', {participant: p, participantid: participantId, times: startTimes}))
+      .then(p => res.render('participants/editParticipant', {participant: p, participantid: participantId, times: startTimes}))
       .catch(() =>
         res.render('error', {
           message: "Teilnehmer nicht bekannt",

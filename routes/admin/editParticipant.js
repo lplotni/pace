@@ -7,11 +7,9 @@ const participants = require('../../service/participants');
 const race = require('../../service/race');
 const participant = require('../../domain/participant');
 const editUrlHelper = require('../../domain/editUrlHelper');
-const accesscontrol = require('../../acl/accesscontrol');
+const isAdmin = require('../../acl/authentication');
 
-let canDeleteUser = (role) => accesscontrol.hasPermissionTo(role, 'delete');
-
-router.get('/:secureId', (req, res) => {
+router.get('/:secureId', isAdmin, (req, res) => {
   const participantId = req.params.secureId;
   race.startTimesAsHHMM().then(startTimes => {
     participants.bySecureId(participantId)
@@ -25,7 +23,7 @@ router.get('/:secureId', (req, res) => {
   });
 });
 
-router.post('/', (req, res) => {
+router.post('/', isAdmin, (req, res) => {
   participants.update(participant.from(req.body), req.body.participantid)
     .then(() => res.render('participants/success', {name: req.body.firstname + ' ' + req.body.lastname}))
     .catch(() => res.render('error', {
@@ -34,22 +32,13 @@ router.post('/', (req, res) => {
     }));
 });
 
-router.post('/delete', (req, res) => {
-  if (canDeleteUser(req.user.role)) {
+router.post('/delete', isAdmin, (req, res) => {
     participants.delete(req.body.participantid)
       .then(() => res.redirect('/admin/participants'))
       .catch(() => res.render('error', {
         message: "Es ist ein Fehler aufgetreten",
         error: {status: "Bitte versuche es nochmal"}
       }));
-  } else {
-    res.render('error', {
-      message: 'Bitte anmelden',
-      error: {
-        status: 'Nur Administratoren können diese Seite einsehen'
-      }
-    });
-  }
 
 });
 

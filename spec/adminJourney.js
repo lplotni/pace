@@ -157,6 +157,17 @@ describe('admin page', () => {
     });
   });
 
+  it('should redirect to login page when an unauthenticated user requests admin edit page', (done) => {
+    givenAValidUserExists().then(() => {
+      helper.setUpClient().url(helper.paceUrl + 'admin/editparticipant/secureIdForTheEditLink')
+        .isVisible('form#loginForm')
+        .then(function (isVisible) {
+          expect(isVisible).toBe(true);
+        })
+        .end(done);
+    });
+  });
+
   it('should be able to define the start time of 2 blocks', (done) => {
     loginAdmin().url(helper.paceUrl + 'admin')
       .click('a#after')
@@ -200,4 +211,6 @@ describe('admin page', () => {
         expect(value).toBe('13');
       }).end(done);
   });
+
+
 });

@@ -409,7 +409,7 @@ describe('participants service', () => {
           expect(data.records[0].start_number).toBe(participantToBeFilteredByTeam.start_number);
           done();
         })
-        .catch(done.fail)
+        .catch(done.fail);
     });
   });
 

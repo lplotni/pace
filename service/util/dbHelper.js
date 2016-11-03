@@ -51,7 +51,7 @@ db.selectForDataTables = (queries, search, modifier) => {
         records: data[2],
       };
     }
-  )
+  );
 };
 
 db.delete = (querystring, params) => db.select(querystring, params);

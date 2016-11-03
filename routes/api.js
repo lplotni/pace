@@ -38,8 +38,8 @@ router.get('/participants', (req, res) => {
   const start = parseInt(req.query.start);
   const length = parseInt(req.query.length);
   const search = req.query.search.value;
-  const orderIndex = req.query.order[0]['column'];
-  const orderText = req.query.columns[orderIndex]['data'] + ' ' + req.query.order[0]['dir'];
+  const orderIndex = req.query.order[0].column;
+  const orderText = req.query.columns[orderIndex].data + ' ' + req.query.order[0].dir;
   participants.publiclyVisibleF(start, length, search, orderText)
     .then((result) => {
       const ret = {
@@ -87,8 +87,8 @@ router.get('/results', (req, res) => {
   const start = parseInt(req.query.start);
   const length = parseInt(req.query.length);
   const search = req.query.search.value;
-  const orderIndex = req.query.order[0]['column'];
-  const orderText = req.query.columns[orderIndex]['data'] + ' ' + req.query.order[0]['dir'];
+  const orderIndex = req.query.order[0].column;
+  const orderText = req.query.columns[orderIndex].data + ' ' + req.query.order[0].dir;
 
   let ageGroups = extractAgeGroup(req);
   

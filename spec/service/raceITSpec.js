@@ -137,7 +137,7 @@ describe('race service', () => {
           expect(result.records[0].team).toBe('Crazy runners');
           done();
         })
-        .catch(done.fail)
+        .catch(done.fail);
     });
   });
 

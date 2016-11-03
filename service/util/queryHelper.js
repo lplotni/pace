@@ -6,7 +6,7 @@ let queryHelper = {};
 
 queryHelper.select = (table, select = '*') => {
   return new Query('SELECT ' + select + ' FROM ' + table);
-}
+};
 
 queryHelper.dataTablesQueries = (tableInfo) => {
   const totalQuery = queryHelper
@@ -25,8 +25,8 @@ queryHelper.dataTablesQueries = (tableInfo) => {
     totalQuery: totalQuery,
     filterQuery: totalQuery.where(whereForSearch),
     pagedQuery: pagedQuery,
-  }
-}
+  };
+};
 
 class Query {
   constructor(query, hasWhere = false) {
@@ -35,7 +35,7 @@ class Query {
   }
 
   orderBy(orderBy) {
-    if (orderBy.match(/^([a-zA-Z_][a-zA-Z0-9_]*)( *,? *([a-zA-Z_][a-zA-Z0-9_]*))*$/) == null) {
+    if (orderBy.match(/^([a-zA-Z_][a-zA-Z0-9_]*)( *,? *([a-zA-Z_][a-zA-Z0-9_]*))*$/) === null) {
       throw TypeError('order by contains invalid characters');
     }
     // assert regex for order by just letters and xxx

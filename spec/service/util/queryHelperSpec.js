@@ -35,7 +35,10 @@ describe('queryHelper', () => {
     it('should limit a query by specified bounds', () => {
         const q = queryHelper
             .select('T')
-            .limit({offset: 10, length: 15})
+            .limit({
+                offset: 10,
+                length: 15
+            })
             .build();
         expect(q).toEqual('SELECT * FROM T LIMIT 15 OFFSET 10');
     });
@@ -45,8 +48,8 @@ describe('queryHelper', () => {
         const q1 = parent.orderBy('A').build();
         const q2 = parent.orderBy('B').build();
 
-        expect(q1).toEqual('SELECT * FROM T ORDER BY A');        
-        expect(q2).toEqual('SELECT * FROM T ORDER BY B');        
+        expect(q1).toEqual('SELECT * FROM T ORDER BY A');
+        expect(q2).toEqual('SELECT * FROM T ORDER BY B');
     });
 
     it('should combine where conditions with an AND', () => {
@@ -59,19 +62,20 @@ describe('queryHelper', () => {
     });
 
     it('should fail with sql injection order by', () => {
-       const q = function() {
-           queryHelper
-            .select('T')
-            .orderBy('; DELETE T;--')
-            .build();
-       }
-       expect(q).toThrowError(TypeError); 
+        const q = function () {
+            queryHelper
+                .select('T')
+                .orderBy('; DELETE T;--')
+                .build();
+        };
+        expect(q).toThrowError(TypeError);
     });
 
     it('should fail with sql injection limit', () => {
-        const q = function() { queryHelper
-            .select('T')
-            .limit('; DELETE T', 10) 
+        const q = function () {
+            queryHelper
+                .select('T')
+                .limit('; DELETE T', 10);
         };
 
         expect(q).toThrowError(TypeError);
@@ -84,7 +88,10 @@ describe('queryHelper', () => {
             baseFilter: 'X = Y AND B != C',
             filterColumns: ['FIRSTNAME', 'LASTNAME', 'TEAM'],
             searchParamName: '$1',
-            paging: {offset: 5, length: 10},
+            paging: {
+                offset: 5,
+                length: 10
+            },
             select: 'X, Y, Z',
             ordering: 'FIRSTNAME ASC',
         });
@@ -93,12 +100,12 @@ describe('queryHelper', () => {
         const pagedQ = q.pagedQuery.build();
 
         expect(totalQ).toEqual('SELECT COUNT(ID) FROM A WHERE (X = Y AND B != C)');
-        expect(filterQ).toEqual('SELECT COUNT(ID) FROM A WHERE (X = Y AND B != C)'
-          + ' AND (FIRSTNAME LIKE $1 OR LASTNAME LIKE $1 OR TEAM LIKE $1)');
-        expect(pagedQ).toEqual('SELECT X, Y, Z FROM A WHERE (X = Y AND B != C)'
-          + ' AND (FIRSTNAME LIKE $1 OR LASTNAME LIKE $1 OR TEAM LIKE $1)'
-          + ' ORDER BY FIRSTNAME ASC'
-          + ' LIMIT 10 OFFSET 5');
+        expect(filterQ).toEqual('SELECT COUNT(ID) FROM A WHERE (X = Y AND B != C)' +
+            ' AND (FIRSTNAME LIKE $1 OR LASTNAME LIKE $1 OR TEAM LIKE $1)');
+        expect(pagedQ).toEqual('SELECT X, Y, Z FROM A WHERE (X = Y AND B != C)' +
+            ' AND (FIRSTNAME LIKE $1 OR LASTNAME LIKE $1 OR TEAM LIKE $1)' +
+            ' ORDER BY FIRSTNAME ASC' +
+            ' LIMIT 10 OFFSET 5');
     });
 
 });

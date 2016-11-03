@@ -13,7 +13,10 @@ block content
   script.
     $(document).ready(function () {
       $('table').DataTable({
-        language: dataTableLanguage, 
+        language: dataTableLanguage,
+        createdRow: function (row, data, index) {
+          $(row).addClass('participant-line');
+        },
         ajax: '/api/participants',
         columns: [
           { data: 'start_number' },

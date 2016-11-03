@@ -30,6 +30,30 @@ db.select = (querystring, params) => {
   return deferred.promise;
 };
 
+db.selectForDataTables = (queries, search, modifier) => {
+  const allRecords = db.select(queries.totalQuery.build());
+  const lsearch = search + '%';
+  const filteredRecords = db.select(queries.filterQuery.build(), [lsearch]);
+  const pagedSelect = db.select(queries.pagedQuery.build(), [lsearch]);
+
+  let deferredPageSelect = Q.defer();
+  if(modifier) {
+    pagedSelect.then(result => modifier(result, deferredPageSelect)).catch(deferredPageSelect.reject);
+  } else {
+    deferredPageSelect = {promise: pagedSelect};
+  }
+
+  return Q.all([allRecords, filteredRecords, deferredPageSelect.promise]).then((data) => {
+      return {
+        // TODO: is there a better parseInt? safe parseInt?
+        numberOfAllRecords: parseInt(data[0][0].count),
+        numberOfRecordsAfterFilter: parseInt(data[1][0].count),
+        records: data[2],
+      };
+    }
+  )
+};
+
 db.delete = (querystring, params) => db.select(querystring, params);
 
 db.insert = (insertString, params) => {

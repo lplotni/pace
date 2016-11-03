@@ -72,28 +72,73 @@ describe('race service', () => {
       team: 'Crazy runners',
       couponcode: 'Free2016'
     }).withToken('someToken').withSecureId('someCrazySecureId');
+    const aParticipantWithDifferentAge = participant.from(aParticipant)
+      .with({
+        birthyear: 1987
+      })
+      .withToken('sectoken 1')
+      .withStartBlock(1)
+      .withStartNr(10);
+    const aParticipantWithDifferentCategory = participant.from(aParticipant)
+      .with({
+        category: 'Horse'
+      })
+      .withToken('sectoken 2')
+      .withStartBlock(1)
+      .withStartNr(11);
+    const aParticipantWithDifferentTeam = participant.from(aParticipant)
+      .with({
+        team: 'Team 4711'
+      })
+      .withToken('sectoken 3')
+      .withStartBlock(1)
+      .withStartNr(12);
 
-
-    it('should show the first', (done) => {
+    beforeAll((done) => {
       let time = '10:32:02';
       let nr = 1;
       let startTimes = {
         block1: 36000,
         block2: 37200
       };
-      
       participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
         .then(() => race.setStartTime(startTimes))
         .then(() => participants.insertTime(nr, time))
-        .then(() => race.results('Unicorn', 1970, 1990))
+        .then(() => participants.save(aParticipantWithDifferentAge))
+        .then(() => participants.insertTime(aParticipantWithDifferentAge.start_number,
+          '10:33:00'))
+        .then(() => participants.save(aParticipantWithDifferentCategory))
+        .then(() => participants.insertTime(aParticipantWithDifferentCategory.start_number,
+          '10:34:00'))
+        .then(() => participants.save(aParticipantWithDifferentTeam))
+        .then(() => participants.insertTime(aParticipantWithDifferentTeam.start_number,
+          '10:35:00'))
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('should show the first', (done) => {
+      race.results('Unicorn', 1970, 1990)
         .then((result) => {
-          expect(result.length).toBe(1);
+          expect(result.length).toBe(3);
           expect(result[0].timestring).toBe('00:32:02');
           done();
         })
         .catch(done.fail);
     });
+
+    it('should show the first and filter for DataTables', (done) => {
+      race.resultsForDataTables(0, 2, 'Crazy runn', 'START_NUMBER ASC', 'Unicorn', 1975,
+          1985)
+        .then((result) => {
+          expect(result.numberOfAllRecords).toBe(2);
+          expect(result.numberOfRecordsAfterFilter).toBe(1);
+          expect(result.records[0].firstname).toBe('Hertha');
+          expect(result.records[0].team).toBe('Crazy runners');
+          done();
+        })
+        .catch(done.fail)
+    });
   });
 
-})
-;
+});

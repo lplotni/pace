@@ -45,7 +45,6 @@ db.selectForDataTables = (queries, search, modifier) => {
 
   return Q.all([allRecords, filteredRecords, deferredPageSelect.promise]).then((data) => {
       return {
-        // TODO: is there a better parseInt? safe parseInt?
         numberOfAllRecords: parseInt(data[0][0].count),
         numberOfRecordsAfterFilter: parseInt(data[1][0].count),
         records: data[2],

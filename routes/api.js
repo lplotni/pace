@@ -44,17 +44,19 @@ router.get('/participants', (req, res) => {
     .then((result) => {
       const ret = {
         draw: drawNum,
-        recordsTotal: result[0][0].count,
-        recordsFiltered: result[1][0].count,
-        data: result[2],
+        recordsTotal: result.numberOfAllRecords,
+        recordsFiltered: result.numberOfRecordsAfterFilter,
+        data: result.records,
       };
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(ret));
     })
     .catch((err) => {
-     res.setHeader('Content-Type', 'application/json');
-     res.status(404) 
-       .send(JSON.stringify({ status: 'Not Found' }));
+      console.log(err);
+      res.setHeader('Content-Type', 'application/json');
+      // TODO: better status here
+      res.status(404) 
+        .send(JSON.stringify({ status: 'Not Found' }));
    });
 });
 
@@ -96,18 +98,17 @@ router.get('/results', (req, res) => {
     .then((result) => {
       const ret = {
         draw: drawNum,
-        recordsTotal: result[0][0].count,
-        recordsFiltered: result[1][0].count,
-        data: result[2],
+        recordsTotal: result.numberOfAllRecords,
+        recordsFiltered: result.numberOfRecordsAfterFilter,
+        data: result.records,
       };
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(ret));
     })
     .catch((err) => {
-      console.log(err);
-     res.setHeader('Content-Type', 'application/json');
-     res.status(404) 
-       .send(JSON.stringify({ status: 'Not Found' }));
+      res.setHeader('Content-Type', 'application/json');
+      res.status(404) 
+        .send(JSON.stringify({ status: 'Not Found' }));
    });
 });
 

@@ -18,7 +18,7 @@ let useDefaultAuthentication = (req, res, next) => {
   }
 };
 
-router.get('/new', useDefaultAuthentication, (req, res) => {
+router.get('/', useDefaultAuthentication, (req, res) => {
   res.render('participants/list');
 
 });

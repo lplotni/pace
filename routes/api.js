@@ -33,20 +33,20 @@ router.post('/scan',tokenValidator, (req, res) => {
 });
 
 const extractDataTablesParams = (req) => {
-  const orderIndex = req.query.order[0].column;
+  const orderIndex = (req.query.order) ? req.query.order[0].column : 0;
   return {
     start: parseInt(req.query.start) || 0,
     length: parseInt(req.query.length) || 10,
-    search: req.query.search.value,
-    orderText: req.query.columns[orderIndex].data + ' ' + req.query.order[0].dir,
+    search: (req.query.search) ? (req.query.search.value || '') : '',
+    orderText: (req.query.order) ? req.query.columns[orderIndex].data + ' ' + req.query.order[0].dir : undefined ,
     drawNum: req.query.draw,
   }
 };
 
-const generateDataTablesResponse = (resultPromise, res) => {
+const generateDataTablesResponse = (resultPromise, drawNum, res) => {
   resultPromise.then((result) => {
       const ret = {
-        draw: params.drawNum,
+        draw: drawNum,
         recordsTotal: result.numberOfAllRecords,
         recordsFiltered: result.numberOfRecordsAfterFilter,
         data: result.records,
@@ -64,7 +64,7 @@ const generateDataTablesResponse = (resultPromise, res) => {
 router.get('/participants', (req, res) => {
   const params = extractDataTablesParams(req);
   const resultPromise = participants.forDataTables(params.start, params.length, params.search, params.orderText);
-  generateDataTablesResponse(resultPromise, res);
+  generateDataTablesResponse(resultPromise, params.drawNum, res);
 });
 
 function extractCategory(req) {
@@ -94,7 +94,7 @@ router.get('/results', (req, res) => {
   const category = extractCategory(req); 
   const resultPromise = race.resultsForDataTables(params.start, params.length, 
     params.search, params.orderText, category, ageGroups.min_year, ageGroups.max_year);
-  generateDataTablesResponse(resultPromise, res);
+  generateDataTablesResponse(resultPromise, params.drawNum, res);
 });
 
 module.exports = router;

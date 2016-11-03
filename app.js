@@ -57,7 +57,7 @@ app.use("/api", function(err, req, res, next){
   res.status(err.status || 500);
   res.send({
     message: 'Internal Error'
-  })
+  });
 });
 
 // authentication using passport needs to be initialized before the routing setup

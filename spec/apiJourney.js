@@ -1,6 +1,6 @@
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeAll, beforeEach, afterEach, it, expect */
+/* global describe, beforeAll, beforeEach, afterEach, it, expect, jasmine */
 'use strict';
 
 const pg = require('pg');
@@ -110,12 +110,12 @@ describe('api journey', () => {
               team: 'Crazy runners'
             }));
             done();
-          })
+          });
         });
     });
 
     it('should return no participants due to a non-matching filter', (done) => {
-      qs = Object.assign({}, qs, { search: { value: 'XYZ'} })
+      qs = Object.assign({}, qs, { search: { value: 'XYZ'} });
       participants.save(aParticipant)
         .then(participants.markPayed)
         .then(() => {
@@ -126,7 +126,7 @@ describe('api journey', () => {
             expect(result.recordsFiltered).toBe(0);
             expect(result.data.length).toBe(0);
             done();
-          })
+          });
         });
     });
 
@@ -136,7 +136,7 @@ describe('api journey', () => {
           request.get(url, (err,response) =>{
             expect(response.statusCode).toBe(500);
             done();
-          })
+          });
         });
     });
   });
@@ -190,13 +190,13 @@ describe('api journey', () => {
               team: 'Crazy runners'
             }));
             done();
-          })
+          });
         })
         .catch(done.fail);
     });
 
     it('should return no results due to a non-matching filter', (done) => {
-      qs = Object.assign({}, qs, { search: { value: 'XYZ'} })
+      qs = Object.assign({}, qs, { search: { value: 'XYZ'} });
       participants.save(aParticipant)
         .then(participants.markPayed)
         .then(() => race.setStartTime(startTimes))
@@ -209,7 +209,7 @@ describe('api journey', () => {
             expect(result.recordsFiltered).toBe(0);
             expect(result.data.length).toBe(0);
             done();
-          })
+          });
         });
     });
 
@@ -219,7 +219,7 @@ describe('api journey', () => {
           request.get(url, (err,response) =>{
             expect(response.statusCode).toBe(500);
             done();
-          })
+          });
         });
     });
   });

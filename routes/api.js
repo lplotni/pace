@@ -40,7 +40,7 @@ const extractDataTablesParams = (req) => {
     search: (req.query.search) ? (req.query.search.value || '') : '',
     orderText: (req.query.order) ? req.query.columns[orderIndex].data + ' ' + req.query.order[0].dir : undefined ,
     drawNum: req.query.draw,
-  }
+  };
 };
 
 const generateDataTablesResponse = (resultPromise, drawNum, res) => {

@@ -18,16 +18,8 @@ let useDefaultAuthentication = (req, res, next) => {
   }
 };
 
-router.get('/', useDefaultAuthentication, (req, res) => {
-  participants.publiclyVisible().then(result =>
-    res.render('participants/list', {
-      participants: result
-    })
-  );
-});
-
 router.get('/new', useDefaultAuthentication, (req, res) => {
-  res.render('participants/lnew');
+  res.render('participants/list');
 
 });
 

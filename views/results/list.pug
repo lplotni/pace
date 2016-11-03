@@ -11,6 +11,7 @@ block content
                 option(value='m') Herren
                 option(value='f') Damen
           .four.columns.padding
+          .four.columns.padding
             label(for='agegroup') Altersklassen
             select#agegroup.u-full-width(name='agegroup')
                 option(value='all') Gesamt
@@ -26,9 +27,6 @@ block content
                 option(value='70-74') 70-74
                 option(value='75-79') 75-79
                 option(value='80-120') 80-120
-          .four.columns.padding
-            button#submit.primary.button-primary.u-full-width.pace(type='submit') Filter
-
     .row
       table
         thead
@@ -41,15 +39,4 @@ block content
             th Zeit
             th Urkunde
         tbody
-          each p in list
-            tr.participant-line
-              td=p.place
-              td=p.start_number
-              td=p.firstname
-              td=p.lastname
-              td=p.team
-              td=p.timestring
-              td
-                a(href='/certificate/'+p.start_number) PDF Download
-      script(src='/javascript/searchAndSort.js')
-
+      script(src='/javascript/searchAndSort3.js')

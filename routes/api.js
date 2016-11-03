@@ -40,7 +40,7 @@ router.get('/participants', (req, res) => {
   const search = req.query.search.value;
   const orderIndex = req.query.order[0].column;
   const orderText = req.query.columns[orderIndex].data + ' ' + req.query.order[0].dir;
-  participants.publiclyVisibleF(start, length, search, orderText)
+  participants.forDataTables(start, length, search, orderText)
     .then((result) => {
       const ret = {
         draw: drawNum,
@@ -92,7 +92,7 @@ router.get('/results', (req, res) => {
 
   let ageGroups = extractAgeGroup(req);
   
-  race.resultsF(start, length, search, orderText, extractCategory(req), ageGroups.min_year, ageGroups.max_year)
+  race.resultsForDataTables(start, length, search, orderText, extractCategory(req), ageGroups.min_year, ageGroups.max_year)
     .then((result) => {
       const ret = {
         draw: drawNum,

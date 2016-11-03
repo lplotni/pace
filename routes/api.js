@@ -32,18 +32,21 @@ router.post('/scan',tokenValidator, (req, res) => {
    });
 });
 
-router.get('/participants', (req, res) => {
-  const drawNum = req.query.draw;
-  // TODO: parse or default!
-  const start = parseInt(req.query.start);
-  const length = parseInt(req.query.length);
-  const search = req.query.search.value;
+const extractDataTablesParams = (req) => {
   const orderIndex = req.query.order[0].column;
-  const orderText = req.query.columns[orderIndex].data + ' ' + req.query.order[0].dir;
-  participants.forDataTables(start, length, search, orderText)
-    .then((result) => {
+  return {
+    start: parseInt(req.query.start) || 0,
+    length: parseInt(req.query.length) || 10,
+    search: req.query.search.value,
+    orderText: req.query.columns[orderIndex].data + ' ' + req.query.order[0].dir,
+    drawNum: req.query.draw,
+  }
+};
+
+const generateDataTablesResponse = (resultPromise, res) => {
+  resultPromise.then((result) => {
       const ret = {
-        draw: drawNum,
+        draw: params.drawNum,
         recordsTotal: result.numberOfAllRecords,
         recordsFiltered: result.numberOfRecordsAfterFilter,
         data: result.records,
@@ -52,15 +55,18 @@ router.get('/participants', (req, res) => {
       res.send(JSON.stringify(ret));
     })
     .catch((err) => {
-      console.log(err);
       res.setHeader('Content-Type', 'application/json');
-      // TODO: better status here
       res.status(404) 
         .send(JSON.stringify({ status: 'Not Found' }));
-   });
+  });
+};
+
+router.get('/participants', (req, res) => {
+  const params = extractDataTablesParams(req);
+  const resultPromise = participants.forDataTables(params.start, params.length, params.search, params.orderText);
+  generateDataTablesResponse(resultPromise, res);
 });
 
-// TODO: cleanup
 function extractCategory(req) {
   if (!_.isEmpty(req.query.category) && validator.isIn(req.query.category, ['m', 'f', 'all'])) {
     return req.query.category;
@@ -68,7 +74,6 @@ function extractCategory(req) {
   return 'all';
 }
 
-// TODO: cleanup
 function extractAgeGroup(req) {
   const now = new Date().getFullYear();
 
@@ -84,32 +89,12 @@ function extractAgeGroup(req) {
 }
 
 router.get('/results', (req, res) => {
-  const drawNum = req.query.draw;
-  // TODO: parse or default!
-  const start = parseInt(req.query.start);
-  const length = parseInt(req.query.length);
-  const search = req.query.search.value;
-  const orderIndex = req.query.order[0].column;
-  const orderText = req.query.columns[orderIndex].data + ' ' + req.query.order[0].dir;
-
-  let ageGroups = extractAgeGroup(req);
-  
-  race.resultsForDataTables(start, length, search, orderText, extractCategory(req), ageGroups.min_year, ageGroups.max_year)
-    .then((result) => {
-      const ret = {
-        draw: drawNum,
-        recordsTotal: result.numberOfAllRecords,
-        recordsFiltered: result.numberOfRecordsAfterFilter,
-        data: result.records,
-      };
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify(ret));
-    })
-    .catch((err) => {
-      res.setHeader('Content-Type', 'application/json');
-      res.status(404) 
-        .send(JSON.stringify({ status: 'Not Found' }));
-   });
+  const params = extractDataTablesParams(req);
+  const ageGroups = extractAgeGroup(req);
+  const category = extractCategory(req); 
+  const resultPromise = race.resultsForDataTables(params.start, params.length, 
+    params.search, params.orderText, category, ageGroups.min_year, ageGroups.max_year);
+  generateDataTablesResponse(resultPromise, res);
 });
 
 module.exports = router;

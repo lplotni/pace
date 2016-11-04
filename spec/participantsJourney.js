@@ -52,6 +52,7 @@ describe('participants page', () => {
       'Anzahl T-shirts',
       'T-shirt Größen',
       'Bestätigen button',
+      'Bestätigungsmail senden button',
       'Löschen button',
       'Edit button'];
 

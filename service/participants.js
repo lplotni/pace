@@ -263,10 +263,10 @@ participants.bulkmail = () => {
   participants.confirmed().then(confirmed => {
     participants.registered().then(unconfirmed => {
       _.forEach(confirmed, participant => {
-        mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');
+        sendConfirmationMailTo(participant);
       });
       _.forEach(unconfirmed, participant => {
-        mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');
+        sendConfirmationMailTo(participant);
       });
       deferred.resolve();
     });
@@ -274,5 +274,21 @@ participants.bulkmail = () => {
 
   return deferred.promise;
 };
+
+participants.confirmationMail = (id) => {
+    const deferred = Q.defer();
+
+    participants.byId(id).then((participant) => {
+        sendConfirmationMailTo(participant);
+        deferred.resolve();
+    })
+    .fail(deferred.reject)
+
+    return deferred.promise;
+}
+
+function sendConfirmationMailTo(participant) {
+    mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');
+}
 
 module.exports = participants;

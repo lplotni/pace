@@ -11,5 +11,9 @@ before_install:
   - docker ps -a
 before_script:
   - npm install -g gulp
+  - gulp selenium-install
   - ./node_modules/db-migrate/bin/db-migrate up
-script: gulp test && gulp test-integration
+script: 
+  - gulp test 
+  - gulp test-integration
+  - gulp test-functional

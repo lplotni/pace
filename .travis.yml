@@ -1,0 +1,15 @@
+sudo: required
+language: node_js
+node_js:
+  - "6.1"
+services:
+  - docker
+before_install:
+  - sudo service postgresql stop
+  - docker pull postgres
+  - docker run -p 127.0.0.1:5432:5432 -d --name 'pace-postgres' -e POSTGRES_PASSWORD='pgtester' -e POSTGRES_DB='pace' -e POSTGRES_USER='pgtester' postgres
+  - docker ps -a
+before_script:
+  - npm install -g gulp
+  - ./node_modules/db-migrate/bin/db-migrate up
+script: gulp test && gulp test-integration

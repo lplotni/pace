@@ -17,3 +17,9 @@ script:
   - gulp test 
   - gulp test-integration
   - gulp test-functional
+deploy:
+  provider: heroku
+  app: dev-pace
+  run: 
+    - db-migrate -e prod -v up
+    - restart

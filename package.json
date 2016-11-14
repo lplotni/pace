@@ -46,7 +46,7 @@
     "gulp-jshint": "^2.0.3",
     "gulp-shell": "^0.5.0",
     "gulp-util": "^3.0.7",
-    "jshint": "^2.9.2",
+    "jshint": "^2.9.3",
     "jshint-stylish": "^2.2.0",
     "mockery": "^1.7.0",
     "request": "^2.74.0",

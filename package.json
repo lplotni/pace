@@ -6,6 +6,9 @@
     "start": "node ./bin/www",
     "test": "gulp test && gulp test-integration && gulp test-functional"
   },
+   "engines": {
+     "node": "6.1"
+  },
   "dependencies": {
     "body-parser": "~1.15.2",
     "config": "^1.24.0",

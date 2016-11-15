@@ -33,7 +33,7 @@
     "nodemailer-sendmail-transport": "^1.0.0",
     "passport": "~0.3.2",
     "passport-local": "~1.0.0",
-    "pdfkit": "~0.7.2",
+    "pdfkit": "~0.8.0",
     "pg": "^6.0.3",
     "pug": "~2.0.0-alpha6",
     "q": "^1.4.1",

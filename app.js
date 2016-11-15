@@ -52,8 +52,13 @@ app.use(bodyParser.urlencoded({'extended': false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 app.use('/api', apiRoute);
+app.use("/api", function(err, req, res, next){
+  res.status(err.status || 500);
+  res.send({
+    message: 'Internal Error'
+  });
+});
 
 // authentication using passport needs to be initialized before the routing setup
 app.use(require('express-session')(

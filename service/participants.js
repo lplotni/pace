@@ -13,6 +13,7 @@ const startNumbers = require('./startNumbers');
 const editUrlHelper = require('../domain/editUrlHelper');
 const timeCalculator = require('../domain/timeCalculator');
 const race = require('./race');
+const queryHelper = require('./util/queryHelper');
 
 let participants = {};
 
@@ -39,10 +40,26 @@ participants.blancParticipants = () => {
 participants.all = () => {
   return db.select('select * from participants');
 };
+
 participants.publiclyVisible = () => {
   return participants.confirmed().then(confirmed =>
     _.filter(confirmed, p => p.visibility === 'yes')
   );
+};
+
+participants.forDataTables = (start, length, search, ordering) => {
+  const queries = queryHelper.dataTablesQueries({
+    count: 'ID',
+    table: 'PARTICIPANTS',
+    baseFilter: `visibility = 'yes' and has_payed = true and firstname != ''`,
+    select: 'ID, START_NUMBER, FIRSTNAME, LASTNAME, TEAM',
+    filterColumns: ['FIRSTNAME', 'LASTNAME', 'TEAM'],
+    searchParamName: '$1',
+    paging: {offset: start, length: length},
+    ordering,
+  });
+
+  return db.selectForDataTables(queries, search);
 };
 
 participants.save = (participant) => {
@@ -120,9 +137,9 @@ participants.delete = (participantid) => {
 };
 
 participants.update = (participant, id) => {
-    return db.update(`UPDATE participants SET 
+    return db.update(`UPDATE participants SET
                     (firstname, lastname, email, category, birthyear, team, visibility, start_block) =
-                    ($1, $2, $3, $4, $5, $6, $7, $8) 
+                    ($1, $2, $3, $4, $5, $6, $7, $8)
                     WHERE secureid = $9`,
     [participant.firstname,
      participant.lastname,

@@ -361,6 +361,58 @@ describe('participants service', () => {
     });
   });
 
+  describe('forDataTables()', () => {
+      const participantToBeHiddenByPageLimit = participant.from(aParticipant)
+        .with({ team: 'Filtered X'})
+        .withToken('ptoken 4')
+        .withStartNr(startNr++);
+      const participantToBeFilteredByFirstName = participant.from(aParticipant)
+        .with({ firstname: 'Filtered X'})
+        .withToken('ptoken 1')
+        .withStartNr(startNr++);
+      const participantToBeFilteredByLastName = participant.from(aParticipant)
+        .with({ lastname: 'Filtered X'})
+        .withToken('ptoken 2')
+        .withStartNr(startNr++);
+      const participantToBeFilteredByTeam = participant.from(aParticipant)
+        .with({ team: 'Filtered X'})
+        .withToken('ptoken 3')
+        .withStartNr(startNr++);
+
+   beforeEach((done) => {
+      participants
+        .save(aParticipant.withStartNr(startNr++).withToken('ptoken 10'))
+        .then(participants.markPayed)
+        .then(() => participants.save(participantToBeFilteredByFirstName))
+        .then(participants.markPayed)
+        .then(() => participants.save(participantToBeFilteredByLastName))
+        .then(participants.markPayed)
+        .then(() => participants.save(participantToBeFilteredByTeam))
+        .then(participants.markPayed)
+        .then(() => participants.save(participantToBeHiddenByPageLimit))
+        .then(participants.markPayed)
+        .then(done)
+        .catch(done.fail);
+   });
+
+   it('returns only participants which match the filter', (done) => {
+        participants.forDataTables(0, 3, 'Filtered', 'START_NUMBER DESC')
+        .then(function (data) {
+          expect(data.numberOfAllRecords).toBe(5);
+          expect(data.numberOfRecordsAfterFilter).toBe(4);
+          expect(data.records.length).toBe(3);
+          expect(data.records[2].firstname).toBe('Filtered X');
+          expect(data.records[2].start_number).toBe(participantToBeFilteredByFirstName.start_number);
+          expect(data.records[1].lastname).toBe('Filtered X');
+          expect(data.records[1].start_number).toBe(participantToBeFilteredByLastName.start_number);
+          expect(data.records[0].team).toBe('Filtered X');
+          expect(data.records[0].start_number).toBe(participantToBeFilteredByTeam.start_number);
+          done();
+        })
+        .catch(done.fail);
+    });
+  });
+
   describe('insertTime', () => {
     it('should add the time to a participant with given start number', (done) => {
       let time = '10:32:32';
@@ -436,7 +488,7 @@ describe('participants service', () => {
         });
     });
   });
- 
+
   describe('bulkmail()', () => {
     it('should send the correct email to every participant', (done) => {
       spyOn(mails, 'sendEmail');

@@ -9,6 +9,7 @@ const moment = require('moment');
 require("moment-duration-format");
 const csv = require('fast-csv');
 const timeCalculator = require('../domain/timeCalculator');
+const queryHelper = require('./util/queryHelper');
 
 let race = {};
 
@@ -80,11 +81,11 @@ function queryFor(category) {
 race.results = (category, agegroup_start, agegroup_end) => {
   const deferred = Q.defer();
 
-  let query = `select id,firstname,lastname,team,start_number,start_block,seconds,visibility from participants 
-               where visibility='yes' and time > 0 
-               ${queryFor(category)} 
-               and birthyear >= ${agegroup_start} 
-               and birthyear <= ${agegroup_end} 
+  let query = `select id,firstname,lastname,team,start_number,start_block,seconds,visibility from participants
+               where visibility='yes' and time > 0
+               ${queryFor(category)}
+               and birthyear >= ${agegroup_start}
+               and birthyear <= ${agegroup_end}
                order by seconds`;
 
   db.select(query)
@@ -103,5 +104,37 @@ race.results = (category, agegroup_start, agegroup_end) => {
   return deferred.promise;
 };
 
+race.resultsForDataTables = (start, length, search, orderText, category, agegroup_start, agegroup_end) => {
+  const subSelect = queryHelper
+    .select('PARTICIPANTS', '*, RANK() OVER (ORDER BY SECONDS) AS PLACE')
+    .where(`visibility='yes' and time > 0
+               ${queryFor(category)}
+               and birthyear >= ${agegroup_start}
+               and birthyear <= ${agegroup_end}`)
+    .build();
+  const queries = queryHelper.dataTablesQueries({
+    count: 'ID',
+    table: `(${subSelect}) AS PP`,
+    baseFilter: '1 = 1',
+    select: 'ID,FIRSTNAME,LASTNAME,TEAM,START_NUMBER,START_BLOCK,SECONDS,VISIBILITY, PLACE',
+    filterColumns: ['FIRSTNAME', 'LASTNAME', 'TEAM'],
+    searchParamName: '$1',
+    paging: {offset: start, length: length},
+    ordering: orderText,
+  });
+
+  const pagedSelectModifier =
+    (result, deferred) => {
+      race.startTime()
+        .then(startTimes => {
+          _.forEach(result, participant => {
+            participant.timestring = moment.duration(_.toNumber(participant.seconds),'seconds').format("hh:mm:ss", { trim: false} );
+          });
+          deferred.resolve(result);
+        }).catch(deferred.reject);
+    };
+
+  return db.selectForDataTables(queries, search, pagedSelectModifier);
+};
 
 module.exports = race;

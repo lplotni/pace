@@ -51,8 +51,12 @@ journeyHelper.setupDbConnection = function (done) {
           deleteShirts.on('end', () => {
             let deleteParticipants = client.query('delete from participants');
             deleteParticipants.on('end', () => {
-              done();
-              jasmineDone();
+              let deleteStartBlocks = client.query('delete from startblocks;');
+              deleteStartBlocks.on('end',() => {
+                done();
+                jasmineDone();
+              });
+              deleteStartBlocks.on('error',errorFunction);
             });
             deleteParticipants.on('error', errorFunction);
           });

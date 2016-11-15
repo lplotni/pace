@@ -15,6 +15,7 @@ block content
           th Anzahl T-shirts
           th T-shirt Größen
           th Teilnehmer*in bestätigen
+          th Bestätigungsmail senden
           th Teilnehmer*in löschen
           th Teilnehmer*in editieren
       tbody
@@ -37,6 +38,12 @@ block content
                 input(type='hidden', name='participantid', value=p.id)
                 button(id = p.has_payed ? 'confirm-registration-done' : 'confirm-registration', type='submit').bigfont.button-primary
                   span.lnr.lnr-checkmark-circle
+            td
+              form#user-resend-confirmation(method='POST', action='participants/resend-mail')
+                input(type='hidden', name='_csrf', value=_csrf)
+                input(type='hidden', name='participantid', value=p.id)
+                button#resend-confirmation.bigfont.button-primary(type='submit')
+                  span.lnr.lnr-envelope
             td
               form#user-delete(method='POST', action='editparticipant/delete')
                 input(type='hidden', name='_csrf', value=_csrf)

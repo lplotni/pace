@@ -19,11 +19,13 @@ describe('startblock service', () => {
 
   it('should save and read a startblock', (done) => {
     let name = 'My first startblock';
-    startblocks.add(name)
+    let time = '1479312647';
+    startblocks.add(name,time)
       .then(startblocks.get) 
       .then(function(data) {
         expect(data.length).toBe(1);
         expect(data[0].name).toBe(name);
+        expect(data[0].start_time).toBe(time);
         done();
       })
       .catch(done.fail);

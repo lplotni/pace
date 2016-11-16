@@ -1,35 +1,31 @@
 extends ../adminLayout.pug
 
 block content
-
-  h3 Startzeit
+  - let new_block = blocks.length 
+  h3 Startblocks:
 
   form#starttime(method='POST', action='after')
+  each block,index in blocks
     .row
-      .four.columns.padding#block1
-        .row
-          label Startblock 1:
-          span.small.slim.info (Startnummern 1 - 1000)
-        .row
-          input#hours1(type="text", size="2", name="hours1", value=hours1)
-          span :
-          input#minutes1(type="text", size="2", name="minutes1" value=minutes1)
-          span :
-          input#seconds1(type="text", size="2", name="seconds1" value=seconds1)
-      .four.columns.padding#block2
-        .row
-          label Startblock 2:
-          span.small.slim.info (Startnummer ab 1001)
-        .row
-          input#hours2(type="text", size="2", name="hours2", value=hours2)
-          span :
-          input#minutes2(type="text", size="2", name="minutes2" value=minutes2)
-          span :
-          input#seconds2(type="text", size="2", name="seconds2" value=seconds2)
+      label Startblock #{index+1}
     .row
-      .eight.columns.padding
-        input(type='hidden', name='_csrf', value=_csrf)
-        button(id = 'set_race_starttime', type='submit').button-primary.u-full-width.pace Startzeit eintragen
+      input(type="text", size="2", name="blocks[" + index +"][hours]" value=block.hours)
+      span :
+      input(type="text", size="2", name="blocks[" + index +"][minutes]" value=block.minutes)
+      span :
+      input(type="text", size="2", name="blocks[" + index +"][seconds]" value=block.seconds)
+  .row
+    label neuer Startblock #{new_block+1}
+  .row
+    input(type="text", size="2", name="blocks[" + new_blocks +"][hours]" )
+    span :
+    input(type="text", size="2", name="blocks[" + new_blocks +"][minutes]" )
+    span :
+    input(type="text", size="2", name="blocks[" + new_blocks +"][seconds]" )
+
+  input(type='hidden', name='_csrf', value=_csrf)
+  button(id = 'set_race_starttime', type='submit').button-primary.pace Startzeit eintragen
+
 
   h3 Ergebnisse importieren
   form(method="POST", action="after/import?_csrf="+csrf, enctype="multipart/form-data")

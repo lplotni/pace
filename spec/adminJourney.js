@@ -169,12 +169,7 @@ describe('admin page', () => {
   });
 
   it('should be able to define the start time of 2 blocks', (done) => {
-    loginAdmin().url(helper.paceUrl + 'admin')
-      .click('a#after')
-      .isVisible('div#new_block')
-      .then((isVisible) => {
-        expect(isVisible).toBe(true);
-      })
+    loginAdmin().url(helper.paceUrl + 'admin/after')
       .setValue('input#name0', 'Startblock Rot')
       .setValue('input#hours0', '10')
       .setValue('input#minutes0', '15')

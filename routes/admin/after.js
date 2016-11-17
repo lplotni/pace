@@ -37,8 +37,8 @@ function extractTimes(req) { //TODO pull into the 'proper' object
   return {block1: time1, block2: time2};
 }
 
-router.post('/', (req, res) => {
-  race.setStartTime(extractTimes(req)); //todo why do we ignore the result?
+router.post('/', isAuthenticated, (req, res) => {
+  startblocks.save(req.body);
   res.redirect('/admin/after');
 });
 

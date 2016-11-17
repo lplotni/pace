@@ -175,19 +175,20 @@ describe('admin page', () => {
       .then((isVisible) => {
         expect(isVisible).toBe(true);
       })
+      .setValue('input#name0', 'Startblock Rot')
       .setValue('input#hours0', '10')
       .setValue('input#minutes0', '15')
       .setValue('input#seconds0', '10')
       .click('button#set_race_starttime')
-      .getValue('input#hours0')
+      .getValue('input#hours1')
       .then((value) => {
         expect(value).toBe('10');
       })
-      .getValue('input#minutes0')
+      .getValue('input#minutes1')
       .then((value) => {
         expect(value).toBe('15');
       })
-      .getValue('input#seconds0')
+      .getValue('input#seconds1')
       .then((value) => {
         expect(value).toBe('10');
       }).end(done);

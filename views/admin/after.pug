@@ -6,23 +6,27 @@ block content
 
   form#starttime(method='POST', action='after')
     each block,index in blocks
+      - let block_number = index + 1
       .row
-        label Startblock #{index+1}
-      .row
-        input(type="text", size="2", name="blocks[" + index +"][hours]" value=block.hours id="hours"+index)
+        input(type="text", size="20", name="block["+block.id +"][name]" value=block.name id="name"+block_number)
         span :
-        input(type="text", size="2", name="blocks[" + index +"][minutes]" value=block.minutes id="minutes"+index)
+        input(type="text", size="2", name="block["+block.id +"][hours]" value=block.hours id="hours"+block_number)
         span :
-        input(type="text", size="2", name="blocks[" + index +"][seconds]" value=block.seconds id="seconds"+index)
+        input(type="text", size="2", name="block["+block.id +"][minutes]" value=block.minutes id="minutes"+block_number)
+        span :
+        input(type="text", size="2", name="block["+block.id +"][seconds]" value=block.seconds id="seconds"+block_number)
+        input(type='hidden', name="block["+block.id+"][id]", value=block.id)
     .row
-      label neuer Startblock #{new_block+1}
-    .row#new_block
-      input(type="text", size="2", name="blocks[" + new_block +"][hours]" id="hours"+new_block)
+      label neuer Startblock:
+    .row
+      input(type="text", size="20", name="block[0][name]" id="name0")
       span :
-      input(type="text", size="2", name="blocks[" + new_block +"][minutes]" id="minutes"+new_block)
+      input(type="text", size="2", name="block[0][hours]" id="hours0")
       span :
-      input(type="text", size="2", name="blocks[" + new_block +"][seconds]" id="seconds"+new_block )
-
+      input(type="text", size="2", name="block[0][minutes]" id="minutes0")
+      span :
+      input(type="text", size="2", name="block[0][seconds]" id="seconds0")
+      input(type='hidden', name="block[0][id]", value="0")
     input(type='hidden', name='_csrf', value=_csrf)
     button(id = 'set_race_starttime', type='submit').button-primary.pace Startzeit eintragen
 

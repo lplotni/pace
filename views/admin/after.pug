@@ -1,30 +1,30 @@
 extends ../adminLayout.pug
 
 block content
-  - let new_block = blocks.length 
+  - let new_block = blocks.length
   h3 Startblocks:
 
   form#starttime(method='POST', action='after')
-  each block,index in blocks
+    each block,index in blocks
+      .row
+        label Startblock #{index+1}
+      .row
+        input(type="text", size="2", name="blocks[" + index +"][hours]" value=block.hours id="hours"+index)
+        span :
+        input(type="text", size="2", name="blocks[" + index +"][minutes]" value=block.minutes id="minutes"+index)
+        span :
+        input(type="text", size="2", name="blocks[" + index +"][seconds]" value=block.seconds id="seconds"+index)
     .row
-      label Startblock #{index+1}
-    .row
-      input(type="text", size="2", name="blocks[" + index +"][hours]" value=block.hours)
+      label neuer Startblock #{new_block+1}
+    .row#new_block
+      input(type="text", size="2", name="blocks[" + new_block +"][hours]" id="hours"+new_block)
       span :
-      input(type="text", size="2", name="blocks[" + index +"][minutes]" value=block.minutes)
+      input(type="text", size="2", name="blocks[" + new_block +"][minutes]" id="minutes"+new_block)
       span :
-      input(type="text", size="2", name="blocks[" + index +"][seconds]" value=block.seconds)
-  .row
-    label neuer Startblock #{new_block+1}
-  .row
-    input(type="text", size="2", name="blocks[" + new_blocks +"][hours]" )
-    span :
-    input(type="text", size="2", name="blocks[" + new_blocks +"][minutes]" )
-    span :
-    input(type="text", size="2", name="blocks[" + new_blocks +"][seconds]" )
+      input(type="text", size="2", name="blocks[" + new_block +"][seconds]" id="seconds"+new_block )
 
-  input(type='hidden', name='_csrf', value=_csrf)
-  button(id = 'set_race_starttime', type='submit').button-primary.pace Startzeit eintragen
+    input(type='hidden', name='_csrf', value=_csrf)
+    button(id = 'set_race_starttime', type='submit').button-primary.pace Startzeit eintragen
 
 
   h3 Ergebnisse importieren

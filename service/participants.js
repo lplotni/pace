@@ -10,6 +10,7 @@ const db = require('./util/dbHelper');
 const mails = require('./util/mails');
 const tshirts = require('./tshirts');
 const startNumbers = require('./startNumbers');
+const startblocks = require('./startblocks');
 const editUrlHelper = require('../domain/editUrlHelper');
 const timeCalculator = require('../domain/timeCalculator');
 const race = require('./race');
@@ -91,7 +92,7 @@ participants.saveBlancParticipants = (amount) => {
 };
 
 participants.choseStartBlock = (startNumber) => { //move this out of here TODO
-  return startNumber < 1001 ? 1 : 2;
+  return null;
 };
 
 participants.saveBlanc = (startnumber) => {

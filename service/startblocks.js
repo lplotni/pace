@@ -3,6 +3,7 @@
 'use strict';
 const db = require('../service/util/dbHelper');
 const moment = require('moment');
+const Q = require('q');
 const _ = require('lodash');
 
 let startblocks = {};
@@ -38,6 +39,16 @@ startblocks.get = () => {
       });
       return blocks;
     });
+};
+
+startblocks.best_block = () => {
+  return db.select('SELECT id from startblocks order by id limit 1')
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No startblocks defined');
+      }
+      return result[0];
+    })
 };
 
 module.exports = startblocks;

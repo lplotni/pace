@@ -107,8 +107,8 @@ pdfGeneration.fillDocument = (doc, participants) => {
 pdfGeneration.generateStartNumbers = (res, doc) => {
   const deferred = Q.defer();
 
-  participants.confirmed().then(confirmed =>
-    participants.registered().then(unconfirmed => {
+  participants.get.confirmed().then(confirmed =>
+    participants.get.registered().then(unconfirmed => {
 
       res.writeHead(200, {
         'Content-Type': 'application/pdf',

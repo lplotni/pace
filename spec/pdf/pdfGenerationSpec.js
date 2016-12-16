@@ -44,8 +44,7 @@ describe('pdfGeneration', () => {
     };
 
     participantsMock = {
-      confirmed: jasmine.createSpy('confirmed'),
-      registered: jasmine.createSpy('registered'),
+      get: {registered: jasmine.createSpy('registered'),confirmed: jasmine.createSpy('confirmed')},
       saveBlanc: jasmine.createSpy('saveBlanc'),
       byId: jasmine.createSpy('byId'),
       byStartnumber: jasmine.createSpy('byStartnumber'),
@@ -76,8 +75,8 @@ describe('pdfGeneration', () => {
 
     confirmedParticipant = { firstname: 'Bestaetigte', lastname: 'Person', team: '', seconds: '1922', start_number: 1, start_block: 1};
     const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', seconds: '1823', start_number: 2, start_block: 1};
-    participantsMock.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
-    participantsMock.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
+    participantsMock.get.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
+    participantsMock.get.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
     participantsMock.byStartnumber.and.returnValue(Q.fcall(() => confirmedParticipant));
     participantsMock.getTime.and.returnValue(Q.fcall(() => 10000));
     participantsMock.rank.and.returnValue(Q.fcall(() => 1));
@@ -128,7 +127,7 @@ describe('pdfGeneration', () => {
     });
 
     it('should add tshirt details', (done) => {
-      participantsMock.confirmed.and.returnValue(Q.fcall(() => [
+      participantsMock.get.confirmed.and.returnValue(Q.fcall(() => [
         { firstname: 'Third', lastname: 'Person', team: '', start_number: 3, tshirt: { size: 'XS', model: 'Normal fit' }}
       ]));
 

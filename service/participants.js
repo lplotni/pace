@@ -27,11 +27,11 @@ participants.get.allWithPaymentStatus = (paymentStatus) => {
   }
 };
 
-participants.registered = () => {
+participants.get.registered = () => {
   return participants.get.allWithPaymentStatus(false);
 };
 
-participants.confirmed = () => {
+participants.get.confirmed = () => {
   return participants.get.allWithPaymentStatus(true);
 };
 
@@ -44,7 +44,7 @@ participants.all = () => {
 };
 
 participants.publiclyVisible = () => {
-  return participants.confirmed().then(confirmed =>
+  return participants.get.confirmed().then(confirmed =>
     _.filter(confirmed, p => p.visibility === 'yes')
   );
 };
@@ -279,8 +279,8 @@ participants.rankByCategory = (startnumber) => {
 participants.bulkmail = () => {
   const deferred = Q.defer();
 
-  participants.confirmed().then(confirmed => {
-    participants.registered().then(unconfirmed => {
+  participants.get.confirmed().then(confirmed => {
+    participants.get.registered().then(unconfirmed => {
       _.forEach(confirmed, participant => {
         sendConfirmationMailTo(participant);
       });

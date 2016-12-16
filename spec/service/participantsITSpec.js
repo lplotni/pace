@@ -83,7 +83,7 @@ describe('participants service', () => {
 
   it('should store and read participants', (done) => {
     participants.save(aParticipant.withStartNr(startNr++))
-      .then(participants.registered)
+      .then(participants.get.registered)
       .then(function (data) {
         expect(data.length).toBe(1);
         expect(data[0].firstname).toBe(aParticipant.firstname);

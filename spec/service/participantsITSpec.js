@@ -140,7 +140,7 @@ describe('participants service', () => {
 
     it('should save multiple participants', function (done) {
       participants.saveBlancParticipants(5)
-        .then(participants.blancParticipants)
+        .then(participants.get.blancParticipants)
         .then( participants => {
           expect(participants.length).toBe(5);
           done();
@@ -329,37 +329,17 @@ describe('participants service', () => {
     });
   });
 
-  describe('publiclyVisible()', () => {
-    it('returns only participants which are confirmed and OK with being visible to the public', (done) => {
-      participants.save(aParticipant.withStartNr(startNr++))
-        .then(participants.markPayed)
-        .then(participants.publiclyVisible)
-        .then(function (data) {
-          expect(data.length).toBe(1);
-          expect(data[0].firstname).toBe(aParticipant.firstname);
-          expect(data[0].lastname).toBe(aParticipant.lastname);
-          expect(data[0].email).toBe(aParticipant.email);
-          expect(data[0].category).toBe(aParticipant.category);
-          expect(data[0].birthyear).toBe(aParticipant.birthyear);
-          expect(data[0].team).toBe(aParticipant.team);
-          done();
-        })
-        .catch(done.fail);
-
-    });
-
-    describe('blancParticipants()', () => {
+  describe('blancParticipants()', () => {
       it('returns only participants which are on-site registrations', (done) => {
         participants.save(aParticipant.withStartNr(startNr++))
           .then(participants.saveBlanc)
-          .then(participants.blancParticipants).then(function (data) {
+          .then(participants.get.blancParticipants).then(function (data) {
             expect(data.length).toBe(1);
             done();
           })
           .catch(done.fail);
       });
     });
-  });
 
   describe('forDataTables()', () => {
       const participantToBeHiddenByPageLimit = participant.from(aParticipant)

@@ -35,18 +35,12 @@ participants.get.confirmed = () => {
   return participants.get.allWithPaymentStatus(true);
 };
 
-participants.blancParticipants = () => {
+participants.get.blancParticipants = () => {
   return db.select('select * from participants where is_on_site_registration = true');
 };
 
-participants.all = () => {
+participants.get.all = () => {
   return db.select('select * from participants');
-};
-
-participants.publiclyVisible = () => {
-  return participants.get.confirmed().then(confirmed =>
-    _.filter(confirmed, p => p.visibility === 'yes')
-  );
 };
 
 participants.forDataTables = (start, length, search, ordering) => {

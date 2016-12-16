@@ -44,12 +44,15 @@ describe('pdfGeneration', () => {
     };
 
     participantsMock = {
-      get: {registered: jasmine.createSpy('registered'),confirmed: jasmine.createSpy('confirmed')},
+      get: {
+        registered: jasmine.createSpy('registered'),
+        confirmed: jasmine.createSpy('confirmed'),
+        blancParticipants: jasmine.createSpy('blancParticipants')
+      },
       saveBlanc: jasmine.createSpy('saveBlanc'),
       byId: jasmine.createSpy('byId'),
       byStartnumber: jasmine.createSpy('byStartnumber'),
       getTime: jasmine.createSpy('getTime'),
-      blancParticipants: jasmine.createSpy('blancParticipants'),
       rank: jasmine.createSpy('rank'),
       rankByCategory: jasmine.createSpy('rankByCategory')
     };
@@ -204,7 +207,7 @@ describe('pdfGeneration', () => {
         start_number: 3,
         secureid: 'some secure id',
         is_on_site_registration: true};
-      participantsMock.blancParticipants.and.returnValue(Q.fcall(() => [onSiteParticipant]));
+      participantsMock.get.blancParticipants.and.returnValue(Q.fcall(() => [onSiteParticipant]));
       participantsMock.saveBlanc.and.returnValue(Q.fcall(() => []));
     });
 

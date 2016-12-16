@@ -30,7 +30,7 @@ let addAmountTo = (participants) => {
 
 
 router.get('/', isAuthenticated, (req, res) => {
-  participants.all().then(allParticipants => {
+  participants.get.all().then(allParticipants => {
     addEditUrlTo(allParticipants);
     Q.all(allParticipants.map(tshirts.findAndAddTo))
       .then(() => {

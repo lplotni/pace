@@ -137,7 +137,7 @@ pdfGeneration.generateStartNumbers = (res, doc) => {
 pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
   const deferred = Q.defer();
 
-  participants.blancParticipants().then( participants => {
+  participants.get.blancParticipants().then( participants => {
       res.writeHead(200, {
         'Content-Type': 'application/pdf',
         'Access-Control-Allow-Origin': '*',

@@ -15,9 +15,11 @@ const timeCalculator = require('../domain/timeCalculator');
 const race = require('./race');
 const queryHelper = require('./util/queryHelper');
 
-let participants = {};
+let participants = {
+  get: {}
+};
 
-participants.allWithPaymentStatus = (paymentStatus) => {
+participants.get.allWithPaymentStatus = (paymentStatus) => {
   if (_.isUndefined(paymentStatus)) {
     return db.select('select * from participants where firstname != \'\' order by firstname,lastname');
   } else {
@@ -26,11 +28,11 @@ participants.allWithPaymentStatus = (paymentStatus) => {
 };
 
 participants.registered = () => {
-  return participants.allWithPaymentStatus(false);
+  return participants.get.allWithPaymentStatus(false);
 };
 
 participants.confirmed = () => {
-  return participants.allWithPaymentStatus(true);
+  return participants.get.allWithPaymentStatus(true);
 };
 
 participants.blancParticipants = () => {

@@ -155,31 +155,6 @@ participants.update = (participant, id) => {
     });
 };
 
-participants.byToken = (paymentToken) => {
-  return db.select('SELECT id, firstname, lastname FROM participants WHERE upper(paymenttoken) = $1', [paymentToken.toUpperCase()])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.');
-      }
-      return result;
-    })
-    .then(result => {
-      return {
-        name: result[0].lastname + ', ' + result[0].firstname,
-        amount: calculator.priceFor(result[0]),
-        id: result[0].id
-      };
-    })
-    .then(participantDetails => {
-        return tshirts.getFor(participantDetails.id)
-          .then(result => {
-            participantDetails.tshirt = result[0];
-            return participantDetails;
-          });
-      }
-    );
-};
-
 participants.byId = (id) => {
   return db.select('SELECT * FROM participants WHERE id = $1', [id])
     .then(result => {

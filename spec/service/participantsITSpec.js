@@ -190,39 +190,6 @@ describe('participants service', () => {
   });
 
 
-  describe('byToken()', () => {
-    it('should return participant\'s lastname and firstname and ordered tshirt for a given token', (done) => {
-      participants.save(aParticipantWithTshirt.withStartNr(startNr++))
-        .then(function (participantId) {
-          tshirts.addFor(aParticipantWithTshirt.tshirt, participantId)
-            .then(() => {
-              participants.byToken(paymentToken)
-                .then(function (participant) {
-                  expect(participant.name).toEqual(aParticipantWithTshirt.lastname + ', ' + aParticipantWithTshirt.firstname);
-                  expect(participant.tshirt.size).toEqual(aParticipantWithTshirt.tshirt.size);
-                  expect(participant.tshirt.model).toEqual(aParticipantWithTshirt.tshirt.model);
-                  done();
-                })
-                .catch(done.fail);
-            });
-        });
-    });
-  });
-
-  describe('bySecureId()', () => {
-    it('should return all information of the participant with given secureId', (done) => {
-      participants.save(aParticipant.withStartNr(startNr++))
-        .then(function (participantId) {
-          participants.bySecureId(secureId)
-            .then(function (participant) {
-              expectOnParticipantFields(participant, participantId);
-              done();
-            })
-            .catch(done.fail);
-        });
-    });
-  });
-
   describe('delete()', () => {
     it('should delete a user', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))

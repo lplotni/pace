@@ -58,6 +58,39 @@ participants.get.forDataTables = (start, length, search, ordering) => {
   return db.selectForDataTables(queries, search);
 };
 
+participants.get.byId = (id) => {
+  return db.select('SELECT * FROM participants WHERE id = $1', [id])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
+participants.get.byStartnumber = (number) => {
+  return db.select('SELECT * FROM participants WHERE start_number = $1', [number])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
+participants.get.bySecureId = (id) => {
+  return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
 participants.save = (participant) => {
   return db.insert(`INSERT INTO participants
                     (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, couponcode)
@@ -155,40 +188,6 @@ participants.update = (participant, id) => {
     });
 };
 
-participants.get.byId = (id) => {
-  return db.select('SELECT * FROM participants WHERE id = $1', [id])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('No participant found');
-      }
-      return result;
-    })
-    .then(result => result[0]);
-};
-
-participants.get.byStartnumber = (number) => {
-  return db.select('SELECT * FROM participants WHERE start_number = $1', [number])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('No participant found');
-      }
-      return result;
-    })
-    .then(result => result[0]);
-};
-
-
-participants.get.bySecureId = (id) => {
-  return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('No participant found');
-      }
-      return result;
-    })
-    .then(result => result[0]);
-};
-
 participants.markPayed = (participantId) => {
   return db.update('update participants SET has_payed = true WHERE id = $1', [participantId])
     .then(result => {
@@ -233,6 +232,7 @@ participants.rank = (startnumber) => {
     .catch(deferred.reject);
   return deferred.promise;
 };
+
 participants.rankByCategory = (startnumber) => {
   const deferred = Q.defer();
   db.select("select pos from (select seconds,start_number,rank() over (partition by category order by seconds) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
@@ -242,8 +242,6 @@ participants.rankByCategory = (startnumber) => {
     .catch(deferred.reject);
   return deferred.promise;
 };
-
-
 
 participants.bulkmail = () => {
   const deferred = Q.defer();

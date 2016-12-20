@@ -48,10 +48,10 @@ describe('pdfGeneration', () => {
         registered: jasmine.createSpy('registered'),
         confirmed: jasmine.createSpy('confirmed'),
         byId: jasmine.createSpy('byId'),
-        blancParticipants: jasmine.createSpy('blancParticipants')
+        blancParticipants: jasmine.createSpy('blancParticipants'),
+        byStartnumber: jasmine.createSpy('byStartnumber')
       },
       saveBlanc: jasmine.createSpy('saveBlanc'),
-      byStartnumber: jasmine.createSpy('byStartnumber'),
       getTime: jasmine.createSpy('getTime'),
       rank: jasmine.createSpy('rank'),
       rankByCategory: jasmine.createSpy('rankByCategory')
@@ -80,7 +80,7 @@ describe('pdfGeneration', () => {
     const unconfirmedParticipant = { firstname: 'Unbestaetigte', lastname: 'Person', team: 'a team name', seconds: '1823', start_number: 2, start_block: 1};
     participantsMock.get.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.get.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
-    participantsMock.byStartnumber.and.returnValue(Q.fcall(() => confirmedParticipant));
+    participantsMock.get.byStartnumber.and.returnValue(Q.fcall(() => confirmedParticipant));
     participantsMock.getTime.and.returnValue(Q.fcall(() => 10000));
     participantsMock.rank.and.returnValue(Q.fcall(() => 1));
     participantsMock.rankByCategory.and.returnValue(Q.fcall(() => 1));

@@ -157,7 +157,7 @@ pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
 
 pdfGeneration.generateCertificateDownload = (res, doc, startnumber) => {
   const deferred = Q.defer();
-  participants.byStartnumber(startnumber).then( participant => {
+  participants.get.byStartnumber(startnumber).then( participant => {
     pdfGeneration.createCertificatePage(doc, participant)
       .then(() => {
         res.writeHead(200, {

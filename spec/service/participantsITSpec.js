@@ -179,7 +179,7 @@ describe('participants service', () => {
       let number = startNr++;
       participants.save(aParticipant.withStartNr(number))
         .then(function (participantId) {
-          participants.byStartnumber(number)
+          participants.get.byStartnumber(number)
             .then(function (participant) {
               expectOnParticipantFields(participant, participantId);
               done();

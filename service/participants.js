@@ -166,7 +166,7 @@ participants.get.byId = (id) => {
     .then(result => result[0]);
 };
 
-participants.byStartnumber = (number) => {
+participants.get.byStartnumber = (number) => {
   return db.select('SELECT * FROM participants WHERE start_number = $1', [number])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -199,7 +199,7 @@ participants.markPayed = (participantId) => {
 };
 
 participants.updateTime = (startnumber, finishtime) => {
-  return participants.byStartnumber(startnumber)
+  return participants.get.byStartnumber(startnumber)
     .then(participant => {
       return race.startTime().then((startTimes) => {
         let seconds = timeCalculator.relativeSeconds(startTimes,finishtime,participant.start_block);

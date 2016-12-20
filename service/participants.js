@@ -43,7 +43,7 @@ participants.get.all = () => {
   return db.select('select * from participants');
 };
 
-participants.forDataTables = (start, length, search, ordering) => {
+participants.get.forDataTables = (start, length, search, ordering) => {
   const queries = queryHelper.dataTablesQueries({
     count: 'ID',
     table: 'PARTICIPANTS',

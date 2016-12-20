@@ -376,7 +376,7 @@ describe('participants service', () => {
    });
 
    it('returns only participants which match the filter', (done) => {
-        participants.forDataTables(0, 3, 'Filtered', 'START_NUMBER DESC')
+        participants.get.forDataTables(0, 3, 'Filtered', 'START_NUMBER DESC')
         .then(function (data) {
           expect(data.numberOfAllRecords).toBe(5);
           expect(data.numberOfRecordsAfterFilter).toBe(4);

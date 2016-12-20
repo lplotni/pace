@@ -12,7 +12,7 @@ const isAdmin = require('../../acl/authentication');
 router.get('/:secureId', isAdmin, (req, res) => {
   const participantId = req.params.secureId;
   race.startTimesAsHHMM().then(startTimes => {
-    participants.bySecureId(participantId)
+    participants.get.bySecureId(participantId)
       .then(p => res.render('admin/participants/editParticipant', {participant: p, participantid: participantId, times: startTimes}))
       .catch(() =>
         res.render('error', {

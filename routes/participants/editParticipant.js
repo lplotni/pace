@@ -11,7 +11,7 @@ const editUrlHelper = require('../../domain/editUrlHelper');
 router.get('/:secureId', (req, res) => {
   const participantId = req.params.secureId;
   race.startTimesAsHHMM().then(startTimes => {
-    participants.bySecureId(participantId)
+    participants.get.bySecureId(participantId)
       .then(p => res.render('participants/editParticipant', {participant: p, participantid: participantId, times: startTimes}))
       .catch(() =>
         res.render('error', {

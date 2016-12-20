@@ -147,7 +147,7 @@ participants.update = (participant, id) => {
      participant.start_block,
      id])
     .then((participant) => {
-      participants.bySecureId(id).then( saved_participant => {
+      participants.get.bySecureId(id).then( saved_participant => {
         if (saved_participant.time > 0) {
           participants.updateTime(saved_participant.start_number,saved_participant.time);
         }
@@ -178,7 +178,7 @@ participants.get.byStartnumber = (number) => {
 };
 
 
-participants.bySecureId = (id) => {
+participants.get.bySecureId = (id) => {
   return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
     .then(result => {
       if (_.isEmpty(result)) {

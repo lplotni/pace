@@ -155,7 +155,7 @@ participants.update = (participant, id) => {
     });
 };
 
-participants.byId = (id) => {
+participants.get.byId = (id) => {
   return db.select('SELECT * FROM participants WHERE id = $1', [id])
     .then(result => {
       if (_.isEmpty(result)) {
@@ -266,7 +266,7 @@ participants.bulkmail = () => {
 participants.confirmationMail = (id) => {
     const deferred = Q.defer();
 
-    participants.byId(id).then((participant) => {
+    participants.get.byId(id).then((participant) => {
         sendConfirmationMailTo(participant);
         deferred.resolve();
     })

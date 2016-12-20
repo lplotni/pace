@@ -40,7 +40,7 @@ registration.confirm = (participantId) => {
 
   participants.markPayed(participantId)
     .then(() => {
-      participants.byId(participantId)
+      participants.get.byId(participantId)
         .then(result => {
           pug.renderFile('views/admin/paymentValidation/text.pug',
             {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},

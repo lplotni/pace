@@ -47,10 +47,10 @@ describe('pdfGeneration', () => {
       get: {
         registered: jasmine.createSpy('registered'),
         confirmed: jasmine.createSpy('confirmed'),
+        byId: jasmine.createSpy('byId'),
         blancParticipants: jasmine.createSpy('blancParticipants')
       },
       saveBlanc: jasmine.createSpy('saveBlanc'),
-      byId: jasmine.createSpy('byId'),
       byStartnumber: jasmine.createSpy('byStartnumber'),
       getTime: jasmine.createSpy('getTime'),
       rank: jasmine.createSpy('rank'),

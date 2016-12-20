@@ -118,7 +118,7 @@ describe('participants service', () => {
       let startNumber = startNr++;
       participants.saveBlanc(startNumber).then(participantId => {
         expect(participantId).toBeDefined();
-        participants.byId(participantId).then(participant => {
+        participants.get.byId(participantId).then(participant => {
           expect(participant.firstname).toBe('');
           expect(participant.lastname).toBe('');
           expect(participant.team).toBe('');
@@ -164,7 +164,7 @@ describe('participants service', () => {
     it('should return all information of the participant with given Id', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then(function (participantId) {
-          participants.byId(participantId)
+          participants.get.byId(participantId)
             .then(function (participant) {
               expectOnParticipantFields(participant, participantId);
               done();
@@ -195,7 +195,7 @@ describe('participants service', () => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then((id) => {
           participants.delete(id).then(() => {
-            participants.byId(id).then(() => {
+            participants.get.byId(id).then(() => {
               fail('Participant has not been deleted');
               done();
             }).catch(done);
@@ -224,7 +224,7 @@ describe('participants service', () => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then((id) => {
           participants.delete(id).then(() => {
-            participants.byId(id).catch(() => {
+            participants.get.byId(id).catch(() => {
               done();
             });
           }).catch(done.fail);
@@ -245,11 +245,11 @@ describe('participants service', () => {
             team: 'Crazy runners updated',
             start_block: 2
           };
-          participants.byId(id)
+          participants.get.byId(id)
             .then((p) => {
               participants.update(updatedParticipant, p.secureid)
                 .then(() => {
-                  participants.byId(id)
+                  participants.get.byId(id)
                     .then(function (participant) {
                       expect(participant.firstname).toBe('Hertha updated');
                       expect(participant.lastname).toBe('Mustermann updated');
@@ -273,7 +273,7 @@ describe('participants service', () => {
         .then((participantid) => {
           race.setStartTime({block1: moment.duration('10:00:00').asSeconds(), block2: moment.duration('10:20:10').asSeconds()})
             .then(() => participants.insertTime(nr, time))
-            .then(() => participants.byId(participantid))
+            .then(() => participants.get.byId(participantid))
             .then((participant) => {
               const updatedParticipant = {
                 firstname: 'Hertha updated',
@@ -285,7 +285,7 @@ describe('participants service', () => {
                 start_block: 2
               };
               participants.update(updatedParticipant, participant.secureid)
-              .then(() => participants.byId(participantid))
+              .then(() => participants.get.byId(participantid))
               .then((new_participant) => {
                 expect(new_participant.seconds).toBe('1952');
                 done();
@@ -368,7 +368,7 @@ describe('participants service', () => {
         .then((participantid) => {
           race.setStartTime({block1: moment.duration('10:00:00').asSeconds(), block2: moment.duration('10:20:10').asSeconds()})
             .then(() => participants.insertTime(nr, time))
-            .then(() => participants.byId(participantid))
+            .then(() => participants.get.byId(participantid))
             .then((participant) => {
               expect(participant.time).toBe('37952');
               expect(participant.seconds).toBe('1952');
@@ -386,11 +386,11 @@ describe('participants service', () => {
         .then((participantid) => {
           race.setStartTime({block1: 36000, block2: 37200})
             .then(() => participants.insertTime(nr, time))
-            .then(() => participants.byId(participantid))
+            .then(() => participants.get.byId(participantid))
             .then((participant) => {
               let saved_time = participant.time;
               participants.insertTime(nr, slower_time)
-                .then(() => participants.byId(participantid))
+                .then(() => participants.get.byId(participantid))
                 .then((new_participant) => {
                   expect(saved_time).toBe(new_participant.time);
                   done();

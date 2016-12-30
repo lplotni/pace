@@ -5,6 +5,7 @@
 const Q = require('q');
 const _ = require('lodash');
 const pug = require('pug');
+const moment = require('moment');
 
 const config = require('config');
 const calculator = require('../domain/costCalculator');
@@ -83,7 +84,8 @@ registration.start = (participant) => {
             .withToken(paymentToken)
             .withSecureId(editUrlHelper.generateSecureID())
             .withStartNr(nr)
-            .withStartBlock(participants.choseStartBlock(nr));
+            .withStartBlock(participants.choseStartBlock(nr))
+            .withRegistrationTime(moment().format());
           participants.save(p)
             .then(id => {
               if (!_.isEmpty(p.tshirt)) {

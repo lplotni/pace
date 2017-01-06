@@ -314,6 +314,17 @@ describe('participants service', () => {
         })
         .fail(done.fail);
     });
+
+    it('should set the confrimation_time', (done) => {
+      participants.saveBlanc(startNr++)
+        .then((id) => participants.markPayed(id))
+        .then((id) => participants.get.byId(id))
+        .then((participant) => {
+          expect(moment(participant.confirmation_time).format('dd.MM.yyyy')).toBe(moment().format('dd.MM.yyyy'));
+          done();
+        })
+        .fail(done.fail);
+    });
   });
 
   describe('blancParticipants()', () => {

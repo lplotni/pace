@@ -191,7 +191,7 @@ participants.update = (participant, id) => {
 };
 
 participants.markPayed = (participantId) => {
-  return db.update('update participants SET has_payed = true WHERE id = $1', [participantId])
+  return db.update('update participants SET has_payed = true, confirmation_time = current_timestamp(2) WHERE id = $1', [participantId])
     .then(result => {
       if (result < 1) {
         throw new Error('Es konnte kein Teilnehmer mit ID: ' + participantId + ' gefunden werden.');

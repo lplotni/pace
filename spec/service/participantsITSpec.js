@@ -85,7 +85,6 @@ describe('participants service', () => {
     helper.closeDbConnection(done);
   });
 
-
   it('should store and read participants', (done) => {
     participants.save(aParticipant.withStartNr(startNr++))
       .then(participants.get.registered)
@@ -194,7 +193,6 @@ describe('participants service', () => {
         });
     });
   });
-
 
   describe('delete()', () => {
     it('should delete a user', (done) => {

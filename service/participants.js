@@ -5,7 +5,6 @@
 const Q = require('q');
 const _ = require('lodash');
 
-const calculator = require('../domain/costCalculator');
 const db = require('./util/dbHelper');
 const mails = require('./util/mails');
 const tshirts = require('./tshirts');
@@ -182,7 +181,7 @@ participants.update = (participant, id) => {
      participant.visibility,
      participant.start_block,
      id])
-    .then((participant) => {
+    .then(() => {
       participants.get.bySecureId(id).then( saved_participant => {
         if (saved_participant.time > 0) {
           participants.updateTime(saved_participant.start_number,saved_participant.time);
@@ -197,6 +196,7 @@ participants.markPayed = (participantId) => {
       if (result < 1) {
         throw new Error('Es konnte kein Teilnehmer mit ID: ' + participantId + ' gefunden werden.');
       }
+      return participantId;
     });
 };
 
@@ -271,10 +271,10 @@ participants.confirmationMail = (id) => {
         sendConfirmationMailTo(participant);
         deferred.resolve();
     })
-    .fail(deferred.reject)
+    .fail(deferred.reject);
 
     return deferred.promise;
-}
+};
 
 function sendConfirmationMailTo(participant) {
     mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');

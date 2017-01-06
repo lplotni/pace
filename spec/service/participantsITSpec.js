@@ -303,6 +303,19 @@ describe('participants service', () => {
     });
   });
 
+  describe('markPayed()', () => {
+    it('should change the payment status of the participant to true', (done) => {
+      participants.saveBlanc(startNr++)
+        .then((id) => participants.markPayed(id))
+        .then((id) => participants.get.byId(id))
+        .then((participant) => {
+          expect(participant.has_payed).toBe(true);
+          done();
+        })
+        .fail(done.fail);
+    });
+  });
+
   describe('blancParticipants()', () => {
     it('returns only participants which are on-site registrations', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
@@ -418,7 +431,7 @@ describe('participants service', () => {
       let time = '10:32:32';
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
-        .then((participantid) => {
+        .then(() => {
           race.setStartTime({block1: 36000, block2: 37200})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.rank(nr))
@@ -433,7 +446,7 @@ describe('participants service', () => {
       let time = '10:32:32';
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
-        .then((participantid) => {
+        .then(() => {
           race.setStartTime({block1: 36000, block2: 37200})
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.rankByCategory(nr))

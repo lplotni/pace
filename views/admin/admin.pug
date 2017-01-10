@@ -1,50 +1,80 @@
 extends ../adminLayout.pug
 
 block content
+    input#registrationsData(type='hidden' value=JSON.stringify(registrationsData))
+    canvas#registrations(width='400', height='200')
 
-  h3#admin_tshirts_count Bestellte und bezahlte T-Shirts:
-  table
-    thead
-      tr
-        th Size
-        th Model
-        th Amount
-        th Category
-    tbody
-      each p in orders
-        tr.shirt-line
-          td=p.size
-          td=p.model
-          td=p.amount
-          td=p.category
+    h3#admin_tshirts_count Bestellte und bezahlte T-Shirts:
+    table
+        thead
+            tr
+                th Size
+                th Model
+                th Amount
+                th Category
+        tbody
+            each p in orders
+                tr.shirt-line
+                    td=p.size
+                    td=p.model
+                    td=p.amount
+                    td=p.category
 
 
 
-  h3 Zahlungsmoral (Anmeldungen)
+    h3 Zahlungsmoral (Anmeldungen)
 
-  table
-    thead
-      th Bezahlt
-      th Nicht bezahlt
-    tbody
-      td #{confirmed[0].count}
-      td #{unconfirmed[0].count}
+    table
+        thead
+            th Bezahlt
+            th Nicht bezahlt
+        tbody
+            td #{confirmed[0].count}
+            td #{unconfirmed[0].count}
 
-  form(action="admin/couponcodes")
-    input(type='hidden', name='_csrf', value=_csrf)
-    button#goto-couponcodes.primary.button-primary.pace(type='submit') Coupon Codes
+    form(action="admin/couponcodes")
+        input(type='hidden', name='_csrf', value=_csrf)
+        button#goto-couponcodes.primary.button-primary.pace(type='submit') Coupon Codes
 
-  form(method='POST', action='admin/close-registration')
-    input(type='hidden', name='_csrf', value=_csrf)
-    button#close-registration.primary.button-primary.pace(type='submit') Registrierung schlie&szlig;en
+    form(method='POST', action='admin/close-registration')
+        input(type='hidden', name='_csrf', value=_csrf)
+        button#close-registration.primary.button-primary.pace(type='submit') Registrierung schlie&szlig;en
 
-  form(method='GET', action='admin/generate-start-numbers')
-    input(type='hidden', name='_csrf', value=_csrf)
-    button#generate-start-numbers.primary.button-primary.pace(type='submit') Startnummern für registrierte Teilnehmer generieren
+    form(method='GET', action='admin/generate-start-numbers')
+        input(type='hidden', name='_csrf', value=_csrf)
+        button#generate-start-numbers.primary.button-primary.pace(type='submit') Startnummern für registrierte Teilnehmer generieren
 
-  form(method='POST', action='admin/generate-on-site-start-numbers')
-    input(type='hidden', name='_csrf', value=_csrf)
-    button#generate-on-site-start-numbers.primary.button-primary.pace(type='submit') Alle Startnummern für Vor-Ort-Registrierungen generieren
-    label(for='amountOnSite') Anzahl der zusätzlichen blanco Startnummern:
-      input#amountOnSite(name='amountOnSite', required=true, value='0')
-    span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf "Alle Startnummern für Vor-Ort-Registrierungen generieren" klicken.
+    form(method='POST', action='admin/generate-on-site-start-numbers')
+        input(type='hidden', name='_csrf', value=_csrf)
+        button#generate-on-site-start-numbers.primary.button-primary.pace(type='submit') Alle Startnummern für Vor-Ort-Registrierungen generieren
+        label(for='amountOnSite') Anzahl der zusätzlichen blanco Startnummern:
+            input#amountOnSite(name='amountOnSite', required=true, value='0')
+        span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf "Alle Startnummern für Vor-Ort-Registrierungen generieren" klicken.
+
+    script(type='text/javascript').
+      var data = JSON.parse(document.getElementById('registrationsData').value);
+      console.log(data);
+
+      var ctx = document.getElementById('registrations');
+
+      var registrations = new Chart(ctx, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              data: [10, 20, 100],
+              label: 'Registrierung/Tag',
+              fill: false,
+              borderColor: 'rgb(212, 64, 52)',
+              backgroundColor: 'rgb(212, 64, 52)'
+            },
+            {
+              data: [50, 20],
+              label: 'Bezahlung/Tag',
+              fill: false,
+              borderColor: 'rgb(90,71,58)',
+              backgroundColor: 'rgb(90,71,58)'
+            }],
+          labels: ['29. Jan', '30. Jan', '31. Jan']
+        }
+      });

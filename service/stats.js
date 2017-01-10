@@ -24,4 +24,6 @@ stats.unconfirmedParticipantsCount = () => {
   return db.select('SELECT count(*) FROM participants WHERE has_payed=false;');
 };
 
+// select count(id), to_char(registration_time, 'dd.MM.yyyy') as t1 from participants group by t1;
+
 module.exports = stats;

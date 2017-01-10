@@ -27,9 +27,14 @@ router.get('/', isAuthenticated, (req, res) => {
       [stats.shirtOrders(), stats.confirmedParticipantsCount(), stats.unconfirmedParticipantsCount()])
       .then((results) => {
         let r = results.map(r => r.value);
-        participants.get.blancParticipants().then( (blancParticipants) => {
-          res.render('admin/admin', {orders: r[0], confirmed: r[1], unconfirmed: r[2],
-            numBlancParticipants: blancParticipants.length });
+        participants.get.blancParticipants().then((blancParticipants) => {
+          res.render('admin/admin', {
+            orders: r[0],
+            confirmed: r[1],
+            unconfirmed: r[2],
+            numBlancParticipants: blancParticipants.length,
+            registrationsData: {1: new Date()}
+          });
         });
       });
   } else {
@@ -45,7 +50,7 @@ router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
 
 router.post('/generate-on-site-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then( () => {
+    participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then(() => {
       pdfGeneration.generateOnSite(res);
     });
   }

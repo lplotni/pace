@@ -99,7 +99,7 @@ describe('participants service', () => {
         expect(data[0].team).toBe(aParticipant.team);
         expect(data[0].couponcode).toBe(aParticipant.couponcode);
         expect(data[0].start_block).toBe(aParticipant.start_block);
-        expect(moment(data[0].registration_time).format('dd.MM.yyyy')).toBe(aParticipant.registrationTime.format('dd.MM.yyyy'));
+        expect(moment(data[0].registration_time).format('DD.MM.YYYY')).toBe(aParticipant.registrationTime.format('DD.MM.YYYY'));
         done();
       })
       .catch(done.fail);
@@ -320,7 +320,7 @@ describe('participants service', () => {
         .then((id) => participants.markPayed(id))
         .then((id) => participants.get.byId(id))
         .then((participant) => {
-          expect(moment(participant.confirmation_time).format('dd.MM.yyyy')).toBe(moment().format('dd.MM.yyyy'));
+          expect(moment(participant.confirmation_time).format('DD.MM.YYYY')).toBe(moment().format('DD.MM.YYYY'));
           done();
         })
         .fail(done.fail);

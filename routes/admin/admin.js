@@ -29,12 +29,15 @@ router.get('/', isAuthenticated, (req, res) => {
         let r = results.map(r => r.value);
         participants.get.blancParticipants().then((blancParticipants) => {
           res.render('admin/admin', {
-            orders: r[0],
-            confirmed: r[1],
-            unconfirmed: r[2],
-            numBlancParticipants: blancParticipants.length,
-            registrationsData: {1: new Date()}
-          });
+              orders: r[0],
+              confirmed: r[1],
+              unconfirmed: r[2],
+              numBlancParticipants: blancParticipants.length,
+              registrationsData: [10, 2, 30, 50, 2], //TODO use the data returned by the stats service
+              confirmationsData: [0, 0, 0, 40, 5],
+              labels: ['1. Jan', '2. Jan', '3. Jan', '4. Jan', '5. Jan']
+            }
+          );
         });
       });
   } else {

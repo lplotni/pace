@@ -1,7 +1,9 @@
 extends ../adminLayout.pug
 
 block content
+    input#labels(type='hidden' value=JSON.stringify(labels))
     input#registrationsData(type='hidden' value=JSON.stringify(registrationsData))
+    input#confirmationsData(type='hidden' value=JSON.stringify(confirmationsData))
     canvas#registrations(width='400', height='200')
 
     h3#admin_tshirts_count Bestellte und bezahlte T-Shirts:
@@ -52,8 +54,9 @@ block content
         span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf "Alle Startnummern für Vor-Ort-Registrierungen generieren" klicken.
 
     script(type='text/javascript').
-      var data = JSON.parse(document.getElementById('registrationsData').value);
-      console.log(data);
+      var labels = JSON.parse(document.getElementById('labels').value);
+      var rData = JSON.parse(document.getElementById('registrationsData').value);
+      var cData= JSON.parse(document.getElementById('confirmationsData').value);
 
       var ctx = document.getElementById('registrations');
 
@@ -62,19 +65,26 @@ block content
         data: {
           datasets: [
             {
-              data: [10, 20, 100],
+              data: rData,
               label: 'Registrierung/Tag',
               fill: false,
               borderColor: 'rgb(212, 64, 52)',
               backgroundColor: 'rgb(212, 64, 52)'
             },
             {
-              data: [50, 20],
+              data: cData,
               label: 'Bezahlung/Tag',
               fill: false,
               borderColor: 'rgb(90,71,58)',
               backgroundColor: 'rgb(90,71,58)'
             }],
-          labels: ['29. Jan', '30. Jan', '31. Jan']
+          labels: labels
+        },
+        options: {
+          title: {
+            display: true,
+            fontSize: 15,
+            text: 'Verlauf der Registrierung'
+          }
         }
       });

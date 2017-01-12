@@ -7,7 +7,7 @@ const Q = require('q');
 
 describe('startblock service', () => {
 
-    let startblocks, dbHelperMock;
+    let startblocks, dbHelperMock, participants;
 
     beforeEach(() => {
       mockery.enable({
@@ -22,11 +22,19 @@ describe('startblock service', () => {
         select: jasmine.createSpy(),
       };
 
+      participants = {
+        confirmed: jasmine.createSpy(),
+        blancParticipants: jasmine.createSpy()
+      };
+
       mockery.registerMock('../service/util/dbHelper', dbHelperMock);
+      mockery.registerMock('../service/participants', participants);
 
       mockery.registerAllowables(['q', '../../service/util/dbHelper.js']);
       startblocks = require('../../service/startblocks');
-      dbHelperMock.select.and.returnValue(Q.fcall(() => [1]));
+      dbHelperMock.select.and.returnValue(Q.fcall(() => [{},{},{}]));
+      participants.confirmed.and.returnValue(Q.fcall(() => [{goal:'relaxed'},{goal:'ambitious'},{goal:'moderate'}]));
+      participants.blancParticipants.and.returnValue(Q.fcall(() => [{goal:'relaxed'},{goal:'relaxed'},{goal:'relaxed'}]));
     });
 
     afterAll(() => {
@@ -34,11 +42,14 @@ describe('startblock service', () => {
       mockery.disable();
     });
 
-    describe('best_block()', () => {
+    describe('assign()', () => {
       it('returns a suitable startblock', (done) => {
-        startblocks.best_block()
-          .then((block) => {
-            expect(block).toBe(1);
+        startblocks.assign()
+          .then((distribution) => {
+            expect(distribution.length).toBe(3);
+            expect(distribution[0]).toBe(2);
+            expect(distribution[1]).toBe(2);
+            expect(distribution[2]).toBe(2);
             done();
           })
           .catch(done.fail);

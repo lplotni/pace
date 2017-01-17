@@ -104,6 +104,17 @@ describe('admin page', () => {
       .end(done);
   });
 
+  it('should import bank statement csv and display result', (done) => {
+    loginAdmin().url(helper.paceUrl + 'admin/participants')
+      .chooseFile('#statement-file-chooser','./spec/statement_example.csv')
+      .click('button#import-statement')
+      .isVisible('div#import-result')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .end(done);
+  });
+ 
   it('should redirect to login page if the user is not logged in', (done) => {
     helper.setUpClient().url(helper.paceUrl + 'admin')
       .isVisible('form#loginForm')

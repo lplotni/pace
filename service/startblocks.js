@@ -49,10 +49,14 @@ startblocks.assign = () => {
     .then((result) => {
     let totalAmount = result[0].length + result[1].length;
     let blocks = result[2];
-    let amountPerBlock = totalAmount / blocks.length; //todo MOD ?
+    let amountPerBlock = Math.floor(totalAmount / blocks.length); //todo MOD ?
     let distribution = [];
-    _.forEach(blocks,function(value){
-        distribution.push(amountPerBlock);
+    _.forEach(blocks,function(block,index){
+        if(blocks.length != index+1) {
+          distribution.push(amountPerBlock);
+        } else { // last block: amountPerBlock + rest
+          distribution.push(amountPerBlock + ( totalAmount % blocks.length ));
+        }
       }); 
     deferred.resolve(distribution);
     });

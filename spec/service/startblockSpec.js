@@ -34,7 +34,7 @@ describe('startblock service', () => {
       startblocks = require('../../service/startblocks');
       dbHelperMock.select.and.returnValue(Q.fcall(() => [{},{},{}]));
       participants.confirmed.and.returnValue(Q.fcall(() => [{goal:'relaxed'},{goal:'ambitious'},{goal:'moderate'}]));
-      participants.blancParticipants.and.returnValue(Q.fcall(() => [{goal:'relaxed'},{goal:'relaxed'},{goal:'relaxed'}]));
+      participants.blancParticipants.and.returnValue(Q.fcall(() => [{goal:'relaxed'},{goal:'relaxed'},{goal:'relaxed'},{goal:'relaxed'}]));
     });
 
     afterAll(() => {
@@ -49,7 +49,7 @@ describe('startblock service', () => {
             expect(distribution.length).toBe(3);
             expect(distribution[0]).toBe(2);
             expect(distribution[1]).toBe(2);
-            expect(distribution[2]).toBe(2);
+            expect(distribution[2]).toBe(3);
             done();
           })
           .catch(done.fail);

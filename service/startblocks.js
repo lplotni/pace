@@ -45,21 +45,17 @@ startblocks.get = () => {
 startblocks.assign = () => {
   const deferred = Q.defer();
 
-  Q.all(participants.confirmed(), participants.blancParticipants(), db.select('SELECT id from startblocks order by id limit 1')).then((result) => {
-      let totalAmount = result[0].length + result[1].length;
-      let blocks = result[2];
-
-      let amountPerBlock = totalAmount / blocks; //todo MOD ?
-
-      _.forEach(result[0], (p) => {
-
-      });
-
-      deferred.reject('Not implemented YET!');
-
-    }
-  );
-
+  Q.all([participants.confirmed(), participants.blancParticipants(), db.select('SELECT id from startblocks order by id limit 1')])
+    .then((result) => {
+    let totalAmount = result[0].length + result[1].length;
+    let blocks = result[2];
+    let amountPerBlock = totalAmount / blocks.length; //todo MOD ?
+    let distribution = [];
+    _.forEach(blocks,function(value){
+        distribution.push(amountPerBlock);
+      }); 
+    deferred.resolve(distribution);
+    });
   return deferred.promise;
 };
 

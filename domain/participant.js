@@ -35,7 +35,7 @@ participant.from = (body) => {
     birthyear: _.isInteger(body.birthyear) ? body.birthyear : '0',
     team: body.team,
     tshirt: tshirt.from(body),
-    start_block: body.startBlock
+    goal: body.goal
   };
   
   p.with = function (property) {

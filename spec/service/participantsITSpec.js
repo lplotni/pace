@@ -29,7 +29,8 @@ describe('participants service', () => {
     visibility: 'yes',
     discount: 'free',
     team: 'Crazy runners',
-    couponcode: 'Free2016'
+    couponcode: 'Free2016',
+    goal: 'relaxed'
   }).withToken(paymentToken).withSecureId(secureId).withStartBlock(1);
 
   const aSecondParticipant = participant.from({
@@ -95,21 +96,10 @@ describe('participants service', () => {
         expect(data[0].team).toBe(aParticipant.team);
         expect(data[0].couponcode).toBe(aParticipant.couponcode);
         expect(data[0].start_block).toBe(aParticipant.start_block);
+        expect(data[0].goal).toBe(aParticipant.goal);
         done();
       })
       .catch(done.fail);
-  });
-
-  describe('choseStartBlock', () => {
-    it('returns 1 for nr < 1001', () => {
-      expect(participants.choseStartBlock(1)).toBe(1);
-      expect(participants.choseStartBlock(1000)).toBe(1);
-    });
-
-    it('returns 2 for nr > 1000', () => {
-      expect(participants.choseStartBlock(1001)).toBe(2);
-      expect(participants.choseStartBlock(10000)).toBe(2);
-    });
   });
 
   describe('saveBlanc()', () => {
@@ -130,9 +120,10 @@ describe('participants service', () => {
 
           expect(participant.has_payed).toBe(false);
           expect(participant.start_number).toBe(startNumber);
-          expect(participant.start_block).not.toBe(null);
+          expect(participant.start_block).toBe(null);
           expect(participant.secureid).toBeDefined();
           expect(participant.is_on_site_registration).toBe(true);
+          expect(participant.goal).toBe('relaxed');
           done();
         });
       }).catch(done.fail);

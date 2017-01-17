@@ -1,35 +1,35 @@
 extends ../adminLayout.pug
 
 block content
-
-  h3 Startzeit
+  - let new_block = blocks.length
+  h3 Startblocks:
 
   form#starttime(method='POST', action='after')
+    each block,index in blocks
+      - let block_number = index + 1
+      .row
+        input(type="text", size="20", name="block["+block.id +"][name]" value=block.name id="name"+block_number)
+        span :
+        input(type="text", size="2", name="block["+block.id +"][hours]" value=block.hours id="hours"+block_number)
+        span :
+        input(type="text", size="2", name="block["+block.id +"][minutes]" value=block.minutes id="minutes"+block_number)
+        span :
+        input(type="text", size="2", name="block["+block.id +"][seconds]" value=block.seconds id="seconds"+block_number)
+        input(type='hidden', name="block["+block.id+"][id]", value=block.id)
     .row
-      .four.columns.padding#block1
-        .row
-          label Startblock 1:
-          span.small.slim.info (Startnummern 1 - 1000)
-        .row
-          input#hours1(type="text", size="2", name="hours1", value=hours1)
-          span :
-          input#minutes1(type="text", size="2", name="minutes1" value=minutes1)
-          span :
-          input#seconds1(type="text", size="2", name="seconds1" value=seconds1)
-      .four.columns.padding#block2
-        .row
-          label Startblock 2:
-          span.small.slim.info (Startnummer ab 1001)
-        .row
-          input#hours2(type="text", size="2", name="hours2", value=hours2)
-          span :
-          input#minutes2(type="text", size="2", name="minutes2" value=minutes2)
-          span :
-          input#seconds2(type="text", size="2", name="seconds2" value=seconds2)
+      label neuer Startblock:
     .row
-      .eight.columns.padding
-        input(type='hidden', name='_csrf', value=_csrf)
-        button(id = 'set_race_starttime', type='submit').button-primary.u-full-width.pace Startzeit eintragen
+      input(type="text", size="20", name="block[0][name]" id="name0")
+      span :
+      input(type="text", size="2", name="block[0][hours]" id="hours0")
+      span :
+      input(type="text", size="2", name="block[0][minutes]" id="minutes0")
+      span :
+      input(type="text", size="2", name="block[0][seconds]" id="seconds0")
+      input(type='hidden', name="block[0][id]", value="0")
+    input(type='hidden', name='_csrf', value=_csrf)
+    button(id = 'set_race_starttime', type='submit').button-primary.pace Startzeit eintragen
+
 
   h3 Ergebnisse importieren
   form(method="POST", action="after/import?_csrf="+csrf, enctype="multipart/form-data")

@@ -169,22 +169,11 @@ describe('admin page', () => {
   });
 
   it('should be able to define the start time of 2 blocks', (done) => {
-    loginAdmin().url(helper.paceUrl + 'admin')
-      .click('a#after')
-      .isVisible('div#block1')
-      .then((isVisible) => {
-        expect(isVisible).toBe(true);
-      })
-      .isVisible('div#block2')
-      .then((isVisible) => {
-        expect(isVisible).toBe(true);
-      })
-      .setValue('input#hours1', '10')
-      .setValue('input#minutes1', '15')
-      .setValue('input#seconds1', '10')
-      .setValue('input#hours2', '10')
-      .setValue('input#minutes2', '40')
-      .setValue('input#seconds2', '13')
+    loginAdmin().url(helper.paceUrl + 'admin/after')
+      .setValue('input#name0', 'Startblock Rot')
+      .setValue('input#hours0', '10')
+      .setValue('input#minutes0', '15')
+      .setValue('input#seconds0', '10')
       .click('button#set_race_starttime')
       .getValue('input#hours1')
       .then((value) => {
@@ -197,18 +186,6 @@ describe('admin page', () => {
       .getValue('input#seconds1')
       .then((value) => {
         expect(value).toBe('10');
-      })
-      .getValue('input#hours2')
-      .then((value) => {
-        expect(value).toBe('10');
-      })
-      .getValue('input#minutes2')
-      .then((value) => {
-        expect(value).toBe('40');
-      })
-      .getValue('input#seconds2')
-      .then((value) => {
-        expect(value).toBe('13');
       }).end(done);
   });
 

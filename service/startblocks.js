@@ -18,13 +18,13 @@ startblocks.editBlock = (time, name, id) => {
 };
 
 startblocks.save = (req) => {
-  req.block.forEach((entry) => {
-    let time = moment().hours(entry.hours).minutes(entry.minutes).seconds(entry.seconds).unix();
-    if (entry.id != 0) {
-      startblocks.editBlock(time, entry.name, entry.id);
+  _.each(req.block,block => {
+    let time = moment().hours(block.hours).minutes(block.minutes).seconds(block.seconds).unix();
+    if (block.id != 0) {
+      startblocks.editBlock(time, block.name, block.id);
     } else {
-      if (entry.hours != '') {
-        startblocks.add(time, entry.name);
+      if (block.hours != '') {
+        startblocks.add(time, block.name);
       }
     }
   });

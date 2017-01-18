@@ -25,6 +25,7 @@ let apiRoute = require('./routes/api');
 let adminParticipantsRoute = require('./routes/admin/participants');
 let adminEditParticipantRoute = require('./routes/admin/editParticipant');
 let adminAfterRoute = require('./routes/admin/after');
+let adminImportStatementRoute = require('./routes/admin/statement-import');
 let paymentValidationRoute = require('./routes/admin/paymentValidation');
 let couponcodeRoute = require('./routes/admin/couponcodes');
 let resultRoute = require('./routes/results/results');
@@ -126,6 +127,7 @@ app.use('/admin/participants', adminParticipantsRoute);
 app.use('/admin/editparticipant', adminEditParticipantRoute);
 app.use('/admin/after', adminAfterRoute);
 app.use('/admin/couponcodes', couponcodeRoute);
+app.use('/admin/import-statements', adminImportStatementRoute);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {

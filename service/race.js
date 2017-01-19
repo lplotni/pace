@@ -60,7 +60,7 @@ race.parse = (file) => {
   return deferred.promise;
 };
 
-race.import = (file) => {
+race.importTimes = (file) => {
   const participant = require('../service/participants');
   race.parse(file)
     .then(result => {

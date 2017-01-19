@@ -54,7 +54,7 @@ block content
               form
                 a#edit.edit-button.button.bigfont(href=p.editUrl)
                   span.lnr.lnr-pencil
-  form#statement-import(method='POST', action='/admin/import-statements')
+  form#statement-import(method='POST', action="/admin/import-statements?_csrf="+csrf, enctype="multipart/form-data")
     input(type='hidden', name='_csrf', value=_csrf)
     label(for='statement-file-chooser') Kontoauszug Importieren
     input#statement-file-chooser.u-full-width(type='file', name='statement-import')

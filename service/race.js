@@ -70,6 +70,14 @@ race.importTimes = (file) => {
     });
 };
 
+race.importPaymentCSV = (file) => {
+  const participant = require('../service/participants');
+  race.parse(file)
+    .then(result => {
+      console.log(result);
+    });
+};
+
 function queryFor(category) {
   if (category === 'all') {
     return "";

@@ -79,10 +79,6 @@ describe('edit participant journey', () => {
           .then((value) => {
             expect(value).toBe('42');
           })
-          .getValue('select#startBlock')
-          .then((value) => {
-            expect(value).toBe('1');
-          })
           .click("#submit")
           .isVisible('.thanks')
           .then((isVisible) => {

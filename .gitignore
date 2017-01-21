@@ -43,3 +43,6 @@ config/local.json
 
 #Ignoring nvm config file
 .nvmrc
+
+#Ignoring ctags file
+/tags

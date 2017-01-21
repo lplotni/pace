@@ -47,6 +47,13 @@ block content
             option(value='no') Nein
       .row
         .twelve.columns.padding
+          label(for='visibility') Wie schnell bist du unterwegs?
+          select#goal.u-full-width(name='goal', required=true)
+            option(value='moderate') Ich laufe gerne und regelmäßig / Die Zeit ist mir nicht so wichtig.
+            option(value='relaxed') Ich möchte gerne mitlaufen, aber ohne Stress in ruhigem Tempo.
+            option(value='ambitious') Ich möchte schnell und sportlich laufen / Die Zeit ist mir wichtig.
+      .row
+        .twelve.columns.padding
           label(for='discount') Welchen Preis möchtest du zahlen
           select#discount.u-full-width(name='discount', required=true)
             option(value='no') Ich zahle den vollen Preis (10 Euro)

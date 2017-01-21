@@ -9,6 +9,7 @@ const db = require('./util/dbHelper');
 const mails = require('./util/mails');
 const tshirts = require('./tshirts');
 const startNumbers = require('./startNumbers');
+const startblocks = require('./startblocks');
 const editUrlHelper = require('../domain/editUrlHelper');
 const timeCalculator = require('../domain/timeCalculator');
 const race = require('./race');
@@ -92,9 +93,8 @@ participants.get.bySecureId = (id) => {
 
 participants.save = (participant) => {
   return db.insert(`INSERT INTO participants
-                    (firstname, lastname, email, category, birthyear, team, visibility, 
-                     discount, paymenttoken, secureid, start_number, start_block, couponcode, registration_time)
-                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning id`,
+                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, couponcode, goal, registration_time)
+                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning id`,
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -108,6 +108,7 @@ participants.save = (participant) => {
       participant.start_number,
       participant.start_block,
       participant.couponcode,
+      participant.goal,
       participant.registrationTime
     ]
   );
@@ -122,7 +123,7 @@ participants.saveBlancParticipants = (amount) => {
 };
 
 participants.choseStartBlock = (startNumber) => { //move this out of here TODO
-  return startNumber < 1001 ? 1 : 2;
+  return null;
 };
 
 participants.saveBlanc = (startnumber) => {
@@ -140,12 +141,13 @@ participants.saveBlanc = (startnumber) => {
     start_number: startnumber,
     start_block: participants.choseStartBlock(startnumber),
     is_on_site_registration: true,
-    has_payed: false //TODO false or true?
+    has_payed: false,
+    goal: 'relaxed'
   };
 
   return db.insert(`INSERT INTO participants
-                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, is_on_site_registration, has_payed)
-                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning id`,
+                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, is_on_site_registration, has_payed, goal)
+                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning id`,
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -159,7 +161,9 @@ participants.saveBlanc = (startnumber) => {
       participant.start_number,
       participant.start_block,
       participant.is_on_site_registration,
-      participant.has_payed]
+      participant.has_payed,
+      participant.goal
+    ]
   );
 };
 

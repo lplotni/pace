@@ -54,6 +54,7 @@ describe('registration journey', () => {
       .setValue('input#birthyear', 2000)
       .setValue('input#team', 'Crazy runners')
       .selectByIndex('select#visibility', 1)
+      .selectByIndex('select#goal', 2)
       .click('input#shirt')
       .click('button#submit')
       .isVisible('div.thanks')

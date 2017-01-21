@@ -23,7 +23,7 @@ describe('participant', () => {
         shirt: 'Yes',
         model: 'Normal fit',
         size: 'M',
-        startBlock: 1
+        goal: 'ambitious'
       };
     }
   );
@@ -115,8 +115,8 @@ describe('participant', () => {
       expect(participant.from(bodyWithoutDiscout).discount).toBe('no');
     });
 
-    it('should extract start_blcok from the request body', () => {
-      expect(participant.from(body).start_block).toBe(1);
+    it('should extract goal from the request body', () => {
+      expect(participant.from(body).goal).toBe('ambitious');
     });
   });
 

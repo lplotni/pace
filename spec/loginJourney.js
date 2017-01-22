@@ -25,7 +25,7 @@ describe('admin page', () => {
       .setValue('input#username', config.get('admin.username'))
       .setValue('input#password', config.get('admin.password'))
       .click('button#submit')
-      .isVisible('h3#admin_tshirts_count')
+      .isVisible('canvas#registrationsCtx')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })

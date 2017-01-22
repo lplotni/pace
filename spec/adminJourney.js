@@ -54,7 +54,19 @@ describe('admin page', () => {
 
   it('should go to admin page, show statistics and generate start number buttons (registered and on-site numbers)', (done) => {
     loginAdmin().url(helper.paceUrl + 'admin')
-      .isVisible('h3#admin_tshirts_count')
+      .isVisible('canvas#registrationsCtx')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .isVisible('canvas#normalShirtsCtx')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .isVisible('canvas#slimShirtsCtx')
+      .then(function (isVisible) {
+        expect(isVisible).toBe(true);
+      })
+      .isVisible('canvas#participantsCtx')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })
@@ -85,7 +97,7 @@ describe('admin page', () => {
         expect(isVisible).toBe(true);
       })
       .click('button#reopen-registration')
-      .isVisible('h3#admin_tshirts_count')
+      .isVisible('canvas#registrationsCtx')
       .then((isVisible) => {
         expect(isVisible).toBe(true);
       })

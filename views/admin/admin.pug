@@ -6,45 +6,58 @@ block content
     input#registrationsData(type='hidden' value=JSON.stringify(registrationsData))
     input#confirmationsData(type='hidden' value=JSON.stringify(confirmationsData))
     .eleven.columns
-      canvas#registrations(height='200')
+      canvas#registrationsCtx(height='200')
 
   .row
     input#shirts(type='hidden' value=JSON.stringify(shirts))
     .five.columns
-      canvas#normal(height='200')
+      canvas#normalShirtsCtx(height='200')
     .five.columns
-      canvas#slim(height='200')
+      canvas#slimShirtsCtx(height='200')
 
   .row
     input#participants(type='hidden' value=JSON.stringify(participants))
     .eleven.columns
       canvas#participantsCtx(height='200')
 
-  form(action="admin/couponcodes")
-      input(type='hidden', name='_csrf', value=_csrf)
-      button#goto-couponcodes.primary.button-primary.pace(type='submit') Coupon Codes
+  h3 Funktionen:
+  .row
+    .four.columns.padding
+      form(action="admin/couponcodes")
+        input(type='hidden', name='_csrf', value=_csrf)
+        button#goto-couponcodes.primary.button-primary.pace(type='submit') Coupon Codes
+    .four.columns.padding
+      form(method='POST', action='admin/close-registration')
+        input(type='hidden', name='_csrf', value=_csrf)
+        button#close-registration.primary.button-primary.pace(type='submit') Registrierung schlie&szlig;en
 
-  form(method='POST', action='admin/close-registration')
-      input(type='hidden', name='_csrf', value=_csrf)
-      button#close-registration.primary.button-primary.pace(type='submit') Registrierung schlie&szlig;en
-
-  form(method='GET', action='admin/generate-start-numbers')
-      input(type='hidden', name='_csrf', value=_csrf)
-      button#generate-start-numbers.primary.button-primary.pace(type='submit') Startnummern für registrierte Teilnehmer generieren
+  .row
+    form(method='GET', action='admin/generate-start-numbers')
+      .eight.columns
+        input(type='hidden', name='_csrf', value=_csrf)
+        h4 Startnummern für registrierte Teilnehmer
+      .two.columns
+        button#generate-start-numbers.primary.button-primary.pace(type='submit') Generieren
 
   form(method='POST', action='admin/generate-on-site-start-numbers')
-      input(type='hidden', name='_csrf', value=_csrf)
-      button#generate-on-site-start-numbers.primary.button-primary.pace(type='submit') Alle Startnummern für Vor-Ort-Registrierungen generieren
-      label(for='amountOnSite') Anzahl der zusätzlichen blanco Startnummern:
+    .row
+      .eight.columns
+        input(type='hidden', name='_csrf', value=_csrf)
+        h4 Alle Startnummern für Vor-Ort-Registrierungen
+    .row
+      .eight.columns
+        label(for='amountOnSite') Anzahl der zusätzlichen blanco Startnummern:
           input#amountOnSite(name='amountOnSite', required=true, value='0')
-      span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf "Alle Startnummern für Vor-Ort-Registrierungen generieren" klicken.
+        span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf "Alle Startnummern für Vor-Ort-Registrierungen generieren" klicken.
+      .two.columns
+        button#generate-on-site-start-numbers.primary.button-primary.pace(type='submit') Generieren
 
   script(type='text/javascript').
     var labels = JSON.parse(document.getElementById('labels').value);
     var rData = JSON.parse(document.getElementById('registrationsData').value);
     var cData= JSON.parse(document.getElementById('confirmationsData').value);
 
-    var ctx = document.getElementById('registrations');
+    var ctx = document.getElementById('registrationsCtx');
 
     var registrations = new Chart(ctx, {
       type: 'line',
@@ -78,8 +91,8 @@ block content
   script(type='text/javascript').
     var shirts = JSON.parse(document.getElementById('shirts').value);
 
-    var slimCtx = document.getElementById('slim');
-    var normalCtx = document.getElementById('normal');
+    var slimCtx = document.getElementById('slimShirtsCtx');
+    var normalCtx = document.getElementById('normalShirtsCtx');
 
     var s = new Chart(slimCtx, {
       type: 'bar',

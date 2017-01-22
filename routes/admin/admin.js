@@ -41,8 +41,8 @@ router.get('/', isAuthenticated, (req, res) => {
                 slim: {xs: 0, s: 0, m: 0, l: 0}
               },
               participants: {
-                registered: 100,
-                confirmed: 50
+                confirmed: r[1][0].count,
+                unconfirmed: r[2][0].count
               }
             }
           );

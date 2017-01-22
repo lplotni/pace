@@ -178,6 +178,7 @@ block content
 
   script(type='text/javascript').
     var participants = JSON.parse(document.getElementById('participants').value);
+    console.log(participants)
 
     var participantsCtx = document.getElementById('participantsCtx');
 
@@ -197,7 +198,7 @@ block content
                 'rgba(54, 162, 235, 1)'
               ],
               borderWidth: 1,
-              data: [65, 59],
+              data: [participants.confirmed, participants.unconfirmed],
             }
           ]
         },

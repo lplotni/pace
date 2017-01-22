@@ -58,7 +58,7 @@ describe('admin page', () => {
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })
-      .isVisible('canvas#normalShirtsCtx')
+      .isVisible('canvas#regularShirtsCtx')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })

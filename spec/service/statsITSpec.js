@@ -56,6 +56,8 @@ describe('admin service', () => {
       });
   });
 
+
+
   it('should count confirmed participants', (done) => {
     participants.save(aParticipant.withStartNr(startNr++))
       .then(function (participantId) {

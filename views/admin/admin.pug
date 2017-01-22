@@ -11,7 +11,7 @@ block content
   .row
     input#shirts(type='hidden' value=JSON.stringify(shirts))
     .five.columns
-      canvas#normalShirtsCtx(height='200')
+      canvas#regularShirtsCtx(height='200')
     .five.columns
       canvas#slimShirtsCtx(height='200')
 
@@ -23,7 +23,7 @@ block content
   h3 Funktionen:
   .row
     .four.columns.padding
-      form(action="admin/couponcodes")
+      form(action='admin/couponcodes')
         input(type='hidden', name='_csrf', value=_csrf)
         button#goto-couponcodes.primary.button-primary.pace(type='submit') Coupon Codes
     .four.columns.padding
@@ -48,7 +48,7 @@ block content
       .eight.columns
         label(for='amountOnSite') Anzahl der zusätzlichen blanco Startnummern:
           input#amountOnSite(name='amountOnSite', required=true, value='0')
-        span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf "Alle Startnummern für Vor-Ort-Registrierungen generieren" klicken.
+        span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf 'Alle Startnummern für Vor-Ort-Registrierungen generieren' klicken.
       .two.columns
         button#generate-on-site-start-numbers.primary.button-primary.pace(type='submit') Generieren
 
@@ -92,15 +92,15 @@ block content
     var shirts = JSON.parse(document.getElementById('shirts').value);
 
     var slimCtx = document.getElementById('slimShirtsCtx');
-    var normalCtx = document.getElementById('normalShirtsCtx');
+    var regularCtx = document.getElementById('regularShirtsCtx');
 
     var s = new Chart(slimCtx, {
       type: 'bar',
       data: {
-        labels: ["XS", "S", "M", "L"],
+        labels: ['XS', 'S', 'M', 'L'],
         datasets: [
             {
-              label: "Bestellt & bezahlt",
+              label: 'Bestellt & bezahlt',
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -118,7 +118,7 @@ block content
                 'rgba(255, 159, 64, 1)'
               ],
               borderWidth: 1,
-              data: [65, 59, 80, 81, 56, 55, 40],
+              data: [shirts.slim.xs, shirts.slim.s, shirts.slim.m, shirts.slim.l],
             }
           ]
         },
@@ -131,13 +131,13 @@ block content
         }
       });
 
-      var n = new Chart(normalCtx, {
+      var n = new Chart(regularCtx, {
         type: 'bar',
         data: {
-          labels: ["XS", "S", "M", "L"],
+          labels: ['S', 'M', 'L', 'XL'],
           datasets: [
             {
-              label: "Bestellt & bezahlt",
+              label: 'Bestellt & bezahlt',
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -155,7 +155,7 @@ block content
                 'rgba(255, 159, 64, 1)'
               ],
               borderWidth: 1,
-              data: [65, 59, 80, 81, 56, 55, 40],
+              data: [shirts.regular.s, shirts.regular.m, shirts.regular.l, shirts.regular.xl],
             }
           ]
         },
@@ -178,17 +178,16 @@ block content
 
   script(type='text/javascript').
     var participants = JSON.parse(document.getElementById('participants').value);
-    console.log(participants)
 
     var participantsCtx = document.getElementById('participantsCtx');
 
     var pChart = new Chart(participantsCtx, {
       type: 'bar',
       data: {
-        labels: ["Bezahlt", "Nicht bezahlt"],
+        labels: ['Bezahlt', 'Nicht bezahlt'],
         datasets: [
             {
-              label: "Anzahl",
+              label: 'Anzahl',
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)'

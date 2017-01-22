@@ -1,78 +1,69 @@
 extends ../adminLayout.pug
 
 block content
+  .row
     input#labels(type='hidden' value=JSON.stringify(labels))
     input#registrationsData(type='hidden' value=JSON.stringify(registrationsData))
     input#confirmationsData(type='hidden' value=JSON.stringify(confirmationsData))
-    canvas#registrations(width='400', height='200')
+    .eleven.columns
+      canvas#registrations(height='200')
 
-    h3#admin_tshirts_count Bestellte und bezahlte T-Shirts:
-    table
-        thead
-            tr
-                th Size
-                th Model
-                th Amount
-                th Category
-        tbody
-            each p in orders
-                tr.shirt-line
-                    td=p.size
-                    td=p.model
-                    td=p.amount
-                    td=p.category
+  .row
+    input#shirts(type='hidden' value=JSON.stringify(shirts))
+    .five.columns
+      canvas#normal(height='200')
+    .five.columns
+      canvas#slim(height='200')
 
-
-
-    h3 Zahlungsmoral (Anmeldungen)
+  h3 Zahlungsmoral (Anmeldungen)
 
     table
-        thead
-            th Bezahlt
-            th Nicht bezahlt
-        tbody
-            td #{confirmed[0].count}
-            td #{unconfirmed[0].count}
+      thead
+          th Bezahlt
+          th Nicht bezahlt
+      tbody
+          td #{confirmed[0].count}
+          td #{unconfirmed[0].count}
 
-    form(action="admin/couponcodes")
-        input(type='hidden', name='_csrf', value=_csrf)
-        button#goto-couponcodes.primary.button-primary.pace(type='submit') Coupon Codes
+  form(action="admin/couponcodes")
+      input(type='hidden', name='_csrf', value=_csrf)
+      button#goto-couponcodes.primary.button-primary.pace(type='submit') Coupon Codes
 
-    form(method='POST', action='admin/close-registration')
-        input(type='hidden', name='_csrf', value=_csrf)
-        button#close-registration.primary.button-primary.pace(type='submit') Registrierung schlie&szlig;en
+  form(method='POST', action='admin/close-registration')
+      input(type='hidden', name='_csrf', value=_csrf)
+      button#close-registration.primary.button-primary.pace(type='submit') Registrierung schlie&szlig;en
 
-    form(method='GET', action='admin/generate-start-numbers')
-        input(type='hidden', name='_csrf', value=_csrf)
-        button#generate-start-numbers.primary.button-primary.pace(type='submit') Startnummern für registrierte Teilnehmer generieren
+  form(method='GET', action='admin/generate-start-numbers')
+      input(type='hidden', name='_csrf', value=_csrf)
+      button#generate-start-numbers.primary.button-primary.pace(type='submit') Startnummern für registrierte Teilnehmer generieren
 
-    form(method='POST', action='admin/generate-on-site-start-numbers')
-        input(type='hidden', name='_csrf', value=_csrf)
-        button#generate-on-site-start-numbers.primary.button-primary.pace(type='submit') Alle Startnummern für Vor-Ort-Registrierungen generieren
-        label(for='amountOnSite') Anzahl der zusätzlichen blanco Startnummern:
-            input#amountOnSite(name='amountOnSite', required=true, value='0')
-        span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf "Alle Startnummern für Vor-Ort-Registrierungen generieren" klicken.
+  form(method='POST', action='admin/generate-on-site-start-numbers')
+      input(type='hidden', name='_csrf', value=_csrf)
+      button#generate-on-site-start-numbers.primary.button-primary.pace(type='submit') Alle Startnummern für Vor-Ort-Registrierungen generieren
+      label(for='amountOnSite') Anzahl der zusätzlichen blanco Startnummern:
+          input#amountOnSite(name='amountOnSite', required=true, value='0')
+      span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf "Alle Startnummern für Vor-Ort-Registrierungen generieren" klicken.
 
-    script(type='text/javascript').
-      var labels = JSON.parse(document.getElementById('labels').value);
-      var rData = JSON.parse(document.getElementById('registrationsData').value);
-      var cData= JSON.parse(document.getElementById('confirmationsData').value);
+  script(type='text/javascript').
+    var labels = JSON.parse(document.getElementById('labels').value);
+    var rData = JSON.parse(document.getElementById('registrationsData').value);
+    var cData= JSON.parse(document.getElementById('confirmationsData').value);
 
-      var ctx = document.getElementById('registrations');
+    var ctx = document.getElementById('registrations');
 
-      var registrations = new Chart(ctx, {
-        type: 'line',
-        data: {
-          datasets: [
-            {
-              data: rData,
-              label: 'Registrierung/Tag',
-              fill: false,
-              borderColor: 'rgb(212, 64, 52)',
-              backgroundColor: 'rgb(212, 64, 52)'
-            },
-            {
-              data: cData,
+    var registrations = new Chart(ctx, {
+      type: 'line',
+      data: {
+        datasets: [
+          {
+            data: rData,
+            label: 'Registrierung/Tag',
+            fill: false,
+            borderColor: 'rgb(212, 64, 52)',
+            backgroundColor: 'rgb(212, 64, 52)'
+          },
+          {
+            data: cData,
               label: 'Bezahlung/Tag',
               fill: false,
               borderColor: 'rgb(90,71,58)',
@@ -85,6 +76,86 @@ block content
             display: true,
             fontSize: 15,
             text: 'Verlauf der Registrierung'
+          }
+        }
+      });
+
+  script(type='text/javascript').
+    var shirts = JSON.parse(document.getElementById('shirts').value);
+
+    var slimCtx = document.getElementById('slim');
+    var normalCtx = document.getElementById('normal');
+
+    var s = new Chart(slimCtx, {
+      type: 'bar',
+      data: {
+        labels: ["XS", "S", "M", "L"],
+        datasets: [
+            {
+              label: "Bestellt & bezahlt",
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+              ],
+              borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1,
+              data: [65, 59, 80, 81, 56, 55, 40],
+            }
+          ]
+        },
+        options: {
+          title: {
+            display: true,
+            fontSize: 15,
+            text: 'Tallierte T-Shirts'
+          }
+        }
+      });
+
+      var n = new Chart(normalCtx, {
+        type: 'bar',
+        data: {
+          labels: ["XS", "S", "M", "L"],
+          datasets: [
+            {
+              label: "Bestellt & bezahlt",
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+              ],
+              borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1,
+              data: [65, 59, 80, 81, 56, 55, 40],
+            }
+          ]
+        },
+        options: {
+          title: {
+            display: true,
+            fontSize: 15,
+            text: 'Normale T-Shirts'
           }
         }
       });

@@ -35,7 +35,11 @@ router.get('/', isAuthenticated, (req, res) => {
               numBlancParticipants: blancParticipants.length,
               registrationsData: [10, 2, 30, 50, 2], //TODO use the data returned by the stats service
               confirmationsData: [0, 0, 0, 40, 5],
-              labels: ['1. Jan', '2. Jan', '3. Jan', '4. Jan', '5. Jan']
+              labels: ['1. Jan', '2. Jan', '3. Jan', '4. Jan', '5. Jan'],
+              shirts: {
+                normal: {xs: 0, s: 0, m: 0, l: 0},
+                slim: {xs: 0, s: 0, m: 0, l: 0}
+              },
             }
           );
         });

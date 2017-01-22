@@ -1,6 +1,6 @@
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeAll, beforeEach, afterEach, afterAll, it, expect */
+/* global describe, beforeAll, beforeEach, afterEach, afterAll, it, expect, xit*/
 'use strict';
 
 const helper = require('./journeyHelper');
@@ -180,7 +180,7 @@ describe('admin page', () => {
     });
   });
 
-  it('should be able to define the start time of 2 blocks', (done) => {
+  xit('should be able to define the start time of 2 blocks', (done) => {
     loginAdmin().url(helper.paceUrl + 'admin/after')
       .setValue('input#name0', 'Startblock Rot')
       .setValue('input#hours0', '10')

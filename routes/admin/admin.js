@@ -40,6 +40,10 @@ router.get('/', isAuthenticated, (req, res) => {
                 normal: {xs: 0, s: 0, m: 0, l: 0},
                 slim: {xs: 0, s: 0, m: 0, l: 0}
               },
+              participants: {
+                registered: 100,
+                confirmed: 50
+              }
             }
           );
         });

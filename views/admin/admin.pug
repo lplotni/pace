@@ -15,15 +15,10 @@ block content
     .five.columns
       canvas#slim(height='200')
 
-  h3 Zahlungsmoral (Anmeldungen)
-
-    table
-      thead
-          th Bezahlt
-          th Nicht bezahlt
-      tbody
-          td #{confirmed[0].count}
-          td #{unconfirmed[0].count}
+  .row
+    input#participants(type='hidden' value=JSON.stringify(participants))
+    .eleven.columns
+      canvas#participantsCtx(height='200')
 
   form(action="admin/couponcodes")
       input(type='hidden', name='_csrf', value=_csrf)
@@ -156,6 +151,56 @@ block content
             display: true,
             fontSize: 15,
             text: 'Normale T-Shirts'
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true,
+                stepSize: 10
+              }
+            }]
+          }
+        }
+      });
+
+  script(type='text/javascript').
+    var participants = JSON.parse(document.getElementById('participants').value);
+
+    var participantsCtx = document.getElementById('participantsCtx');
+
+    var pChart = new Chart(participantsCtx, {
+      type: 'bar',
+      data: {
+        labels: ["Bezahlt", "Nicht bezahlt"],
+        datasets: [
+            {
+              label: "Anzahl",
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)'
+              ],
+              borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)'
+              ],
+              borderWidth: 1,
+              data: [65, 59],
+            }
+          ]
+        },
+        options: {
+          title: {
+            display: true,
+            fontSize: 15,
+            text: 'Zahlungsmoral (Anmeldungen)'
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true,
+                stepSize: 10
+              }
+            }]
           }
         }
       });

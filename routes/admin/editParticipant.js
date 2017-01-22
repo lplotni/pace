@@ -11,16 +11,14 @@ const isAdmin = require('../../acl/authentication');
 
 router.get('/:secureId', isAdmin, (req, res) => {
   const participantId = req.params.secureId;
-  race.startTimesAsHHMM().then(startTimes => {
     participants.get.bySecureId(participantId)
-      .then(p => res.render('admin/participants/editParticipant', {participant: p, participantid: participantId, times: startTimes}))
+      .then(p => res.render('admin/participants/editParticipant', {participant: p, participantid: participantId}))
       .catch(() =>
         res.render('error', {
           message: "Teilnehmer nicht bekannt",
           error: {status: "Möglicherweise wurde ein falscher Link verwendet"}
         })
       );
-  });
 });
 
 router.post('/', isAdmin, (req, res) => {

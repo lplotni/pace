@@ -187,6 +187,10 @@ describe('admin page', () => {
       .setValue('input#minutes0', '15')
       .setValue('input#seconds0', '10')
       .click('button#set_race_starttime')
+      .isVisible('input#hours1')
+      .then(isVisible => {
+          expect(isVisible).toBe(true);
+        })
       .getValue('input#hours1')
       .then((value) => {
         expect(value).toBe('10');
@@ -198,7 +202,8 @@ describe('admin page', () => {
       .getValue('input#seconds1')
       .then((value) => {
         expect(value).toBe('10');
-      }).end(done);
+      })
+      .end(done);
   });
 
 

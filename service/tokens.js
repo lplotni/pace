@@ -9,7 +9,7 @@ const db = require('../service/util/dbHelper');
 let tokens = {};
 
 function randomString() {
-  let text = "";
+  let text = "LGR-";
   const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   for (let i = 0; i < 5; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));

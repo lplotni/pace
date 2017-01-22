@@ -48,7 +48,7 @@ race.resetStarttime = () => {
   return db.update(`UPDATE race SET data = jsonb_object('{"is_closed",false}')`);
 };
 
-race.parse = (file) => {
+race.parseResultCSV = (file) => {
   const deferred = Q.defer();
   var results = {};
   csv
@@ -62,20 +62,24 @@ race.parse = (file) => {
 
 race.importTimes = (file) => {
   const participant = require('../service/participants');
-  race.parse(file)
+  race.parseResultCSV(file)
     .then(result => {
-      Object.keys(result).forEach(function (key) {
-        participant.insertTime(key, result[key]);
+      Object.keys(result).forEach(function (startnumber) {
+        participant.insertTime(startnumber, result[startnumber]);
       });
     });
 };
 
-race.importPaymentCSV = (file) => {
-  const participant = require('../service/participants');
-  race.parse(file)
-    .then(result => {
-      console.log(result);
-    });
+race.parsePaymentCSV = (file) => {
+  const deferred = Q.defer();
+  var tokens = [];
+  csv
+    .fromPath(file,{headers : true, delimiter :';'})
+    .on("data", (data) => {
+      tokens.push(data['VWZ1']);
+    })
+    .on("end", () => deferred.resolve(tokens));
+  return deferred.promise;
 };
 
 function queryFor(category) {

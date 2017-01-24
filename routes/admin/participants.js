@@ -30,7 +30,7 @@ let addAmountTo = (participants) => {
 
 
 router.get('/', isAuthenticated, (req, res) => {
-  participants.all().then(allParticipants => {
+  participants.get.all().then(allParticipants => {
     addEditUrlTo(allParticipants);
     Q.all(allParticipants.map(tshirts.findAndAddTo))
       .then(() => {
@@ -41,7 +41,7 @@ router.get('/', isAuthenticated, (req, res) => {
 });
 
 router.post('/resend-mail', isAuthenticated, (req, res) => {
-  participants.byId(req.body.participantid).then((participant) => {
+  participants.get.byId(req.body.participantid).then((participant) => {
     // TODO: refactor to server
     mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');
     res.render('admin/sentMail');

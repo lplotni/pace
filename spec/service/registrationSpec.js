@@ -9,7 +9,7 @@ const participant = require('../../domain/participant');
 describe('registration service', () => {
 
   describe('start()', () => {
-    let registration, participantsMock, editUrlHelperMock, startNumbersMock, pugMock, configMock;
+    let registration, participantsMock, editUrlHelperMock, startNumbersMock, pugMock, configMock, momentMock;
     const secureId = 'secureId';
 
     beforeAll(() => {
@@ -40,11 +40,22 @@ describe('registration service', () => {
         save: jasmine.createSpy()
       };
 
+      const time = new Date();
+
+      momentMock = () => {
+        return {
+          format: () => {
+            return time;
+          }
+        };
+      };
+
       mockery.registerMock('../service/startNumbers', startNumbersMock);
       mockery.registerMock('../service/participants', participantsMock);
       mockery.registerMock('../domain/editUrlHelper', editUrlHelperMock);
       mockery.registerMock('pug', pugMock);
       mockery.registerMock('config', configMock);
+      mockery.registerMock('moment', momentMock);
 
 
       let dbMock = {
@@ -109,5 +120,13 @@ describe('registration service', () => {
         })
         .catch(done.fail);
     });
+
+    it('sets the registration_time', (done) => {
+      registration.start(aParticipant).then(() => {
+        expect(participantsMock.save.calls.argsFor(0)[0].registrationTime).toBe(momentMock().format());
+        done();
+      }).catch(done.fail);
+    });
+
   });
 });

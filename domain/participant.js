@@ -57,6 +57,10 @@ participant.from = (body) => {
   p.withStartBlock = (block) => {
    return p.with({start_block: block});
   };
+
+  p.withRegistrationTime = (time) => {
+   return p.with({registrationTime: time});
+  };
   
   return p;
 };

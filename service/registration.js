@@ -5,6 +5,7 @@
 const Q = require('q');
 const _ = require('lodash');
 const pug = require('pug');
+const moment = require('moment');
 
 const config = require('config');
 const calculator = require('../domain/costCalculator');
@@ -40,7 +41,7 @@ registration.confirm = (participantId) => {
 
   participants.markPayed(participantId)
     .then(() => {
-      participants.byId(participantId)
+      participants.get.byId(participantId)
         .then(result => {
           pug.renderFile('views/admin/paymentValidation/text.pug',
             {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},
@@ -83,7 +84,8 @@ registration.start = (participant) => {
             .withToken(paymentToken)
             .withSecureId(editUrlHelper.generateSecureID())
             .withStartNr(nr)
-            .withStartBlock(participants.choseStartBlock(nr));
+            .withStartBlock(participants.choseStartBlock(nr))
+            .withRegistrationTime(moment().format());
           participants.save(p)
             .then(id => {
               if (!_.isEmpty(p.tshirt)) {

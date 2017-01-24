@@ -107,8 +107,8 @@ pdfGeneration.fillDocument = (doc, participants) => {
 pdfGeneration.generateStartNumbers = (res, doc) => {
   const deferred = Q.defer();
 
-  participants.confirmed().then(confirmed =>
-    participants.registered().then(unconfirmed => {
+  participants.get.confirmed().then(confirmed =>
+    participants.get.registered().then(unconfirmed => {
 
       res.writeHead(200, {
         'Content-Type': 'application/pdf',
@@ -137,7 +137,7 @@ pdfGeneration.generateStartNumbers = (res, doc) => {
 pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
   const deferred = Q.defer();
 
-  participants.blancParticipants().then( participants => {
+  participants.get.blancParticipants().then( participants => {
       res.writeHead(200, {
         'Content-Type': 'application/pdf',
         'Access-Control-Allow-Origin': '*',
@@ -157,7 +157,7 @@ pdfGeneration.generateOnSiteStartNumbers = (res, doc) => {
 
 pdfGeneration.generateCertificateDownload = (res, doc, startnumber) => {
   const deferred = Q.defer();
-  participants.byStartnumber(startnumber).then( participant => {
+  participants.get.byStartnumber(startnumber).then( participant => {
     pdfGeneration.createCertificatePage(doc, participant)
       .then(() => {
         res.writeHead(200, {

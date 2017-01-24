@@ -11,7 +11,7 @@ const isAdmin = require('../../acl/authentication');
 
 router.get('/:secureId', isAdmin, (req, res) => {
   const participantId = req.params.secureId;
-    participants.bySecureId(participantId)
+    participants.get.bySecureId(participantId)
       .then(p => res.render('admin/participants/editParticipant', {participant: p, participantid: participantId}))
       .catch(() =>
         res.render('error', {

@@ -5,7 +5,6 @@
 const Q = require('q');
 const _ = require('lodash');
 
-const calculator = require('../domain/costCalculator');
 const db = require('./util/dbHelper');
 const mails = require('./util/mails');
 const tshirts = require('./tshirts');
@@ -16,9 +15,11 @@ const timeCalculator = require('../domain/timeCalculator');
 const race = require('./race');
 const queryHelper = require('./util/queryHelper');
 
-let participants = {};
+let participants = {
+  get: {}
+};
 
-participants.allWithPaymentStatus = (paymentStatus) => {
+participants.get.allWithPaymentStatus = (paymentStatus) => {
   if (_.isUndefined(paymentStatus)) {
     return db.select('select * from participants where firstname != \'\' order by firstname,lastname');
   } else {
@@ -26,29 +27,23 @@ participants.allWithPaymentStatus = (paymentStatus) => {
   }
 };
 
-participants.registered = () => {
-  return participants.allWithPaymentStatus(false);
+participants.get.registered = () => {
+  return participants.get.allWithPaymentStatus(false);
 };
 
-participants.confirmed = () => {
-  return participants.allWithPaymentStatus(true);
+participants.get.confirmed = () => {
+  return participants.get.allWithPaymentStatus(true);
 };
 
-participants.blancParticipants = () => {
+participants.get.blancParticipants = () => {
   return db.select('select * from participants where is_on_site_registration = true');
 };
 
-participants.all = () => {
+participants.get.all = () => {
   return db.select('select * from participants');
 };
 
-participants.publiclyVisible = () => {
-  return participants.confirmed().then(confirmed =>
-    _.filter(confirmed, p => p.visibility === 'yes')
-  );
-};
-
-participants.forDataTables = (start, length, search, ordering) => {
+participants.get.forDataTables = (start, length, search, ordering) => {
   const queries = queryHelper.dataTablesQueries({
     count: 'ID',
     table: 'PARTICIPANTS',
@@ -63,10 +58,43 @@ participants.forDataTables = (start, length, search, ordering) => {
   return db.selectForDataTables(queries, search);
 };
 
+participants.get.byId = (id) => {
+  return db.select('SELECT * FROM participants WHERE id = $1', [id])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
+participants.get.byStartnumber = (number) => {
+  return db.select('SELECT * FROM participants WHERE start_number = $1', [number])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
+participants.get.bySecureId = (id) => {
+  return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
 participants.save = (participant) => {
   return db.insert(`INSERT INTO participants
-                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, couponcode, goal)
-                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning id`,
+                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, couponcode, goal, registration_time)
+                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning id`,
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -80,7 +108,8 @@ participants.save = (participant) => {
       participant.start_number,
       participant.start_block,
       participant.couponcode,
-      participant.goal
+      participant.goal,
+      participant.registrationTime
     ]
   );
 };
@@ -156,8 +185,8 @@ participants.update = (participant, id) => {
      participant.visibility,
      participant.start_block,
      id])
-    .then((participant) => {
-      participants.bySecureId(id).then( saved_participant => {
+    .then(() => {
+      participants.get.bySecureId(id).then( saved_participant => {
         if (saved_participant.time > 0) {
           participants.updateTime(saved_participant.start_number,saved_participant.time);
         }
@@ -165,76 +194,18 @@ participants.update = (participant, id) => {
     });
 };
 
-participants.byToken = (paymentToken) => {
-  return db.select('SELECT id, firstname, lastname FROM participants WHERE upper(paymenttoken) = $1', [paymentToken.toUpperCase()])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.');
-      }
-      return result;
-    })
-    .then(result => {
-      return {
-        name: result[0].lastname + ', ' + result[0].firstname,
-        amount: calculator.priceFor(result[0]),
-        id: result[0].id
-      };
-    })
-    .then(participantDetails => {
-        return tshirts.getFor(participantDetails.id)
-          .then(result => {
-            participantDetails.tshirt = result[0];
-            return participantDetails;
-          });
-      }
-    );
-};
-
-participants.byId = (id) => {
-  return db.select('SELECT * FROM participants WHERE id = $1', [id])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('No participant found');
-      }
-      return result;
-    })
-    .then(result => result[0]);
-};
-
-participants.byStartnumber = (number) => {
-  return db.select('SELECT * FROM participants WHERE start_number = $1', [number])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('No participant found');
-      }
-      return result;
-    })
-    .then(result => result[0]);
-};
-
-
-participants.bySecureId = (id) => {
-  return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('No participant found');
-      }
-      return result;
-    })
-    .then(result => result[0]);
-};
-
 participants.markPayed = (participantId) => {
-  return db.update('update participants SET has_payed = true WHERE id = $1', [participantId])
+  return db.update('update participants SET has_payed = true, confirmation_time = current_timestamp(2) WHERE id = $1', [participantId])
     .then(result => {
       if (result < 1) {
         throw new Error('Es konnte kein Teilnehmer mit ID: ' + participantId + ' gefunden werden.');
       }
+      return participantId;
     });
 };
 
 participants.updateTime = (startnumber, finishtime) => {
-  return participants.byStartnumber(startnumber)
+  return participants.get.byStartnumber(startnumber)
     .then(participant => {
       return race.startTime().then((startTimes) => {
         let seconds = timeCalculator.relativeSeconds(startTimes,finishtime,participant.start_block);
@@ -268,6 +239,7 @@ participants.rank = (startnumber) => {
     .catch(deferred.reject);
   return deferred.promise;
 };
+
 participants.rankByCategory = (startnumber) => {
   const deferred = Q.defer();
   db.select("select pos from (select seconds,start_number,rank() over (partition by category order by seconds) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
@@ -278,13 +250,11 @@ participants.rankByCategory = (startnumber) => {
   return deferred.promise;
 };
 
-
-
 participants.bulkmail = () => {
   const deferred = Q.defer();
 
-  participants.confirmed().then(confirmed => {
-    participants.registered().then(unconfirmed => {
+  participants.get.confirmed().then(confirmed => {
+    participants.get.registered().then(unconfirmed => {
       _.forEach(confirmed, participant => {
         sendConfirmationMailTo(participant);
       });
@@ -301,14 +271,14 @@ participants.bulkmail = () => {
 participants.confirmationMail = (id) => {
     const deferred = Q.defer();
 
-    participants.byId(id).then((participant) => {
+    participants.get.byId(id).then((participant) => {
         sendConfirmationMailTo(participant);
         deferred.resolve();
     })
-    .fail(deferred.reject)
+    .fail(deferred.reject);
 
     return deferred.promise;
-}
+};
 
 function sendConfirmationMailTo(participant) {
     mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');

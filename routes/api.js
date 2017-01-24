@@ -63,7 +63,7 @@ const generateDataTablesResponse = (resultPromise, drawNum, res) => {
 
 router.get('/participants', (req, res) => {
   const params = extractDataTablesParams(req);
-  const resultPromise = participants.forDataTables(params.start, params.length, params.search, params.orderText);
+  const resultPromise = participants.get.forDataTables(params.start, params.length, params.search, params.orderText);
   generateDataTablesResponse(resultPromise, params.drawNum, res);
 });
 

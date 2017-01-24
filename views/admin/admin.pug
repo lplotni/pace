@@ -64,26 +64,34 @@ block content
       data: {
         datasets: [
           {
-            data: rData,
+            data: [],
             label: 'Registrierung/Tag',
             fill: false,
             borderColor: 'rgb(212, 64, 52)',
             backgroundColor: 'rgb(212, 64, 52)'
           },
           {
-            data: cData,
+            data: [],
               label: 'Bezahlung/Tag',
               fill: false,
               borderColor: 'rgb(90,71,58)',
               backgroundColor: 'rgb(90,71,58)'
             }],
-          labels: labels
+          labels: []
         },
         options: {
           title: {
             display: true,
             fontSize: 15,
-            text: 'Verlauf der Registrierung'
+            text: 'Verlauf der Registrierung [Soon Available]'
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true,
+                stepSize: 10
+              }
+            }]
           }
         }
       });
@@ -127,6 +135,14 @@ block content
             display: true,
             fontSize: 15,
             text: 'Tallierte T-Shirts'
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true,
+                stepSize: 10
+              }
+            }]
           }
         }
       });

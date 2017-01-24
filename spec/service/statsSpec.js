@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 /* jshint esnext: true */
-/* global describe, beforeEach, afterAll, spyOn, it, expect, fail, jasmine */
+/* global describe, beforeEach, afterAll, spyOn, it, expect, fail, jasmine, xit */
 describe('stats', () => {
   const stats = require('../../service/stats');
 
@@ -93,5 +93,60 @@ describe('stats', () => {
 
     });
   });
+
+  describe('usagesPerDay()', () => {
+    it('should combine registrations and confirmations per day', () => {
+
+      let registrations = [{count: 1, t1: '21.01.2017'}];
+      let confirmations = [{count: 1, t1: '21.01.2017'}];
+
+      let usages = stats.usagePerDay(registrations, confirmations);
+
+      expect(usages.dates).toEqual(['21.01.2017']);
+      expect(usages.confirmations).toEqual([1]);
+      expect(usages.registrations).toEqual([1]);
+
+    });
+
+    it('should deal with no confirmations', () => {
+
+      let registrations = [{count: 1, t1: '21.01.2017'}];
+      let confirmations = [];
+
+      let usages = stats.usagePerDay(registrations, confirmations);
+
+      expect(usages.dates).toEqual(['21.01.2017']);
+      expect(usages.confirmations).toEqual([0]);
+      expect(usages.registrations).toEqual([1]);
+
+    });
+
+    it('should deal with different times of registrations and confirmations', () => {
+
+      let registrations = [{count: 1, t1: '21.01.2017'}];
+      let confirmations = [{count: 1, t1: '22.01.2017'}];
+
+      let usages = stats.usagePerDay(registrations, confirmations);
+
+      expect(usages.dates).toEqual(['21.01.2017', '22.01.2017']);
+      expect(usages.confirmations).toEqual([0, 1]);
+      expect(usages.registrations).toEqual([1, 0]);
+
+    });
+
+    xit('should deal with different times of registrations and confirmations in a different order', () => {
+
+      let registrations = [{count: 1, t1: '22.01.2017'}];
+      let confirmations = [{count: 1, t1: '21.01.2017'}];
+
+      let usages = stats.usagePerDay(registrations, confirmations);
+
+      expect(usages.dates).toEqual(['21.01.2017', '22.01.2017']);
+      expect(usages.confirmations).toEqual([1, 0]);
+      expect(usages.registrations).toEqual([0, 1]);
+
+    });
+  });
+
 
 });

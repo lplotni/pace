@@ -24,7 +24,7 @@ let renderNotAllowed = (res) => res.render('error', {
 router.get('/', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     Q.allSettled(
-      [stats.shirtOrders(), stats.confirmedParticipantsCount(), stats.unconfirmedParticipantsCount()])
+      [stats.shirtOrders(), stats.confirmedParticipantsCount(), stats.unconfirmedParticipantsCount(), stats.usagePerDay()])
       .then((results) => {
         let r = results.map(r => r.value);
 

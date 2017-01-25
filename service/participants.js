@@ -206,11 +206,10 @@ participants.markPayed = (participantId) => {
 participants.markPayedByToken = (token) => {
   return db.update('update participants SET has_payed = true, confirmation_time = current_timestamp(2) WHERE paymenttoken = $1 returning id', [token])
     .then(result => {
-      console.log(token);
       if (result < 1) {
         throw new Error('Es konnte kein Teilnehmer mit ID: ' + participantId + ' gefunden werden.');
       }
-      return token;
+      return result;
     });
 
 };

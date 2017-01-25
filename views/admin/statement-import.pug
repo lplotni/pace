@@ -7,7 +7,9 @@ block content
     thead
       tr
         th Token
+        th ID
     tbody
-      each t in tokens
+      each p in participants
         tr.token-line
-        td.token=t
+        td.token=p[0]
+        td.participant=p[1]

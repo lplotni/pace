@@ -14,10 +14,16 @@ router.post('/', isAuthenticated, (req, res) => {
   form.on('file', function (name, file) {
     race.parsePaymentCSV(file.path)
       .then((tokens) => {
-          tokens.forEach((token,index,tokens) => { 
-            participants.markPayedByToken(token);
+          var participants_found = [];
+          tokens.forEach((token) => {
+            participants.markPayedByToken(token)
+            .then((id) => {
+              participants_found.push([id,token]);
+              console.log(participants_found); // content is printed here
+            });
+            console.log(participants_found); // content is empty here
           });
-          res.render('admin/statement-import', {tokens: tokens});
+          res.render('admin/statement-import', {participants: participants_found});
       });
   });
   form.on('error', function (err) {

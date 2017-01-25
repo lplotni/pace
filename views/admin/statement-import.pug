@@ -3,5 +3,11 @@ extends ../adminLayout.pug
 block content
 
   h3#Neue Zahlungen importiert
-
-
+  table.u-full-width.compact
+    thead
+      tr
+        th Token
+    tbody
+      each t in tokens
+        tr.token-line
+        td.token=t

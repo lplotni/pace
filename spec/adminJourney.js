@@ -108,7 +108,7 @@ describe('admin page', () => {
     loginAdmin().url(helper.paceUrl + 'admin/participants')
       .chooseFile('#statement-file-chooser','./spec/statement_example.csv')
       .click('button#import-statement')
-      .isVisible('div#import-result')
+      .isVisible('td.token=THISISATOKEN')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })

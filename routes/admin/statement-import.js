@@ -11,10 +11,11 @@ router.post('/', isAuthenticated, (req, res) => {
   const form = new multiparty.Form();
   form.parse(req);
   form.on('file', function (name, file) {
-    race.parsePaymentCSV(file.path);
-  });
-  form.on('close', function () {
-    res.render('admin/statement-import', {});
+    race.parsePaymentCSV(file.path)
+      .then((tokens) => {
+        res.render('admin/statement-import', {tokens: tokens});
+      }
+    )
   });
   form.on('error', function (err) {
     console.log(err);

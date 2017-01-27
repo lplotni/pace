@@ -38,7 +38,7 @@
     "pug": "~2.0.0-alpha6",
     "q": "^1.4.1",
     "qr-image": "~3.2.0",
-    "rbac2": "~1.0.5",
+    "rbac2": "~1.1.0",
     "rescode": "~0.1.10",
     "serve-favicon": "~2.3.0",
     "validator": "^6.1.0"

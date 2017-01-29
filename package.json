@@ -53,7 +53,7 @@
     "jshint-stylish": "^2.2.1",
     "mockery": "^2.0.0",
     "request": "^2.78.0",
-    "selenium-standalone": "^5.9.0",
+    "selenium-standalone": "^6.0.0",
     "wdio-jasmine-framework": "^0.2.16",
     "webdriverio": "3.4.0",
     "yargs": "^6.5.0"

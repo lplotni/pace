@@ -24,16 +24,16 @@ let renderNotAllowed = (res) => res.render('error', {
 router.get('/', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     Q.allSettled(
-      [stats.shirtOrders(), stats.confirmedParticipantsCount(), stats.unconfirmedParticipantsCount(), stats.usagePerDay()])
+      [stats.shirtOrders(), stats.confirmedParticipantsCount(), stats.unconfirmedParticipantsCount(), stats.usageData()])
       .then((results) => {
         let r = results.map(r => r.value);
 
         participants.get.blancParticipants().then((blancParticipants) => {
           res.render('admin/admin', {
               numBlancParticipants: blancParticipants.length,
-              registrationsData: [10, 2, 30, 50, 2], //TODO use the data returned by the stats service
-              confirmationsData: [0, 0, 0, 40, 5],
-              labels: ['1. Jan', '2. Jan', '3. Jan', '4. Jan', '5. Jan'],
+              registrationsData: r[3].registrations,
+              confirmationsData: r[3].confirmations,
+              labels: r[3].dates,
               shirts: {
                 regular: stats.reqularShirts(r[0]),
                 slim: stats.slimShirts(r[0])

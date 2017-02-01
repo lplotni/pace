@@ -4,6 +4,7 @@
 
 const db = require('../service/util/dbHelper');
 const _ = require('lodash');
+const moment = require('moment');
 
 const stats = {};
 
@@ -64,28 +65,28 @@ stats.reqularShirts = (dbResults) => {
 
 stats.usagePerDay = (registrations, confirmations) => {
 
-  let data = {
-    dates: [],
-    confirmations: [],
-    registrations: []
-  };
-
-  _.forEach(registrations, (r) => {
-    data.dates.push(r.t1);
-    data.registrations.push(r.count);
-  });
-
+  let registrationsCopy =  registrations.slice();
   _.forEach(confirmations, (c) => {
-    let index = _.findIndex(data.dates, (d) => d === c.t1);
-    if (index !== -1) {
-      data.confirmations.splice(index, 0, c.count);
+    let index = _.findIndex(registrationsCopy, (e) => e.t1 === c.t1);
+    if(index) {
+     //not existing
+      registrationsCopy.push({count:0, countConfirmations: c.count, t1: c.t1});
     } else {
-      data.dates.push(c.t1);
-      data.registrations.push(0);
-      data.confirmations.push(0, c.count);
+     //existing
+      registrationsCopy[index].countConfirmations = c.count;
     }
   });
-  return data;
+
+  _.forEach(registrationsCopy, (r) => r.date = moment(r.t1, 'DD.MM.YYYY'));
+
+  const resultSorted = _.sortBy(registrationsCopy, (r) => r.date);
+
+
+  return {
+    dates: _.map(resultSorted, (r) => r.date.format('DD.MM.YYYY')),
+    confirmations: _.map(resultSorted, (r) => r.countConfirmations || 0),
+    registrations: _.map(resultSorted, (r) => r.count)
+  };
 };
 
 stats.registrationsPerDay = () => {

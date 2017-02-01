@@ -134,7 +134,7 @@ describe('stats', () => {
 
     });
 
-    xit('should deal with different times of registrations and confirmations in a different order', () => {
+    it('should deal with different times of registrations and confirmations in a different order', () => {
 
       let registrations = [{count: 1, t1: '22.01.2017'}];
       let confirmations = [{count: 1, t1: '21.01.2017'}];

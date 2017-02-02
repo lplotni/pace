@@ -62,11 +62,21 @@ stats.reqularShirts = (dbResults) => {
 };
 
 let registrationsPerDay = () => {
-  return db.select(`select count(id), to_char(registration_time, 'dd.MM.yyyy') as formatted_time from participants where registration_time is not null group by formatted_time order by formatted_time;`);
+  return db.select(`select count(id), 
+                           to_char(registration_time, 'dd.MM.yyyy') as formatted_time 
+                    from participants 
+                    where registration_time is not null 
+                    group by formatted_time 
+                    order by formatted_time;`);
 };
 
 let confirmationsPerDay = () => {
-  return db.select(`select count(id), to_char(confirmation_time, 'dd.MM.yyyy') as formatted_time from participants where confirmation_time is not null group by formatted_time order by formatted_time;`);
+  return db.select(`select count(id), 
+                           to_char(confirmation_time, 'dd.MM.yyyy') as formatted_time 
+                    from participants 
+                    where confirmation_time is not null 
+                    group by formatted_time 
+                    order by formatted_time;`);
 };
 
 stats.usageData = () => {

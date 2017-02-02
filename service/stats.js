@@ -62,11 +62,11 @@ stats.reqularShirts = (dbResults) => {
 };
 
 let registrationsPerDay = () => {
-  return db.select(`select count(id), to_char(registration_time, 'dd.MM.yyyy') as t1 from participants where registration_time is not null group by registration_time order by registration_time;`);
+  return db.select(`select count(id), to_char(registration_time, 'dd.MM.yyyy') as formatted_time from participants where registration_time is not null group by formatted_time order by formatted_time;`);
 };
 
 let confirmationsPerDay = () => {
-  return db.select(`select count(id), to_char(confirmation_time, 'dd.MM.yyyy') as t1 from participants where confirmation_time is not null group by confirmation_time order by confirmation_time;`);
+  return db.select(`select count(id), to_char(confirmation_time, 'dd.MM.yyyy') as formatted_time from participants where confirmation_time is not null group by formatted_time order by formatted_time;`);
 };
 
 stats.usageData = () => {
@@ -83,17 +83,17 @@ stats.usageData = () => {
 
 stats.usagePerDay = (registrations, confirmations) => {
   _.forEach(confirmations, (c) => {
-    let index = _.findIndex(registrations, (e) => e.t1 === c.t1);
+    let index = _.findIndex(registrations, (e) => e.formatted_time === c.formatted_time);
     if (index) {
       //not existing
-      registrations.push({count: 0, countConfirmations: c.count, t1: c.t1});
+      registrations.push({count: 0, countConfirmations: c.count, formatted_time: c.formatted_time});
     } else {
       //existing
       registrations[index].countConfirmations = c.count;
     }
   });
 
-  _.forEach(registrations, (r) => r.date = moment(r.t1, 'DD.MM.YYYY'));
+  _.forEach(registrations, (r) => r.date = moment(r.formatted_time, 'DD.MM.YYYY'));
 
   const resultSorted = _.sortBy(registrations, (r) => r.date);
 

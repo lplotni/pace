@@ -97,8 +97,8 @@ describe('stats', () => {
   describe('usagesPerDay()', () => {
     it('should combine registrations and confirmations per day', () => {
 
-      let registrations = [{count: 1, t1: '21.01.2017'}];
-      let confirmations = [{count: 1, t1: '21.01.2017'}];
+      let registrations = [{count: 1, formatted_time: '21.01.2017'}];
+      let confirmations = [{count: 1, formatted_time: '21.01.2017'}];
 
       let usages = stats.usagePerDay(registrations, confirmations);
 
@@ -110,7 +110,7 @@ describe('stats', () => {
 
     it('should deal with no confirmations', () => {
 
-      let registrations = [{count: 1, t1: '21.01.2017'}];
+      let registrations = [{count: 1, formatted_time: '21.01.2017'}];
       let confirmations = [];
 
       let usages = stats.usagePerDay(registrations, confirmations);
@@ -123,8 +123,8 @@ describe('stats', () => {
 
     it('should deal with different times of registrations and confirmations', () => {
 
-      let registrations = [{count: 1, t1: '21.01.2017'}];
-      let confirmations = [{count: 1, t1: '22.01.2017'}];
+      let registrations = [{count: 1, formatted_time: '21.01.2017'}];
+      let confirmations = [{count: 1, formatted_time: '22.01.2017'}];
 
       let usages = stats.usagePerDay(registrations, confirmations);
 
@@ -136,8 +136,8 @@ describe('stats', () => {
 
     it('should deal with different times of registrations and confirmations in a different order', () => {
 
-      let registrations = [{count: 1, t1: '22.01.2017'}];
-      let confirmations = [{count: 1, t1: '21.01.2017'}];
+      let registrations = [{count: 1, formatted_time: '22.01.2017'}];
+      let confirmations = [{count: 1, formatted_time: '21.01.2017'}];
 
       let usages = stats.usagePerDay(registrations, confirmations);
 

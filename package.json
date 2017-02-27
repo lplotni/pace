@@ -55,7 +55,7 @@
     "request": "^2.78.0",
     "selenium-standalone": "^6.0.0",
     "wdio-jasmine-framework": "^0.2.16",
-    "webdriverio": "3.4.0",
+    "webdriverio": "4.6.1",
     "yargs": "^6.5.0"
   }
 }

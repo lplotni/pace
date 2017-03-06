@@ -43,7 +43,7 @@ router.get('/', isAuthenticated, (req, res) => {
 router.post('/resend-mail', isAuthenticated, (req, res) => {
   participants.get.byId(req.body.participantid).then((participant) => {
     // TODO: refactor to server
-    mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');
+    mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug'); //ISSUE!
     res.render('admin/sentMail');
   });
 });

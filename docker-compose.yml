@@ -8,6 +8,10 @@ db:
     - POSTGRES_DB=pace
 redis:
   image: redis
+pace-pdf:
+  build: pace-pdf
+  links:
+    - redis
 pace-app:  
   build: .
   ports:

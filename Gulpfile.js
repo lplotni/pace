@@ -98,18 +98,18 @@ gulp.task('test-functional', function () {
     process.exit(1);
   });
 
-  function cleanUp(selenium, server, done) {
-    gutil.log('Clean-up: ', gutil.colors.magenta('selenium'), gutil.colors.magenta('express'));
+  function cleanUp(selenium, done) {
+    gutil.log('Clean-up: ', gutil.colors.magenta('selenium'));
     selenium.kill();
-    server.close(done);
+    done();
   }
 
   startSelenium().then((selenium) => {
     testFunctional(argv.single).then(() => {
-      cleanUp(selenium, server, deferred.resolve);
+      cleanUp(selenium, deferred.resolve);
     }).fail((e) => {
       gutil.log(e);
-      cleanUp(selenium, server, deferred.reject);
+      cleanUp(selenium, deferred.reject);
     });
   });
 });

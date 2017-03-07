@@ -6,8 +6,8 @@
     "start": "node ./bin/www",
     "test": "gulp test && gulp test-integration && gulp test-functional"
   },
-   "engines": {
-     "node": "6.1"
+  "engines": {
+    "node": "7.7.1"
   },
   "dependencies": {
     "body-parser": "~1.17.0",
@@ -23,6 +23,7 @@
     "express-metrics": "^1.1.0",
     "express-session": "~1.15.0",
     "fast-csv": "^2.3.0",
+    "ioredis": "^2.5.0",
     "lodash": "^4.17.0",
     "moment": "^2.17.1",
     "moment-duration-format": "^1.3.0",

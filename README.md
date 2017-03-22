@@ -25,14 +25,14 @@ You can either run this to get the database up:
 
 `docker run -p 5432:5432 -d --name 'pace-postgres' -e POSTGRES_PASSWORD='pgtester' -e POSTGRES_DB='pace' -e POSTGRES_USER='pgtester' postgres`
 
-or just do `gulp start-database`.
+or just do `gulp start-db`.
 
 Whenever you start a fresh postgres instance, don't forget to initialize the
 pace db - just execute `gulp create-db`.
 
 To look at the db in your terminal, just connect to the postgres container  via `docker exec -it -u postgres pace-postgres psql`. If you use other name for the container (e.g. `gulp start-db` will result in one that is randomly generated), adapt the exec command.
 ### Pace-App
-Pace-App is currently based on [express.js](http://expressjs.com/) and [node](https://nodejs.org), therefore you will need both on your machine. .
+Pace-App is currently based on [express.js](http://expressjs.com/) and [node](https://nodejs.org), therefore you will need both on your machine.
 * To install node, we recommend to use *nvm*. Look [here](https://github.com/creationix/nvm) for instructions.
 * To get all the other dependencies and be able to start **pace** locally, just navigate to the pace folder and run: `npm install`
 * To install selenium: `gulp selenium-install`

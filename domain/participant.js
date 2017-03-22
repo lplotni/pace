@@ -32,7 +32,7 @@ participant.from = (body) => {
     discount: _.isUndefined(body.discount) ? 'no' : body.discount,
     couponcode: body.couponcode,
     category: body.category,
-    birthyear: _.isInteger(body.birthyear) ? body.birthyear : '0',
+    birthyear: _.isFinite(_.toNumber(body.birthyear)) ? _.toNumber(body.birthyear) : '0',
     team: body.team,
     tshirt: tshirt.from(body),
     goal: body.goal

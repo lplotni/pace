@@ -16,8 +16,8 @@ script:
 - gulp test
 - gulp test-integration
 - gulp test-functional
-after_success:
-- .travis/deploy.sh
+#after_success:
+#- .travis/deploy.sh
 #  run:
 #  - db-migrate -e prod -v up
 #  - restart

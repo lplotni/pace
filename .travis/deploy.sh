@@ -11,4 +11,4 @@ then
 fi
 
 heroku plugins:install heroku-container-registry
-heroku container:push web
+heroku container:push web --app dev-pace

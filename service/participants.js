@@ -203,6 +203,17 @@ participants.markPayed = (participantId) => {
       return participantId;
     });
 };
+participants.markPayedByToken = (token) => {
+  return db.update('update participants SET has_payed = true, confirmation_time = current_timestamp(2) WHERE paymenttoken = $1 returning id', [token])
+    .then(result => {
+      if (result < 1) {
+        throw new Error('Es konnte kein Teilnehmer mit ID: ' + participantId + ' gefunden werden.');
+      }
+      return result;
+    });
+
+};
+
 
 participants.updateTime = (startnumber, finishtime) => {
   return participants.get.byStartnumber(startnumber)

@@ -39,12 +39,13 @@ describe('token service', () => {
     });
 
     describe('createUnique()', () => {
-      it('returns a string with 5 upper case characters', (done) => {
+      it('returns a string with 5 upper case characters starting with LGR-', (done) => {
 
         tokens.createUnique()
           .then((uniqueToken) => {
-            expect(uniqueToken.length).toBe(5);
+            expect(uniqueToken.length).toBe(9);
             expect(uniqueToken).toBe(uniqueToken.toUpperCase());
+            expect(uniqueToken.substring(0,4)).toBe('LGR-');
             done();
           })
           .catch(done.fail);

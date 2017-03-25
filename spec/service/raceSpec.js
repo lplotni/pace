@@ -30,9 +30,17 @@ describe('race service', () => {
     mockery.disable();
   });
 
+  it('opens payment csv files', (done) => {
+    race.parsePaymentCSV('spec/statement_example.csv')
+      .then((data) => {
+        expect(data[0]).toBe('THISISATOKEN');
+        done();
+      })
+      .catch(done.fail);
+  });
 
-  it('opens csv files', (done) => {
-    race.parse('spec/service/results.csv')
+  it('opens result csv files', (done) => {
+    race.parseResultCSV('spec/service/results.csv')
       .then((data) => {
         expect(data[1]).toBe('09:24:04');
         done();

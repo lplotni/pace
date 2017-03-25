@@ -104,6 +104,19 @@ describe('admin page', () => {
       .end(done);
   });
 
+  it('should import bank statement csv and display result', (done) => {
+    givenAValidUserExists().then(() => {
+      loginAdmin().url(helper.paceUrl + 'admin/participants')
+        .chooseFile('#statement-file-chooser','./spec/statement_example.csv')
+        .click('button#import-statement')
+        .isVisible('td.token=LGR-ABCDE')
+        .then(function (isVisible) {
+          expect(isVisible).toBe(true);
+        })
+        .end(done);
+      });
+  });
+ 
   it('should redirect to login page if the user is not logged in', (done) => {
     helper.setUpClient().url(helper.paceUrl + 'admin')
       .isVisible('form#loginForm')
@@ -133,7 +146,7 @@ describe('admin page', () => {
       birthyear: 1980,
       team: 'Crazy runners',
       visibility: 'no'
-    }).withToken(randomString).withSecureId('secureIdForTheEditLink').withStartNr(10);
+    }).withToken('LGR-ABCDE').withSecureId('secureIdForTheEditLink').withStartNr(10);
 
     return participants.save(aParticipant);
   }

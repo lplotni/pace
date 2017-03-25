@@ -46,7 +46,7 @@ router.post('/import', isAuthenticated, (req, res) => {
   const form = new multiparty.Form();
   form.parse(req);
   form.on('file', function (name, file) {
-    race.import(file.path);
+    race.importTimes(file.path);
   });
   form.on('close', function () {
     res.redirect('/admin/after');

@@ -1,0 +1,15 @@
+extends ../adminLayout.pug
+
+block content
+
+  h3#Neue Zahlungen importiert
+  table.u-full-width.compact
+    thead
+      tr
+        th Token
+        th ID
+    tbody
+      each p in participants
+        tr.token-line
+        td.token=p[0]
+        td.participant=p[1]

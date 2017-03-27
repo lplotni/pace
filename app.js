@@ -35,6 +35,10 @@ let csrf = require('csurf');
 
 let app = express();
 
+const Redis = require('ioredis');
+const redis = new Redis(6379, 'redis');
+
+
 app.locals.node_env = process.env.NODE_ENV;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -58,6 +62,10 @@ app.use("/api", function(err, req, res, next){
   res.send({
     message: 'Internal Error'
   });
+});
+
+app.use('/msg', (req, res, next) => {
+  redis.publish('info','Hello');
 });
 
 // authentication using passport needs to be initialized before the routing setup

@@ -256,10 +256,10 @@ participants.bulkmail = () => {
   participants.get.confirmed().then(confirmed => {
     participants.get.registered().then(unconfirmed => {
       _.forEach(confirmed, participant => {
-        sendConfirmationMailTo(participant);
+        sendInfoMailTo(participant);
       });
       _.forEach(unconfirmed, participant => {
-        sendConfirmationMailTo(participant);
+        sendInfoMailTo(participant);
       });
       deferred.resolve();
     });
@@ -268,20 +268,8 @@ participants.bulkmail = () => {
   return deferred.promise;
 };
 
-participants.confirmationMail = (id) => {
-    const deferred = Q.defer();
-
-    participants.get.byId(id).then((participant) => {
-        sendConfirmationMailTo(participant);
-        deferred.resolve();
-    })
-    .fail(deferred.reject);
-
-    return deferred.promise;
-};
-
-function sendConfirmationMailTo(participant) {
-    mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');
+function sendInfoMailTo(participant) {
+    mails.sendStatusEmail(participant, 'Lauf gegen Rechts - Infos zum Lauf', 'views/participants/bulkmail.pug');
 }
 
 module.exports = participants;

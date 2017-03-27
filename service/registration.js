@@ -57,7 +57,7 @@ registration.confirm = (participantId) => {
   return deferred.promise;
 };
 
-function sendConfirmationMail(participant, paymentToken) {
+registration.sendConfirmationMail = (participant, paymentToken) => {
   pug.renderFile('views/registration/confirmationText.pug',
     {
       name: participant.firstname,
@@ -68,10 +68,10 @@ function sendConfirmationMail(participant, paymentToken) {
       startnr: participant.start_number
     },
     (error, html) => {
-      mails.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
+      return mails.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
     }
   );
-}
+};
 
 registration.start = (participant) => {
   const deferred = Q.defer();
@@ -95,7 +95,7 @@ registration.start = (participant) => {
               if (calculator.priceFor(p) === 0) {
                 participants.markPayed(id);
               }
-              sendConfirmationMail(p, paymentToken);
+              registration.sendConfirmationMail(p, paymentToken);
               deferred.resolve({'id': id, 'token': paymentToken, secureid: p.secureID, startnr: p.start_number});
 
               couponcodes.markAsUsed(participant.couponcode);

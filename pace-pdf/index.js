@@ -1,3 +1,7 @@
+/* jshint node: true */
+/* jshint esnext: true */
+'use strict';
+
 const Redis = require('ioredis');
 const redis = new Redis(6379, 'redis');
 

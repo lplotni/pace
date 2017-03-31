@@ -4,11 +4,8 @@ set -e # Abort script at first error
 set -u # Disallow unset variables
 
 # Only run when not part of a pull request and on the master branch
-if [ $TRAVIS_PULL_REQUEST != "false" -o $TRAVIS_BRANCH != "master" ]
+if [ $TRAVIS_BRANCH = "master" ]
 then
-    echo "Skipping deployment on branch=$TRAVIS_BRANCH, PR=$TRAVIS_PULL_REQUEST"
-    exit 0;
+  docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  docker push lplotni/pace
 fi
-
-heroku plugins:install heroku-container-registry
-heroku container:push web --app dev-pace

@@ -16,13 +16,5 @@ script:
 - gulp test
 - gulp test-integration
 - gulp test-functional
-#after_success:
-#- .travis/deploy.sh
-#  run:
-#  - db-migrate -e prod -v up
-#  - restart
-#  api_key:
-#    secure: sZpUDrtOmEiLP9WC8nPU/mMoDLrL/B3zV6qj8BiuSihDFnTpCWwyiGeU98HxBCK4/QmiwoRKSijswBWnqeXGrK0+zVwXbqWNHf4z/pK4UCZK2f1YVsXAPF7mUS41NRBLcHls/CF+AsLU7h1C5ZD79+m2QcT8ZdrWBgpztLx4LtqS772L1Ep7X2IiKvdW+Ik7Z/9onFfyZwr61idoqrDjvedGNlQqdqvzMwlgB0HLW7CHlXd+Q5Xrq9niIB9zKrjXrDMokoMi5/BUi6jQVIsSGr3Kxb9zQ2gzE22CxyFquAy2ahyOeTl+ikaJryHV/WzRRS0NZRY5m9mMPlfYtX59j7QYF+yJfGNGpiaKN7uOtF3IM34CVG7n80avFfZkTyx0Ec7VhFlNiCoqzZX9jZ51SIHI5viPhYHcHu7w92YP6eAaP30o8Idh7osA3TWf37i8h97TsnSg5La4VzUcKHqZdVjp0GpcnAW28xT8F2e4sYSxbeVquGV5pdlqGiH8Eqt2hvMig2AA0hboRt4wmE3lzhEvumKDtuGIg196+NnhiiNQlQL9Zy8GeXUBFO0bNEvz/sEjYMjxgZflUxvEvYJO0lpcA/f9jMcW1xz4mzgQS1G4F3E/qjmEOzs423MaJnLgjtU9kULzFoXTtQtxpVql4bqH4QA+r7ADKhx7U2MHUH0=
-
-
-
+after_success:
+- .travis/deploy.sh

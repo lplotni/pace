@@ -15,5 +15,5 @@ then
   docker push lplotni/pace-pdf
 
   scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i do_deploy docker-compose-do.yml root@207.154.246.48:/tmp/
-  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i do_deploy root@207.154.246.48 "docker-compose -f /tmp/docker-compose-do.yml restart"
+  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i do_deploy root@207.154.246.48 "cd /tmp; docker-compose docker-compose-do.yml restart"
 fi

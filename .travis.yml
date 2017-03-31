@@ -1,10 +1,12 @@
 sudo: required
 language: node_js
 node_js:
-- '7.7.1'
+- 7.7.1
 services:
 - docker
 before_install:
+- openssl aes-256-cbc -K $encrypted_53ec6a2573a1_key -iv $encrypted_53ec6a2573a1_iv
+  -in do_deploy.enc -out do_deploy -d
 - sudo service postgresql stop
 - docker-compose up -d
 - docker ps -a
@@ -17,4 +19,4 @@ script:
 - gulp test-integration
 - gulp test-functional
 after_success:
-- .travis/deploy.sh
+- ".travis/deploy.sh"

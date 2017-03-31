@@ -16,6 +16,15 @@ gulp.task('test', function () {
   }
 });
 
+gulp.task('test-integration', function () {
+  if (argv.single) {
+    return gulp.src([argv.single]).pipe(jasmine({verbose: true}));
+  } else {
+    return gulp.src('spec/**/*IT*.js').pipe(jasmine({verbose: true}));
+  }
+});
+
+
 gulp.task('lint', () => {
   return gulp.src(['app.js', './spec/**/*.js', './service/**/*.js', './routes/**/*.js', './domain/**/*.js'])
     .pipe(jshint())

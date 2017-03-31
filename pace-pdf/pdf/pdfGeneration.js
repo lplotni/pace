@@ -3,20 +3,15 @@
 'use strict';
 
 const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const config = require('config');
+
 const qr = require('qr-image');
-const _ = require('lodash');
-const Q = require('q');
-const moment = require('moment');
-require("moment-duration-format");
-const tshirts = require('../service/tshirts');
 const barcode = require("rescode");
-const race = require('../service/race');
 
 let pdfGeneration = {};
 
-const fileName = 'start_numbers.pdf';
 const pathToBackgroundImage = '/images/background_light.jpg';
-const pathToCertificateBackgroundImage = '/images/certificate_background.jpg';
 const pathToLogoLeft = '/images/lauf_gegen_rechts_logo.jpg';
 const pathToLogoRight = '/images/fc_st_pauli_marathon_logo.png';
 const checkmarkSymbolSvg = 'M7.375,25 c0,0,10,11.375,14.125,11.375S44.875,8,44.875,8';
@@ -39,7 +34,15 @@ pdfGeneration.addQrCodeWithSelfServiceLink = (doc, selfServiceUrl) => {
     .fill('black', 'even-odd');
 };
 
+pdfGeneration.generate = (startNumberData) => {
+  let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
+  doc.pipe(fs.createWriteStream(config.get('pdfPath')+startNumberData.startNumber+'.pdf'));
+  pdfGeneration.createStartNumberPage(doc, startNumberData);
+  doc.end();
+};
+
 pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
+
   doc.image(__dirname + pathToBackgroundImage, {fit: [800, 800]});
   doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [130, 130]});
   doc.image(__dirname + pathToLogoRight, 475, 20, {fit: [100, 100]});

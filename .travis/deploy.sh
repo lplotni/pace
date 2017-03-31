@@ -13,4 +13,7 @@ then
   docker tag pace_pace-pdf lplotni/pace-pdf:latest
   docker tag pace_pace-pdf lplotni/pace-pdf:$TRAVIS_COMMIT
   docker push lplotni/pace-pdf
+
+  scp -i do_deploy docker-compose-do.yml root@46.101.192.146:/tmp/
+  ssh -i do_deploy root@46.101.192.146 "docker-compose -f /tmp/docker-compose-do.yml restart"
 fi

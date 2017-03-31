@@ -1,0 +1,28 @@
+db:  
+  image: postgres
+  ports:
+    - "5432:5432"
+  environment:
+    - POSTGRES_USER=pgtester
+    - POSTGRES_PASSWORD=pgtester
+    - POSTGRES_DB=pace
+redis:
+  image: redis
+pace-pdf:
+  image: lplotni/pace-pdf
+  links:
+    - redis
+  volumes:
+    - data-volume:/pdf
+pace-app:  
+  image: lplotni/pace-app
+  ports:
+    - "3000:3000"
+  volumes:
+    - data-volume:/pdf
+  links:
+    - db
+    - redis
+  environment:
+    - DATABASE_URL=postgres://pgtester:pgtester@db/pace
+    - REDISHOST=redis

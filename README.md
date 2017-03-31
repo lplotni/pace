@@ -7,7 +7,7 @@ Pace is a registration and management application for running events and competi
 ## Features
 The list of our issues/features can be found on our [trello board](https://trello.com/b/1gaDEa3O/pace-board).
 ## Demo
-You can check out the latest version of the app on heroku: [https://dev-pace.herokuapp.com/](https://dev-pace.herokuapp.com/)
+You can check out the latest version of the app on our development environemt: [https://dev.lauf-gegen-rechts.de/](https://dev.lauf-gegen-rechts.de/)
 ## Dev Setup
 All the parts of pace are [docker](https://www.docker.com/) containers and can be brought to live by
 executing the `docker-compose up` cmd. Pace will be reachable under

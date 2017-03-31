@@ -16,6 +16,6 @@ before_script:
 - gulp selenium-install
 - "./node_modules/db-migrate/bin/db-migrate up"
 script:
-- "run_all_tests.sh"
+    - "./run_all_tests.sh"
 after_success:
 - ".travis/deploy.sh"

@@ -3,10 +3,6 @@
 'use strict';
 
 const Redis = require('ioredis');
-const redis = new Redis(6379, 'redis');
+const pdfRequests = require('./pdfRequests');
 
-redis.subscribe('pdf', 'info', (err, count) => {});
-
-redis.on('message', (channel, message) => {
-    console.log(`Receive message ${message} from channel ${channel}`);
-});
+pdfRequests.setup(new Redis(6379, 'redis'));

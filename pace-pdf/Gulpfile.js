@@ -32,4 +32,4 @@ gulp.task('lint', () => {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('default', shell.task(['node index.js']));
+gulp.task('default', shell.task(['node appapp.js']));

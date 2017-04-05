@@ -5,7 +5,7 @@
   "author": "",
   "private": true,
   "scripts": {
-    "start": "node index.js",
+    "start": "node app.js",
     "test": "gulp test && gulp test-integration && gulp test-functional"
   },
   "engines": {

@@ -34,37 +34,48 @@ describe('api journey', () => {
       discount: 'yes'
     }).withStartNr(42).withStartBlock(1);
 
-    let headers = { 'X-Pace-Token': config.get('admin.token')};
-    let form = { 'startnumber': 42, 'time': 123};
+    let headers = {'X-Pace-Token': config.get('admin.token')};
+    let form = {'startnumber': 42, 'time': 123};
     let url = helper.paceUrl + 'api/scan';
 
     it('allows to send finish times', (done) => {
       participants.save(aParticipant)
         .then(() => {
-          request.post({url: url, headers: headers, form: form}, (err,response) =>{
+          return race.setStartTime({
+            block1: 36000,
+            block2: 37200
+          });
+        })
+        .then(() => {
+          request.post({url: url, headers: headers, form: form}, (err, response) => {
             expect(response.statusCode).toBe(200);
             done();
           });
-        });
+        })
+        .catch(done.fail);
     });
+
     it('only allows to send finish times with correct token', (done) => {
       participants.save(aParticipant)
         .then(() => {
-          request.post({url: url, formj: form}, (err,response) =>{
+          request.post({url: url, form: form}, (err, response) => {
             expect(response.statusCode).toBe(403);
             done();
           });
-        });
+        })
+        .catch(done.fail);
     });
+
     it('returns error if user not found', (done) => {
       participants.save(aParticipant)
         .then(() => {
-          let form = { 'startnumber': 1234000, 'time': 123};
-          request.post({url: url, headers: headers, form: form}, (err,response) =>{
+          let form = {'startnumber': 1234000, 'time': 123};
+          request.post({url: url, headers: headers, form: form}, (err, response) => {
             expect(response.statusCode).toBe(404);
             done();
           });
-        });
+        })
+        .catch(done.fail);
     });
   });
 
@@ -89,7 +100,7 @@ describe('api journey', () => {
       length: 5,
       search: {value: 'Crazy runn'},
       order: [{column: 0, dir: 'asc'}],
-      columns: [{data: 'START_NUMBER'}], 
+      columns: [{data: 'START_NUMBER'}],
       draw: 4711,
     };
 
@@ -97,7 +108,7 @@ describe('api journey', () => {
       participants.save(aParticipant)
         .then(participants.markPayed)
         .then(() => {
-          request.get({url, qs}, (err,response) =>{
+          request.get({url, qs}, (err, response) => {
             expect(response.statusCode).toBe(200);
             const result = JSON.parse(response.body);
             expect(result.draw).toBe('4711');
@@ -111,15 +122,16 @@ describe('api journey', () => {
             }));
             done();
           });
-        });
+        })
+        .catch(done.fail);
     });
 
     it('should return no participants due to a non-matching filter', (done) => {
-      qs = Object.assign({}, qs, { search: { value: 'XYZ'} });
+      qs = Object.assign({}, qs, {search: {value: 'XYZ'}});
       participants.save(aParticipant)
         .then(participants.markPayed)
         .then(() => {
-          request.get({url, qs}, (err,response) =>{
+          request.get({url, qs}, (err, response) => {
             expect(response.statusCode).toBe(200);
             const result = JSON.parse(response.body);
             expect(result.recordsTotal).toBe(1);
@@ -127,17 +139,19 @@ describe('api journey', () => {
             expect(result.data.length).toBe(0);
             done();
           });
-        });
+        })
+        .catch(done.fail);
     });
 
     it('should fail without parameters', (done) => {
       participants.save(aParticipant)
         .then(() => {
-          request.get(url, (err,response) =>{
+          request.get(url, (err, response) => {
             expect(response.statusCode).toBe(500);
             done();
           });
-        });
+        })
+        .catch(done.fail);
     });
   });
 
@@ -167,7 +181,7 @@ describe('api journey', () => {
       length: 5,
       search: {value: 'Crazy runn'},
       order: [{column: 0, dir: 'asc'}],
-      columns: [{data: 'START_NUMBER'}], 
+      columns: [{data: 'START_NUMBER'}],
       draw: 4711,
     };
 
@@ -177,7 +191,7 @@ describe('api journey', () => {
         .then(() => race.setStartTime(startTimes))
         .then(() => participants.insertTime(42, time))
         .then(() => {
-          request.get({url, qs}, (err,response) =>{
+          request.get({url, qs}, (err, response) => {
             expect(response.statusCode).toBe(200);
             const result = JSON.parse(response.body);
             expect(result.draw).toBe('4711');
@@ -196,13 +210,13 @@ describe('api journey', () => {
     });
 
     it('should return no results due to a non-matching filter', (done) => {
-      qs = Object.assign({}, qs, { search: { value: 'XYZ'} });
+      qs = Object.assign({}, qs, {search: {value: 'XYZ'}});
       participants.save(aParticipant)
         .then(participants.markPayed)
         .then(() => race.setStartTime(startTimes))
         .then(() => participants.insertTime(42, time))
         .then(() => {
-          request.get({url, qs}, (err,response) =>{
+          request.get({url, qs}, (err, response) => {
             expect(response.statusCode).toBe(200);
             const result = JSON.parse(response.body);
             expect(result.recordsTotal).toBe(1);
@@ -210,13 +224,14 @@ describe('api journey', () => {
             expect(result.data.length).toBe(0);
             done();
           });
-        });
+        })
+        .catch(done.fail);
     });
 
     it('should fail without parameters', (done) => {
       participants.save(aParticipant)
         .then(() => {
-          request.get(url, (err,response) =>{
+          request.get(url, (err, response) => {
             expect(response.statusCode).toBe(500);
             done();
           });

@@ -15,7 +15,7 @@ let race = {};
 
 race.startTime = () => {
   return db.select("select data->>'startTimes' as times from race;").then(result => {
-    if (result[0].times) { //simplify those if's TODO
+    if (!_.isEmpty(result) && result[0].times) { //simplify those if's TODO
       let times = JSON.parse(result[0].times);
       if (_.isNumber(_.toInteger(times.block1))) {
         return times;
@@ -28,9 +28,9 @@ race.startTime = () => {
 
 race.startTimesAsHHMM = () => {
   return race.startTime().then(times => {
-   return {
-     block1: moment.duration(times.block1,'seconds').format("hh:mm", { trim: false}),
-     block2: moment.duration(times.block2,'seconds').format("hh:mm", { trim: false}),
+    return {
+      block1: moment.duration(times.block1, 'seconds').format("hh:mm", {trim: false}),
+      block2: moment.duration(times.block2, 'seconds').format("hh:mm", {trim: false}),
     };
   });
 };
@@ -94,7 +94,7 @@ race.results = (category, agegroup_start, agegroup_end) => {
       race.startTime()
         .then(startTimes => {
           _.forEach(result, participant => {
-            participant.timestring = moment.duration(_.toNumber(participant.seconds),'seconds').format("hh:mm:ss", { trim: false} );
+            participant.timestring = moment.duration(_.toNumber(participant.seconds), 'seconds').format("hh:mm:ss", {trim: false});
             participant.place = place++;
           });
           deferred.resolve(result);
@@ -128,7 +128,7 @@ race.resultsForDataTables = (start, length, search, orderText, category, agegrou
       race.startTime()
         .then(startTimes => {
           _.forEach(result, participant => {
-            participant.timestring = moment.duration(_.toNumber(participant.seconds),'seconds').format("hh:mm:ss", { trim: false} );
+            participant.timestring = moment.duration(_.toNumber(participant.seconds), 'seconds').format("hh:mm:ss", {trim: false});
           });
           deferred.resolve(result);
         }).catch(deferred.reject);

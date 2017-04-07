@@ -43,12 +43,6 @@ describe('api journey', () => {
       startBlocks.add('0','test Block');
       participants.save(aParticipant)
         .then(() => {
-          return race.setStartTime({
-            block1: 36000,
-            block2: 37200
-          });
-        })
-        .then(() => {
           request.post({url: url, headers: headers, form: form}, (err, response) => {
             expect(response.statusCode).toBe(200);
             done();

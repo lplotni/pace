@@ -1,4 +1,6 @@
 # pace
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/lplotni/pace.svg)](https://greenkeeper.io/)
 Pace is a registration and management application for running events and competitions.
 [![Build Status](https://travis-ci.org/lplotni/pace.svg?branch=master)](https://travis-ci.org/lplotni/pace)
 [![Build Status](https://travis-ci.org/cz8s/pace.svg?branch=master)](https://travis-ci.org/cz8s/pace)

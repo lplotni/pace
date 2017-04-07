@@ -11,11 +11,6 @@ const race = require('../../service/race');
 const startblocks = require('../../service/startblocks');
 //TODO Rename the whole file  -> Race? Results?
 router.get('/', isAuthenticated, (req, res) => {
-  race.hasStarted()
-    .then((result) => {
-      if (result === true) {
-        race.startTime()
-          .then((times) => {
             startblocks.get()
               .then((blocks) => {
                 res.render('admin/after', {
@@ -24,11 +19,6 @@ router.get('/', isAuthenticated, (req, res) => {
                   csrf: req.csrfToken()
                 });
               });
-            });
-      } else {
-        res.render('admin/after', {hours: '', minutes: '', seconds: '', isAdmin: true, csrf: req.csrfToken()});
-      }
-    });
 });
 
 function extractTimes(req) { //TODO pull into the 'proper' object

@@ -10,6 +10,7 @@ describe('race service', () => {
   const race = require('../../service/race');
   const participant = require('../../domain/participant');
   const participants = require('../../service/participants');
+  const startBlocks = require('../../service/startblocks');
 
   beforeAll((done) => {
     helper.setupDbConnection(done);
@@ -17,46 +18,6 @@ describe('race service', () => {
 
   afterAll((done) => {
     helper.closeDbConnection(done);
-  });
-
-  it('should return false if the race has not yet started', (done) => {
-    race.resetStarttime()
-      .then(race.hasStarted)
-      .then((result) => {
-        expect(result).toBe(false);
-        done();
-      })
-      .catch(done.fail);
-  });
-
-  it('should return true if the race has started', (done) => {
-    let startTimes = {
-      block1: 36000,
-      block2: 37200
-    };
-
-    race.setStartTime(startTimes)
-      .then(race.hasStarted)
-      .then(function (result) {
-        expect(result).toBe(true);
-        done();
-      })
-      .catch(done.fail);
-  });
-
-  it('should store and read race start times', (done) => {
-    let startTimes = {
-      block1: 36000,
-      block2: 37200
-    };
-    race.setStartTime(startTimes)
-      .then(race.startTime)
-      .then((result) => {
-        expect(startTimes.block1).toEqual(result.block1);
-        expect(startTimes.block2).toEqual(result.block2);
-        done();
-      })
-      .catch(done.fail);
   });
 
 
@@ -77,32 +38,28 @@ describe('race service', () => {
         birthyear: 1987
       })
       .withToken('sectoken 1')
-      .withStartBlock(1)
+      .withStartBlock(0)
       .withStartNr(10);
     const aParticipantWithDifferentCategory = participant.from(aParticipant)
       .with({
         category: 'Horse'
       })
       .withToken('sectoken 2')
-      .withStartBlock(1)
+      .withStartBlock(0)
       .withStartNr(11);
     const aParticipantWithDifferentTeam = participant.from(aParticipant)
       .with({
         team: 'Team 4711'
       })
       .withToken('sectoken 3')
-      .withStartBlock(1)
+      .withStartBlock(0)
       .withStartNr(12);
 
     beforeAll((done) => {
       let time = '10:32:02';
       let nr = 1;
-      let startTimes = {
-        block1: 36000,
-        block2: 37200
-      };
-      participants.save(aParticipant.withStartNr(nr).withStartBlock(1))
-        .then(() => race.setStartTime(startTimes))
+      participants.save(aParticipant.withStartNr(nr).withStartBlock(0))
+        .then(() => startBlocks.add( '36000', 'startblock 1'))
         .then(() => participants.insertTime(nr, time))
         .then(() => participants.save(aParticipantWithDifferentAge))
         .then(() => participants.insertTime(aParticipantWithDifferentAge.start_number,

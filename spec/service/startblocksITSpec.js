@@ -30,5 +30,17 @@ describe('startblock service', () => {
       })
       .catch(done.fail);
    });
+  it('should return startblock times as an array', (done) => {
+    let name = 'My first startblock';
+    let time = '3600';
+    startblocks.add(time,name)
+      .then(startblocks.times) 
+      .then(function(data) {
+        expect(data[0]).toBe(time);
+        done();
+      })
+      .catch(done.fail);
+   });
+
 })
 ;

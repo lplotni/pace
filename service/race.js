@@ -13,41 +13,6 @@ const queryHelper = require('./util/queryHelper');
 
 let race = {};
 
-race.startTime = () => {
-  return db.select("select data->>'startTimes' as times from race;").then(result => {
-    if (!_.isEmpty(result) && result[0].times) { //simplify those if's TODO
-      let times = JSON.parse(result[0].times);
-      if (_.isNumber(_.toInteger(times.block1))) {
-        return times;
-      }
-      throw new Error(`StartTime.block1 not set or not a valid number: ${times.block1}`);
-    }
-    throw new Error(`No start time information`);
-  });
-};
-
-race.startTimesAsHHMM = () => {
-  return race.startTime().then(times => {
-    return {
-      block1: moment.duration(times.block1, 'seconds').format("hh:mm", {trim: false}),
-      block2: moment.duration(times.block2, 'seconds').format("hh:mm", {trim: false}),
-    };
-  });
-};
-
-race.setStartTime = (times) => {
-  return db.update(`UPDATE race SET data = jsonb_set(data, '{startTimes}','{"block1": ${times.block1}, "block2": ${times.block2}}');`);
-};
-
-race.hasStarted = () => { //rename to something different?
-  return db.select("SELECT data->'startTimes'->>'block1' as block1 FROM race;")
-    .then(result => !_.isEmpty(result[0].block1));
-};
-
-race.resetStarttime = () => {
-  return db.update(`UPDATE race SET data = jsonb_object('{"is_closed",false}')`);
-};
-
 race.parse = (file) => {
   const deferred = Q.defer();
   var results = {};
@@ -91,16 +56,12 @@ race.results = (category, agegroup_start, agegroup_end) => {
   db.select(query)
     .then((result) => {
       var place = 1;
-      race.startTime()
-        .then(startTimes => {
-          _.forEach(result, participant => {
-            participant.timestring = moment.duration(_.toNumber(participant.seconds), 'seconds').format("hh:mm:ss", {trim: false});
-            participant.place = place++;
-          });
-          deferred.resolve(result);
-        }).catch(deferred.reject);
+      _.forEach(result, participant => {
+        participant.timestring = moment.duration(_.toNumber(participant.seconds),'seconds').format("hh:mm:ss", { trim: false} );
+        participant.place = place++;
+      });
+      deferred.resolve(result);
     }).catch(deferred.reject);
-
   return deferred.promise;
 };
 
@@ -125,13 +86,10 @@ race.resultsForDataTables = (start, length, search, orderText, category, agegrou
 
   const pagedSelectModifier =
     (result, deferred) => {
-      race.startTime()
-        .then(startTimes => {
-          _.forEach(result, participant => {
-            participant.timestring = moment.duration(_.toNumber(participant.seconds), 'seconds').format("hh:mm:ss", {trim: false});
-          });
-          deferred.resolve(result);
-        }).catch(deferred.reject);
+      _.forEach(result, participant => {
+        participant.timestring = moment.duration(_.toNumber(participant.seconds),'seconds').format("hh:mm:ss", { trim: false} );
+      });
+      deferred.resolve(result);
     };
 
   return db.selectForDataTables(queries, search, pagedSelectModifier);

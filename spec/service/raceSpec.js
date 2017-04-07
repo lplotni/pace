@@ -39,16 +39,4 @@ describe('race service', () => {
       })
       .catch(done.fail);
   });
-
-  it('returns also formated HH:MM startTimes', (done) => {
-
-    const startTimes = [ { times: `{"block1": 36000, "block2": 37200}` } ];
-    dbMock.select.and.returnValue(Q.fcall(() => startTimes));
-
-    race.startTimesAsHHMM().then(formattedTimed => {
-      expect(formattedTimed.block1).toBe('10:00');
-      expect(formattedTimed.block2).toBe('10:20');
-      done();
-    }).catch(done.fail);
-  });
 });

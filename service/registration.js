@@ -24,7 +24,7 @@ const registration = {};
 registration.isClosed = () => {
   return db.select("SELECT data->>'is_closed' as is_closed FROM race;")
     .then(result => {
-      return result[0].is_closed === 'true';
+      return _.isEmpty(result) || result[0].is_closed === 'true';
     });
 };
 

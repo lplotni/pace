@@ -9,7 +9,7 @@ const db = require('./util/dbHelper');
 const mails = require('./util/mails');
 const tshirts = require('./tshirts');
 const startNumbers = require('./startNumbers');
-const startblocks = require('./startblocks');
+const startBlocks = require('./startblocks');
 const editUrlHelper = require('../domain/editUrlHelper');
 const timeCalculator = require('../domain/timeCalculator');
 const race = require('./race');
@@ -207,7 +207,7 @@ participants.markPayed = (participantId) => {
 participants.updateTime = (startnumber, finishtime) => {
   return participants.get.byStartnumber(startnumber)
     .then(participant => {
-      return race.startTime().then((startTimes) => {
+      return startBlocks.times().then((startTimes) => {
         let seconds = timeCalculator.relativeSeconds(startTimes,finishtime,participant.start_block);
         if ((finishtime <= participant.time ) || _.isEmpty(participant.time)) {
           return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [startnumber, finishtime, seconds]);

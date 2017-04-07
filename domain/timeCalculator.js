@@ -14,24 +14,13 @@ timeCalculator.timestamp = (timestring) => {
   return timestamp.asSeconds();
 };
 
-timeCalculator.getCorrectStartTime = (startTimes, block) => {
-  if (block === 1) {
-    return startTimes.block1;
-  }
-  if (block === 2) {
-    return startTimes.block2;
-  }
-  throw new Error(`Block not recognized: ${block}`);
-};
-
 timeCalculator.relativeTime = (startTimes, finishTime, block) => {
-  const relativeTime = moment.duration(
-    finishTime - timeCalculator.getCorrectStartTime(startTimes, block), 'seconds');
+  const relativeTime = moment.duration( finishTime - startTimes[block], 'seconds');
   return [relativeTime.hours(), relativeTime.minutes(), relativeTime.seconds()];
 };
 timeCalculator.relativeSeconds = (startTimes, finishTime, block) => {
   const relativeTime = moment.duration(
-    finishTime - timeCalculator.getCorrectStartTime(startTimes, block), 'seconds');
+    finishTime - startTimes[block], 'seconds');
   return relativeTime.asSeconds();
 };
 

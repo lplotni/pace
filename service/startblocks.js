@@ -31,6 +31,18 @@ startblocks.save = (req) => {
 
 };
 
+startblocks.times = () => {
+  return db.select('SELECT start_time from startblocks order by id')
+  .then((blocks) => {
+    _.each(blocks, (block, i) => {
+      blocks[i] = block.start_time;
+    });
+    return blocks;
+  });
+};
+
+
+
 startblocks.get = () => {
   return db.select('SELECT * from startblocks order by id').then((blocks) => {
     _.each(blocks, (block, i) => {
@@ -44,8 +56,7 @@ startblocks.get = () => {
 
 startblocks.assign = () => {
   const deferred = Q.defer();
-
-  Q.all([participants.confirmed(), participants.blancParticipants(), db.select('SELECT id from startblocks order by id limit 1')])
+  Q.all([participants.confirmed(), participants.blancParticipants(), db.select('SELECT id from startblocks')])
     .then((result) => {
     let totalAmount = result[0].length + result[1].length;
     let blocks = result[2];

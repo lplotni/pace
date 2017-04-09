@@ -53,15 +53,16 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    pdfGeneration.generateRegistered(res);
+      console.error('Currently disabled'); //todo
   }
 });
 
 router.post('/generate-on-site-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then(() => {
-      pdfGeneration.generateOnSite(res);
-    });
+      console.error('Currently disabled'); //todo
+    // participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then(() => {
+    //  pdfGeneration.generateOnSite();
+    //});
   }
 });
 

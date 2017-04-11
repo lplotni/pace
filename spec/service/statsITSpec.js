@@ -47,7 +47,6 @@ describe('admin service', () => {
                   .then(function (data) {
                     expect(data.length).toBe(1);
                     expect(data[0].size).toBe(aParticipant.tshirt.size);
-                    expect(data[0].category).toBe(aParticipant.category);
                     done();
                   });
               });

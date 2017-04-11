@@ -13,11 +13,10 @@ stats.shirtOrders = () => {
   return db.select(
     `SELECT tshirts.size AS size,
               tshirts.model,
-              count(participants.has_payed) AS amount,
-              participants.category AS category
+              count(participants.has_payed) AS amount
       FROM tshirts LEFT JOIN participants on participants.id = tshirts.participantid
       WHERE participants.has_payed=true 
-      GROUP BY tshirts.model, tshirts.size, participants.category;`
+      GROUP BY tshirts.model, tshirts.size;`
   );
 };
 

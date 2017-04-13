@@ -57,7 +57,7 @@
     "selenium-standalone": "^6.2.0",
     "wdio-jasmine-framework": "^0.3.0",
     "webdriverio": "=3.4.0",
-    "yargs": "^7.0.1"
+    "yargs": "^7.1.0"
   },
   "greenkeeper": {
     "ignore": [

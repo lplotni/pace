@@ -6,6 +6,7 @@ const router = require('express').Router();
 const config = require('config');
 const participants = require('../service/participants');
 const race = require('../service/race');
+const websocket = require('../routes/websocket');
 const _ = require('lodash');
 const validator = require('validator');
 
@@ -24,6 +25,11 @@ router.post('/scan',tokenValidator, (req, res) => {
     .then(participant => {
       participants.updateTimeForParticipant(participant,req.body.time)
         .then((result)  => {
+          let message = {
+            name: participant.firstname + " " + participant.lastname,
+            time: req.body.time
+          };
+          websocket.updateAllClients(message);
           res.setHeader('Content-Type', 'application/json');
           res.send(JSON.stringify({ status: 'OK' }));
         });

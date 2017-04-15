@@ -4,7 +4,7 @@
 
 let _ = require('lodash');
 
-let liveresults = (function () {
+let websocket = (function () {
 
   let connectClients = [];
 
@@ -16,9 +16,10 @@ let liveresults = (function () {
     _.remove(connectClients, value => ws === value);
   };
 
-  let updateAllClients = function(result) {
+  let updateAllClients = function(messageObject) {
+    let jsonMessage = JSON.stringify(messageObject);
     _.each(connectClients, (client) => {
-      client.send(result);
+      client.send(jsonMessage);
     });
   };
 
@@ -29,4 +30,4 @@ let liveresults = (function () {
   };
 })();
 
-module.exports = liveresults;
+module.exports = websocket;

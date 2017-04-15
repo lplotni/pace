@@ -30,10 +30,14 @@ let couponcodeRoute = require('./routes/admin/couponcodes');
 let resultRoute = require('./routes/results/results');
 let certificateRoute = require('./routes/certificate');
 
+let websocket = require("./routes/websocket");
+const liveResultRoute = "/live-results";
+
 let config = require('config');
 let csrf = require('csurf');
 
 let app = express();
+let WebSocketServer = require('ws').Server;
 
 app.locals.node_env = process.env.NODE_ENV;
 // view engine setup
@@ -126,6 +130,19 @@ app.use('/admin/participants', adminParticipantsRoute);
 app.use('/admin/editparticipant', adminEditParticipantRoute);
 app.use('/admin/after', adminAfterRoute);
 app.use('/admin/couponcodes', couponcodeRoute);
+
+/// Websocket initialization
+app.startWebSocketServer = (server) => {
+  let wss = new WebSocketServer({server: server, path: liveResultRoute });
+
+  wss.on('connection', (ws) => {
+    websocket.initClient(ws);
+
+    ws.on('close', () => {
+      websocket.closeClient(ws);
+    });
+  });
+};
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {

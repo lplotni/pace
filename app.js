@@ -21,6 +21,7 @@ let participantsRoute = require('./routes/participants/participants');
 let editParticipantRoute = require('./routes/participants/editParticipant');
 
 let adminRoute = require('./routes/admin/admin');
+let apiRoute = require('./routes/api');
 let adminParticipantsRoute = require('./routes/admin/participants');
 let adminEditParticipantRoute = require('./routes/admin/editParticipant');
 let adminAfterRoute = require('./routes/admin/after');
@@ -47,9 +48,17 @@ app.use(logger('tiny', {
   skip: (req, res) => { return res.statusCode < 400;}
 }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({'extended': false}));
+app.use(bodyParser.urlencoded({'extended': true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/api', apiRoute);
+app.use("/api", function(err, req, res, next){
+  res.status(err.status || 500);
+  res.send({
+    message: 'Internal Error'
+  });
+});
 
 // authentication using passport needs to be initialized before the routing setup
 app.use(require('express-session')(

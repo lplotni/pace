@@ -36,12 +36,6 @@ form#editParticipantForm(method='POST', action=formAction)
     .six.columns.padding
       label Deine Startnummer:
       p#startNumber #{participant.start_number}
-    .six.columns.padding
-      label Deine Startzeit:
-      span.small.slim.info Passe deinen Start-Block nur dann an, falls du tatsächlich nicht in dem ursprünglichen gestartet bist.
-      select#startBlock.u-full-width(name='startBlock')
-        option(value='1' selected=(participant.start_block == '1')) #{times.block1} / Block1
-        option(value='2' selected=(participant.start_block == '2')) #{times.block2} / Block2
   .row
     .twelve.columns.padding
       label Zahlungsstatus:

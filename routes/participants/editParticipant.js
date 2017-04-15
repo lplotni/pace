@@ -10,16 +10,14 @@ const editUrlHelper = require('../../domain/editUrlHelper');
 
 router.get('/:secureId', (req, res) => {
   const participantId = req.params.secureId;
-  race.startTimesAsHHMM().then(startTimes => {
-    participants.bySecureId(participantId)
-      .then(p => res.render('admin/participants/editParticipant', {participant: p, participantid: participantId, times: startTimes}))
+    participants.get.bySecureId(participantId)
+      .then(p => res.render('participants/editParticipant', {participant: p, participantid: participantId}))
       .catch(() =>
         res.render('error', {
           message: "Teilnehmer nicht bekannt",
           error: {status: "Möglicherweise wurde ein falscher Link verwendet"}
         })
       );
-  });
 });
 
 router.post('/', (req, res) => {

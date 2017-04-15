@@ -32,10 +32,10 @@ participant.from = (body) => {
     discount: _.isUndefined(body.discount) ? 'no' : body.discount,
     couponcode: body.couponcode,
     category: body.category,
-    birthyear: _.isInteger(body.birthyear) ? body.birthyear : '0',
+    birthyear: _.isFinite(_.toNumber(body.birthyear)) ? _.toNumber(body.birthyear) : '0',
     team: body.team,
     tshirt: tshirt.from(body),
-    start_block: body.startBlock
+    goal: body.goal
   };
   
   p.with = function (property) {
@@ -56,6 +56,10 @@ participant.from = (body) => {
   
   p.withStartBlock = (block) => {
    return p.with({start_block: block});
+  };
+
+  p.withRegistrationTime = (time) => {
+   return p.with({registrationTime: time});
   };
   
   return p;

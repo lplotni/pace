@@ -1,0 +1,34 @@
+{
+  "name": "pace-pdf",
+  "version": "0.0.1",
+  "description": "PDF generation service for pace",
+  "author": "",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "test": "gulp test && gulp test-integration && gulp test-functional"
+  },
+  "engines": {
+    "node": "7.7.1"
+  },
+  "dependencies": {
+    "config": "^1.24.0",
+    "ioredis": "^2.5.0",
+    "lodash": "^4.17.0",
+    "pdfkit": "~0.8.0",
+    "q": "^1.4.1",
+    "rescode": "~0.1.10",
+    "qr-image": "~3.2.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-jasmine": "^2.4.2",
+    "gulp-jshint": "^2.0.3",
+    "gulp-shell": "^0.6.1",
+    "gulp-util": "^3.0.7",
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.2.1",
+    "mockery": "^2.0.0",
+    "yargs": "^7.0.1"
+  }
+}

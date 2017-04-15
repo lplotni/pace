@@ -5,18 +5,21 @@
 const Q = require('q');
 const _ = require('lodash');
 
-const calculator = require('../domain/costCalculator');
 const db = require('./util/dbHelper');
 const mails = require('./util/mails');
 const tshirts = require('./tshirts');
 const startNumbers = require('./startNumbers');
+const startBlocks = require('./startblocks');
 const editUrlHelper = require('../domain/editUrlHelper');
 const timeCalculator = require('../domain/timeCalculator');
 const race = require('./race');
+const queryHelper = require('./util/queryHelper');
 
-let participants = {};
+let participants = {
+  get: {}
+};
 
-participants.allWithPaymentStatus = (paymentStatus) => {
+participants.get.allWithPaymentStatus = (paymentStatus) => {
   if (_.isUndefined(paymentStatus)) {
     return db.select('select * from participants where firstname != \'\' order by firstname,lastname');
   } else {
@@ -24,31 +27,74 @@ participants.allWithPaymentStatus = (paymentStatus) => {
   }
 };
 
-participants.registered = () => {
-  return participants.allWithPaymentStatus(false);
+participants.get.registered = () => {
+  return participants.get.allWithPaymentStatus(false);
 };
 
-participants.confirmed = () => {
-  return participants.allWithPaymentStatus(true);
+participants.get.confirmed = () => {
+  return participants.get.allWithPaymentStatus(true);
 };
 
-participants.blancParticipants = () => {
+participants.get.blancParticipants = () => {
   return db.select('select * from participants where is_on_site_registration = true');
 };
 
-participants.all = () => {
+participants.get.all = () => {
   return db.select('select * from participants');
 };
-participants.publiclyVisible = () => {
-  return participants.confirmed().then(confirmed =>
-    _.filter(confirmed, p => p.visibility === 'yes')
-  );
+
+participants.get.forDataTables = (start, length, search, ordering) => {
+  const queries = queryHelper.dataTablesQueries({
+    count: 'ID',
+    table: 'PARTICIPANTS',
+    baseFilter: `visibility = 'yes' and has_payed = true and firstname != ''`,
+    select: 'ID, START_NUMBER, FIRSTNAME, LASTNAME, TEAM',
+    filterColumns: ['FIRSTNAME', 'LASTNAME', 'TEAM'],
+    searchParamName: '$1',
+    paging: {offset: start, length: length},
+    ordering,
+  });
+
+  return db.selectForDataTables(queries, search);
+};
+
+participants.get.byId = (id) => {
+  return db.select('SELECT * FROM participants WHERE id = $1', [id])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
+participants.get.byStartnumber = (number) => {
+  return db.select('SELECT * FROM participants WHERE start_number = $1', [number])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
+};
+
+participants.get.bySecureId = (id) => {
+  return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
+    .then(result => {
+      if (_.isEmpty(result)) {
+        throw new Error('No participant found');
+      }
+      return result;
+    })
+    .then(result => result[0]);
 };
 
 participants.save = (participant) => {
   return db.insert(`INSERT INTO participants
-                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, couponcode)
-                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id`,
+                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, couponcode, goal, registration_time)
+                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning id`,
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -60,8 +106,11 @@ participants.save = (participant) => {
       participant.paymentToken,
       participant.secureID,
       participant.start_number,
-      participant.start_block,
-      participant.couponcode]
+      '0',
+      participant.couponcode,
+      participant.goal,
+      participant.registrationTime
+    ]
   );
 };
 
@@ -74,7 +123,7 @@ participants.saveBlancParticipants = (amount) => {
 };
 
 participants.choseStartBlock = (startNumber) => { //move this out of here TODO
-  return startNumber < 1001 ? 1 : 2;
+  return null;
 };
 
 participants.saveBlanc = (startnumber) => {
@@ -92,12 +141,13 @@ participants.saveBlanc = (startnumber) => {
     start_number: startnumber,
     start_block: participants.choseStartBlock(startnumber),
     is_on_site_registration: true,
-    has_payed: false //TODO false or true?
+    has_payed: false,
+    goal: 'relaxed'
   };
 
   return db.insert(`INSERT INTO participants
-                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, is_on_site_registration, has_payed)
-                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning id`,
+                    (firstname, lastname, email, category, birthyear, team, visibility,discount, paymenttoken, secureid, start_number, start_block, is_on_site_registration, has_payed, goal)
+                    values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning id`,
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -111,7 +161,9 @@ participants.saveBlanc = (startnumber) => {
       participant.start_number,
       participant.start_block,
       participant.is_on_site_registration,
-      participant.has_payed]
+      participant.has_payed,
+      participant.goal
+    ]
   );
 };
 
@@ -120,9 +172,9 @@ participants.delete = (participantid) => {
 };
 
 participants.update = (participant, id) => {
-    return db.update(`UPDATE participants SET 
+    return db.update(`UPDATE participants SET
                     (firstname, lastname, email, category, birthyear, team, visibility, start_block) =
-                    ($1, $2, $3, $4, $5, $6, $7, $8) 
+                    ($1, $2, $3, $4, $5, $6, $7, $8)
                     WHERE secureid = $9`,
     [participant.firstname,
      participant.lastname,
@@ -133,96 +185,39 @@ participants.update = (participant, id) => {
      participant.visibility,
      participant.start_block,
      id])
-    .then((participant) => {
-      participants.bySecureId(id).then( saved_participant => {
+    .then(() => {
+      participants.get.bySecureId(id).then( saved_participant => {
         if (saved_participant.time > 0) {
-          updateTime(saved_participant.start_number,saved_participant.time);
+          participants.updateTime(saved_participant.start_number,saved_participant.time);
         }
       });
     });
 };
 
-participants.byToken = (paymentToken) => {
-  return db.select('SELECT id, firstname, lastname FROM participants WHERE upper(paymenttoken) = $1', [paymentToken.toUpperCase()])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('Es konnte keine Registrierung mit Token ' + paymentToken + ' gefunden werden.');
-      }
-      return result;
-    })
-    .then(result => {
-      return {
-        name: result[0].lastname + ', ' + result[0].firstname,
-        amount: calculator.priceFor(result[0]),
-        id: result[0].id
-      };
-    })
-    .then(participantDetails => {
-        return tshirts.getFor(participantDetails.id)
-          .then(result => {
-            participantDetails.tshirt = result[0];
-            return participantDetails;
-          });
-      }
-    );
-};
-
-participants.byId = (id) => {
-  return db.select('SELECT * FROM participants WHERE id = $1', [id])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('No participant found');
-      }
-      return result;
-    })
-    .then(result => result[0]);
-};
-
-participants.byStartnumber = (number) => {
-  return db.select('SELECT * FROM participants WHERE start_number = $1', [number])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('No participant found');
-      }
-      return result;
-    })
-    .then(result => result[0]);
-};
-
-
-participants.bySecureId = (id) => {
-  return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
-    .then(result => {
-      if (_.isEmpty(result)) {
-        throw new Error('No participant found');
-      }
-      return result;
-    })
-    .then(result => result[0]);
-};
-
 participants.markPayed = (participantId) => {
-  return db.update('update participants SET has_payed = true WHERE id = $1', [participantId])
+  return db.update('update participants SET has_payed = true, confirmation_time = current_timestamp(2) WHERE id = $1', [participantId])
     .then(result => {
       if (result < 1) {
         throw new Error('Es konnte kein Teilnehmer mit ID: ' + participantId + ' gefunden werden.');
       }
+      return participantId;
     });
 };
 
-function updateTime(startnumber, finishtime) {
-  return participants.byStartnumber(startnumber)
+participants.updateTime = (startnumber, finishtime) => {
+  return participants.get.byStartnumber(startnumber)
     .then(participant => {
-      return race.startTime().then((startTimes) => {
+      return startBlocks.times().then((startTimes) => {
         let seconds = timeCalculator.relativeSeconds(startTimes,finishtime,participant.start_block);
         if ((finishtime <= participant.time ) || _.isEmpty(participant.time)) {
           return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [startnumber, finishtime, seconds]);
         }
       });
     });
-}
+};
+
 participants.insertTime = (startnumber, timestring) => {
-  return updateTime(startnumber, timeCalculator.timestamp(timestring));
+  return participants.updateTime(startnumber, timeCalculator.timestamp(timestring));
 };
 
 participants.getTime = (startnumber) => {
@@ -244,6 +239,7 @@ participants.rank = (startnumber) => {
     .catch(deferred.reject);
   return deferred.promise;
 };
+
 participants.rankByCategory = (startnumber) => {
   const deferred = Q.defer();
   db.select("select pos from (select seconds,start_number,rank() over (partition by category order by seconds) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])
@@ -254,18 +250,16 @@ participants.rankByCategory = (startnumber) => {
   return deferred.promise;
 };
 
-
-
 participants.bulkmail = () => {
   const deferred = Q.defer();
 
-  participants.confirmed().then(confirmed => {
-    participants.registered().then(unconfirmed => {
+  participants.get.confirmed().then(confirmed => {
+    participants.get.registered().then(unconfirmed => {
       _.forEach(confirmed, participant => {
-        mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');
+        sendInfoMailTo(participant);
       });
       _.forEach(unconfirmed, participant => {
-        mails.sendStatusEmail(participant, 'Lauf gegen Rechts 2016 - Infos zum Lauf', 'views/participants/bulkmail.pug');
+        sendInfoMailTo(participant);
       });
       deferred.resolve();
     });
@@ -273,5 +267,9 @@ participants.bulkmail = () => {
 
   return deferred.promise;
 };
+
+function sendInfoMailTo(participant) {
+    mails.sendStatusEmail(participant, 'Lauf gegen Rechts - Infos zum Lauf', 'views/participants/bulkmail.pug');
+}
 
 module.exports = participants;

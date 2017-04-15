@@ -15,7 +15,7 @@ describe('participant', () => {
         lastname: 'Mueller',
         email: 'm.mueller@example.com',
         category: 'Unicorn',
-        birthyear: 1980,
+        birthyear: '1980',
         team: 'Crazy runners',
         visibility: 'public',
         discount: 'yes',
@@ -23,7 +23,7 @@ describe('participant', () => {
         shirt: 'Yes',
         model: 'Normal fit',
         size: 'M',
-        startBlock: 1
+        goal: 'ambitious'
       };
     }
   );
@@ -35,7 +35,7 @@ describe('participant', () => {
       lastname: 'Mueller',
       email: 'invalid',
       category: 'Unicorn',
-      birthyear: 1980,
+      birthyear: '1980',
       team: 'Crazy runners',
       visibility: 'public',
       discount: 'no',
@@ -115,8 +115,8 @@ describe('participant', () => {
       expect(participant.from(bodyWithoutDiscout).discount).toBe('no');
     });
 
-    it('should extract start_blcok from the request body', () => {
-      expect(participant.from(body).start_block).toBe(1);
+    it('should extract goal from the request body', () => {
+      expect(participant.from(body).goal).toBe('ambitious');
     });
   });
 
@@ -127,7 +127,7 @@ describe('participant', () => {
       lastname: 'Mueller',
       email: 'm.mueller@example.com',
       category: 'Unicorn',
-      birthyear: 1980,
+      birthyear: '1980',
       team: 'Crazy runners',
       visibility: 'public',
       discount: 'yes',

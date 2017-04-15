@@ -4,13 +4,13 @@
     "models": [
       {
         "value": "Slim fit",
-        "description": "Tailliert/Schmächtige Menschen",
-        "sizes": ["S","M","L","XL"]
+        "description": "Tailliert",
+        "sizes": ["XS","S","M","L"]
       },
       {
-        "value": "Normal fit",
-        "description": "Normal fit",
-        "sizes": ["XS","S","M","L","XL"]
+        "value": "Regular",
+        "description": "Unisex",
+        "sizes": ["S","M","L","XL"]
       }
     ]
   },
@@ -28,7 +28,8 @@
   },
   "admin": {
     "username": "admin",
-    "password": "Blanch4rdst0wn"
+    "password": "Blanch4rdst0wn",
+    "token": "HeiYohhoo6quoh5"
   },
   "pace-url": "http://localhost:3000",
   "metrics": false,

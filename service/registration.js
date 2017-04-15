@@ -5,6 +5,7 @@
 const Q = require('q');
 const _ = require('lodash');
 const pug = require('pug');
+const moment = require('moment');
 
 const config = require('config');
 const calculator = require('../domain/costCalculator');
@@ -23,7 +24,7 @@ const registration = {};
 registration.isClosed = () => {
   return db.select("SELECT data->>'is_closed' as is_closed FROM race;")
     .then(result => {
-      return result[0].is_closed === 'true';
+      return _.isEmpty(result) || result[0].is_closed === 'true';
     });
 };
 
@@ -40,7 +41,7 @@ registration.confirm = (participantId) => {
 
   participants.markPayed(participantId)
     .then(() => {
-      participants.byId(participantId)
+      participants.get.byId(participantId)
         .then(result => {
           pug.renderFile('views/admin/paymentValidation/text.pug',
             {name: result.firstname, editUrl: editUrlHelper.generateUrl(result.secureid)},
@@ -56,7 +57,7 @@ registration.confirm = (participantId) => {
   return deferred.promise;
 };
 
-function sendConfirmationMail(participant, paymentToken) {
+registration.sendConfirmationMail = (participant, paymentToken) => {
   pug.renderFile('views/registration/confirmationText.pug',
     {
       name: participant.firstname,
@@ -67,10 +68,10 @@ function sendConfirmationMail(participant, paymentToken) {
       startnr: participant.start_number
     },
     (error, html) => {
-      mails.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
+      return mails.sendEmail(participant.email, 'Lauf Gegen Rechts: Registrierung erfolgreich', html, error);
     }
   );
-}
+};
 
 registration.start = (participant) => {
   const deferred = Q.defer();
@@ -83,7 +84,8 @@ registration.start = (participant) => {
             .withToken(paymentToken)
             .withSecureId(editUrlHelper.generateSecureID())
             .withStartNr(nr)
-            .withStartBlock(participants.choseStartBlock(nr));
+            .withStartBlock(participants.choseStartBlock(nr))
+            .withRegistrationTime(moment().format());
           participants.save(p)
             .then(id => {
               if (!_.isEmpty(p.tshirt)) {
@@ -93,7 +95,7 @@ registration.start = (participant) => {
               if (calculator.priceFor(p) === 0) {
                 participants.markPayed(id);
               }
-              sendConfirmationMail(p, paymentToken);
+              registration.sendConfirmationMail(p, paymentToken);
               deferred.resolve({'id': id, 'token': paymentToken, secureid: p.secureID, startnr: p.start_number});
 
               couponcodes.markAsUsed(participant.couponcode);

@@ -1,0 +1,21 @@
+sudo: required
+language: node_js
+node_js:
+- 7.7.1
+services:
+- docker
+before_install:
+- openssl aes-256-cbc -K $encrypted_53ec6a2573a1_key -iv $encrypted_53ec6a2573a1_iv
+  -in do_deploy.enc -out do_deploy -d
+- chmod 600 do_deploy
+- sudo service postgresql stop
+- docker-compose up -d
+- docker ps -a
+before_script:
+- npm install -g gulp
+- gulp selenium-install
+- gulp create-pace-db 
+script:
+    - "./run_all_tests.sh"
+after_success:
+- ".travis/deploy.sh"

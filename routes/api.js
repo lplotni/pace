@@ -20,16 +20,17 @@ let tokenValidator = function(req,res,next) {
 };
 
 router.post('/scan',tokenValidator, (req, res) => {
-    participants.updateTime(req.body.startnumber,req.body.time)
-    .then((result)  => {
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify({ status: 'OK' }));
-    })
-    .catch((err) => {
-     res.setHeader('Content-Type', 'application/json');
-     res.status(404) 
-       .send(JSON.stringify({ status: 'Not Found' }));
-   });
+  participants.get.byStartnumber(req.body.startnumber)
+    .then(participant => {
+      participants.updateTimeForParticipant(participant,req.body.time)
+        .then((result)  => {
+          res.setHeader('Content-Type', 'application/json');
+          res.send(JSON.stringify({ status: 'OK' }));
+        });
+    }).catch((err) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.status(404).send(JSON.stringify({ status: 'Not Found' }));
+  });
 });
 
 const extractDataTablesParams = (req) => {

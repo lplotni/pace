@@ -42,7 +42,8 @@
     "rbac2": "~1.1.0",
     "rescode": "~0.1.10",
     "serve-favicon": "~2.4.0",
-    "validator": "^7.0.0"
+    "validator": "^7.0.0",
+    "ws": "^2.2.3"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

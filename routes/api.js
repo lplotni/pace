@@ -26,7 +26,7 @@ router.post('/scan',tokenValidator, (req, res) => {
       participants.updateTimeForParticipant(participant,req.body.time)
         .then((result)  => {
           let message = {
-            name: participant.firstname + " " + participant.lastname,
+            name: participant.firstname,
             time: req.body.time
           };
           websocket.updateAllClients(message);

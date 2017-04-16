@@ -1,0 +1,17 @@
+body {
+  background: black;
+}
+
+div.result {
+  background: white;
+  font-size: 500%;
+  margin: 50px;
+  padding: 50px;
+}
+
+span.participantName {
+}
+
+span.participantTime {
+  padding-left: 50px;
+}

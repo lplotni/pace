@@ -4,6 +4,7 @@
 'use strict';
 
 const pg = require('pg');
+const WebSocket = require('ws');
 const config = require('config');
 const _ = require('lodash');
 const request = require('request');
@@ -49,6 +50,25 @@ describe('api journey', () => {
           });
         })
         .catch(done.fail);
+    });
+
+    it("should get an update on the live results", (done) => {
+      startBlocks.add('0','test Block');
+      let webSocket = new WebSocket(helper.getPaceWsUrl("live-results"));
+
+      participants.save(aParticipant)
+        .then(() => {
+          webSocket.on('message', (message) => {
+            webSocket.close();
+            expect(message).toEqual(JSON.stringify({name: "Friedrich Schiller", time: "123"}));
+            done();
+          });
+          request.post({url: url, headers: headers, form: form}, (err, response) => {});
+        })
+        .catch(() => {
+          webSocket.close();
+          done.fail();
+        });
     });
 
     it('only allows to send finish times with correct token', (done) => {

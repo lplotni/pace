@@ -188,7 +188,7 @@ participants.update = (participant, id) => {
     .then(() => {
       participants.get.bySecureId(id).then( saved_participant => {
         if (saved_participant.time > 0) {
-          participants.updateTime(saved_participant.start_number,saved_participant.time);
+          participants.updateTimeForParticipant(saved_participant, saved_participant.time);
         }
       });
     });
@@ -204,16 +204,20 @@ participants.markPayed = (participantId) => {
     });
 };
 
+participants.updateTimeForParticipant = (participant, finishtime) => {
+  return startBlocks.times().then((startTimes) => {
+    let seconds = timeCalculator.relativeSeconds(startTimes,finishtime, participant.start_block);
+    if ((finishtime <= participant.time ) || _.isEmpty(participant.time)) {
+      return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [participant.start_number, finishtime, seconds]);
+    }
+  });
+};
+
 participants.updateTime = (startnumber, finishtime) => {
   return participants.get.byStartnumber(startnumber)
-    .then(participant => {
-      return startBlocks.times().then((startTimes) => {
-        let seconds = timeCalculator.relativeSeconds(startTimes,finishtime,participant.start_block);
-        if ((finishtime <= participant.time ) || _.isEmpty(participant.time)) {
-          return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [startnumber, finishtime, seconds]);
-        }
-      });
-    });
+    .then((participant) => {
+      return participants.updateTimeForParticipant(participant, finishtime);
+  });
 };
 
 participants.insertTime = (startnumber, timestring) => {

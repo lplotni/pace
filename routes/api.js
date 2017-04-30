@@ -28,6 +28,7 @@ router.post('/scan',tokenValidator, (req, res) => {
         .then((seconds)  => {
           if ( seconds >= 0 ) {
               let message = {
+                startnumber: req.body.startnumber,
                 name: participant.firstname,
                 time: timeCalculator.timeString(seconds)
               };

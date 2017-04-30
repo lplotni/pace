@@ -3,7 +3,7 @@ let webSocket = new WebSocket("ws://" + location.hostname + (location.port ? ':'
 webSocket.onmessage = function(message) {
   let liveResultscontainer = document.getElementById("live-results");
   let m = JSON.parse(message.data);
-  let nameText = document.createTextNode(m.name);
+  let nameText = document.createTextNode(m.name + "(" + m.startnumber + ")");
   let timeText = document.createTextNode(m.time);
 
   let resultDiv = document.createElement("div");

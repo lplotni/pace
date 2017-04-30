@@ -208,7 +208,8 @@ participants.updateTimeForParticipant = (participant, finishtime) => {
   return startBlocks.times().then((startTimes) => {
     let seconds = timeCalculator.relativeSeconds(startTimes,finishtime, participant.start_block);
     if ((finishtime <= participant.time ) || _.isEmpty(participant.time)) {
-      return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [participant.start_number, finishtime, seconds]);
+      return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [participant.start_number, finishtime, seconds])
+        .then(() => { return seconds });
     }
   });
 };

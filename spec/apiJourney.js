@@ -60,7 +60,7 @@ describe('api journey', () => {
         .then(() => {
           webSocket.on('message', (message) => {
             webSocket.close();
-            expect(message).toEqual(JSON.stringify({name: "Friedrich Schiller", time: "123"}));
+            expect(message).toEqual(JSON.stringify({startnumber: "42", name: "Friedrich", time: "00:02:03"}));
             done();
           });
           request.post({url: url, headers: headers, form: form}, (err, response) => {});

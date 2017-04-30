@@ -7,6 +7,7 @@ const config = require('config');
 const participants = require('../service/participants');
 const race = require('../service/race');
 const websocket = require('../routes/websocket');
+const timeCalculator = require('../domain/timeCalculator');
 const _ = require('lodash');
 const validator = require('validator');
 
@@ -24,14 +25,17 @@ router.post('/scan',tokenValidator, (req, res) => {
   participants.get.byStartnumber(req.body.startnumber)
     .then(participant => {
       participants.updateTimeForParticipant(participant,req.body.time)
-        .then((result)  => {
-          let message = {
-            name: participant.firstname + " " + participant.lastname,
-            time: req.body.time
+        .then((seconds)  => {
+          if ( seconds >= 0 ) {
+              let message = {
+                startnumber: req.body.startnumber,
+                name: participant.firstname,
+                time: timeCalculator.timeString(seconds)
+              };
+              websocket.updateAllClients(message);
+              res.setHeader('Content-Type', 'application/json');
+              res.send(JSON.stringify({ status: 'OK' }));
           };
-          websocket.updateAllClients(message);
-          res.setHeader('Content-Type', 'application/json');
-          res.send(JSON.stringify({ status: 'OK' }));
         });
     }).catch((err) => {
     res.setHeader('Content-Type', 'application/json');

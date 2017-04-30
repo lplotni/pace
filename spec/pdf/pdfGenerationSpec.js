@@ -74,7 +74,7 @@ describe('pdfGeneration', () => {
 
     tshirtsMock = {
       findAndAddTo: (p) => {
-       return Q.fcall(() => p);
+        return Q.fcall(() => p);
       }
     };
 
@@ -191,103 +191,49 @@ describe('pdfGeneration', () => {
 
       pdfGeneration.generateStartNumbers(redis).then(() => {
         expect(redis.publish.calls.count()).toEqual(2);
-        expect(redis.publish.calls.argsFor(0)).toEqual(['pace-pdf',pdfGeneration.extractData(confirmedParticipant)]);
-        expect(redis.publish.calls.argsFor(1)).toEqual(['pace-pdf',pdfGeneration.extractData(unconfirmedParticipant)]);
+        expect(redis.publish.calls.argsFor(0)).toEqual(['pace-pdf', pdfGeneration.extractData(confirmedParticipant)]);
+        expect(redis.publish.calls.argsFor(1)).toEqual(['pace-pdf', pdfGeneration.extractData(unconfirmedParticipant)]);
         done();
       });
-    });
-
-    xit('should add tshirt details', (done) => {
-      participantsMock.get.confirmed.and.returnValue(Q.fcall(() => [
-        {firstname: 'Third', lastname: 'Person', team: '', start_number: 3, tshirt: {size: 'XS', model: 'Normal fit'}}
-      ]));
-
-      // why is this mock not having any effect?
-      tshirtsMock.findAndAddTo.and.returnValue(Q.fcall(() => [
-        {
-          firstname: 'Bestaetigte',
-          lastname: 'Person',
-          team: '',
-          start_number: 1,
-          tshirt: {size: 'XS', model: 'Normal fit'}
-        }
-      ]));
-
-      pdfGeneration.generateStartNumbers(res, documentMock).then(() => {
-        expect(documentMock.text).toHaveBeenCalledWith('XS Normal fit', 500, 315);
-        done();
-      });
-    });
-
-    xit('should add the team name if it exits', (done) => {
-      pdfGeneration.generateStartNumbers(res, documentMock).then(() => {
-        expect(documentMock.text).toHaveBeenCalledWith('', 0, 350, {align: 'center'});
-        expect(documentMock.text).toHaveBeenCalledWith('a team name', 0, 350, {align: 'center'});
-        done();
-      });
-    });
-
-    xit('should add the startblock', (done) => {
-      pdfGeneration.generateStartNumbers(res, documentMock).then(() => {
-        expect(documentMock.text).toHaveBeenCalledWith('Startblock: 1', 20, 150, {align: 'left'});
-        done();
-      });
-    });
-
-    it('should create correct pdf request pro participant', (done) => {
-      done();
     });
 
   });
 
   describe('generateOnSiteStartNumbers', () => {
+    let onSiteParticipant1 = {
+      firstname: '',
+      lastname: '',
+      team: '',
+      start_number: 3,
+      secureid: 'some secure id',
+      is_on_site_registration: true
+    };
+
+    let onSiteParticipant2 = {
+      firstname: '',
+      lastname: '',
+      team: '',
+      start_number: 4,
+      secureid: 'some secure id',
+      is_on_site_registration: true
+    };
 
     beforeEach(() => {
-      let onSiteParticipant = {
-        firstname: '',
-        lastname: '',
-        team: '',
-        start_number: 3,
-        secureid: 'some secure id',
-        is_on_site_registration: true
+      participantsMock.get.blancParticipants.and.returnValue(Q.fcall(() => [onSiteParticipant1,onSiteParticipant2]));
+    });
+
+    it('should request a start number for every blanc participant', (done) => {
+      let redis = {
+        publish: jasmine.createSpy('publish')
       };
-      participantsMock.get.blancParticipants.and.returnValue(Q.fcall(() => [onSiteParticipant]));
-      participantsMock.saveBlanc.and.returnValue(Q.fcall(() => []));
-    });
 
-    xit('should add the start number, blank name and blank team name', (done) => {
-      pdfGeneration.generateOnSiteStartNumbers(res, documentMock).then(() => {
-        expect(documentMock.text).toHaveBeenCalledWith(3, 0, 130, {align: 'center'});
-        expect(documentMock.text).toHaveBeenCalledWith('', 0, 300, {align: 'center'});
-        expect(documentMock.text).toHaveBeenCalledWith('', 0, 350, {align: 'center'});
+      pdfGeneration.generateOnSiteStartNumbers(redis).then(() => {
+        expect(redis.publish.calls.count()).toEqual(2);
+        expect(redis.publish.calls.argsFor(0)).toEqual(['pace-pdf', pdfGeneration.extractData(onSiteParticipant1)]);
+        expect(redis.publish.calls.argsFor(1)).toEqual(['pace-pdf', pdfGeneration.extractData(onSiteParticipant2)]);
         done();
       });
-    });
 
-    xit('should not add the payment checkmark', function (done) {
-      pdfGeneration.generateOnSiteStartNumbers(res, documentMock).then(() => {
-        expect(documentMock.stroke).not.toHaveBeenCalled();
-        done();
-      });
-    });
-
-    xit('should add the QR code to the self-service link', function (done) {
-      pdfGeneration.generateOnSiteStartNumbers(res, documentMock).then(() => {
-        expect(documentMock.fill).toHaveBeenCalledWith('black', 'even-odd');
-        done();
-      });
-    });
-
-    xit('should automatically download a PDF file called on_site_start_numbers', (done) => {
-      const fileName = 'on_site_start_numbers.pdf';
-      pdfGeneration.generateOnSiteStartNumbers(res, documentMock).then(() => {
-        expect(res.writeHead).toHaveBeenCalledWith(200, {
-          'Content-Type': 'application/pdf',
-          'Access-Control-Allow-Origin': '*',
-          'Content-Disposition': 'attachment; filename=' + fileName
-        });
-        done();
-      });
     });
 
   });

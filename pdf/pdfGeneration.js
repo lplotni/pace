@@ -46,8 +46,13 @@ pdfGeneration.generateStartNumbers = (redis) => {
     );
 };
 
-pdfGeneration.generateOnSiteStartNumbers = () => {
-
+pdfGeneration.generateOnSiteStartNumbers = (redis) => {
+  return getBlancParticipants()
+    .then((participants) => {
+        let msgs = participants.map(pdfGeneration.extractData);
+        _.forEach(msgs, m => redis.publish('pace-pdf', m));
+      }
+    );
 };
 
 //todo how should we deal with this

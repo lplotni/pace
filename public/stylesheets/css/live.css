@@ -1,17 +1,22 @@
 body {
-  background: black;
+  background: #604734;
 }
 
 div.result {
   background: white;
   font-size: 500%;
+  text-align: center;
   margin: 50px;
   padding: 50px;
+  border-radius: 25px;
+  border: 10px solid red;
 }
 
 span.participantName {
+  color: #604734;
 }
 
 span.participantTime {
   padding-left: 50px;
+  color: #604734;
 }

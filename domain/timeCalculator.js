@@ -3,7 +3,12 @@
 'use strict';
 
 const moment = require('moment');
+require("moment-duration-format"); 
 let timeCalculator = {};
+
+timeCalculator.timeString = (seconds) => {
+  return moment.duration(parseInt(seconds),'seconds').format("hh:mm:ss", { trim: false} );
+};
 
 timeCalculator.timestamp = (timestring) => {
   let timestamp = moment.duration({

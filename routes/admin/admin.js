@@ -11,6 +11,8 @@ const pdfGeneration = require('../../pdf/pdfGeneration');
 const registration = require('../../service/registration');
 const stats = require('../../service/stats');
 const participants = require('../../service/participants');
+const Redis = require('ioredis');
+const redis = new Redis(6379, 'redis');
 
 let canViewAdminPage = (role) => accesscontrol.hasPermissionTo(role, 'view admin page');
 
@@ -53,16 +55,15 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-      console.error('Currently disabled'); //todo
+    pdfGeneration.generateStartNumbers(redis); //todo fail() ?
   }
 });
 
 router.post('/generate-on-site-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-      console.error('Currently disabled'); //todo
-    // participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then(() => {
-    //  pdfGeneration.generateOnSite();
-    //});
+    participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then(() => {
+      pdfGeneration.generateOnSiteStartNumbers(redis);//todo fail() ?
+    });
   }
 });
 

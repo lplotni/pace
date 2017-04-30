@@ -17,5 +17,7 @@ webSocket.onmessage = function(message) {
   timeSpan.appendChild(timeText);
   resultDiv.appendChild(nameSpan);
   resultDiv.appendChild(timeSpan);
+  $(resultDiv).hide();
   liveResultscontainer.insertBefore(resultDiv, liveResultscontainer.childNodes[0]);
+  $(resultDiv).slideDown();
 };

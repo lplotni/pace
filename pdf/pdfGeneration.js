@@ -14,15 +14,15 @@ const timeCalculator = require('../domain/timeCalculator');
 
 let pdfGeneration = {};
 
-function getParticipants() {
-  return Q.all(participants.get.confirmed(), participants.get.registered())
+let getParticipants = () => {
+  return Q.all([participants.get.confirmed(), participants.get.registered()])
     .then(results => _.concat(results[0], results[1]))
     .then(participants => Q.all(participants.map(tshirts.findAndAddTo)));
-}
+};
 
-function getBlancParticipants() {
+let getBlancParticipants = () => {
   return participants.get.blancParticipants();
-}
+};
 
 pdfGeneration.extractData = (participant) => {
   return {
@@ -37,8 +37,13 @@ pdfGeneration.extractData = (participant) => {
   };
 };
 
-pdfGeneration.generateStartNumbers = () => {
-
+pdfGeneration.generateStartNumbers = (redis) => {
+  return getParticipants()
+    .then((participants) => {
+        let msgs = participants.map(pdfGeneration.extractData);
+        _.forEach(msgs, m => redis.publish('pace-pdf', m));
+      }
+    );
 };
 
 pdfGeneration.generateOnSiteStartNumbers = () => {
@@ -96,4 +101,5 @@ pdfGeneration.generateCertificate = (res, startnumber) => {
   let doc = new PDFDocument({size: 'A4', margin: 0});
   return pdfGeneration.generateCertificateDownload(res, doc, startnumber);
 };
+
 module.exports = pdfGeneration;

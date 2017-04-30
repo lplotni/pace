@@ -5,12 +5,13 @@
 
 const mockery = require('mockery');
 const Q = require('q');
+const _ = require('lodash');
 const config = require('config');
 
 describe('pdfGeneration', () => {
 
   let pdfGeneration, res, participantsMock, documentMock, tshirtsMock, qrCodeMock, raceMock;
-  let confirmedParticipant;
+  let confirmedParticipant, unconfirmedParticipant;
 
   beforeEach(() => {
 
@@ -72,7 +73,9 @@ describe('pdfGeneration', () => {
     };
 
     tshirtsMock = {
-      findAndAddTo: jasmine.createSpy('findAndAddTo')
+      findAndAddTo: (p) => {
+       return Q.fcall(() => p);
+      }
     };
 
     qrCodeMock = {
@@ -107,7 +110,7 @@ describe('pdfGeneration', () => {
       is_on_site_registration: false,
       has_payed: true
     };
-    const unconfirmedParticipant = {
+    unconfirmedParticipant = {
       firstname: 'Unbestaetigte',
       lastname: 'Person',
       team: 'a team name',
@@ -115,8 +118,10 @@ describe('pdfGeneration', () => {
       start_number: 2,
       start_block: 1
     };
+
     participantsMock.get.confirmed.and.returnValue(Q.fcall(() => [confirmedParticipant]));
     participantsMock.get.registered.and.returnValue(Q.fcall(() => [unconfirmedParticipant]));
+
     participantsMock.get.byStartnumber.and.returnValue(Q.fcall(() => confirmedParticipant));
     participantsMock.getTime.and.returnValue(Q.fcall(() => 10000));
     participantsMock.rank.and.returnValue(Q.fcall(() => 1));
@@ -177,12 +182,17 @@ describe('pdfGeneration', () => {
     });
   });
 
-
   describe('generateStartNumbers', () => {
 
-    xit('should generate a page for every participant', (done) => {
-      pdfGeneration.generateStartNumbers(res, documentMock).then(() => {
-        expect(documentMock.addPage).toHaveBeenCalledTimes(2);
+    it('should request a start number for every participant', (done) => {
+      let redis = {
+        publish: jasmine.createSpy('publish')
+      };
+
+      pdfGeneration.generateStartNumbers(redis).then(() => {
+        expect(redis.publish.calls.count()).toEqual(2);
+        expect(redis.publish.calls.argsFor(0)).toEqual(['pace-pdf',pdfGeneration.extractData(confirmedParticipant)]);
+        expect(redis.publish.calls.argsFor(1)).toEqual(['pace-pdf',pdfGeneration.extractData(unconfirmedParticipant)]);
         done();
       });
     });
@@ -208,7 +218,6 @@ describe('pdfGeneration', () => {
         done();
       });
     });
-
 
     xit('should add the team name if it exits', (done) => {
       pdfGeneration.generateStartNumbers(res, documentMock).then(() => {

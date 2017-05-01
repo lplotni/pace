@@ -25,7 +25,7 @@ let getBlancParticipants = () => {
 };
 
 pdfGeneration.extractData = (participant) => {
-  return {
+  return JSON.stringify({
     startNumber: _.toString(participant.start_number),
     firstname: participant.firstname,
     team: participant.team,
@@ -34,7 +34,7 @@ pdfGeneration.extractData = (participant) => {
     hasPayed: participant.has_payed,
     onSiteRegistration: participant.is_on_site_registration,
     secureUrl: editUrlHelper.generateUrl(participant.secureid)
-  };
+  });
 };
 
 pdfGeneration.generateStartNumbers = (redis) => {

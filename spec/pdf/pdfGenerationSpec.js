@@ -138,45 +138,45 @@ describe('pdfGeneration', () => {
   describe('extractData', () => {
 
     it('should get start number and name', () => {
-      let data = pdfGeneration.extractData(confirmedParticipant);
+      let data = JSON.parse(pdfGeneration.extractData(confirmedParticipant));
 
       expect(data.startNumber).toEqual('1');
       expect(data.firstname).toEqual('Bestaetigte');
     });
 
     it('should get team', () => {
-      let data = pdfGeneration.extractData(confirmedParticipant);
+      let data = JSON.parse(pdfGeneration.extractData(confirmedParticipant));
 
       expect(data.team).toEqual('My Team');
     });
 
     it('should get startBlock', () => {
-      let data = pdfGeneration.extractData(confirmedParticipant);
+      let data = JSON.parse(pdfGeneration.extractData(confirmedParticipant));
       //todo this comes now from the startblocks table and is a string
       expect(data.startBlock).toEqual('1');
     });
 
     it('should get tshirt details', () => {
-      let data = pdfGeneration.extractData(confirmedParticipant);
+      let data = JSON.parse(pdfGeneration.extractData(confirmedParticipant));
 
       expect(data.tshirt.size).toEqual('S');
       expect(data.tshirt.model).toEqual('Unisex');
     });
 
     it('should get the payment inforamtion', () => {
-      let data = pdfGeneration.extractData(confirmedParticipant);
+      let data = JSON.parse(pdfGeneration.extractData(confirmedParticipant));
 
       expect(data.hasPayed).toEqual(true);
     });
 
     it('should get the onSiteRegistration info', () => {
-      let data = pdfGeneration.extractData(confirmedParticipant);
+      let data = JSON.parse(pdfGeneration.extractData(confirmedParticipant));
 
       expect(data.onSiteRegistration).toEqual(false);
     });
 
     it('should get the secureUrl link', () => {
-      let data = pdfGeneration.extractData(confirmedParticipant);
+      let data = JSON.parse(pdfGeneration.extractData(confirmedParticipant));
 
       expect(data.secureUrl).toEqual('http://localhost:3000/editparticipant/adasdj12');
     });

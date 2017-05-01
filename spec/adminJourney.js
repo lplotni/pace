@@ -45,12 +45,12 @@ describe('admin page', () => {
     }
   });
 
-  function loginAdmin() {
+  let loginAdmin = () => {
     return helper.setUpClient().url(loginUrl)
       .setValue('input#username', config.get('admin.username'))
       .setValue('input#password', config.get('admin.password'))
       .click('button#submit');
-  }
+  };
 
   it('should go to admin page, show statistics and generate start number buttons (registered and on-site numbers)', (done) => {
     loginAdmin().url(helper.paceUrl + 'admin')
@@ -122,7 +122,7 @@ describe('admin page', () => {
       .end(done);
   });
 
-  function givenAValidUserExists() {
+  let givenAValidUserExists = () => {
     let randomString = crypto.randomBytes(8).toString('hex');
 
     let aParticipant = participant.from({
@@ -136,7 +136,7 @@ describe('admin page', () => {
     }).withToken(randomString).withSecureId('secureIdForTheEditLink').withStartNr(10);
 
     return participants.save(aParticipant);
-  }
+  };
 
   it('should go to edit user when clicking edit button (admin is signed in)', (done) => {
     var firstName = 'not set yet';

@@ -35,6 +35,10 @@ router.post('/scan',tokenValidator, (req, res) => {
               websocket.updateAllClients(message);
               res.setHeader('Content-Type', 'application/json');
               res.send(JSON.stringify({ status: 'OK' }));
+          }
+          else {
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).send(JSON.stringify({ status: 'Not updated' }));
           };
         });
     }).catch((err) => {

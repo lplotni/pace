@@ -55,14 +55,24 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    pdfGeneration.generateStartNumbers(redis); //todo fail() ?
+    pdfGeneration.generateStartNumbers(redis).then(() => {
+      res.redirect('back').status(200).end();
+    }).fail((msg) => {
+      console.error(msg);
+      res.redirect('back').status(500).end();
+    });
   }
 });
 
 router.post('/generate-on-site-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then(() => {
-      pdfGeneration.generateOnSiteStartNumbers(redis);//todo fail() ?
+      pdfGeneration.generateOnSiteStartNumbers(redis).then(() => {
+        res.redirect('back').status(200).end();
+      }).fail((msg) => {
+        console.error(msg);
+        res.redirect('back').status(500).end();
+      });
     });
   }
 });

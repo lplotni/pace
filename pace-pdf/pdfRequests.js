@@ -9,7 +9,7 @@ pdfRequests.setup = (redis) => {
   redis.on('message', pdfRequests.process);
 };
 
-pdfRequests.process = (msg) => {
+pdfRequests.process = (channnel, msg) => {
   pdf.generate(pdfRequests.parse(msg));
 };
 

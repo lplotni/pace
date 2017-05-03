@@ -56,10 +56,10 @@ router.get('/', isAuthenticated, (req, res) => {
 router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     pdfGeneration.generateStartNumbers(redis).then(() => {
-      res.redirect('back').status(200).end();
+      res.redirect('back');
     }).fail((msg) => {
       console.error(msg);
-      res.redirect('back').status(500).end();
+      res.redirect('back');
     });
   }
 });
@@ -68,10 +68,10 @@ router.post('/generate-on-site-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then(() => {
       pdfGeneration.generateOnSiteStartNumbers(redis).then(() => {
-        res.redirect('back').status(200).end();
+        res.redirect('back');
       }).fail((msg) => {
         console.error(msg);
-        res.redirect('back').status(500).end();
+        res.redirect('back');
       });
     });
   }

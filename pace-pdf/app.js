@@ -5,4 +5,4 @@
 const Redis = require('ioredis');
 const pdfRequests = require('./pdfRequests');
 
-pdfRequests.setup(new Redis(6379, 'redis'));
+pdfRequests.setup(new Redis(6379, process.env.REDISHOST || 'localhost'));

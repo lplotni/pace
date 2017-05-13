@@ -56,10 +56,10 @@ startblocks.get = () => {
 
 startblocks.assign = () => {
   const deferred = Q.defer();
-  Q.all([participants.confirmed(), participants.blancParticipants(), db.select('SELECT id from startblocks')])
+  Q.all([participants.get.all(), db.select('SELECT id from startblocks')])
     .then((result) => {
-    let totalAmount = result[0].length + result[1].length;
-    let blocks = result[2];
+    let totalAmount = result[0].length;
+    let blocks = result[1];
     let amountPerBlock = Math.floor(totalAmount / blocks.length); //todo MOD ?
     let distribution = [];
     _.forEach(blocks,function(block,index){

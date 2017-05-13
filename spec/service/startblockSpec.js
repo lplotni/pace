@@ -23,8 +23,9 @@ describe('startblock service', () => {
       };
 
       participants = {
-        confirmed: jasmine.createSpy(),
-        blancParticipants: jasmine.createSpy()
+        get: {
+            all: jasmine.createSpy()
+        }
       };
 
       mockery.registerMock('../service/util/dbHelper', dbHelperMock);
@@ -33,8 +34,7 @@ describe('startblock service', () => {
       mockery.registerAllowables(['q', '../../service/util/dbHelper.js']);
       startblocks = require('../../service/startblocks');
       dbHelperMock.select.and.returnValue(Q.fcall(() => [{},{},{}]));
-      participants.confirmed.and.returnValue(Q.fcall(() => [{goal:'relaxed'},{goal:'ambitious'},{goal:'moderate'}]));
-      participants.blancParticipants.and.returnValue(Q.fcall(() => [{goal:'relaxed'},{goal:'relaxed'},{goal:'relaxed'},{goal:'relaxed'}]));
+      participants.get.all.and.returnValue(Q.fcall(() => [{goal:'relaxed'},{goal:'ambitious'},{goal:'ambitious'},{goal:'moderate'},{goal:'moderate'},{goal:'moderate'},{goal:'relaxed'}]));
     });
 
     afterAll(() => {

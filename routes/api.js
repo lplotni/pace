@@ -24,7 +24,7 @@ let tokenValidator = function(req,res,next) {
 router.post('/scan',tokenValidator, (req, res) => {
   participants.get.byStartnumber(req.body.startnumber)
     .then(participant => {
-      participants.updateTimeForParticipant(participant,req.body.time)
+      return participants.updateTimeForParticipant(participant,req.body.time)
         .then((seconds)  => {
           if ( seconds >= 0 ) {
               let message = {

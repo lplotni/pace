@@ -20,10 +20,10 @@ startblocks.editBlock = (time, name, id) => {
 startblocks.save = (req) => {
   _.each(req.block,block => {
     let time = moment().hours(block.hours).minutes(block.minutes).seconds(block.seconds).unix();
-    if (block.id !== 0) {
+    if (block.id != 0) {
       startblocks.editBlock(time, block.name, block.id);
     } else {
-      if (block.hours !== '') {
+      if (block.hours != '') {
         startblocks.add(time, block.name);
       }
     }
@@ -41,7 +41,9 @@ startblocks.times = () => {
   });
 };
 
-
+startblocks.all = () => {
+ return db.select('SELECT id from startblocks');
+};
 
 startblocks.get = () => {
   return db.select('SELECT * from startblocks order by id').then((blocks) => {
@@ -52,31 +54,6 @@ startblocks.get = () => {
     });
     return blocks;
   });
-};
-
-startblocks.assign = () => {
-  const deferred = Q.defer();
-  Q.all([participants.get.all(), db.select('SELECT id from startblocks')])
-    .then((result) => {
-    let totalAmount = result[0].length;
-    let blocks = result[1];
-    let amountPerBlock = Math.floor(totalAmount / blocks.length); //todo MOD ?
-    let distribution = [];
-
-      let isNotTheLastBlock = (index) => {
-        return blocks.length !== index + 1;
-      };
-
-      _.forEach(blocks,(block,index) => {
-        if(isNotTheLastBlock(index)) {
-          distribution.push(amountPerBlock);
-        } else { // last block: amountPerBlock + rest
-          distribution.push(amountPerBlock + ( totalAmount % blocks.length ));
-        }
-      }); 
-    deferred.resolve(distribution);
-    });
-  return deferred.promise;
 };
 
 module.exports = startblocks;

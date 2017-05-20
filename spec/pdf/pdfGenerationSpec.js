@@ -10,7 +10,7 @@ const config = require('config');
 
 describe('pdfGeneration', () => {
 
-  let pdfGeneration, res, participantsMock, documentMock, tshirtsMock, qrCodeMock, raceMock;
+  let pdfGeneration, res, participantsMock, documentMock, tshirtsMock, startblocksMock, qrCodeMock, raceMock;
   let confirmedParticipant, unconfirmedParticipant,blancParticipant;
 
   beforeEach(() => {
@@ -64,10 +64,16 @@ describe('pdfGeneration', () => {
         byStartnumber: jasmine.createSpy('byStartnumber'),
         all: jasmine.createSpy('all')
       },
+      distributeIntoStartblocks: jasmine.createSpy('distributeIntoStartBlocks'),
+      assign: jasmine.createSpy('assign'),
       saveBlanc: jasmine.createSpy('saveBlanc'),
       getTime: jasmine.createSpy('getTime'),
       rank: jasmine.createSpy('rank'),
       rankByCategory: jasmine.createSpy('rankByCategory')
+    };
+
+    startblocksMock = {
+      all: jasmine.createSpy('all')
     };
 
     tshirtsMock = {
@@ -90,6 +96,7 @@ describe('pdfGeneration', () => {
     mockery.registerMock('../service/participants', participantsMock);
     mockery.registerMock('../service/tshirts', tshirtsMock);
     mockery.registerMock('../service/race', raceMock);
+    mockery.registerMock('../service/startblocks', startblocksMock);
     mockery.registerMock('qr-image', qrCodeMock);
     pdfGeneration = require('../../pdf/pdfGeneration');
 
@@ -127,9 +134,14 @@ describe('pdfGeneration', () => {
     participantsMock.get.all.and.returnValue(Q.fcall(() => [confirmedParticipant, unconfirmedParticipant,blancParticipant]));
 
     participantsMock.get.byStartnumber.and.returnValue(Q.fcall(() => confirmedParticipant));
+    participantsMock.distributeIntoStartblocks.and.returnValue([1,2]);
+    participantsMock.assign.and.returnValue(Q.fcall(() => [1]));
     participantsMock.getTime.and.returnValue(Q.fcall(() => 10000));
     participantsMock.rank.and.returnValue(Q.fcall(() => 1));
     participantsMock.rankByCategory.and.returnValue(Q.fcall(() => 1));
+
+    startblocksMock.all.and.returnValue(Q.fcall(() => [{}, {}]));
+
     qrCodeMock.path.and.returnValue('some qr code path');
     raceMock.startTime.and.returnValue(Q.fcall(() => 101));
   });

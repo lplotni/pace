@@ -20,6 +20,7 @@ const moment = require('moment');
 require("moment-duration-format");
 const participants = require('../service/participants');
 const tshirts = require('../service/tshirts');
+const startblocks = require('../service/startblocks');
 
 const editUrlHelper = require('../domain/editUrlHelper');
 const timeCalculator = require('../domain/timeCalculator');
@@ -45,7 +46,12 @@ pdfGeneration.extractData = (participant) => {
 };
 
 pdfGeneration.generateStartNumbers = (redis) => {
-  return getParticipants()
+  return Q.all([participants.get.all(), startblocks.all()])
+    .then((results) => {
+      return participants.distributeIntoStartblocks(results[0], results[1]);
+    })
+    .then(participants.assign)
+    .then(getParticipants)
     .then((participants) => {
         let msgs = participants.map(pdfGeneration.extractData);
         logger.info(`[GENERATE START NUMBERS] about to publish ${msgs.length} messages to pace-pdf`);

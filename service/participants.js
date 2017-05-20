@@ -116,8 +116,8 @@ participants.save = (participant) => {
 
 participants.saveBlancParticipants = (amount) => {
 
-  return startNumbers.next().then( nr => {
-    let startNumberList =  _.range(nr, nr + amount);
+  return startNumbers.next().then(nr => {
+    let startNumberList = _.range(nr, nr + amount);
     return Q.all(startNumberList.map(participants.saveBlanc));
   });
 };
@@ -172,26 +172,45 @@ participants.delete = (participantid) => {
 };
 
 participants.update = (participant, id) => {
-    return db.update(`UPDATE participants SET
+  return db.update(`UPDATE participants SET
                     (firstname, lastname, email, category, birthyear, team, visibility, start_block) =
                     ($1, $2, $3, $4, $5, $6, $7, $8)
                     WHERE secureid = $9`,
     [participant.firstname,
-     participant.lastname,
-     participant.email,
-     participant.category,
-     participant.birthyear,
-     participant.team,
-     participant.visibility,
-     participant.start_block,
-     id])
+      participant.lastname,
+      participant.email,
+      participant.category,
+      participant.birthyear,
+      participant.team,
+      participant.visibility,
+      participant.start_block,
+      id])
     .then(() => {
-      participants.get.bySecureId(id).then( saved_participant => {
+      participants.get.bySecureId(id).then(saved_participant => {
         if (saved_participant.time > 0) {
           participants.updateTimeForParticipant(saved_participant, saved_participant.time);
         }
       });
     });
+};
+
+participants.distributeIntoStartblocks = (participants, blocks) => {
+  let totalAmount = participants.length;
+  let amountPerBlock = Math.floor(totalAmount / blocks.length); //todo MOD ?
+  let distribution = [];
+
+  let isNotTheLastBlock = (index) => {
+    return blocks.length !== index + 1;
+  };
+
+  _.forEach(blocks, (block, index) => {
+    if (isNotTheLastBlock(index)) {
+      distribution.push(amountPerBlock);
+    } else { // last block: amountPerBlock + rest
+      distribution.push(amountPerBlock + ( totalAmount % blocks.length ));
+    }
+  });
+  return distribution;
 };
 
 participants.assign = (dist) => {
@@ -200,10 +219,10 @@ participants.assign = (dist) => {
 
   dist.forEach((amount, index) => {
     updatePromises.push(
-      db.update(`update participants set start_block=${index+1} where id in 
+      db.update(`update participants set start_block=${index + 1} where id in 
                         (select id from participants order by goal,id limit ${amount} offset ${offset});`)
     );
-    offset=offset+amount;
+    offset = offset + amount;
   });
 
   return Q.all(updatePromises);
@@ -221,10 +240,12 @@ participants.markPayed = (participantId) => {
 
 participants.updateTimeForParticipant = (participant, finishtime) => {
   return startBlocks.times().then((startTimes) => {
-    let seconds = timeCalculator.relativeSeconds(startTimes,finishtime, participant.start_block);
+    let seconds = timeCalculator.relativeSeconds(startTimes, finishtime, participant.start_block);
     if ((finishtime <= participant.time ) || _.isEmpty(participant.time)) {
       return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [participant.start_number, finishtime, seconds])
-        .then(() => { return seconds });
+        .then(() => {
+          return seconds
+        });
     }
   });
 };
@@ -233,7 +254,7 @@ participants.updateTime = (startnumber, finishtime) => {
   return participants.get.byStartnumber(startnumber)
     .then((participant) => {
       return participants.updateTimeForParticipant(participant, finishtime);
-  });
+    });
 };
 
 participants.insertTime = (startnumber, timestring) => {
@@ -289,7 +310,7 @@ participants.bulkmail = () => {
 };
 
 function sendInfoMailTo(participant) {
-    mails.sendStatusEmail(participant, 'Lauf gegen Rechts - Infos zum Lauf', 'views/participants/bulkmail.pug');
+  mails.sendStatusEmail(participant, 'Lauf gegen Rechts - Infos zum Lauf', 'views/participants/bulkmail.pug');
 }
 
 module.exports = participants;

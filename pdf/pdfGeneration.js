@@ -27,13 +27,8 @@ const timeCalculator = require('../domain/timeCalculator');
 let pdfGeneration = {};
 
 let getParticipants = () => {
-  return Q.all([participants.get.confirmed(), participants.get.registered()])
-    .then(results => _.concat(results[0], results[1]))
+  return participants.get.all()
     .then(participants => Q.all(participants.map(tshirts.findAndAddTo)));
-};
-
-let getBlancParticipants = () => {
-  return participants.get.blancParticipants();
 };
 
 pdfGeneration.extractData = (participant) => {
@@ -54,16 +49,6 @@ pdfGeneration.generateStartNumbers = (redis) => {
     .then((participants) => {
         let msgs = participants.map(pdfGeneration.extractData);
         logger.info(`[GENERATE START NUMBERS] about to publish ${msgs.length} messages to pace-pdf`);
-        _.forEach(msgs, m => redis.publish('pace-pdf', m));
-      }
-    );
-};
-
-pdfGeneration.generateOnSiteStartNumbers = (redis) => {
-  return getBlancParticipants()
-    .then((participants) => {
-        let msgs = participants.map(pdfGeneration.extractData);
-        logger.info(`[GENERATE ON SITE START NUMBERS] about to publish ${msgs.length} messages to pace-pdf`);
         _.forEach(msgs, m => redis.publish('pace-pdf', m));
       }
     );

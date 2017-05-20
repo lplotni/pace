@@ -5,6 +5,7 @@
 
 const _ = require('lodash');
 const moment = require('moment');
+const Q = require('q');
 
 describe('participants service', () => {
 
@@ -299,6 +300,28 @@ describe('participants service', () => {
     });
   });
 
+  describe('assign()', () => {
+    it('uses provided block distribution to assigne start blocks to participants', (done) => {
+      let blockDistribution = [1, 2];
+      Q.all([
+        participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
+        participants.save(aParticipant.withStartNr(startNr++).withToken("2")),
+        participants.save(aParticipant.withStartNr(startNr++).withToken("3"))
+      ])
+        .then(() => {
+          return participants.assign(blockDistribution);
+        })
+        .then(participants.get.all)
+        .then((participants) => {
+          participants.forEach(p => {
+            expect(p.start_block).not.toBe(0);
+            done();
+          });
+        })
+        .catch(done.fail);
+    });
+  });
+
   describe('forDataTables()', () => {
     const participantToBeHiddenByPageLimit = participant.from(aParticipant)
       .with({team: 'Filtered X'})
@@ -357,7 +380,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          startBlocks.add( '36000', 'startblock 1')
+          startBlocks.add('36000', 'startblock 1')
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.get.byId(participantid))
             .then((participant) => {
@@ -375,7 +398,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          startBlocks.add( '36000', 'startblock 1')
+          startBlocks.add('36000', 'startblock 1')
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.get.byId(participantid))
             .then((participant) => {
@@ -400,7 +423,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr).withStartBlock(0))
         .then(() => {
-          startBlocks.add( '36000', 'startblock 1')
+          startBlocks.add('36000', 'startblock 1')
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.rank(nr))
             .then((rank) => {
@@ -415,7 +438,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr).withStartBlock(0))
         .then(() => {
-          startBlocks.add( '36000', 'startblock 1')
+          startBlocks.add('36000', 'startblock 1')
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.rankByCategory(nr))
             .then((rank) => {

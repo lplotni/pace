@@ -194,6 +194,21 @@ participants.update = (participant, id) => {
     });
 };
 
+participants.assign = (dist) => {
+  let offset = 0;
+  let updatePromises = [];
+
+  dist.forEach((amount, index) => {
+    updatePromises.push(
+      db.update(`update participants set start_block=${index+1} where id in 
+                        (select id from participants order by goal,id limit ${amount} offset ${offset});`)
+    );
+    offset=offset+amount;
+  });
+
+  return Q.all(updatePromises);
+};
+
 participants.markPayed = (participantId) => {
   return db.update('update participants SET has_payed = true, confirmation_time = current_timestamp(2) WHERE id = $1', [participantId])
     .then(result => {

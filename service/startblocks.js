@@ -20,10 +20,10 @@ startblocks.editBlock = (time, name, id) => {
 startblocks.save = (req) => {
   _.each(req.block,block => {
     let time = moment().hours(block.hours).minutes(block.minutes).seconds(block.seconds).unix();
-    if (block.id != 0) {
+    if (block.id !== 0) {
       startblocks.editBlock(time, block.name, block.id);
     } else {
-      if (block.hours != '') {
+      if (block.hours !== '') {
         startblocks.add(time, block.name);
       }
     }
@@ -62,8 +62,13 @@ startblocks.assign = () => {
     let blocks = result[1];
     let amountPerBlock = Math.floor(totalAmount / blocks.length); //todo MOD ?
     let distribution = [];
-    _.forEach(blocks,function(block,index){
-        if(blocks.length != index+1) {
+
+      let isNotTheLastBlock = (index) => {
+        return blocks.length !== index + 1;
+      };
+
+      _.forEach(blocks,(block,index) => {
+        if(isNotTheLastBlock(index)) {
           distribution.push(amountPerBlock);
         } else { // last block: amountPerBlock + rest
           distribution.push(amountPerBlock + ( totalAmount % blocks.length ));

@@ -84,8 +84,6 @@ pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
   if(startNumberData.onSiteRegistration) {
     pdfGeneration.addQrCodeWithSelfServiceLink(doc, startNumberData.secureUrl);
   }
-
-  doc.addPage();
 };
 
 module.exports = pdfGeneration;

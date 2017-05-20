@@ -19,7 +19,7 @@ startblocks.editBlock = (time, name, id) => {
 
 startblocks.save = (req) => {
   _.each(req.block,block => {
-    let time = moment.utc().hours(block.hours).minutes(block.minutes).seconds(block.seconds).unix();
+    let time = moment().hours(block.hours).minutes(block.minutes).seconds(block.seconds).unix();
     if (block.id != 0) {
       startblocks.editBlock(time, block.name, block.id);
     } else {
@@ -48,9 +48,9 @@ startblocks.all = () => {
 startblocks.get = () => {
   return db.select('SELECT * from startblocks order by id').then((blocks) => {
     _.each(blocks, (block, i) => {
-      blocks[i].hours = moment.utc(block.start_time, 'X').hours();
-      blocks[i].minutes = moment.utc(block.start_time, 'X').minutes();
-      blocks[i].seconds = moment.utc(block.start_time, 'X').seconds();
+      blocks[i].hours = moment(block.start_time, 'X').hours();
+      blocks[i].minutes = moment(block.start_time, 'X').minutes();
+      blocks[i].seconds = moment(block.start_time, 'X').seconds();
     });
     return blocks;
   });

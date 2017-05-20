@@ -219,7 +219,7 @@ participants.assign = (dist) => {
 
   dist.forEach((amount, index) => {
     updatePromises.push(
-      db.update(`update participants set start_block=${index + 1} where id in 
+      db.update(`update participants set start_block=${index} where id in 
                         (select id from participants order by goal,id limit ${amount} offset ${offset});`)
     );
     offset = offset + amount;

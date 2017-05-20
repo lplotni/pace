@@ -15,6 +15,7 @@ describe('participants service', () => {
   const startBlocks = require('../../service/startblocks');
   const mails = require('../../service/util/mails');
   const participant = require('../../domain/participant');
+  const db = require('../../service/util/dbHelper');
   const helper = require('../journeyHelper');
 
   let startNr = 30;
@@ -301,7 +302,7 @@ describe('participants service', () => {
   });
 
   describe('assign()', () => {
-    it('uses provided block distribution to assigne start blocks to participants', (done) => {
+    it('uses provided block distribution to assign start blocks to participants', (done) => {
       let blockDistribution = [1, 2];
       Q.all([
         participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
@@ -311,12 +312,12 @@ describe('participants service', () => {
         .then(() => {
           return participants.assign(blockDistribution);
         })
-        .then(participants.get.all)
-        .then((participants) => {
-          participants.forEach(p => {
-            expect(p.start_block).not.toBe(0);
+        .then(() => {
+          return db.select('select count(DISTINCT start_block) as count from participants');
+        })
+        .then((distinct_startblocks) => {
+            expect(parseInt(distinct_startblocks[0].count)).toBe(blockDistribution.length);
             done();
-          });
         })
         .catch(done.fail);
     });

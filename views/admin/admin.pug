@@ -31,6 +31,18 @@ block content
         input(type='hidden', name='_csrf', value=_csrf)
         button#close-registration.primary.button-primary.pace(type='submit') Registrierung schlie&szlig;en
 
+  form(method='POST', action='admin/generate-on-site-participants')
+    .row
+      .eight.columns
+        input(type='hidden', name='_csrf', value=_csrf)
+        h4 Vor-Ort Registrierung
+    .row
+      .eight.columns
+        label(for='amountOnSite') Anzahl der zusätzlichen blanco Registrierungen:
+          input#amountOnSite(name='amountOnSite', required=true, value='0')
+        span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Registrierungen generiert. Um weitere zu generieren, die Anzahl in das Feld eintragen und auf 'Erzeugen' klicken.
+      .two.columns
+        button#generate-on-site-participants.primary.button-primary.pace(type='submit') Erzeugen
   .row
     form(method='GET', action='admin/generate-start-numbers')
       .eight.columns
@@ -39,18 +51,6 @@ block content
       .two.columns
         button#generate-start-numbers.primary.button-primary.pace(type='submit') Generieren
 
-  form(method='POST', action='admin/generate-on-site-start-numbers')
-    .row
-      .eight.columns
-        input(type='hidden', name='_csrf', value=_csrf)
-        h4 Alle Startnummern für Vor-Ort-Registrierungen
-    .row
-      .eight.columns
-        label(for='amountOnSite') Anzahl der zusätzlichen blanco Startnummern:
-          input#amountOnSite(name='amountOnSite', required=true, value='0')
-        span#currentNumOfOnSite Es wurden bereits #{numBlancParticipants} blanco Startnummern generiert. Um weitere Startnummern zu generieren, die Anzahl in das Feld eintragen und auf 'Alle Startnummern für Vor-Ort-Registrierungen generieren' klicken.
-      .two.columns
-        button#generate-on-site-start-numbers.primary.button-primary.pace(type='submit') Generieren
 
   script(src='/javascript/usageChart.js')
   script(src='/javascript/shirtsChart.js')

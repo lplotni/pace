@@ -52,7 +52,7 @@ describe('admin page', () => {
       .click('button#submit');
   };
 
-  it('should go to admin page, show statistics and generate start number buttons (registered and on-site numbers)', (done) => {
+  it('should go to admin page, show statistics and generate start number buttons (registered and on-site)', (done) => {
     loginAdmin().url(helper.paceUrl + 'admin')
       .isVisible('canvas#registrationsCtx')
       .then(function (isVisible) {
@@ -74,7 +74,7 @@ describe('admin page', () => {
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })
-      .isVisible('button#generate-on-site-start-numbers')
+      .isVisible('button#generate-on-site-participants')
       .then(function (isVisible) {
         expect(isVisible).toBe(true);
       })

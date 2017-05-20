@@ -64,16 +64,16 @@ router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   }
 });
 
-router.post('/generate-on-site-start-numbers', isAuthenticated, (req, res) => {
+router.post('/generate-on-site-participants', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then(() => {
-      pdfGeneration.generateOnSiteStartNumbers(redis).then(() => {
+    participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite))
+      .then(() => {
         res.redirect('back');
-      }).fail((msg) => {
+      })
+      .fail((msg) => {
         console.error(msg);
         res.redirect('back');
       });
-    });
   }
 });
 

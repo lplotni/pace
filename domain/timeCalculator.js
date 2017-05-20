@@ -20,7 +20,7 @@ timeCalculator.timestamp = (timestring) => {
 };
 
 timeCalculator.relativeTime = (startTimes, finishTime, block) => {
-  const relativeTime = moment.duration( finishTime - startTimes[block], 'seconds');
+  const relativeTime = moment.duration( finishTime - startTimes[block-1], 'seconds');
   return [relativeTime.hours(), relativeTime.minutes(), relativeTime.seconds()];
 };
 timeCalculator.relativeSeconds = (startTimes, finishTime, block) => {

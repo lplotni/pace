@@ -107,7 +107,7 @@ describe('pdfGeneration', () => {
       team: 'My Team',
       seconds: '1922',
       start_number: 1,
-      start_block: 1,
+      start_block: 0,
       tshirt: {
         size: 'S',
         model: 'Unisex'
@@ -128,7 +128,7 @@ describe('pdfGeneration', () => {
       lastname: '',
       team: '',
       start_number: 4,
-      start_block: 1
+      start_block: 0
     };
 
     participantsMock.get.all.and.returnValue(Q.fcall(() => [confirmedParticipant, unconfirmedParticipant,blancParticipant]));
@@ -168,7 +168,6 @@ describe('pdfGeneration', () => {
 
     it('should get startBlock', () => {
       let data = JSON.parse(pdfGeneration.extractData(confirmedParticipant));
-      //todo this comes now from the startblocks table and is a string
       expect(data.startBlock).toEqual('1');
     });
 

@@ -3,7 +3,6 @@
 Pace is a registration and management application for running events and competitions.
 
 [![Build Status](https://travis-ci.org/lplotni/pace.svg?branch=master)](https://travis-ci.org/lplotni/pace)
-[![Build Status](https://travis-ci.org/cz8s/pace.svg?branch=master)](https://travis-ci.org/cz8s/pace)
 [![Join the chat at https://gitter.im/lplotni/pace](https://badges.gitter.im/lplotni/pace.svg)](https://gitter.im/lplotni/pace?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Greenkeeper badge](https://badges.greenkeeper.io/lplotni/pace.svg)](https://greenkeeper.io/)
 

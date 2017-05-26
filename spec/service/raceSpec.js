@@ -34,7 +34,8 @@ describe('race service', () => {
   it('opens csv files', (done) => {
     race.parse('spec/service/results.csv')
       .then((data) => {
-        expect(data[1]).toBe('09:24:04');
+        console.log(data);
+        expect(data[367]).toBe('1495811191');
         done();
       })
       .catch(done.fail);

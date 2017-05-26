@@ -19,7 +19,7 @@ race.parse = (file) => {
   csv
     .fromPath(file)
     .on("data", (data) => {
-      results[data[1]] = data[2];
+      results[data[0]] = data[1];
     })
     .on("end", () => deferred.resolve(results));
   return deferred.promise;
@@ -30,7 +30,7 @@ race.import = (file) => {
   race.parse(file)
     .then(result => {
       Object.keys(result).forEach(function (key) {
-        participant.insertTime(key, result[key]);
+        participant.updateTime(key, result[key]);
       });
     });
 };

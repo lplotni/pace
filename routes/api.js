@@ -33,15 +33,18 @@ router.post('/scan',tokenValidator, (req, res) => {
                 time: timeCalculator.timeString(seconds)
               };
               websocket.updateAllClients(message);
+              console.log('OK');
               res.setHeader('Content-Type', 'application/json');
               res.send(JSON.stringify({ status: 'OK' }));
           }
           else {
+            console.log('Not updated');
             res.setHeader('Content-Type', 'application/json');
             res.status(200).send(JSON.stringify({ status: 'Not updated' }));
           };
         });
     }).catch((err) => {
+    console.log('Not Found');
     res.setHeader('Content-Type', 'application/json');
     res.status(404).send(JSON.stringify({ status: 'Not Found' }));
   });

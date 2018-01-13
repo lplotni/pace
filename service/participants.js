@@ -219,7 +219,7 @@ participants.assign = (dist) => {
 
   _.forEach(dist, (value, key) => {
     updatePromises.push(
-      db.update(`update participants set start_block=${key} where id in 
+      db.update(`update participants set start_block=${key}, start_block_color='${value.block.color}' where id in 
                         (select id from participants order by goal,id limit ${value.amount} offset ${offset});`)
     );
     offset = offset + value.amount;

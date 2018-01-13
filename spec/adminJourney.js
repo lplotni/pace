@@ -180,7 +180,7 @@ describe('admin page', () => {
     });
   });
 
-  xit('should be able to define the start time of 2 blocks', (done) => {
+  it('should be able to define the start time of a block', (done) => {
     loginAdmin().url(helper.paceUrl + 'admin/after')
       .setValue('input#name0', 'Startblock Rot')
       .setValue('input#hours0', '10')

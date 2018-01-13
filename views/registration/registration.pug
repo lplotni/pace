@@ -52,6 +52,12 @@ block content
             option(value='moderate') Ich laufe gerne und regelmäßig / Die Zeit ist mir nicht so wichtig.
             option(value='relaxed') Ich möchte gerne mitlaufen, aber ohne Stress in ruhigem Tempo.
             option(value='ambitious') Ich möchte schnell und sportlich laufen / Die Zeit ist mir wichtig.
+
+      noscript
+        .row#noscript-registration-message
+          .ten.columns.center
+            p Moin! Du hast JavaScript in deinem Browser deaktiviert. Deshalb können wir die aktuell leider kein T-Shirt anbieten. Auch die Coupon-Code Funktionalität funktioniert ohne JavaScript leider nocht nicht. Wir arbeiten daran!
+
       .row
         .twelve.columns.padding
           label(for='discount') Welchen Preis möchtest du zahlen
@@ -65,7 +71,7 @@ block content
           label(for='couponcode') Coupon Code*:
             input#couponcode.u-full-width(type='text', name='couponcode')
 
-      .row
+      .row#shirt-checkbox
         .twelve.columns.black.padding(style='height: 36px')
           label(for='shirt') Laufshirt für 10 Euro gewünscht
             input#shirt(type='checkbox', style="position: relative; right: -10px;" value='Yes', name='shirt')

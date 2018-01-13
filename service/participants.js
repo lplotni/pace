@@ -197,7 +197,7 @@ participants.update = (participant, id) => {
 participants.distributeIntoStartblocks = (participants, blocks) => {
   let totalAmount = participants.length;
   let amountPerBlock = Math.floor(totalAmount / blocks.length); //todo MOD ?
-  let distribution = [];
+  let distribution = {};
 
   let isNotTheLastBlock = (index) => {
     return blocks.length !== index + 1;
@@ -205,9 +205,9 @@ participants.distributeIntoStartblocks = (participants, blocks) => {
 
   _.forEach(blocks, (block, index) => {
     if (isNotTheLastBlock(index)) {
-      distribution.push(amountPerBlock);
+      distribution[index] = {block: block, amount: amountPerBlock};
     } else { // last block: amountPerBlock + rest
-      distribution.push(amountPerBlock + ( totalAmount % blocks.length ));
+      distribution[index] = {block: block, amount: amountPerBlock + ( totalAmount % blocks.length )};
     }
   });
   return distribution;
@@ -217,12 +217,12 @@ participants.assign = (dist) => {
   let offset = 0;
   let updatePromises = [];
 
-  dist.forEach((amount, index) => {
+  _.forEach(dist, (value, key) => {
     updatePromises.push(
-      db.update(`update participants set start_block=${index} where id in 
-                        (select id from participants order by goal,id limit ${amount} offset ${offset});`)
+      db.update(`update participants set start_block=${key} where id in 
+                        (select id from participants order by goal,id limit ${value.amount} offset ${offset});`)
     );
-    offset = offset + amount;
+    offset = offset + value.amount;
   });
 
   return Q.all(updatePromises);

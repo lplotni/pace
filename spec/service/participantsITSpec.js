@@ -303,7 +303,7 @@ describe('participants service', () => {
 
   describe('assign()', () => {
     it('uses provided block distribution to assign start blocks to participants', (done) => {
-      let blockDistribution = [1, 2];
+      let blockDistribution = {0: {amount: 1}, 1: {amount: 2}};
       Q.all([
         participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
         participants.save(aParticipant.withStartNr(startNr++).withToken("2")),
@@ -316,7 +316,7 @@ describe('participants service', () => {
           return db.select('select count(DISTINCT start_block) as count from participants');
         })
         .then((distinct_startblocks) => {
-            expect(parseInt(distinct_startblocks[0].count)).toBe(blockDistribution.length);
+            expect(parseInt(distinct_startblocks[0].count)).toBe(_.size(blockDistribution));
             done();
         })
         .catch(done.fail);

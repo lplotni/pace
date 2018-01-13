@@ -28,6 +28,7 @@ router.post('/', (req, res) => {
           bank: config.get('contact.bank'),
           token: result.token,
           amount: new Intl.NumberFormat('de-DE', {minimumFractionDigits: '2'}).format(calculator.priceFor(newParticipant)),
+          free: calculator.priceFor(newParticipant) < 1,
           editUrl: editUrlHelper.generateUrl(result.secureid),
           startnr: result.startnr
         }), err => res.render('failure', {

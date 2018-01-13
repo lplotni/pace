@@ -54,7 +54,10 @@ describe('participants page', () => {
       'Bestätigen button',
       'Bestätigungsmail senden button',
       'Löschen button',
-      'Edit button'];
+      'Edit button',
+      'Email',
+      'Team'
+    ];
 
     participants.save(aParticipant.withToken('a Token').withStartNr(42))
       .then(() => {

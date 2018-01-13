@@ -7,10 +7,14 @@ const moment = require('moment');
 const Q = require('q');
 const _ = require('lodash');
 
+const defaultColor = '#FFFFFF';
+const isHexColor = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
+
 let startblocks = {};
 
-startblocks.add = (time, name) => {
-  return db.insert('INSERT INTO startblocks(start_time,name) values($1,$2) returning id', [time, name]);
+startblocks.add = (time, name, color) => {
+  color = isHexColor.test(color) ? color : defaultColor;
+  return db.insert('INSERT INTO startblocks(start_time,name, color) values($1,$2,$3) returning id', [time, name, color]);
 };
 
 startblocks.editBlock = (time, name, id) => {

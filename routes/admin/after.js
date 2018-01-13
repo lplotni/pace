@@ -29,6 +29,7 @@ function extractTimes(req) { //TODO pull into the 'proper' object
 
 router.post('/', isAuthenticated, (req, res) => {
   startblocks.save(req.body);
+
   res.redirect('/admin/after');
 });
 

@@ -7,28 +7,31 @@ const moment = require('moment');
 const Q = require('q');
 const _ = require('lodash');
 
+const defaultColor = '#FFFFFF';
+const isHexColor = /(^#[0-9A-Fa-f]{6}$)|(^#[0-9A-Fa-f]{3}$)/i;
+
 let startblocks = {};
 
-startblocks.add = (time, name) => {
-  return db.insert('INSERT INTO startblocks(start_time,name) values($1,$2) returning id', [time, name]);
+startblocks.add = (time, name, color) => {
+  color = isHexColor.test(color) ? color : defaultColor;
+  return db.insert('INSERT INTO startblocks(start_time,name, color) values($1,$2,$3) returning id', [time, name, color]);
 };
 
-startblocks.editBlock = (time, name, id) => {
-  return db.update('UPDATE startblocks set start_time=$1,name=$2 where id=$3', [time, name, id]);
+startblocks.editBlock = (time, name, color, id) => {
+  return db.update('UPDATE startblocks set start_time=$1,name=$2, color=$3 where id=$4', [time, name, color, id]);
 };
 
 startblocks.save = (req) => {
   _.each(req.block,block => {
     let time = moment().hours(block.hours).minutes(block.minutes).seconds(block.seconds).unix();
     if (block.id != 0) {
-      startblocks.editBlock(time, block.name, block.id);
+      startblocks.editBlock(time, block.name, block.color, block.id);
     } else {
       if (block.hours != '') {
-        startblocks.add(time, block.name);
+        startblocks.add(time, block.name, block.color);
       }
     }
   });
-
 };
 
 startblocks.times = () => {

@@ -62,6 +62,28 @@ describe('startblock service', () => {
       .catch(done.fail);
   });
 
+  it('should update values on edit', (done) => {
+    let name = 'My first startblock';
+    let time = '1479312647';
+    let color = '#CAFE00';
+    startblocks.add(time,name, color)
+      .then(startblocks.get)
+      .then((list) => {
+        let updatedName = 'My first renamed startblock';
+        let updatedTime = '1479312649';
+        let updatedColor = '#123456';
+        startblocks.editBlock(updatedTime, updatedName, updatedColor, list[0].id)
+            .then(startblocks.get)
+            .then((updatedList) => {
+              expect(updatedList.length).toBe(1);
+              expect(updatedList[0].name).toBe(updatedName);
+              expect(updatedList[0].start_time).toBe(updatedTime);
+              expect(updatedList[0].color).toBe(updatedColor);
+              done();
+            })
+      })
+  });
+
   it('should return startblock times as an array', (done) => {
     let name = 'My first startblock';
     let time = '3600';

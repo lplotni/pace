@@ -180,8 +180,9 @@ describe('admin page', () => {
     });
   });
 
-  it('should be able to define the start time of a block', (done) => {
+  it('should be able to define the color, name and start time of a block', (done) => {
     loginAdmin().url(helper.paceUrl + 'admin/after')
+      .setValue('input#color0', '#cafe00')
       .setValue('input#name0', 'Startblock Rot')
       .setValue('input#hours0', '10')
       .setValue('input#minutes0', '15')
@@ -191,6 +192,14 @@ describe('admin page', () => {
       .then(isVisible => {
           expect(isVisible).toBe(true);
         })
+      .getValue('input#color1')
+      .then((value) => {
+        expect(value).toBe('#cafe00');
+      })
+      .getValue('input#name1')
+      .then((value) => {
+        expect(value).toBe('Startblock Rot');
+      })
       .getValue('input#hours1')
       .then((value) => {
         expect(value).toBe('10');

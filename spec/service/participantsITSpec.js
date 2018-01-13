@@ -303,7 +303,7 @@ describe('participants service', () => {
 
   describe('assign()', () => {
     it('uses provided block distribution to assign start blocks to participants', (done) => {
-      let blockDistribution = {0: {amount: 1}, 1: {amount: 2}};
+      let blockDistribution = {0: {amount: 1, block: {color: '#123456'}}, 1: {amount: 2, block: {color: '#654321'}}};
       Q.all([
         participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
         participants.save(aParticipant.withStartNr(startNr++).withToken("2")),

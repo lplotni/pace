@@ -121,7 +121,8 @@ describe('pdfGeneration', () => {
       team: 'a team name',
       seconds: '1823',
       start_number: 2,
-      start_block: 1
+      start_block: 1,
+      start_block_color: '#123456',
     };
     blancParticipant = {
       firstname: '',
@@ -169,6 +170,11 @@ describe('pdfGeneration', () => {
     it('should get startBlock', () => {
       let data = JSON.parse(pdfGeneration.extractData(confirmedParticipant));
       expect(data.startBlock).toEqual('1');
+    });
+
+    xit('should get startBlockColor', () => {
+      let data = JSON.parse(pdfGeneration.extractData(confirmedParticipant));
+      expect(data.startBlockColor).toEqual('#123456');
     });
 
     it('should get tshirt details', () => {

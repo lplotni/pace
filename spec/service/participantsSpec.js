@@ -9,7 +9,7 @@ describe('participants service', () => {
 
     describe('distributeIntoStartblocks()', () => {
       it('returns a suitable startblock', () => {
-        let distribution = participants.distributeIntoStartblocks([{goal: 'relaxed'}, {goal: 'ambitious'}, {goal: 'ambitious'}, {goal: 'moderate'}, {goal: 'moderate'}, {goal: 'moderate'}, {goal: 'relaxed'}], [{}, {}, {}])
+        const distribution = participants.distributeIntoStartblocks([{goal: 'relaxed'}, {goal: 'ambitious'}, {goal: 'ambitious'}, {goal: 'moderate'}, {goal: 'moderate'}, {goal: 'moderate'}, {goal: 'relaxed'}], [{}, {}, {}]);
         expect(distribution.length).toBe(3);
         expect(distribution[0]).toBe(2);
         expect(distribution[1]).toBe(2);

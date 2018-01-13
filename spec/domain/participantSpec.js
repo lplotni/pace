@@ -4,119 +4,145 @@
 /* global jasmine, describe, it, expect, afterAll, beforeEach, fail */
 
 describe('participant', () => {
-
   const _ = require('lodash');
   const participant = require('../../domain/participant.js');
-  let body;
-
-  beforeEach(() => {
-      body = {
-        firstname: 'Mark',
-        lastname: 'Mueller',
-        email: 'm.mueller@example.com',
-        category: 'Unicorn',
-        birthyear: '1980',
-        team: 'Crazy runners',
-        visibility: 'public',
-        discount: 'yes',
-        couponcode: '',
-        shirt: 'Yes',
-        model: 'Normal fit',
-        size: 'M',
-        goal: 'ambitious'
-      };
-    }
-  );
 
   describe('from()', () => {
-
-    const invalid_email_body = {
+    const validBody = {
       firstname: 'Mark',
       lastname: 'Mueller',
-      email: 'invalid',
+      email: 'm.mueller@example.com',
       category: 'Unicorn',
       birthyear: '1980',
       team: 'Crazy runners',
       visibility: 'public',
-      discount: 'no',
+      discount: 'yes',
       couponcode: '',
       shirt: 'Yes',
       model: 'Normal fit',
-      size: 'M'
+      size: 'M',
+      goal: 'ambitious'
     };
 
-    it('should extract firstname from the request body', () => {
-      expect(participant.from(body).firstname).toBe('Mark');
+    describe('valid body', () => {
+      let parsedParticipant;
+
+      beforeEach(() => {
+        parsedParticipant = participant.from(validBody);
+      });
+
+      it('should extract firstname from the request body', () => {
+        expect(parsedParticipant.firstname).toBe('Mark');
+      });
+
+      it('should extract lastname from the request body', () => {
+        expect(parsedParticipant.lastname).toBe('Mueller');
+      });
+
+      it('should extract email from the request body', () => {
+        expect(parsedParticipant.email).toBe('m.mueller@example.com');
+      });
+
+      it('should extract gender form the request body', () => {
+        expect(parsedParticipant.category).toBe('Unicorn');
+      });
+
+      it('should extract team name form the request body', () => {
+        expect(parsedParticipant.team).toBe('Crazy runners');
+      });
+
+      it('should extract birthyear form the request body', () => {
+        expect(parsedParticipant.birthyear).toBe(1980);
+      });
+
+      it('should extract tshirt form the request body if shirt is ordered', () => {
+        expect(parsedParticipant.tshirt.model).toBe('Normal fit');
+        expect(parsedParticipant.tshirt.size).toBe('M');
+      });
+
+      it('should extract discount from the request body', () => {
+        expect(parsedParticipant.discount).toBe('yes');
+      });
+
+      it('should extract goal from the request body', () => {
+        expect(parsedParticipant.goal).toBe('ambitious');
+      });
+
+      it('should extract visibility from the request body', () => {
+        expect(parsedParticipant.visibility).toBe('public');
+      });
     });
 
-    it('should extract lastname from the request body', () => {
-      expect(participant.from(body).lastname).toBe('Mueller');
+    describe('valid partial body', () => {
+      it('should not extract tshirt form the request body if shirt is not ordered', () => {
+        expect(participant.from(_.omit(validBody, 'shirt')).tshirt).toEqual({});
+      });
+
+      it('should default birthyear to 0 if value missing', () => {
+        expect(participant.from(_.set(validBody, 'birthyear', '')).birthyear).toEqual(0);
+      });
+
+      it('should not throw an error if no discount can be found, but use NO instead', () => {
+        const bodyWithoutDiscout = _.omit(validBody, 'discount');
+        expect(participant.from(bodyWithoutDiscout).discount).toBe('no');
+      });
     });
 
-    it('should throw an error if email format is invalid', () => {
-      function callWithInvalidEmail() {
-        participant.from(invalid_email_body);
-      }
+    describe('invalid body', () => {
+      const invalid_email_body = {
+        firstname: 'Mark',
+        lastname: 'Mueller',
+        email: 'invalid',
+        category: 'Unicorn',
+        birthyear: '1980',
+        team: 'Crazy runners',
+        visibility: 'public',
+        discount: 'no',
+        couponcode: '',
+        shirt: 'Yes',
+        model: 'Normal fit',
+        size: 'M'
+      };
 
-      expect(callWithInvalidEmail).toThrow();
-    });
+      it('should throw an error if email format is invalid', () => {
+        function callWithInvalidEmail() {
+          participant.from(invalid_email_body);
+        }
 
-    it('should extract email from the request body', () => {
-      expect(participant.from(body).email).toBe('m.mueller@example.com');
-    });
+        expect(callWithInvalidEmail).toThrow();
+      });
 
-    it('should throw an error if no category can be found', () => {
-      function callWithNoCategory() {
-        participant.from(_.omit(body, 'category'));
-      }
+      it('should throw an error if no category can be found', () => {
+        function callWithNoCategory() {
+          participant.from(_.omit(validBody, 'category'));
+        }
 
-      expect(callWithNoCategory).toThrow();
-    });
+        expect(callWithNoCategory).toThrow();
+      });
 
-    it('should extract gender form the request body', () => {
-      expect(participant.from(body).category).toBe('Unicorn');
-    });
+      it('should throw an error if no visibility can be found', () => {
+        function callWithNoVisibility() {
+          participant.from(_.omit(validBody, 'visibility'));
+        }
 
-    it('should extract team name form the request body', () => {
-      expect(participant.from(body).team).toBe('Crazy runners');
-    });
+        expect(callWithNoVisibility).toThrow();
+      });
 
-    it('should extract birthyear form the request body', () => {
-      expect(participant.from(body).birthyear).toBe(1980);
-    });
+      it('should throw an error if negative birthyear is given', () => {
+        function callWithNegativeBirthyear() {
+          participant.from(_.set(validBody, 'birthyear', '-1990'));
+        }
 
-    it('should extract tshirt form the request body if shirt is ordered', () => {
-      expect(participant.from(body).tshirt.model).toBe('Normal fit');
-      expect(participant.from(body).tshirt.size).toBe('M');
-    });
+        expect(callWithNegativeBirthyear).toThrow();
+      });
 
-    it('should not extract tshirt form the request body if shirt is not ordered', () => {
-      expect(participant.from(_.omit(body, 'shirt')).tshirt).toEqual({});
-    });
+      it('should throw an error if whole date is given instead of year', () => {
+        function callWithFullDate() {
+          participant.from(_.set(validBody, 'birthyear', '02-12-1990'));
+        }
 
-    it('should extract visibility from the request body', () => {
-      expect(participant.from(body).visibility).toBe('public');
-    });
-
-    it('should throw an error if no visibility can be found', function () {
-      function callWithNoVisibility() {
-        participant.from(_.omit(body, 'visibility'));
-      }
-
-      expect(callWithNoVisibility).toThrow();
-    });
-
-    it('should extract discount from the request body', () => {
-      expect(participant.from(body).discount).toBe('yes');
-    });
-
-    it('should not throw an error if no discount can be found, but use NO instead', function () {
-      var bodyWithoutDiscout = _.omit(body, 'discount');
-      expect(participant.from(bodyWithoutDiscout).discount).toBe('no');
-    });
-
-    it('should extract goal from the request body', () => {
-      expect(participant.from(body).goal).toBe('ambitious');
+        expect(callWithFullDate).toThrow();
+      });
     });
   });
 
@@ -137,15 +163,15 @@ describe('participant', () => {
     });
 
     it('adds the property to the participant', () => {
-      let pWithNewProperty = p.with({paymentToken: 'token'}).with({otherProperty: 'x'});
+      const pWithNewProperty = p.with({paymentToken: 'token'}).with({otherProperty: 'x'});
 
       expect(pWithNewProperty.paymentToken).toBe('token');
       expect(pWithNewProperty.otherProperty).toBe('x');
       expect(pWithNewProperty.firstname).toBe('Mark');
       expect(pWithNewProperty.tshirt).toBe(p.tshirt);
     });
-
   });
+
   describe('anonymous registration', () => {
 
     const almost_empty_body = {
@@ -158,5 +184,4 @@ describe('participant', () => {
       expect(participant.invalidData(almost_empty_body)).toBe(false);
     });
   });
-
 });

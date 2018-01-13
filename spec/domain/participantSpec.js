@@ -78,6 +78,9 @@ describe('participant', () => {
         expect(participant.from(_.omit(validBody, 'shirt')).tshirt).toEqual({});
       });
 
+      it('should default birthyear to 0 if value missing', () => {
+        expect(participant.from(_.set(validBody, 'birthyear', '')).birthyear).toEqual(0);
+      });
 
       it('should not throw an error if no discount can be found, but use NO instead', () => {
         const bodyWithoutDiscout = _.omit(validBody, 'discount');

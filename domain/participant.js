@@ -10,17 +10,22 @@ const participant = {};
 
 
 participant.invalidData = (body) => {
-  const emailMissing = _.isEmpty(body.email) || _.isUndefined(body.email);
-  if (emailMissing) {
-    return _.isUndefined(body.category) || _.isUndefined(body.visibility);
+  const emailPresent = !_.isUndefined(body.email) && !_.isEmpty(body.email);
+  const requiredFieldsMissing = _.isUndefined(body.category) || _.isUndefined(body.visibility);
+
+  if (!emailPresent) {
+    return requiredFieldsMissing;
   } else {
-    return !validator.isEmail(body.email) || _.isUndefined(body.category) || _.isUndefined(body.visibility);
+    return !validator.isEmail(body.email) || requiredFieldsMissing;
   }
 };
 
 participant.invalidYear = (birthyear) => {
-  const isValidNumber = _.isFinite(_.toNumber(birthyear));
-  return !_.isUndefined(birthyear) && (!isValidNumber || _.toNumber(birthyear) <= 0);
+  const isNumber = _.isFinite(_.toNumber(birthyear));
+  const isPresent = !_.isUndefined(birthyear) && !_.isEmpty(birthyear);
+  const greaterZero = _.toNumber(birthyear) > 0;
+
+  return isPresent && (!isNumber || !greaterZero);
 };
 
 participant.from = (body) => {
@@ -40,7 +45,7 @@ participant.from = (body) => {
     discount: _.isUndefined(body.discount) ? 'no' : body.discount,
     couponcode: body.couponcode,
     category: body.category,
-    birthyear: _.isFinite(_.toNumber(body.birthyear)) ? _.toNumber(body.birthyear) : '0',
+    birthyear: _.isFinite(_.toNumber(body.birthyear)) ? _.toNumber(body.birthyear) : 0,
     team: body.team,
     tshirt: tshirt.from(body),
     goal: body.goal

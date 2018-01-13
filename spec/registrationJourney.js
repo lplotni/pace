@@ -55,6 +55,7 @@ describe('registration journey', () => {
       .setValue('input#team', 'Crazy runners')
       .selectByIndex('select#visibility', 1)
       .selectByIndex('select#goal', 2)
+      .click('input#shirt')
       .click('button#submit')
       .isVisible('div.thanks')
       .then((isVisible) => {
@@ -66,7 +67,7 @@ describe('registration journey', () => {
       })
       .getText('span.amount')
       .then((amount) => {
-        expect(amount).toMatch(/10.00/);
+        expect(amount).toMatch(/20.00/);
       })
       .getText('span.startNumber')
       .then((number) => {

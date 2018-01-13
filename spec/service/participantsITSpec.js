@@ -317,8 +317,6 @@ describe('participants service', () => {
         })
         .then((distinct_startblocks) => {
           expect(_.size(distinct_startblocks)).toBe(2);
-          expect(distinct_startblocks[0].start_block).toBe(1);
-          expect(distinct_startblocks[1].start_block).toBe(0);
           done();
         })
         .catch(done.fail);
@@ -339,8 +337,6 @@ describe('participants service', () => {
         })
         .then((distinct_startblock_colors) => {
           expect(_.size(distinct_startblock_colors)).toBe(2);
-          expect(distinct_startblock_colors[0].start_block_color).toBe('#654321');
-          expect(distinct_startblock_colors[1].start_block_color).toBe('#123456');
           done();
         })
         .catch(done.fail);

@@ -25,7 +25,7 @@ startblocks.save = (req) => {
   _.each(req.block,block => {
     let time = moment().hours(block.hours).minutes(block.minutes).seconds(block.seconds).unix();
     if (block.id !== 0) {
-      startblocks.editBlock(time, block.name, block.id, block.color);
+      startblocks.editBlock(time, block.name, block.color, block.id);
     } else {
       if (block.hours !== '') {
         startblocks.add(time, block.name, block.color);

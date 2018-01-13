@@ -22,4 +22,8 @@ describe('timeCalculator service', () => {
       let result = timeCalculator.relativeSeconds(startTimes, finishTime, 0);
       expect(result).toBe(1889);
     });
+    it('returns a formated string', () => {
+      let result = timeCalculator.timeString('14587');
+      expect(result).toBe('04:03:07');
+    });
 });

@@ -13,19 +13,6 @@ const argv = require('yargs').argv;
 const Q = require('q');
 
 
-function express() {
-  let deferred = Q.defer();
-  let app = require('./app.js');
-  app.set('port', process.env.PORT || 3000);
-
-  let server = app.listen(app.get('port'), () => {
-    gutil.log('Express server listening on port ' + server.address().port);
-    deferred.resolve(server);
-  });
-
-  return deferred.promise;
-}
-
 function createdb() {
   if (argv.ci) {
     gutil.log('Adding -e ci');
@@ -62,7 +49,6 @@ function startSelenium() {
   return deferred.promise;
 }
 
-gulp.task('express', express);
 
 gulp.task('test', function () {
   if (argv.single) {
@@ -123,6 +109,7 @@ gulp.task('lint', () => {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('default', ['express']);
+gulp.task('npm-start', shell.task(["npm start"]));
+gulp.task('default', ['npm-start']);
 
 gulp.task('start-db', shell.task(["docker run -p 5432:5432 -d --name 'pace-postgres' -e POSTGRES_PASSWORD='pgtester' -e POSTGRES_DB='pace' -e POSTGRES_USER='pgtester' postgres"]));

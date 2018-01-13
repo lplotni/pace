@@ -11,6 +11,8 @@ const pdfGeneration = require('../../pdf/pdfGeneration');
 const registration = require('../../service/registration');
 const stats = require('../../service/stats');
 const participants = require('../../service/participants');
+const Redis = require('ioredis');
+const redis = new Redis(6379, process.env.REDISHOST || 'localhost');
 
 let canViewAdminPage = (role) => accesscontrol.hasPermissionTo(role, 'view admin page');
 
@@ -53,15 +55,25 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    pdfGeneration.generateRegistered(res);
+    pdfGeneration.generateStartNumbers(redis).then(() => {
+      res.redirect('back');
+    }).fail((msg) => {
+      console.error(msg);
+      res.redirect('back');
+    });
   }
 });
 
-router.post('/generate-on-site-start-numbers', isAuthenticated, (req, res) => {
+router.post('/generate-on-site-participants', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
-    participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite)).then(() => {
-      pdfGeneration.generateOnSite(res);
-    });
+    participants.saveBlancParticipants(_.toInteger(req.body.amountOnSite))
+      .then(() => {
+        res.redirect('back');
+      })
+      .fail((msg) => {
+        console.error(msg);
+        res.redirect('back');
+      });
   }
 });
 

@@ -41,7 +41,9 @@ startblocks.times = () => {
   });
 };
 
-
+startblocks.all = () => {
+ return db.select('SELECT id from startblocks');
+};
 
 startblocks.get = () => {
   return db.select('SELECT * from startblocks order by id').then((blocks) => {
@@ -52,26 +54,6 @@ startblocks.get = () => {
     });
     return blocks;
   });
-};
-
-startblocks.assign = () => {
-  const deferred = Q.defer();
-  Q.all([participants.confirmed(), participants.blancParticipants(), db.select('SELECT id from startblocks')])
-    .then((result) => {
-    let totalAmount = result[0].length + result[1].length;
-    let blocks = result[2];
-    let amountPerBlock = Math.floor(totalAmount / blocks.length); //todo MOD ?
-    let distribution = [];
-    _.forEach(blocks,function(block,index){
-        if(blocks.length != index+1) {
-          distribution.push(amountPerBlock);
-        } else { // last block: amountPerBlock + rest
-          distribution.push(amountPerBlock + ( totalAmount % blocks.length ));
-        }
-      }); 
-    deferred.resolve(distribution);
-    });
-  return deferred.promise;
 };
 
 module.exports = startblocks;

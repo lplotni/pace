@@ -51,6 +51,7 @@ describe('pdfRequests', () => {
       expect(redisStub.registeredEvents()).toEqual(['message']);
     });
   });
+
   describe('parse', () => {
 
     it('converts message to correct format', () => {

@@ -11,4 +11,4 @@ RUN npm install && npm cache clean
 COPY . /usr/src/app
 
 EXPOSE 3000
-CMD ["/usr/src/app/node_modules/gulp/bin/gulp.js"]
+CMD ["/usr/local/bin/npm", "start"]

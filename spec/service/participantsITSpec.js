@@ -5,6 +5,7 @@
 
 const _ = require('lodash');
 const moment = require('moment');
+const Q = require('q');
 
 describe('participants service', () => {
 
@@ -14,6 +15,7 @@ describe('participants service', () => {
   const startBlocks = require('../../service/startblocks');
   const mails = require('../../service/util/mails');
   const participant = require('../../domain/participant');
+  const db = require('../../service/util/dbHelper');
   const helper = require('../journeyHelper');
 
   let startNr = 30;
@@ -299,6 +301,28 @@ describe('participants service', () => {
     });
   });
 
+  describe('assign()', () => {
+    it('uses provided block distribution to assign start blocks to participants', (done) => {
+      let blockDistribution = [1, 2];
+      Q.all([
+        participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
+        participants.save(aParticipant.withStartNr(startNr++).withToken("2")),
+        participants.save(aParticipant.withStartNr(startNr++).withToken("3"))
+      ])
+        .then(() => {
+          return participants.assign(blockDistribution);
+        })
+        .then(() => {
+          return db.select('select count(DISTINCT start_block) as count from participants');
+        })
+        .then((distinct_startblocks) => {
+            expect(parseInt(distinct_startblocks[0].count)).toBe(blockDistribution.length);
+            done();
+        })
+        .catch(done.fail);
+    });
+  });
+
   describe('forDataTables()', () => {
     const participantToBeHiddenByPageLimit = participant.from(aParticipant)
       .with({team: 'Filtered X'})
@@ -357,7 +381,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          startBlocks.add( '36000', 'startblock 1')
+          startBlocks.add('36000', 'startblock 1')
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.get.byId(participantid))
             .then((participant) => {
@@ -375,7 +399,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr))
         .then((participantid) => {
-          startBlocks.add( '36000', 'startblock 1')
+          startBlocks.add('36000', 'startblock 1')
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.get.byId(participantid))
             .then((participant) => {
@@ -400,7 +424,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr).withStartBlock(0))
         .then(() => {
-          startBlocks.add( '36000', 'startblock 1')
+          startBlocks.add('36000', 'startblock 1')
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.rank(nr))
             .then((rank) => {
@@ -415,7 +439,7 @@ describe('participants service', () => {
       let nr = startNr++;
       participants.save(aParticipant.withStartNr(nr).withStartBlock(0))
         .then(() => {
-          startBlocks.add( '36000', 'startblock 1')
+          startBlocks.add('36000', 'startblock 1')
             .then(() => participants.insertTime(nr, time))
             .then(() => participants.rankByCategory(nr))
             .then((rank) => {

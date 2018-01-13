@@ -1,6 +1,18 @@
 /* jshint node: true */
 /* jshint esnext: true */
 'use strict';
+const winston = require('winston');
+const logger = new (winston.Logger)({
+  transports: [
+    new (winston.transports.Console)({
+      timestamp: () => new Date().toISOString(),
+      formatter: (options) => {
+        return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (options.message ? options.message : '') +
+          (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
+      }
+    })
+  ]
+});
 
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
@@ -36,9 +48,11 @@ pdfGeneration.addQrCodeWithSelfServiceLink = (doc, selfServiceUrl) => {
 
 pdfGeneration.generate = (startNumberData) => {
   let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
-  doc.pipe(fs.createWriteStream(config.get('pdfPath')+startNumberData.startNumber+'.pdf'));
+  let pdfPath = `${config.get('pdfPath')}${startNumberData.startNumber}.pdf`;
+  doc.pipe(fs.createWriteStream(pdfPath));
   pdfGeneration.createStartNumberPage(doc, startNumberData);
   doc.end();
+  logger.info(`start_number pdf stored: ${pdfPath}`);
 };
 
 pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
@@ -70,8 +84,6 @@ pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
   if(startNumberData.onSiteRegistration) {
     pdfGeneration.addQrCodeWithSelfServiceLink(doc, startNumberData.secureUrl);
   }
-
-  doc.addPage();
 };
 
 module.exports = pdfGeneration;

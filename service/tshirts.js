@@ -12,8 +12,8 @@ tshirts.addFor = (tshirt, participantId) => {
     '(size, model, participantId) ' +
     'values($1, $2, $3) returning id',
     [tshirt.size,
-     tshirt.model,
-     participantId]);
+      tshirt.model,
+      participantId]);
 };
 
 tshirts.getFor = (participantId) => {
@@ -23,9 +23,10 @@ tshirts.getFor = (participantId) => {
 tshirts.findAndAddTo = function (participant) {
   return tshirts.getFor(participant.id)
     .then(shirts => {
-      if(shirts.length > 0) {
-        participant.tshirt =  _.pick(shirts[0],['size', 'model']);
+      if (shirts.length > 0) {
+        participant.tshirt = _.pick(shirts[0], ['size', 'model']);
       }
+      return participant;
     });
 };
 

@@ -2,6 +2,8 @@ db:
   image: postgres
   ports:
     - "5432:5432"
+  volumes:
+    - pace-db-volume:/var/lib/postgresql/data
   environment:
     - POSTGRES_USER=pgtester
     - POSTGRES_PASSWORD=pgtester

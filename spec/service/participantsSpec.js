@@ -35,6 +35,6 @@ describe('participants service', () => {
         expect(distribution[0].amount).toBe(3);
         expect(distribution[1].amount).toBe(4);
       });
+      
     });
-  }
-);
+});

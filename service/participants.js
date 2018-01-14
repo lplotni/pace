@@ -244,7 +244,7 @@ participants.updateTimeForParticipant = (participant, finishtime) => {
     if ((finishtime <= participant.time ) || _.isEmpty(participant.time)) {
       return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [participant.start_number, finishtime, seconds])
         .then(() => {
-          return seconds
+          return seconds;
         });
     }
   });

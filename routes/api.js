@@ -16,7 +16,7 @@ let tokenValidator = function(req,res,next) {
     return next();
   } else {
      res.setHeader('Content-Type', 'application/json');
-     res.status(403) 
+     res.status(403)
        .send(JSON.stringify({ status: 'Not allowed' }));
   }
 };
@@ -41,7 +41,7 @@ router.post('/scan',tokenValidator, (req, res) => {
             console.log('Not updated');
             res.setHeader('Content-Type', 'application/json');
             res.status(200).send(JSON.stringify({ status: 'Not updated' }));
-          };
+          }
         });
     }).catch((err) => {
     console.log('Not Found');
@@ -74,7 +74,7 @@ const generateDataTablesResponse = (resultPromise, drawNum, res) => {
     })
     .catch((err) => {
       res.setHeader('Content-Type', 'application/json');
-      res.status(404) 
+      res.status(404)
         .send(JSON.stringify({ status: 'Not Found' }));
   });
 };
@@ -109,8 +109,8 @@ function extractAgeGroup(req) {
 router.get('/results', (req, res) => {
   const params = extractDataTablesParams(req);
   const ageGroups = extractAgeGroup(req);
-  const category = extractCategory(req); 
-  const resultPromise = race.resultsForDataTables(params.start, params.length, 
+  const category = extractCategory(req);
+  const resultPromise = race.resultsForDataTables(params.start, params.length,
     params.search, params.orderText, category, ageGroups.min_year, ageGroups.max_year);
   generateDataTablesResponse(resultPromise, params.drawNum, res);
 });

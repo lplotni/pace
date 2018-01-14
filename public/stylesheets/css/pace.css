@@ -242,3 +242,9 @@ input[type="button"].button-primary:focus {
     background-color: rgb(200, 0, 39);
     border-color: rgb(200, 0, 39);
 }
+
+
+#noscript-registration-message p {
+  font-weight: bold;
+  color: rgb(212, 64, 52);
+}

@@ -71,7 +71,7 @@ pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
   doc.image(barcodeSvg, 260, 20, {fit: [70, 70]});
   doc.image(barcodeSvg, 20, 330, {fit: [70, 70]});
   doc.image(barcodeSvg, 500, 330, {fit: [70, 70]});
-  doc.fontSize(15).fillColor('black').text('Startblock: '+startNumberData.startBlock, 20, 150, {align: 'left'});
+  doc.fontSize(15).fillColor(startNumberData.startBlockColor).text('Startblock: '+startNumberData.startBlock, 20, 150, {align: 'left'});
 
   if(startNumberData.tshirt) {
     doc.fontSize(12).fillColor('black').text(startNumberData.tshirt.size + ' ' + startNumberData.tshirt.model, 500, 315);

@@ -25,7 +25,7 @@
     "fast-csv": "^2.3.0",
     "ioredis": "^3.0.0",
     "lodash": "^4.17.0",
-    "moment": "^2.18.1",
+    "moment": "^2.20.1",
     "moment-duration-format": "^2.0.0",
     "morgan": "~1.9.0",
     "multiparty": "^4.1.2",

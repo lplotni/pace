@@ -6,14 +6,13 @@ services:
 - docker
 before_install:
 - sudo service postgresql stop
+before_script:
 - node --version
 - npm install -g gulp
 - gulp create-version-sha
 - cat version.sha
 - docker-compose up -d
-- docker ps -a
-before_script:
-- gulp selenium-install
+- docker ps -a- gulp selenium-install
 - gulp create-pace-db
 script:
     - "./run_all_tests.sh"

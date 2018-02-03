@@ -7,9 +7,9 @@ services:
 before_install:
 - sudo service postgresql stop
 - node --version
+- npm install -g gulp
 - gulp create-version-sha
 - cat version.sha
-- npm install -g gulp
 - docker-compose up -d
 - docker ps -a
 before_script:

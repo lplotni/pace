@@ -57,7 +57,7 @@ router.get('/generate-start-numbers', isAuthenticated, (req, res) => {
   if (canViewAdminPage(req.user.role)) {
     pdfGeneration.generateStartNumbers(redis).then(() => {
       res.redirect('back');
-    }).fail((msg) => {
+    }).catch((msg) => {
       console.error(msg);
       res.redirect('back');
     });
@@ -70,7 +70,7 @@ router.post('/generate-on-site-participants', isAuthenticated, (req, res) => {
       .then(() => {
         res.redirect('back');
       })
-      .fail((msg) => {
+      .catch((msg) => {
         console.error(msg);
         res.redirect('back');
       });

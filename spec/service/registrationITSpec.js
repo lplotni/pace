@@ -29,15 +29,17 @@ describe('registration', () => {
   }).withSecureId('some_secure_id');
 
   beforeAll((done) => {
-    registration.isClosed().then(isClosed => {
-      originalRegistrationStatus = isClosed;
-      if (isClosed) {
-        registration.reopen().then(() => {
-          done();
+      helper.setupDbConnection().then(() => {
+        registration.isClosed().then(isClosed => {
+            originalRegistrationStatus = isClosed;
+            if (isClosed) {
+                registration.reopen().then(() => {
+                    done();
+                });
+            } else {
+                done();
+            }
         });
-      } else {
-        done();
-      }
     });
   });
 
@@ -45,6 +47,8 @@ describe('registration', () => {
     if (!originalRegistrationStatus) {
       registration.reopen().then(() => {
         helper.closeDbConnection(done);
+      }).catch(() => {
+          helper.closeDbConnection(done);
       });
     } else {
       helper.closeDbConnection(done);

@@ -5,7 +5,6 @@
 
 const participants = require('../service/participants');
 const participant = require('../domain/participant');
-const pg = require('pg');
 const helper = require('./journeyHelper');
 const config = require('config');
 

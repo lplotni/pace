@@ -4,7 +4,6 @@
 'use strict';
 
 const helper = require('./journeyHelper');
-const pg = require('pg');
 const participants = require('../service/participants');
 const participant = require('../domain/participant');
 const editUrlHelper = require('../domain/editUrlHelper');
@@ -20,7 +19,6 @@ describe('edit participant journey', () => {
 
   afterEach(() => {
     helper.resetToOriginalTimeout();
-    pg.end();
   });
 
   it('allows to edit a participant', (done) => {

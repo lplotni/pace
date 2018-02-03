@@ -11,6 +11,7 @@ const selenium = require('selenium-standalone');
 const gutil = require('gulp-util');
 const argv = require('yargs').argv;
 const Q = require('q');
+const fs = require('fs');
 
 
 function createdb() {
@@ -98,6 +99,11 @@ gulp.task('test-functional', function () {
       cleanUp(selenium, deferred.reject);
     });
   });
+});
+
+gulp.task('create-version-sha', () => {
+  const sha = process.env.TRAVIS_COMMIT || "local-dev";
+  fs.writeFile('version.sha',JSON.stringify({sha}), () => console.log(`File with version: ${sha} written`));
 });
 
 gulp.task('create-pace-db', createdb);

@@ -2,6 +2,6 @@
 /* jshint esnext: true */
 'use strict';
 const fs = require('fs');
-const sha = JSON.parse(fs.readFileSync('version.sha','utf8'));
+const version = JSON.parse(fs.readFileSync('version.sha','utf8'));
 
-module.exports = sha;
+module.exports = {sha: version.sha.substring(0,7)};

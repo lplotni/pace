@@ -51,4 +51,3 @@ config/local.json
 /**/.terraform
 /**/terraform.tfstate*
 /**/terraform.tfvars
-

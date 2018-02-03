@@ -47,7 +47,7 @@
     "ws": "^3.0.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-jasmine": "^2.4.2",
     "gulp-jshint": "^2.0.3",
     "gulp-shell": "^0.6.1",

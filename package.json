@@ -18,7 +18,7 @@
     "csurf": "^1.9.0",
     "db-migrate": "~0.10.0-beta.7",
     "debug": "~3.1.0",
-    "db-migrate-pg": "^0.2.5",
+    "db-migrate-pg": "^0.3.0",
     "express": "~5.0.0-alpha.6",
     "express-metrics": "^1.1.0",
     "express-session": "~1.15.0",

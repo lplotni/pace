@@ -3,7 +3,6 @@
 /* global describe, beforeAll, beforeEach, afterEach, it, expect, jasmine */
 'use strict';
 
-const pg = require('pg');
 const WebSocket = require('ws');
 const config = require('config');
 const _ = require('lodash');
@@ -18,10 +17,6 @@ describe('api journey', () => {
 
   beforeEach((done) => {
     helper.setupDbConnection(done);
-  });
-
-  afterEach(() => {
-    pg.end();
   });
 
   describe('scan', () => {

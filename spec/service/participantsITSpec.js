@@ -274,7 +274,7 @@ describe('participants service', () => {
           expect(participant.has_payed).toBe(true);
           done();
         })
-        .fail(done.fail);
+        .catch(done.fail);
     });
 
     it('should set the confrimation_time', (done) => {
@@ -285,7 +285,7 @@ describe('participants service', () => {
           expect(moment(participant.confirmation_time).format('DD.MM.YYYY')).toBe(moment().format('DD.MM.YYYY'));
           done();
         })
-        .fail(done.fail);
+        .catch(done.fail);
     });
   });
 

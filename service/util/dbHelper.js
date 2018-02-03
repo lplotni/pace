@@ -2,33 +2,37 @@
 /* jshint esnext: true */
 'use strict';
 
-const pg = require('pg');
+const Pool = require('pg').Pool;
 const Q = require('q');
 
 const connectionString = process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace';
 
 let db = {};
+let pool = new Pool({
+    connectionString: connectionString
+});
 
-db.select = (querystring, params) => {
-  let results = [];
-  const deferred = Q.defer();
-
-  pg.connect(connectionString, (err, client, done) => {
-      let query = client.query(querystring, params);
-
-      query.on('row', row => results.push(row));
-      query.on('error', (e) => {
-        done();
-        deferred.reject(e);
-      });
-      query.on('end', () => {
-        done();
-        deferred.resolve(results);
-      });
-    }
-  );
-  return deferred.promise;
+db.query = (querystring, params) => {
+  return pool.connect().then(client => {
+      return client.query(querystring, params).then(res => {
+          client.release();
+          return res;
+      }).catch(err => {
+          client.release();
+          throw err;
+      })
+  }).catch(err => {
+      console.log("Error when connecting to pool: ", err);
+  });
 };
+
+db.select = (queryString, params) => db.query(queryString, params).then(res => res.rows);
+
+db.delete = (querystring, params) => db.select(querystring, params);
+
+db.insert = (insertString, params) => db.select(insertString, params).then(rows => rows[0].id);
+
+db.update = (updateString, params) => db.query(updateString, params).then(res => res.rowCount);
 
 db.selectForDataTables = (queries, search, modifier) => {
   const allRecords = db.select(queries.totalQuery.build());
@@ -51,46 +55,6 @@ db.selectForDataTables = (queries, search, modifier) => {
       };
     }
   );
-};
-
-db.delete = (querystring, params) => db.select(querystring, params);
-
-db.insert = (insertString, params) => {
-  const deferred = Q.defer();
-
-  pg.connect(connectionString, (err, client, done) => {
-    client.query(insertString, params,
-      (err, res) => {
-        done();
-        if (!err) {
-          deferred.resolve(res.rows[0].id);
-        } else {
-          deferred.reject(err);
-        }
-      }
-    );
-  });
-
-  return deferred.promise;
-};
-
-db.update = (updateString, params) => {
-  const deferred = Q.defer();
-
-  pg.connect(connectionString, (err, client, done) => {
-    client.query(updateString, params,
-      (err, res) => {
-        done();
-        if (!err) {
-          deferred.resolve(res.rowCount);
-        } else {
-          deferred.reject(err);
-        }
-      }
-    );
-  });
-
-  return deferred.promise;
 };
 
 module.exports = db;

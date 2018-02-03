@@ -7,7 +7,6 @@ describe('startblock service', () => {
 
   const helper = require('../journeyHelper');
   const startblocks = require('../../service/startblocks');
-  const pg = require('pg');
 
   beforeEach((done) => {
     helper.setupDbConnection(done);

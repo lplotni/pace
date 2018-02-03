@@ -51,7 +51,7 @@ registration.confirm = (participantId) => {
           deferred.resolve();
         });
     })
-    .fail(err =>
+    .catch(err =>
       deferred.reject(err)
     );
   return deferred.promise;
@@ -100,9 +100,9 @@ registration.start = (participant) => {
 
               couponcodes.markAsUsed(participant.couponcode);
             })
-            .fail(deferred.reject);
+            .catch(deferred.reject);
         });
-      }).fail(deferred.reject);
+      }).catch(deferred.reject);
     } else {
       deferred.reject(new TypeError('Ungültiger Couponcode'));
     }

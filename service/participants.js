@@ -304,7 +304,7 @@ participants.bulkmail = () => {
       });
       deferred.resolve();
     });
-  }).fail(deferred.reject);
+  }).catch(deferred.reject);
 
   return deferred.promise;
 };

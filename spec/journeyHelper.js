@@ -4,7 +4,8 @@
 'use strict';
 
 const webdriverio = require('webdriverio');
-const pg = require('pg');
+const Pool = require('pg').Pool;
+let pool;
 
 let originalTimeout;
 
@@ -36,44 +37,24 @@ journeyHelper.resetToOriginalTimeout = function () {
 };
 
 journeyHelper.setupDbConnection = function (done) {
-  let connectionString = process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace';
-  let jasmineDone = done;
-
-  pg.connect(connectionString, (err, client, done) => {
-      function errorFunction(error) {
-        console.error('DB statement problem: ', error);
-        done();
-        jasmineDone();
-      }
-    
-      if (err) {
-        errorFunction(err);
-      } else {
-        let deleteCouponcodes = client.query('delete from couponcodes');
-        deleteCouponcodes.on('end', () => {
-          let deleteShirts = client.query('delete from tshirts');
-          deleteShirts.on('end', () => {
-            let deleteParticipants = client.query('delete from participants');
-            deleteParticipants.on('end', () => {
-              let deleteStartBlocks = client.query('delete from startblocks;');
-              deleteStartBlocks.on('end',() => {
-                done();
-                jasmineDone();
-              });
-              deleteStartBlocks.on('error',errorFunction);
-            });
-            deleteParticipants.on('error', errorFunction);
-          });
-          deleteShirts.on('error', errorFunction);
-        });
-        deleteCouponcodes.on('error', errorFunction);
-      }
-    }
-  );
+  pool = new Pool({
+      connectionString: process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace'
+  });
+  return pool.connect().then(client => {
+      return client.query('delete from couponcodes')
+          .then(() => client.query('delete from tshirts'))
+          .then(() => client.query('delete from participants'))
+          .then(() => client.query('delete from startblocks;'))
+          .then(() => client.release())
+          .then(() => {if(done) done();})
+  }).catch((err) => {
+      console.error('DB statement problem: ', err);
+      done();
+  });
 };
 
 journeyHelper.closeDbConnection = function (done) {
-  pg.end();
+  pool.end();
   done();
 };
 

@@ -7,13 +7,17 @@ Pace is a registration and management application for running events and competi
 [![Greenkeeper badge](https://badges.greenkeeper.io/lplotni/pace.svg)](https://greenkeeper.io/)
 
 ## Features
-The list of our issues/features can be found on our [trello board](https://trello.com/b/1gaDEa3O/pace-board).
+The list of our issues/features can be found on our [Trello board](https://trello.com/b/1gaDEa3O/pace-board).
 ## Demo
 You can check out the latest version of the app on our development environemt: [http://dev.lauf-gegen-rechts.de:3000/](http://dev.lauf-gegen-rechts.de:3000/)
-## Dev Setup
-All the parts of pace are [docker](https://www.docker.com/) containers and can be brought to live by
-executing the `docker-compose up` cmd. Pace will be reachable under
-[http://localhost:3000](http://localhost:3000). Currently we have following containers:
+## Development setup
+All the parts of pace are [Docker](https://www.docker.com/) containers and can be brought to live by
+executing the
+`docker-compose up`
+command.
+Pace will be reachable under [http://localhost:3000](http://localhost:3000).
+
+Currently we have following containers:
 * **db** which provides postgres
 * **redis** for messaging between pace components
 * **pace-pdf** for PDF generation

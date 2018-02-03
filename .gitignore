@@ -46,3 +46,8 @@ config/local.json
 
 #Ignoring ctags file
 /tags
+
+#Ignore Terraform files
+/**/.terraform
+/**/terraform.tfstate*
+/**/terraform.tfvars

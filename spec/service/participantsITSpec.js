@@ -291,7 +291,8 @@ describe('participants service', () => {
 
   describe('blancParticipants()', () => {
     it('returns only participants which are on-site registrations', (done) => {
-      participants.save(aParticipant.withStartNr(startNr++))
+      startNr++;
+      participants.save(aParticipant.withStartNr(startNr))
         .then(participants.saveBlanc)
         .then(participants.get.blancParticipants).then(function (data) {
         expect(data.length).toBe(1);

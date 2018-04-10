@@ -1,17 +1,19 @@
 sudo: required
 language: node_js
 node_js:
-- 7.7.1
+- node
 services:
 - docker
 before_install:
 - sudo service postgresql stop
-- docker-compose up -d
-- docker ps -a
+- node --version
 before_script:
 - npm install -g gulp
+- gulp create-version-sha
+- docker-compose up -d
+- docker ps -a
 - gulp selenium-install
-- gulp create-pace-db 
+- gulp create-pace-db
 script:
     - "./run_all_tests.sh"
 after_success:

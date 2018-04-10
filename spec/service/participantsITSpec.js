@@ -274,7 +274,7 @@ describe('participants service', () => {
           expect(participant.has_payed).toBe(true);
           done();
         })
-        .fail(done.fail);
+        .catch(done.fail);
     });
 
     it('should set the confrimation_time', (done) => {
@@ -285,13 +285,14 @@ describe('participants service', () => {
           expect(moment(participant.confirmation_time).format('DD.MM.YYYY')).toBe(moment().format('DD.MM.YYYY'));
           done();
         })
-        .fail(done.fail);
+        .catch(done.fail);
     });
   });
 
   describe('blancParticipants()', () => {
     it('returns only participants which are on-site registrations', (done) => {
-      participants.save(aParticipant.withStartNr(startNr++))
+      startNr++;
+      participants.save(aParticipant.withStartNr(startNr))
         .then(participants.saveBlanc)
         .then(participants.get.blancParticipants).then(function (data) {
         expect(data.length).toBe(1);

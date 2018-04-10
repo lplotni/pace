@@ -40,6 +40,7 @@ let app = express();
 let WebSocketServer = require('ws').Server;
 
 app.locals.node_env = process.env.NODE_ENV;
+app.locals.pace_sha = require('./version').sha;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

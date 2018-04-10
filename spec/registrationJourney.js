@@ -6,6 +6,7 @@
 const helper = require('./journeyHelper');
 const config = require('config');
 const registration = require('../service/registration');
+const couponcodes = require('../service/couponcodes');
 
 describe('registration journey', () => {
 
@@ -67,13 +68,55 @@ describe('registration journey', () => {
       })
       .getText('span.amount')
       .then((amount) => {
-        expect(amount).toMatch(/20.00/);
+        expect(amount).toMatch(/20.00/); // shirt and full price
       })
       .getText('span.startNumber')
       .then((number) => {
         expect(number).toMatch(/d*/);
       })
-      .end(done);
+      .call(done);
+  });
+
+  it("doesn't display bank details and payment message when valid coupon code is used", (done) => {
+    couponcodes.create()
+    .then((code) => {
+      client.url(helper.paceUrl)
+        .click('a#registration')
+        .isVisible('form#registrationForm')
+        .setValue('input#firstname', 'Max')
+        .setValue('input#lastname', 'Mustermann')
+        .setValue('input#email', 'max@example.com')
+        .selectByValue('select#category', 'f')
+        .setValue('input#birthyear', 2000)
+        .setValue('input#team', 'Crazy runners')
+        .selectByIndex('select#visibility', 1)
+        .selectByIndex('select#goal', 2)
+        .selectByIndex('select#discount', 2)
+        .isVisible('input#couponcode')
+          .then((isVisible) => {
+            expect(isVisible).toBe(true);
+          })
+        .setValue('input#couponcode', code.code)
+        .click('input#shirt')
+        .click('button#submit')
+        .isVisible('div.thanks')
+        .then((isVisible) => {
+          expect(isVisible).toBe(true);
+        })
+        .isVisible('a#editurl')
+        .then(function (isVisible) {
+          expect(isVisible).toBe(true);
+        })
+        .getText('span.amount')
+        .then((amount) => {
+          expect(amount).toMatch(/10.00/); // only tshirt price
+        })
+        .getText('span.startNumber')
+        .then((number) => {
+          expect(number).toMatch(/d*/);
+        })
+        .call(done);
+      });
   });
 
   it('allows to register without giving too much information', (done) => {

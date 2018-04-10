@@ -51,7 +51,7 @@ registration.confirm = (participantId) => {
           deferred.resolve();
         });
     })
-    .fail(err =>
+    .catch(err =>
       deferred.reject(err)
     );
   return deferred.promise;
@@ -64,6 +64,7 @@ registration.sendConfirmationMail = (participant, paymentToken) => {
       token: paymentToken,
       bank: config.get('contact.bank'),
       amount: calculator.priceFor(participant),
+      free: calculator.priceFor(participant) < 1,
       editUrl: editUrlHelper.generateUrl(participant.secureID),
       startnr: participant.start_number
     },
@@ -100,9 +101,9 @@ registration.start = (participant) => {
 
               couponcodes.markAsUsed(participant.couponcode);
             })
-            .fail(deferred.reject);
+            .catch(deferred.reject);
         });
-      }).fail(deferred.reject);
+      }).catch(deferred.reject);
     } else {
       deferred.reject(new TypeError('Ungültiger Couponcode'));
     }

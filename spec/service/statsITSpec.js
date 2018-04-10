@@ -10,7 +10,6 @@ describe('admin service', () => {
   const tshirts = require('../../service/tshirts');
   const participant = require('../../domain/participant');
   const stats = require('../../service/stats');
-  const pg = require('pg');
   let helper = require('../journeyHelper');
 
   let startNr = 42;

@@ -18,6 +18,8 @@ block content
           th Bestätigungsmail senden
           th Teilnehmer*in löschen
           th Teilnehmer*in editieren
+          th Email
+          th Team
       tbody
         each p in participants
           tr.participant-line
@@ -54,4 +56,6 @@ block content
               form
                 a#edit.edit-button.button.bigfont(href=p.editUrl)
                   span.lnr.lnr-pencil
+            td.email=p.email
+            td.team=p.team
   script(src='/javascript/searchAndSort.js')

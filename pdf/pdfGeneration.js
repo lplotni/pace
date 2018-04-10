@@ -38,6 +38,7 @@ pdfGeneration.extractData = (participant) => {
     firstname: participant.firstname,
     team: participant.team,
     startBlock: _.toString(participant.start_block + 1), //be careful not to use the id as the block name
+    startBlockColor: participant.start_block_color,
     tshirt: participant.tshirt,
     hasPayed: participant.has_payed,
     onSiteRegistration: participant.is_on_site_registration,

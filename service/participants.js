@@ -106,7 +106,7 @@ participants.save = (participant) => {
       participant.paymentToken,
       participant.secureID,
       participant.start_number,
-      '0',
+      participant.start_block,
       participant.couponcode,
       participant.goal,
       participant.registrationTime

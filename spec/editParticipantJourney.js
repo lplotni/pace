@@ -32,7 +32,7 @@ describe('edit participant journey', () => {
       visibility: 'no',
       goal: 'relaxed',
       discount: 'yes'
-    }).withToken('23eF67i').withStartNr(42).withSecureId(editUrlHelper.generateSecureID());
+    }).withToken('23eF67i').withStartBlock(2).withStartNr(42).withSecureId(editUrlHelper.generateSecureID());
 
     participants.save(aParticipant)
       .then(() => {
@@ -81,6 +81,10 @@ describe('edit participant journey', () => {
           .getText('p#startNumber')
           .then((value) => {
             expect(value).toBe('42');
+          })
+          .getText('p#startBlock')
+          .then((value) => {
+            expect(value).toBe('2');
           })
           .click("#submit")
           .isVisible('.thanks')

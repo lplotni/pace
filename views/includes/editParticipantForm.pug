@@ -41,6 +41,10 @@ form#editParticipantForm(method='POST', action=formAction)
 
   .row
     .six.columns.padding
+      label Dein Startblock:
+      p#startBlock #{participant.start_block}
+  .row
+    .six.columns.padding
       label Deine Startnummer:
       p#startNumber #{participant.start_number}
   .row

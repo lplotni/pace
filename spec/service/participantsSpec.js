@@ -8,10 +8,14 @@ describe('participants service', () => {
     let participants = require('../../service/participants');
 
     describe('distributeIntoStartblocks()', () => {
-      it('returns a suitable startblock', () => {
-        const distribution = participants.distributeIntoStartblocks([{goal: 'relaxed'}, {goal: 'ambitious'}, {goal: 'ambitious'}, {goal: 'moderate'}, {goal: 'moderate'}, {goal: 'moderate'}, {goal: 'relaxed'}], [{}, {}, {}]);
+      it('returns a suitable startblock with ambitious participants in first block', () => {
+        let participantsWithGoals = [{goal: 'relaxed'}, {goal: 'ambitious'}, {goal: 'moderate'}, {goal: 'moderate'}, {goal: 'moderate'}, {goal: 'relaxed'}];
+        let availableStartBlocks = [{}, {}, {}];
+
+        const distribution = participants.distributeIntoStartblocks(participantsWithGoals, availableStartBlocks);
+
         expect(distribution.length).toBe(3);
-        expect(distribution[0]).toBe(2);
+        expect(distribution[0]).toBe(1);
         expect(distribution[1]).toBe(2);
         expect(distribution[2]).toBe(3);
       });

@@ -118,4 +118,4 @@ gulp.task('lint', () => {
 gulp.task('npm-start', shell.task(["npm start"]));
 gulp.task('default', ['npm-start']);
 
-gulp.task('start-db', shell.task(["docker run -p 5432:5432 -d --name 'pace-postgres' -e POSTGRES_PASSWORD='pgtester' -e POSTGRES_DB='pace' -e POSTGRES_USER='pgtester' postgres"]));
+gulp.task('start-db', shell.task(["docker run -p 5432:5432 -d --name 'pace-postgres' -e POSTGRES_PASSWORD='pgtester' -e POSTGRES_DB='pace' -e POSTGRES_USER='pgtester' postgres:alpine"]));

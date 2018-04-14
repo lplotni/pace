@@ -241,7 +241,8 @@ describe('participants service', () => {
             category: 'Unicorn updated',
             birthyear: 1981,
             team: 'Crazy runners updated',
-            start_block: 2
+            start_block: 2,
+            goal: 'ambitious'
           };
           participants.get.byId(id)
             .then((p) => {
@@ -256,6 +257,7 @@ describe('participants service', () => {
                       expect(participant.birthyear).toBe(1981);
                       expect(participant.team).toBe('Crazy runners updated');
                       expect(participant.start_block).toBe(2);
+                      expect(participant.goal).toBe('ambitious');
                       done();
                     })
                     .catch(done.fail);

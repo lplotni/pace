@@ -30,6 +30,7 @@ describe('edit participant journey', () => {
       birthyear: 1980,
       team: 'Crazy runners',
       visibility: 'no',
+      goal: 'relaxed',
       discount: 'yes'
     }).withToken('23eF67i').withStartNr(42).withSecureId(editUrlHelper.generateSecureID());
 
@@ -72,6 +73,10 @@ describe('edit participant journey', () => {
           .getText('p#paymentStatus')
           .then((value) => {
             expect(value).toBe('Zahlung noch nicht eingegangen');
+          })
+          .getValue('select#goal')
+          .then((value) => {
+            expect(value).toBe('relaxed');
           })
           .getText('p#startNumber')
           .then((value) => {

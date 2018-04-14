@@ -173,9 +173,9 @@ participants.delete = (participantid) => {
 
 participants.update = (participant, id) => {
   return db.update(`UPDATE participants SET
-                    (firstname, lastname, email, category, birthyear, team, visibility, start_block) =
-                    ($1, $2, $3, $4, $5, $6, $7, $8)
-                    WHERE secureid = $9`,
+                    (firstname, lastname, email, category, birthyear, team, visibility, start_block, goal) =
+                    ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                    WHERE secureid = $10`,
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -184,6 +184,7 @@ participants.update = (participant, id) => {
       participant.team,
       participant.visibility,
       participant.start_block,
+      participant.goal,
       id])
     .then(() => {
       participants.get.bySecureId(id).then(saved_participant => {

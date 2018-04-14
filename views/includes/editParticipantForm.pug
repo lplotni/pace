@@ -11,8 +11,8 @@ form#editParticipantForm(method='POST', action=formAction)
     .twelve.columns.padding
       label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
       select#category.u-full-width(name='category')
-        option(value='m' selected=(participant.category == 'm')) m
-        option(value='f' selected=(participant.category == 'f')) f
+        option(value='m' selected=(participant.category === 'm')) m
+        option(value='f' selected=(participant.category === 'f')) f
   .row
     .twelve.columns.padding
       label(for='birthyear') Geburtsjahr:
@@ -29,8 +29,15 @@ form#editParticipantForm(method='POST', action=formAction)
     .twelve.columns.padding
       label(for='visibility') Öffentlich sichtbar in der Teilnehmer*innenliste:
       select#visibility.u-full-width(name='visibility', required=true)
-        option(value='yes', selected=(participant.visibility == 'yes')) Ja
-        option(value='no', selected=(participant.visibility == 'no')) Nein
+        option(value='yes', selected=(participant.visibility === 'yes')) Ja
+        option(value='no', selected=(participant.visibility === 'no')) Nein
+  .row
+    .twelve.columns.padding
+      label(for='goal') Wie schnell bist du unterwegs?
+      select#goal.u-full-width(name='goal', required=true)
+        option(value='moderate', selected=(participant.goal === 'moderate')) Ich laufe gerne und regelmäßig / Die Zeit ist mir nicht so wichtig.
+        option(value='relaxed', selected=(participant.goal === 'relaxed')) Ich möchte gerne mitlaufen, aber ohne Stress in ruhigem Tempo.
+        option(value='ambitious', selected=(participant.goal === 'ambitiousshould store and read participants')) Ich möchte schnell und sportlich laufen / Die Zeit ist mir wichtig.
 
   .row
     .six.columns.padding

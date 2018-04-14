@@ -197,24 +197,20 @@ participants.update = (participant, id) => {
 participants.distributeIntoStartblocks = (participants, blocks) => {
   let distribution = [];
 
-  let ambitiousParticpants = _.remove(participants, (participant) => { return participant.goal === 'ambitious'});
+  let ambitiousParticpants = _.remove(participants, (participant) => participant.goal === 'ambitious');
   distribution.push(ambitiousParticpants.length);
 
   let restOfTheParticipants = participants.length;
-  let restOfTheBlocks = _.remove(blocks, (block, index) => index !== 0);
-  let particpantsPerBlock = Math.floor(restOfTheParticipants / (restOfTheBlocks.length));
+  let restOfTheBlocks = _.tail(blocks);
+  let participantsPerBlock = _.isEmpty(restOfTheBlocks) ? restOfTheParticipants : Math.floor(restOfTheParticipants / (restOfTheBlocks.length));
 
-  let isNotTheLastBlock = (index) => {
-    return restOfTheBlocks.length !== index + 1;
-  };
-
-  _.forEach(restOfTheBlocks, (block, index) => {
-    if (isNotTheLastBlock(index)) {
-      distribution.push(particpantsPerBlock);
-    } else { // last block: amountPerBlock + rest
-      distribution.push(particpantsPerBlock + ( restOfTheParticipants % (restOfTheBlocks.length) ));
-    }
+  _.forEach(restOfTheBlocks, () => {
+    distribution.push(participantsPerBlock);
+    restOfTheParticipants = restOfTheParticipants - participantsPerBlock;
   });
+
+  let lastBlock = distribution.length - 1;
+  distribution[lastBlock] = _.last(distribution) + restOfTheParticipants;
 
   return distribution;
 };

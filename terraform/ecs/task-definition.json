@@ -1,0 +1,30 @@
+[{
+        "environment": [],
+        "name": "pace",
+        "image": "lplotni/pace-app",
+        "cpu": 1024,
+        "memory": 2048,
+        "portMappings": [{
+            "containerPort": 3000,
+            "hostPort": 3000
+        }],
+        "essential": true
+    },
+    {
+        "name": "busybox",
+        "image": "busybox",
+        "cpu": 0,
+        "memory": 256,
+        "volumesFrom": [{
+            "sourceContainer": "pace"
+        }],
+        "entryPoint": [
+            "sh",
+            "-c"
+        ],
+        "command": [
+            "/bin/sh -c \"while true; do /bin/date > /var/www/my-vol/date; sleep 1; done\""
+        ],
+        "essential": false
+    }
+]

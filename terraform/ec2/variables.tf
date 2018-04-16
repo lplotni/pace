@@ -20,7 +20,7 @@ variable "min-instance-size" {
 }
 
 variable "desired-capacity" {
-  default = 3
+  default = 2
 }
 
 variable "health-check-grace-period" {

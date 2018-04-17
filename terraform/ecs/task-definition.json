@@ -32,7 +32,7 @@
       },
       {
         "name": "POSTGRES_PASSWORD",
-        "value": "pgtester"
+        "value": "${data.aws_kms_secret.db.postgres_password}"
       },
       {
         "name": "POSTGRES_DB",

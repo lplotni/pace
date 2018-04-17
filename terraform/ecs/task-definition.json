@@ -52,23 +52,6 @@
     "cpu": 0,
     "memory": 256,
     "essential": true
-  },
-
-  {
-    "name": "busybox",
-    "image": "busybox",
-    "cpu": 0,
-    "memory": 256,
-    "volumesFrom": [{
-      "sourceContainer": "pace"
-    }],
-    "entryPoint": [
-      "sh",
-      "-c"
-    ],
-    "command": [
-      "/bin/sh -c \"while true; do /bin/date > /var/www/my-vol/date; sleep 1; done\""
-    ],
-    "essential": false
   }
+
 ]

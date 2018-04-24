@@ -115,7 +115,7 @@ describe('api journey', () => {
       draw: 4711,
     };
 
-    it('should return participants matching filter', (done) => {
+    xit('should return participants matching filter', (done) => {
       participants.save(aParticipant)
         .then(participants.markPayed)
         .then(() => {
@@ -191,7 +191,7 @@ describe('api journey', () => {
       draw: 4711,
     };
 
-    it('should return results matching filter', (done) => {
+    xit('should return results matching filter', (done) => {
       participants.save(aParticipant)
         .then(participants.markPayed)
         .then(() => startBlocks.add('3600','test Block'))

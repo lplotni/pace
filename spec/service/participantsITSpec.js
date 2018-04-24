@@ -159,7 +159,7 @@ describe('participants service', () => {
     });
   });
 
-  describe('byId()', () => {
+  xdescribe('byId()', () => {
     it('should return all information of the participant with given Id', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then(function (participantId) {
@@ -173,7 +173,7 @@ describe('participants service', () => {
     });
   });
 
-  describe('byStartnumber()', () => {
+  xdescribe('byStartnumber()', () => {
     it('should return all information of the participant with given Startnumber', (done) => {
       let number = startNr++;
       participants.save(aParticipant.withStartNr(number))
@@ -188,7 +188,7 @@ describe('participants service', () => {
     });
   });
 
-  describe('delete()', () => {
+  xdescribe('delete()', () => {
     it('should delete a user', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then((id) => {
@@ -454,7 +454,7 @@ describe('participants service', () => {
     });
   });
 
-  describe('bulkmail()', () => {
+  xdescribe('bulkmail()', () => {
     it('should send the correct email to every participant', (done) => {
       spyOn(mails, 'sendEmail');
       spyOn(mails, 'sendStatusEmail').and.callThrough();

@@ -41,9 +41,6 @@ node_modules
 #Local config
 config/local.json
 
-#Ignoring nvm config file
-.nvmrc
-
 #Ignoring version file
 version.sha
 

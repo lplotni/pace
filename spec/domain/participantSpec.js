@@ -79,7 +79,7 @@ describe('participant', () => {
       });
 
       it('should default birthyear to 0 if value missing', () => {
-        expect(participant.from(_.set(validBody, 'birthyear', '')).birthyear).toEqual(0);
+        expect(participant.from(_.set(_.cloneDeep(validBody), 'birthyear', '')).birthyear).toEqual(0);
       });
 
       it('should not throw an error if no discount can be found, but use NO instead', () => {
@@ -130,7 +130,7 @@ describe('participant', () => {
 
       it('should throw an error if negative birthyear is given', () => {
         function callWithNegativeBirthyear() {
-          participant.from(_.set(validBody, 'birthyear', '-1990'));
+          participant.from(_.set(_.cloneDeep(validBody), 'birthyear', '-1990'));
         }
 
         expect(callWithNegativeBirthyear).toThrow();
@@ -138,7 +138,7 @@ describe('participant', () => {
 
       it('should throw an error if whole date is given instead of year', () => {
         function callWithFullDate() {
-          participant.from(_.set(validBody, 'birthyear', '02-12-1990'));
+          participant.from(_.set(_.cloneDeep(validBody), 'birthyear', '02-12-1990'));
         }
 
         expect(callWithFullDate).toThrow();

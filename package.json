@@ -16,7 +16,7 @@
     "cookie-parser": "~1.4.3",
     "cryptico": "~1.0.2",
     "csurf": "^1.9.0",
-    "db-migrate": "~0.10.2",
+    "db-migrate": "~0.11.0",
     "debug": "~3.1.0",
     "db-migrate-pg": "^0.4.0",
     "express": "~5.0.0-alpha.6",

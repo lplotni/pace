@@ -1,0 +1,74 @@
+[{
+
+    "name": "pace",
+    "image": "lplotni/pace-app",
+    "cpu": 1024,
+    "memory": 2048,
+    "environment": [{
+        "name": "DATABASE_URL",
+        "value": "postgres://pgtester:pgtester@db/pace"
+      },
+      {
+        "name": "REDISHOST",
+        "value": "redis"
+      }
+    ],
+    "portMappings": [{
+      "containerPort": 3000,
+      "hostPort": 3000
+    }],
+    "links": ["db", "redis"],
+    "essential": true
+  },
+
+  {
+    "name": "db",
+    "image": "postgres",
+    "cpu": 0,
+    "memory": 256,
+    "environment": [{
+        "name": "POSTGRES_USER",
+        "value": "pgtester"
+      },
+      {
+        "name": "POSTGRES_PASSWORD",
+        "value": "pgtester"
+      },
+      {
+        "name": "POSTGRES_DB",
+        "value": "pace"
+      }
+    ],
+    "portMappings": [{
+      "containerPort": 5432,
+      "hostPort": 5432
+    }],
+    "essential": true
+  },
+
+  {
+    "name": "redis",
+    "image": "redis",
+    "cpu": 0,
+    "memory": 256,
+    "essential": true
+  },
+
+  {
+    "name": "busybox",
+    "image": "busybox",
+    "cpu": 0,
+    "memory": 256,
+    "volumesFrom": [{
+      "sourceContainer": "pace"
+    }],
+    "entryPoint": [
+      "sh",
+      "-c"
+    ],
+    "command": [
+      "/bin/sh -c \"while true; do /bin/date > /var/www/my-vol/date; sleep 1; done\""
+    ],
+    "essential": false
+  }
+]

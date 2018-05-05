@@ -63,7 +63,8 @@ pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
 
   doc.font('Helvetica-Bold').fontSize(200).fillColor('saddlebrown').text(startNumberData.startNumber, 0, 130, {align: 'center'});
   doc.fontSize(40).fillColor('red').text(startNumberData.firstname.substring(0, 17), 0, 300, {align: 'center'});
-  doc.fontSize(30).fillColor('red').text(startNumberData.team.substring(0, 25), 0, 350, {align: 'center'});
+  doc.fontSize(30).fillColor(startNumberData.startBlockColor).text(startNumberData.team.substring(0, 25), 0, 350, {align: 'center'});
+  console.log(startNumberData.startBlockColor);
 
   barcode.loadModules(["code128"], {'includetext': false, 'scaleX': 2});
   let barcodeSvg = barcode.create("code128", String(startNumberData.startNumber));

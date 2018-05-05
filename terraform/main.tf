@@ -1,6 +1,7 @@
 provider "aws" {
   region  = "eu-central-1"
   profile = "pace_new"
+  version = "1.17.0"
 }
 
 module "iam" {

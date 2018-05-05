@@ -1,5 +1,6 @@
 resource "aws_launch_configuration" "ecs-launch-configuration" {
-  name                        = "${var.launch-configuration-name}"
+//  name                        = "${var.launch-configuration-name}"
+  name_prefix                 = "pace-lc"
   image_id                    = "${var.image-id}"
   instance_type               = "${var.instance-type}"
   iam_instance_profile        = "${var.ecs-instance-profile-name}"

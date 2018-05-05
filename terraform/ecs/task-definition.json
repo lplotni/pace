@@ -6,7 +6,7 @@
     "memory": 2048,
     "environment": [{
         "name": "DATABASE_URL",
-        "value": "postgres://pgtester:pgtester@db/pace"
+        "value": "postgres://pgtester:${data.aws_kms_secret.db.postgres_password}@db/pace"
       },
       {
         "name": "REDISHOST",

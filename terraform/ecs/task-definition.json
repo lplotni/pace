@@ -3,7 +3,7 @@
     "name": "pace",
     "image": "lplotni/pace-app",
     "cpu": 1024,
-    "memory": 2048,
+    "memory": 512,
     "environment": [
       {
         "name": "DATABASE_URL",

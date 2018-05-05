@@ -24,7 +24,8 @@
       "db",
       "redis"
     ],
-    "essential": true
+    "essential": true,
+    "command": ["./node_modules/db-migrate/bin/db-migrate" , "-e ci up" , ";" , "/usr/local/bin/npm" , "start"]
   },
   {
     "name": "db",

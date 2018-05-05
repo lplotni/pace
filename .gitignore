@@ -53,4 +53,5 @@ version.sha
 #Ignore Terraform files
 .terraform
 *.tfstate
+*.tfstate.*.backup
 *.tfstate.backup

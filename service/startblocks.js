@@ -45,7 +45,7 @@ startblocks.times = () => {
 };
 
 startblocks.all = () => {
- return db.select('SELECT id from startblocks');
+ return db.select('SELECT id,color from startblocks');
 };
 
 startblocks.get = () => {

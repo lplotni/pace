@@ -67,6 +67,7 @@ describe('pdfGeneration', () => {
       firstname: 'Digital',
       team: 'Unicorns',
       startBlock: '1',
+      startBlockColor: '#123456',
       tshirt: {
         size: 'S',
         model: 'unisex'

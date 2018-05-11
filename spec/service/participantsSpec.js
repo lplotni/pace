@@ -1,8 +1,9 @@
 'use strict';
-/* jshint node: true */
 /* jshint esnext: true */
 /* global describe, beforeEach, afterAll, spyOn, it, expect, fail, jasmine */
 const mockery = require('mockery');
+const _ = require('lodash');
+/* jshint node: true */
 
 describe('participants service', () => {
     let participants = require('../../service/participants');
@@ -43,5 +44,4 @@ describe('participants service', () => {
         expect(distribution[0]).toBe(9);
       });
     });
-  }
-);
+});

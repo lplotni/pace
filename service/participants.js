@@ -199,20 +199,21 @@ participants.distributeIntoStartblocks = (participants, blocks) => {
   let distribution = [];
 
   let ambitiousParticpants = _.remove(participants, (participant) => participant.goal === 'ambitious');
-  distribution.push(ambitiousParticpants.length);
+  distribution.push({amount: ambitiousParticpants.length, block: {color: blocks[0].color}});
 
   let restOfTheParticipants = participants.length;
   let restOfTheBlocks = _.tail(blocks);
   let participantsPerBlock = _.isEmpty(restOfTheBlocks) ? restOfTheParticipants : Math.floor(restOfTheParticipants / (restOfTheBlocks.length));
 
   _.forEach(restOfTheBlocks, () => {
-    distribution.push(participantsPerBlock);
+    let color = blocks[distribution.length].color
+    distribution.push({ amount: participantsPerBlock, block: {color: color }});
     restOfTheParticipants = restOfTheParticipants - participantsPerBlock;
   });
 
   let lastBlock = distribution.length - 1;
-  distribution[lastBlock] = _.last(distribution) + restOfTheParticipants;
-
+  distribution[lastBlock].amount = _.last(distribution).amount + restOfTheParticipants;
+  console.log(distribution);
   return distribution;
 };
 

@@ -16,9 +16,9 @@ describe('participants service', () => {
         const distribution = participants.distributeIntoStartblocks(participantsWithGoals, availableStartBlocks);
 
         expect(distribution.length).toBe(3);
-        expect(distribution[0]).toBe(1);
-        expect(distribution[1]).toBe(2);
-        expect(distribution[2]).toBe(3);
+        expect(distribution[0].amount).toBe(1);
+        expect(distribution[1].amount).toBe(2);
+        expect(distribution[2].amount).toBe(3);
       });
 
       it('returns a suitable startblock with only ambitious participants in first block even if the block should be smaller', () => {
@@ -28,10 +28,10 @@ describe('participants service', () => {
         const distribution = participants.distributeIntoStartblocks(participantsWithGoals, availableStartBlocks);
 
         expect(distribution.length).toBe(4);
-        expect(distribution[0]).toBe(4);
-        expect(distribution[1]).toBe(1);
-        expect(distribution[2]).toBe(1);
-        expect(distribution[3]).toBe(3);
+        expect(distribution[0].amount).toBe(4);
+        expect(distribution[1].amount).toBe(1);
+        expect(distribution[2].amount).toBe(1);
+        expect(distribution[3].amount).toBe(3);
       });
 
       it('returns a suitable startblock when there is only 1 startblock', () => {
@@ -41,7 +41,7 @@ describe('participants service', () => {
         const distribution = participants.distributeIntoStartblocks(participantsWithGoals, availableStartBlocks);
 
         expect(distribution.length).toBe(1);
-        expect(distribution[0]).toBe(9);
+        expect(distribution[0].amount).toBe(9);
       });
     });
 });

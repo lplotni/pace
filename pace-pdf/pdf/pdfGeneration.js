@@ -58,7 +58,7 @@ pdfGeneration.generate = (startNumberData) => {
 pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
 
   doc.image(__dirname + pathToBackgroundImage, {fit: [800, 800]});
-  doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [130, 130]});
+  doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [100, 100]});
   doc.image(__dirname + pathToLogoRight, 475, 20, {fit: [100, 100]});
 
   doc.font('Helvetica-Bold').fontSize(200).fillColor('saddlebrown').text(startNumberData.startNumber, 0, 130, {align: 'center'});
@@ -73,7 +73,7 @@ pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
   doc.image(barcodeSvg, 20, 280, {fit: [70, 70]});
   doc.image(barcodeSvg, 500, 330, {fit: [70, 70]});
   doc.image(barcodeSvg, 500, 280, {fit: [70, 70]});
-  doc.fontSize(25).fillColor(startNumberData.startBlockColor).text('Startblock: '+startNumberData.startBlock, 200, 20, {align: 'left'});
+  doc.fontSize(35).fillColor(startNumberData.startBlockColor).text('Startblock: '+startNumberData.startBlock, 200, 20, {align: 'left'});
 
   if(startNumberData.tshirt) {
     doc.fontSize(12).fillColor('black').text(startNumberData.tshirt.size + ' ' + startNumberData.tshirt.model, 500, 315);

@@ -70,9 +70,9 @@ pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
   let barcodeSvg = barcode.create("code128", String(startNumberData.startNumber));
 
   doc.image(barcodeSvg, 20, 330, {fit: [70, 70]});
-  doc.image(barcodeSvg, 20, 280, {fit: [70, 70]});
+  doc.image(barcodeSvg, 20, 350, {fit: [70, 70]});
   doc.image(barcodeSvg, 500, 330, {fit: [70, 70]});
-  doc.image(barcodeSvg, 500, 280, {fit: [70, 70]});
+  doc.image(barcodeSvg, 500, 350, {fit: [70, 70]});
   doc.fontSize(35).fillColor(startNumberData.startBlockColor).text('Startblock: '+startNumberData.startBlock, 200, 20, {align: 'left'});
 
   if(startNumberData.tshirt) {

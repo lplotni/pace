@@ -138,6 +138,7 @@ describe('participants service', () => {
     });
 
     it('should save multiple participants', function (done) {
+      startNr = startNr+5;
       participants.saveBlancParticipants(5)
         .then(participants.get.blancParticipants)
         .then(participants => {

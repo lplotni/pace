@@ -48,6 +48,7 @@ race.results = (category, agegroup_start, agegroup_end) => {
 
   let query = `select id,firstname,lastname,team,start_number,start_block,seconds,visibility from participants
                where visibility='yes' and time > 0
+               and ( start_block=0 or confirmed_result=true)
                ${queryFor(category)}
                and birthyear >= ${agegroup_start}
                and birthyear <= ${agegroup_end}
@@ -69,6 +70,7 @@ race.resultsForDataTables = (start, length, search, orderText, category, agegrou
   const subSelect = queryHelper
     .select('PARTICIPANTS', '*, RANK() OVER (ORDER BY SECONDS) AS PLACE')
     .where(`visibility='yes' and time > 0
+               and ( start_block=0 or confirmed_result=true)
                ${queryFor(category)}
                and birthyear >= ${agegroup_start}
                and birthyear <= ${agegroup_end}`)

@@ -40,7 +40,7 @@ participants.get.blancParticipants = () => {
 };
 
 participants.get.all = () => {
-  return db.select('select * from participants order by id');
+  return db.select('select * from participants');
 };
 
 participants.get.forDataTables = (start, length, search, ordering) => {

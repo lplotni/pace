@@ -34,7 +34,10 @@ router.post('/scan',tokenValidator, (req, res) => {
                 time: timeCalculator.timeString(seconds)
               };
               websocket.updateAllClients(message);
-              mail.askResultConfirmation(participant,seconds);
+              if (participant.start_block != 0) {
+                console.log('asking');
+                mail.askResultConfirmation(participant,seconds);
+              };
               res.setHeader('Content-Type', 'application/json');
               res.send(JSON.stringify({ status: 'OK' }));
           }

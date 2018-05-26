@@ -74,6 +74,9 @@ participant.from = (body) => {
   p.withRegistrationTime = (time) => {
     return p.with({registrationTime: time});
   };
+  p.withConfirmedResult = (confirmation) => {
+    return p.with({confirmed_result: confirmation});
+  };
 
   return p;
 };

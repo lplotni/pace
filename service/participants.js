@@ -40,7 +40,7 @@ participants.get.blancParticipants = () => {
 };
 
 participants.get.all = () => {
-  return db.select('select * from participants order by id');
+  return db.select('select * from participants');
 };
 
 participants.get.forDataTables = (start, length, search, ordering) => {
@@ -312,6 +312,17 @@ participants.bulkmail = () => {
 
   return deferred.promise;
 };
+
+participants.confirm_result = (secureId) => {
+  return db.update('update participants SET confirmed_result = true WHERE secureid = $1', [secureId])
+    .then(result => {
+      if (result < 1) {
+        throw new Error('Es konnte kein Teilnehmer mit ID: ' + secureId + ' gefunden werden.');
+      }
+      return secureId;
+    });
+};
+
 
 function sendInfoMailTo(participant) {
   mails.sendStatusEmail(participant, 'Lauf gegen Rechts - Infos zum Lauf', 'views/participants/bulkmail.pug');

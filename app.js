@@ -28,6 +28,7 @@ let adminAfterRoute = require('./routes/admin/after');
 let paymentValidationRoute = require('./routes/admin/paymentValidation');
 let couponcodeRoute = require('./routes/admin/couponcodes');
 let resultRoute = require('./routes/results/results');
+let resultConfirmationRoute = require('./routes/results/confirm.js');
 let certificateRoute = require('./routes/certificate');
 
 let websocket = require("./routes/websocket");
@@ -122,6 +123,7 @@ app.use('/results',resultRoute);
 app.use('/certificate',certificateRoute);
 app.use('/paymentvalidation', paymentValidationRoute);
 app.use('/editparticipant', editParticipantRoute);
+app.use('/confirmresult', resultConfirmationRoute);
 
 app.use('/login', loginRoute);
 app.use('/logout', logoutRoute);

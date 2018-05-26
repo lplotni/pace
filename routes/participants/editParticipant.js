@@ -11,6 +11,7 @@ const editUrlHelper = require('../../domain/editUrlHelper');
 router.get('/:secureId', (req, res) => {
   const participantId = req.params.secureId;
     participants.get.bySecureId(participantId)
+      .then(()=> participants.confirm_result(participantId))
       .then(p => res.render('participants/editParticipant', {participant: p, participantid: participantId}))
       .catch(() =>
         res.render('error', {

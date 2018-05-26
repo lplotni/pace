@@ -39,6 +39,7 @@ describe('race service', () => {
       })
       .withToken('sectoken 1')
       .withStartBlock(0)
+      .withConfirmedResult(false)
       .withStartNr(10);
     const aParticipantWithDifferentCategory = participant.from(aParticipant)
       .with({
@@ -46,6 +47,7 @@ describe('race service', () => {
       })
       .withToken('sectoken 2')
       .withStartBlock(0)
+      .withConfirmedResult(false)
       .withStartNr(11);
     const aParticipantWithDifferentTeam = participant.from(aParticipant)
       .with({
@@ -53,13 +55,32 @@ describe('race service', () => {
       })
       .withToken('sectoken 3')
       .withStartBlock(0)
+      .withConfirmedResult(false)
       .withStartNr(12);
+    const aParticipantWithDifferentStartblock = participant.from(aParticipant)
+      .with({
+        team: 'Slow team'
+      })
+      .withToken('sectoken 4')
+      .withStartBlock(1)
+      .withConfirmedResult(false)
+      .withStartNr(13);
+    const aConfirmedParticipantWithDifferentStartblock = participant.from(aParticipant)
+      .with({
+        team: 'Slow team'
+      })
+      .withToken('sectoken 5')
+      .withStartBlock(1)
+      .withStartNr(14)
+      .withConfirmedResult(true);
+
 
     beforeAll((done) => {
       let time = '10:32:02';
       let nr = 1;
       participants.save(aParticipant.withStartNr(nr).withStartBlock(0))
         .then(() => startBlocks.add( '36000', 'startblock 1'))
+        .then(() => startBlocks.add( '37000', 'startblock 2'))
         .then(() => participants.insertTime(nr, time))
         .then(() => participants.save(aParticipantWithDifferentAge))
         .then(() => participants.insertTime(aParticipantWithDifferentAge.start_number,
@@ -70,6 +91,12 @@ describe('race service', () => {
         .then(() => participants.save(aParticipantWithDifferentTeam))
         .then(() => participants.insertTime(aParticipantWithDifferentTeam.start_number,
           '10:35:00'))
+        .then(() => participants.save(aParticipantWithDifferentStartblock))
+        .then(() => participants.insertTime(aParticipantWithDifferentStartblock.start_number,
+          '10:36:00'))
+        .then(() => participants.save(aConfirmedParticipantWithDifferentStartblock))
+        .then(() => participants.insertTime(aConfirmedParticipantWithDifferentStartblock.start_number,
+          '10:36:30'))
         .then(done)
         .catch(done.fail);
     });
@@ -77,7 +104,7 @@ describe('race service', () => {
     it('should show the first', (done) => {
       race.results('Unicorn', 1970, 1990)
         .then((result) => {
-          expect(result.length).toBe(3);
+          expect(result.length).toBe(5);
           expect(result[0].timestring).toBe('00:32:02');
           done();
         })
@@ -88,7 +115,7 @@ describe('race service', () => {
       race.resultsForDataTables(0, 2, 'Crazy runn', 'START_NUMBER ASC', 'Unicorn', 1975,
           1985)
         .then((result) => {
-          expect(result.numberOfAllRecords).toBe(2);
+          expect(result.numberOfAllRecords).toBe(4);
           expect(result.numberOfRecordsAfterFilter).toBe(1);
           expect(result.records[0].firstname).toBe('Hertha');
           expect(result.records[0].team).toBe('Crazy runners');

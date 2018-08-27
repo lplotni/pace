@@ -1,5 +1,7 @@
 sudo: required
 language: node_js
+addons:
+  chrome: stable
 services:
 - docker
 before_install:

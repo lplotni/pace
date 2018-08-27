@@ -1,7 +1,5 @@
 provider "aws" {
   region = "eu-central-1"
-  profile = "pace_new"
-  version = "1.17.0"
 }
 
 module "iam" {
@@ -10,10 +8,6 @@ module "iam" {
 
 module "vpc" {
   source = "./vpc"
-}
-
-module "s3" {
-  source = "./s3"
 }
 
 module "ec2" {
@@ -59,8 +53,7 @@ resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
 terraform {
   backend "s3" {
     encrypt = true
-    profile = "pace_new"
-    bucket = "pace-remote-state-s3"
+    bucket = "pace-s3-state-bucket"
     region = "eu-central-1"
     dynamodb_table = "terraform-state-lock-dynamo"
     key = "terraform.tfstate"

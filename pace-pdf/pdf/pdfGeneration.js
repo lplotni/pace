@@ -58,20 +58,22 @@ pdfGeneration.generate = (startNumberData) => {
 pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
 
   doc.image(__dirname + pathToBackgroundImage, {fit: [800, 800]});
-  doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [130, 130]});
+  doc.image(__dirname + pathToLogoLeft, 20, 20, {fit: [100, 100]});
   doc.image(__dirname + pathToLogoRight, 475, 20, {fit: [100, 100]});
 
   doc.font('Helvetica-Bold').fontSize(200).fillColor('saddlebrown').text(startNumberData.startNumber, 0, 130, {align: 'center'});
   doc.fontSize(40).fillColor('red').text(startNumberData.firstname.substring(0, 17), 0, 300, {align: 'center'});
   doc.fontSize(30).fillColor('red').text(startNumberData.team.substring(0, 25), 0, 350, {align: 'center'});
+  console.log(startNumberData.startBlockColor);
 
   barcode.loadModules(["code128"], {'includetext': false, 'scaleX': 2});
   let barcodeSvg = barcode.create("code128", String(startNumberData.startNumber));
 
-  doc.image(barcodeSvg, 260, 20, {fit: [70, 70]});
   doc.image(barcodeSvg, 20, 330, {fit: [70, 70]});
+  doc.image(barcodeSvg, 20, 350, {fit: [70, 70]});
   doc.image(barcodeSvg, 500, 330, {fit: [70, 70]});
-  doc.fontSize(15).fillColor('black').text('Startblock: '+startNumberData.startBlock, 20, 150, {align: 'left'});
+  doc.image(barcodeSvg, 500, 350, {fit: [70, 70]});
+  doc.fontSize(35).fillColor(startNumberData.startBlockColor).text('Startblock: '+startNumberData.startBlock, 200, 20, {align: 'left'});
 
   if(startNumberData.tshirt) {
     doc.fontSize(12).fillColor('black').text(startNumberData.tshirt.size + ' ' + startNumberData.tshirt.model, 500, 315);

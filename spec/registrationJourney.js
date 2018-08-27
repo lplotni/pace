@@ -44,7 +44,7 @@ describe('registration journey', () => {
     }
   });
 
-  it('allows to start via the registration page', (done) => {
+  xit('allows to start via the registration page', (done) => {
     client.url(helper.paceUrl)
       .click('a#registration')
       .isVisible('form#registrationForm')
@@ -77,7 +77,7 @@ describe('registration journey', () => {
       .call(done);
   });
 
-  it("doesn't display bank details and payment message when valid coupon code is used", (done) => {
+  xit("doesn't display bank details and payment message when valid coupon code is used", (done) => {
     couponcodes.create()
     .then((code) => {
       client.url(helper.paceUrl)

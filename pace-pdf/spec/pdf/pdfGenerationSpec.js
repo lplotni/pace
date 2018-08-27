@@ -67,6 +67,7 @@ describe('pdfGeneration', () => {
       firstname: 'Digital',
       team: 'Unicorns',
       startBlock: '1',
+      startBlockColor: '#123456',
       tshirt: {
         size: 'S',
         model: 'unisex'
@@ -90,7 +91,7 @@ describe('pdfGeneration', () => {
       let numberOfOtherImageCalls = 3;
 
       pdfGeneration.createStartNumberPage(documentMock, startNumberData);
-      expect(documentMock.image).toHaveBeenCalledTimes(3 + numberOfOtherImageCalls);
+      expect(documentMock.image).toHaveBeenCalledTimes(4 + numberOfOtherImageCalls);
     });
 
     it('should add the background image and the logos', () => {
@@ -129,7 +130,7 @@ describe('pdfGeneration', () => {
     it('should add the startblock', () => {
       pdfGeneration.createStartNumberPage(documentMock, startNumberData);
 
-      expect(documentMock.text.calls.argsFor(3)).toEqual(['Startblock: 1', 20, 150, {align: 'left'}]);
+      expect(documentMock.text.calls.argsFor(3)).toEqual(['Startblock: 1', 200, 20, {align: 'left'}]);
     });
 
     it('should add the QR code to the self-service link', () => {

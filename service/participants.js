@@ -199,20 +199,21 @@ participants.distributeIntoStartblocks = (participants, blocks) => {
   let distribution = [];
 
   let ambitiousParticpants = _.remove(participants, (participant) => participant.goal === 'ambitious');
-  distribution.push(ambitiousParticpants.length);
+  distribution.push({amount: ambitiousParticpants.length, block: {color: blocks[0].color}});
 
   let restOfTheParticipants = participants.length;
   let restOfTheBlocks = _.tail(blocks);
   let participantsPerBlock = _.isEmpty(restOfTheBlocks) ? restOfTheParticipants : Math.floor(restOfTheParticipants / (restOfTheBlocks.length));
 
   _.forEach(restOfTheBlocks, () => {
-    distribution.push(participantsPerBlock);
+    let color = blocks[distribution.length].color
+    distribution.push({ amount: participantsPerBlock, block: {color: color }});
     restOfTheParticipants = restOfTheParticipants - participantsPerBlock;
   });
 
   let lastBlock = distribution.length - 1;
-  distribution[lastBlock] = _.last(distribution) + restOfTheParticipants;
-
+  distribution[lastBlock].amount = _.last(distribution).amount + restOfTheParticipants;
+  console.log(distribution);
   return distribution;
 };
 
@@ -220,12 +221,12 @@ participants.assign = (dist) => {
   let offset = 0;
   let updatePromises = [];
 
-  dist.forEach((amount, index) => {
+  _.forEach(dist, (value, key) => {
     updatePromises.push(
-      db.update(`update participants set start_block=${index} where id in 
-                        (select id from participants order by goal,id limit ${amount} offset ${offset});`)
+      db.update(`update participants set start_block=${key}, start_block_color='${value.block.color}' where id in
+                        (select id from participants order by goal,id limit ${value.amount} offset ${offset});`)
     );
-    offset = offset + amount;
+    offset = offset + value.amount;
   });
 
   return Q.all(updatePromises);
@@ -311,6 +312,17 @@ participants.bulkmail = () => {
 
   return deferred.promise;
 };
+
+participants.confirm_result = (secureId) => {
+  return db.update('update participants SET confirmed_result = true WHERE secureid = $1', [secureId])
+    .then(result => {
+      if (result < 1) {
+        throw new Error('Es konnte kein Teilnehmer mit ID: ' + secureId + ' gefunden werden.');
+      }
+      return secureId;
+    });
+};
+
 
 function sendInfoMailTo(participant) {
   mails.sendStatusEmail(participant, 'Lauf gegen Rechts - Infos zum Lauf', 'views/participants/bulkmail.pug');

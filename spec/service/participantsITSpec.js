@@ -138,6 +138,7 @@ describe('participants service', () => {
     });
 
     it('should save multiple participants', function (done) {
+      startNr = startNr+5;
       participants.saveBlancParticipants(5)
         .then(participants.get.blancParticipants)
         .then(participants => {
@@ -306,7 +307,7 @@ describe('participants service', () => {
 
   describe('assign()', () => {
     it('uses provided block distribution to assign start blocks to participants', (done) => {
-      let blockDistribution = [1, 2];
+      let blockDistribution = {0: {amount: 1, block: {color: '#123456'}}, 1: {amount: 2, block: {color: '#654321'}}};
       Q.all([
         participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
         participants.save(aParticipant.withStartNr(startNr++).withToken("2")),
@@ -316,11 +317,31 @@ describe('participants service', () => {
           return participants.assign(blockDistribution);
         })
         .then(() => {
-          return db.select('select count(DISTINCT start_block) as count from participants');
+          return db.select('select distinct start_block from participants');
         })
         .then((distinct_startblocks) => {
-            expect(parseInt(distinct_startblocks[0].count)).toBe(blockDistribution.length);
-            done();
+          expect(_.size(distinct_startblocks)).toBe(2);
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('uses provided block distribution to assign start block colors to participants', (done) => {
+      let blockDistribution = {0: {amount: 1, block: {color: '#123456'}}, 1: {amount: 2, block: {color: '#654321'}}};
+      Q.all([
+        participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
+        participants.save(aParticipant.withStartNr(startNr++).withToken("2")),
+        participants.save(aParticipant.withStartNr(startNr++).withToken("3"))
+      ])
+        .then(() => {
+          return participants.assign(blockDistribution);
+        })
+        .then(() => {
+          return db.select('select distinct start_block_color from participants');
+        })
+        .then((distinct_startblock_colors) => {
+          expect(_.size(distinct_startblock_colors)).toBe(2);
+          done();
         })
         .catch(done.fail);
     });

@@ -8,6 +8,7 @@ block content
     each block,index in blocks
       - let block_number = index + 1
       .row
+        input(type="text", size="7", name="block["+block.id +"][color]" value=block.color id="color"+block_number)
         input(type="text", size="20", name="block["+block.id +"][name]" value=block.name id="name"+block_number)
         span :
         input(type="text", size="2", name="block["+block.id +"][hours]" value=block.hours id="hours"+block_number)
@@ -19,6 +20,7 @@ block content
     .row
       label neuer Startblock:
     .row
+      input(type="text", size="7", name="block[0][color]" id="color0")
       input(type="text", size="20", name="block[0][name]" id="name0")
       span :
       input(type="text", size="2", name="block[0][hours]" id="hours0")

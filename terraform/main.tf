@@ -41,9 +41,10 @@ module "domain" {
   load-balancer-name = "${module.ec2.ecs-load-balancer-dns-name}"
 }
 
-module "elasticache" {
-  source = "./elasticache"
+module "persistence" {
+  source = "./persistence"
 }
+
 
 resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
   name           = "terraform-state-lock-dynamo"

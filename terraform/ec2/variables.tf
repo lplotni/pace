@@ -6,7 +6,7 @@ variable "ecs-cluster-name" {}
 variable "ecs-instance-role-name" {}
 variable "ecs-instance-role-arn" {}
 variable "ecs-instance-profile-name" {}
-variable "ecs-key-pair-name" {}
+
 variable "ecs-service-role-arn" {}
 
 variable "autoscaling-group-name" {
@@ -42,7 +42,7 @@ variable "launch-configuration-name" {
 }
 
 variable "image-id" {
-  default = "ami-9fc39c74"
+  default = "ami-03804565a6baf6d30"
 }
 
 variable "instance-type" {

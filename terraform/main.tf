@@ -33,6 +33,10 @@ module "ecs" {
   ecs-service-role-arn   = "${module.iam.ecs-service-role-arn}"
 }
 
+module "elasticache" {
+  source = "./elasticache"
+}
+
 resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
   name           = "terraform-state-lock-dynamo"
   hash_key       = "LockID"

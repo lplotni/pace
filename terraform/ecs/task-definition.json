@@ -1,11 +1,9 @@
-[
-  {
+[{
     "name": "pace",
     "image": "lplotni/pace-app",
     "cpu": 1024,
     "memory": 512,
-    "environment": [
-      {
+    "environment": [{
         "name": "DATABASE_URL",
         "value": "postgres://pgtester:${data.aws_kms_secret.db.postgres_password}@db/pace"
       },
@@ -15,21 +13,21 @@
       }
     ],
     "logConfiguration": {
-      "log-driver": "awslogs",
-      "log-opts": {
+      "logDriver": "awslogs",
+      "options": {
         "awslogs-region": "eu-central-1",
         "awslogs-create-group": "true",
         "awslogs-group": "pace-logs"
       }
     },
-    "portMappings": [
-      {
-        "containerPort": 3000,
-        "hostPort": 3000
-      }
-    ],
+    "portMappings": [{
+      "containerPort": 3000,
+      "hostPort": 3000
+    }],
     "essential": true,
-    "command": ["./node_modules/db-migrate/bin/db-migrate" , "-e ci up" , ";" , "/usr/local/bin/npm" , "start"]
+    "command": ["./node_modules/db-migrate/bin/db-migrate", "-e ci up", ";", "/usr/local/bin/npm",
+      "start"
+    ]
   }
 
 ]

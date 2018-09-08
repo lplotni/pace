@@ -32,7 +32,7 @@ resource "aws_alb_target_group" "ecs-target_group" {
 
 resource "aws_alb_listener" "alb-listener" {
   load_balancer_arn = "${aws_alb.ecs-load-balancer.arn}"
-  port              = "3000"
+  port              = "443"
   protocol          = "HTTP"
 
   default_action {

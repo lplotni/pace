@@ -68,6 +68,7 @@ resource "aws_iam_role_policy_attachment" "ecs-logs-role-attachment" {
 output "ecs-instance-role-name" {
   value = "${aws_iam_role.ecs-instance-role.name}"
 }
+
 output "ecs-instance-role-arn" {
   value = "${aws_iam_role.ecs-instance-role.arn}"
 }

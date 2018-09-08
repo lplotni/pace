@@ -14,51 +14,22 @@
         "value": "redis"
       }
     ],
+    "logConfiguration": {
+      "log-driver": "awslogs",
+      "log-opts": {
+        "awslogs-region": "eu-central-1",
+        "awslogs-create-group": "true",
+        "awslogs-group": "pace-logs"
+      }
+    },
     "portMappings": [
       {
         "containerPort": 3000,
         "hostPort": 3000
       }
     ],
-    "links": [
-      "db",
-      "redis"
-    ],
     "essential": true,
     "command": ["./node_modules/db-migrate/bin/db-migrate" , "-e ci up" , ";" , "/usr/local/bin/npm" , "start"]
-  },
-  {
-    "name": "db",
-    "image": "postgres",
-    "cpu": 0,
-    "memory": 256,
-    "environment": [
-      {
-        "name": "POSTGRES_USER",
-        "value": "pgtester"
-      },
-      {
-        "name": "POSTGRES_PASSWORD",
-        "value": "${data.aws_kms_secret.db.postgres_password}"
-      },
-      {
-        "name": "POSTGRES_DB",
-        "value": "pace"
-      }
-    ],
-    "portMappings": [
-      {
-        "containerPort": 5432,
-        "hostPort": 5432
-      }
-    ],
-    "essential": true
-  },
-  {
-    "name": "redis",
-    "image": "redis",
-    "cpu": 0,
-    "memory": 256,
-    "essential": true
   }
+
 ]

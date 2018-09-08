@@ -41,6 +41,10 @@ resource "aws_alb_listener" "alb-listener" {
   }
 }
 
+output "ecs-load-balancer-dns-name" {
+  value = "${aws_alb.ecs-load-balancer.dns_name}"
+}
+
 output "ecs-load-balancer-name" {
   value = "${aws_alb.ecs-load-balancer.name}"
 }

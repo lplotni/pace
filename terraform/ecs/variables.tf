@@ -15,3 +15,11 @@ variable "ecs-service-name" {
 variable "ecs-load-balancer-name" {
   default = "pace-ecs-load-balancer"
 }
+
+variable "container-port" {
+  default = 3000
+}
+
+variable "container-name" {
+  default = "pace"
+}

@@ -17,6 +17,7 @@ resource "aws_security_group" "pace-vpc-security-group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
   // HTTP
   ingress {
     from_port   = 80

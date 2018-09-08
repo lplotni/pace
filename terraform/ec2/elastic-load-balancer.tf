@@ -30,14 +30,31 @@ resource "aws_alb_target_group" "ecs-target_group" {
   }
 }
 
-resource "aws_alb_listener" "alb-listener" {
+resource "aws_alb_listener" "alb-listener-https" {
   load_balancer_arn = "${aws_alb.ecs-load-balancer.arn}"
   port              = "443"
-  protocol          = "HTTP"
+  protocol          = "HTTPS"
+  certificate_arn   = "${var.cert-arn}"
 
   default_action {
     target_group_arn = "${aws_alb_target_group.ecs-target_group.arn}"
     type             = "forward"
+  }
+}
+
+resource "aws_alb_listener" "alb-listener-http" {
+  load_balancer_arn = "${aws_alb.ecs-load-balancer.arn}"
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      status_code = "HTTP_301"
+      protocol    = "HTTPS"
+      port        = "443"
+    }
   }
 }
 

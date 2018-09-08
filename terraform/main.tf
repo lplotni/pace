@@ -22,6 +22,7 @@ module "ec2" {
   ecs-cluster-name          = "${var.ecs-cluster-name}"
   ecs-instance-role-arn     = "${module.iam.ecs-instance-role-arn}"
   ecs-service-role-arn      = "${module.iam.ecs-service-role-arn}"
+  cert-arn                  = "${module.domain.cert-arn}"
 }
 
 module "ecs" {

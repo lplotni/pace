@@ -25,7 +25,7 @@
       "hostPort": 3000
     }],
     "essential": true,
-    "command": ["./node_modules/db-migrate/bin/db-migrate", "-e ci up", ";", "/usr/local/bin/npm",
+    "command": ["./node_modules/db-migrate/bin/db-migrate", "up", ";", "/usr/local/bin/npm",
       "start"
     ]
   }

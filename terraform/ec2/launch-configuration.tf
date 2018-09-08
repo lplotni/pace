@@ -1,11 +1,3 @@
-data "template_file" "ecs-launch-configuration-user-data" {
-  template = "${file("${path.module}/user-data.tpl")}"
-
-  vars {
-    ecs-cluster-name = "${var.ecs-cluster-name}"
-  }
-}
-
 resource "aws_launch_configuration" "ecs-launch-configuration" {
   name_prefix                 = "pace-launch-configuration"
   image_id                    = "${var.image-id}"

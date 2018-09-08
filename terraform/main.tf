@@ -33,6 +33,13 @@ module "ecs" {
   ecs-service-role-arn   = "${module.iam.ecs-service-role-arn}"
 }
 
+module "route53" {
+  source = "./route53"
+
+  domain             = "${var.domain}"
+  load-balancer-name = "${module.ec2.ecs-load-balancer-dns-name}"
+}
+
 module "elasticache" {
   source = "./elasticache"
 }

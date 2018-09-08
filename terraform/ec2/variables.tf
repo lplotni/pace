@@ -6,7 +6,7 @@ variable "ecs-cluster-name" {}
 variable "ecs-instance-role-name" {}
 variable "ecs-instance-role-arn" {}
 variable "ecs-instance-profile-name" {}
-variable "ecs-key-pair-name" {}
+
 variable "ecs-service-role-arn" {}
 
 variable "autoscaling-group-name" {

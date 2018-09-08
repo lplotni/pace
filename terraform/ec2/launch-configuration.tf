@@ -33,5 +33,5 @@ data "template_file" "ecs-launch-configuration-user-data" {
 }
 
 data "template_file" "cloudwatch_upstart" {
-  template = "${file("${path.module}/cloudwatch_upstart.tpl")}"
+  template = "${file("${path.module}/cloudwatch-upstart.tpl")}"
 }

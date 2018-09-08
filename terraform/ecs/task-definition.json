@@ -11,6 +11,10 @@
         "awslogs-group": "pace-logs"
       }
     },
+    "environment": [{
+      "name": "REDISHOST",
+      "value": "pace-redis.XXX.amazonaws.com:6379"
+    }],
     "portMappings": [{
       "containerPort": 3000,
       "hostPort": 3000

@@ -7,7 +7,7 @@ resource "aws_ecs_service" "pace-ecs-service" {
 
   load_balancer {
     target_group_arn = "${var.ecs-target-group-arn}"
-    container_port   = 3000
-    container_name   = "pace"
+    container_port   = "${var.container_port}"
+    container_name   = "${var.container_name}"
   }
 }

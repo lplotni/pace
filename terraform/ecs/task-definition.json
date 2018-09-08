@@ -3,15 +3,6 @@
     "image": "lplotni/pace-app",
     "cpu": 1024,
     "memory": 512,
-    "environment": [{
-        "name": "DATABASE_URL",
-        "value": "postgres://pgtester:${data.aws_kms_secret.db.postgres_password}@db/pace"
-      },
-      {
-        "name": "REDISHOST",
-        "value": "redis"
-      }
-    ],
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
@@ -25,9 +16,7 @@
       "hostPort": 3000
     }],
     "essential": true,
-    "command": ["./node_modules/db-migrate/bin/db-migrate", "up", ";", "/usr/local/bin/npm",
-      "start"
-    ]
+    "command": ["/usr/local/bin/npm", "start"]
   }
 
 ]

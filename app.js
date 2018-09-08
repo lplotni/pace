@@ -17,6 +17,7 @@ let loginRoute = require('./routes/login');
 let logoutRoute = require('./routes/logout');
 
 let registrationRoute = require('./routes/participants/registration');
+let teamsRegistrationRoute = require('./routes/teams/registration');
 let participantsRoute = require('./routes/participants/participants');
 let editParticipantRoute = require('./routes/participants/editParticipant');
 
@@ -116,8 +117,12 @@ passport.use(new LocalStrategy(
     }
 ));
 
+if (config.get('displayTeamRegistration')) {
+  app.use('/registration', teamsRegistrationRoute);
+} else {
+  app.use('/registration', registrationRoute);
+}
 app.use('/', indexRoute);
-app.use('/registration', registrationRoute);
 app.use('/participants', participantsRoute);
 app.use('/results',resultRoute);
 app.use('/certificate',certificateRoute);

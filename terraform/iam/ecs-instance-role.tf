@@ -15,25 +15,23 @@ data "aws_iam_policy_document" "ecs-instance-policy" {
   }
 }
 
-
 data "aws_iam_policy_document" "ecs-instance-role-attachment" {
   statement {
     actions = [
       "ecs:CreateCluster",
-            "ecs:DeregisterContainerInstance",
-              "ecs:DiscoverPollEndpoint",
-              "ecs:Poll",
-              "ecs:RegisterContainerInstance",
-              "ecs:StartTelemetrySession",
-              "ecs:UpdateContainerInstancesState",
-              "ecs:Submit*",
-              "ecr:GetAuthorizationToken",
-              "ecr:BatchCheckLayerAvailability",
-              "ecr:GetDownloadUrlForLayer",
-              "ecr:BatchGetImage",
-              "logs:CreateLogStream",
-              "logs:PutLogEvents"
-
+      "ecs:DeregisterContainerInstance",
+      "ecs:DiscoverPollEndpoint",
+      "ecs:Poll",
+      "ecs:RegisterContainerInstance",
+      "ecs:StartTelemetrySession",
+      "ecs:UpdateContainerInstancesState",
+      "ecs:Submit*",
+      "ecr:GetAuthorizationToken",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
     ]
   }
 }
@@ -42,18 +40,20 @@ data "aws_iam_policy_document" "allow_logs" {
   statement {
     actions = [
       "logs:CreateLogGroup",
-      "logs:DescribeLogStreams"
-    ],
+      "logs:DescribeLogStreams",
+    ]
+
     resources = [
-      "arn:aws:logs:*:*:*"
+      "arn:aws:logs:*:*:*",
     ]
   }
 }
 
 resource "aws_iam_policy" "allow_logs_policy" {
   policy = "${data.aws_iam_policy_document.allow_logs.json}"
-  name = "allow_logs_policy"
+  name   = "allow_logs_policy"
 }
+
 resource "aws_iam_role_policy_attachment" "ecs-instance-role-attachment" {
   role       = "${aws_iam_role.ecs-instance-role.name}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
@@ -62,7 +62,6 @@ resource "aws_iam_role_policy_attachment" "ecs-instance-role-attachment" {
 resource "aws_iam_role_policy_attachment" "ecs-logs-role-attachment" {
   role       = "${aws_iam_role.ecs-instance-role.name}"
   policy_arn = "${aws_iam_policy.allow_logs_policy.arn}"
-
 }
 
 output "ecs-instance-role-name" {

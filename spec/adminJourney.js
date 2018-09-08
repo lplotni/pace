@@ -180,7 +180,7 @@ describe('admin page', () => {
     });
   });
 
-  xit('should be able to define the color, name and start time of a block', (done) => {
+  it('should be able to define the color, name and start time of a block', (done) => {
     loginAdmin().url(helper.paceUrl + 'admin/after')
       .setValue('input#color0', '#cafe00')
       .setValue('input#name0', 'Startblock Rot')

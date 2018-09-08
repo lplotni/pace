@@ -6,6 +6,7 @@ variable "ecs-cluster-name" {}
 variable "ecs-instance-role-name" {}
 variable "ecs-instance-role-arn" {}
 variable "ecs-instance-profile-name" {}
+variable "cert-arn" {}
 
 variable "ecs-service-role-arn" {}
 

@@ -1,0 +1,40 @@
+extends ../guestLayout.pug
+
+block content
+  h4.black.centered Melde deines Team hier zum Lauf an
+  form#teamRegistrationForm(method='POST', action='/registration')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .row
+      p.slim.u-pull-right * Pflichtfelder
+    .row
+      .twelve.columns.padding
+        label(for='email') Email
+        input#email.u-full-width(type='email', name='email')
+    .row
+      .twelve.columns.padding
+        label(for='team') Name des Teams:
+        input#team.u-full-width(type='text', name='team')
+    .row
+      .twelve.columns.padding
+        label(for='firstname') Teilnehmer:
+          input#firstname.u-full-width(type='text', name='firstname', autofocus)
+    .row
+      .twelve.columns.padding
+        label(for='category') In welcher Ergebnisliste möchtest du erscheinen?
+        select#category.u-full-width(name='category')
+          option(value='m') m
+          option(value='f') f
+          option(value='mixed') mixed
+    noscript
+      .row#noscript-registration-message
+        .ten.columns.center
+          p Moin! Du hast JavaScript in deinem Browser deaktiviert. Deshalb können wir dir aktuell leider kein T-Shirt anbieten. Auch die Coupon-Code Funktionalität funktioniert ohne JavaScript leider nocht nicht. Wir arbeiten daran!
+
+    .row
+      .twelve.columns.padding
+        label(for='visibility') Möchtest du dass dein Team in der Ergebnisliste aufgelistet werden*
+        select#visibility.u-full-width(name='visibility', required=true)
+          option(value='yes') Ja
+          option(value='no') Nein
+
+    button#submit.primary.button-primary.u-full-width.pace(type='submit') Absenden

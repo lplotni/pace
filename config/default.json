@@ -35,5 +35,6 @@
   "metrics": false,
   "cookie-secret":"change this in your local config",
   "proxy":false,
-  "https":false
+  "https":false,
+  "displayTeamRegistration" : false
 }

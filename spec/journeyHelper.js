@@ -11,7 +11,9 @@ let originalTimeout;
 
 let options = {
   desiredCapabilities: {
-    browserName: 'phantomjs'
+    browserName: 'chrome',
+    chromeOptions: {
+      args: ['headless','disable-gpu']}
   }
 };
 

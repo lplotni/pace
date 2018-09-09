@@ -1,0 +1,1 @@
+variable "vpc-subnet-id" {}

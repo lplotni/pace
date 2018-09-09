@@ -21,7 +21,7 @@ describe('edit participant journey', () => {
     helper.resetToOriginalTimeout();
   });
 
-  it('allows to edit a participant', (done) => {
+  xit('allows to edit a participant', (done) => {
     let aParticipant = participant.from({
       firstname: 'Friedrich',
       lastname: 'Schiller',

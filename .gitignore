@@ -48,6 +48,7 @@ version.sha
 /tags
 
 #Ignore Terraform files
-/**/.terraform
-/**/terraform.tfstate*
-/**/terraform.tfvars
+.terraform
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup

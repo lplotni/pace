@@ -34,6 +34,13 @@ resource "aws_security_group" "pace-vpc-security-group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  // Redis
+  ingress {
+    from_port = 6379
+    protocol  = "tcp"
+    to_port   = 6379
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

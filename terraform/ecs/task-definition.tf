@@ -1,5 +1,6 @@
-resource "aws_ecs_task_definition" "pace-sample-definition" {
-  family                = "pace-sample-definition"
+resource "aws_ecs_task_definition" "ecs-pace-task-definition" {
+  family = "pace-task-definition"
+
   container_definitions = <<EOF
 [{
     "name": "pace",

@@ -7,3 +7,7 @@ resource "aws_elasticache_cluster" "pace-redis" {
   parameter_group_name = "default.redis4.0"
   port                 = 6379
 }
+
+output "redis-ip" {
+  value = "${aws_elasticache_cluster.pace-redis.cache_nodes.0.address}"
+}

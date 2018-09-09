@@ -23,3 +23,7 @@ variable "container-port" {
 variable "container-name" {
   default = "pace"
 }
+
+variable "redis-ip" {
+  default = "redis"
+}

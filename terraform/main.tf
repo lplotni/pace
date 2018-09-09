@@ -32,6 +32,7 @@ module "ecs" {
   ecs-load-balancer-name = "${module.ec2.ecs-load-balancer-name}"
   ecs-target-group-arn   = "${module.ec2.ecs-target-group-arn}"
   ecs-service-role-arn   = "${module.iam.ecs-service-role-arn}"
+  redis-ip = "${module.persistence.redis-ip}"
 }
 
 module "domain" {
@@ -43,6 +44,7 @@ module "domain" {
 
 module "persistence" {
   source = "./persistence"
+
 }
 
 

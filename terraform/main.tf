@@ -46,6 +46,8 @@ module "persistence" {
   source = "./persistence"
 
   vpc-subnet-id = "${module.vpc.redis-subnet-id}"
+
+  app_name = "${var.app_name}"
 }
 
 resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {

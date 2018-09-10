@@ -5,3 +5,7 @@ variable "ecs-cluster-name" {
 variable "domain_name" {
   default = "stadtpark-marathon.de"
 }
+
+variable "app_name" {
+  default = "pace"
+}

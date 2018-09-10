@@ -25,3 +25,7 @@ data "aws_secretsmanager_secret" "superuser_db_password" {
 data "aws_secretsmanager_secret_version" "superuser_db_password" {
   secret_id = "${data.aws_secretsmanager_secret.superuser_db_password.id}"
 }
+
+output "postgres-ip" {
+  value = "${aws_db_instance.postgres.address}"
+}

@@ -27,3 +27,7 @@ variable "container-name" {
 variable "redis-ip" {
   default = "redis"
 }
+
+variable "postgres-ip" {
+  default = "postgres"
+}

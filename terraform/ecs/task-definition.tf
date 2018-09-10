@@ -18,6 +18,10 @@ resource "aws_ecs_task_definition" "ecs-pace-task-definition" {
     "environment": [{
       "name": "REDISHOST",
       "value": "${var.redis-ip}:6379"
+    },
+    {
+      "name":"DATABASE_URL",
+      "value": "postgres://${var.postgres-ip}/pace"
     }],
     "portMappings": [{
       "containerPort": 3000,

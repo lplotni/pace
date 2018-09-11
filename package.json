@@ -43,8 +43,9 @@
     "rescode": "~0.1.10",
     "serve-favicon": "~2.5.0",
     "validator": "^10.0.0",
-    "winston": "^2.4.3",
-    "ws": "^6.0.0"
+    "winston": "^3.0.0",
+    "ws": "^6.0.0",
+    "winston": "^2.4.3"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
@@ -58,7 +59,7 @@
     "request": "^2.87.0",
     "selenium-standalone": "^6.15.1",
     "wdio-jasmine-framework": "^5.0.0-alpha.7",
-    "webdriverio": "^4.13.2",
+    "webdriverio": "=3.4.0",
     "yargs": "^12.0.1"
   },
   "greenkeeper": {

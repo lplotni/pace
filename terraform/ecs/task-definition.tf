@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "ecs-pace-task-definition" {
       "hostPort": 3000
     }],
     "essential": true,
-    "command": ["/usr/local/bin/npm", "start"]
+    "command": ["./node_modules/db-migrate/bin/db-migrate up && ./node_modules//usr/local/bin/npm", "start"]
   }
 ]
 EOF

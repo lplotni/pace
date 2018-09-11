@@ -10,8 +10,8 @@
     "node": "7.7.1"
   },
   "dependencies": {
+    "config": "^2.0.0",
     "body-parser": "^1.18.3",
-    "config": "^1.31.0",
     "connect-flash": "~0.1.1 ",
     "cookie-parser": "~1.4.3",
     "cryptico": "~1.0.2",

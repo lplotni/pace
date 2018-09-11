@@ -31,3 +31,5 @@ variable "redis-ip" {
 variable "postgres-ip" {
   default = "postgres"
 }
+
+variable "postgres-password" {}

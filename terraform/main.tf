@@ -34,6 +34,7 @@ module "ecs" {
   ecs-service-role-arn   = "${module.iam.ecs-service-role-arn}"
   redis-ip               = "${module.persistence.redis-ip}"
   postgres-ip            = "${module.persistence.postgres-ip}"
+  postgres-password = "${module.persistence.postgres-password}"
 }
 
 module "domain" {

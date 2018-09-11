@@ -42,6 +42,14 @@ resource "aws_security_group" "postgres-security-group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+resource "aws_db_subnet_group" "postgres_subnet" {
+  name       = "pacedb-subnet"
+  subnet_ids = ["${var.db-subnet-id-1}", "${var.db-subnet-id-2}"]
+
+  tags {
+    Name = "db subnet groups"
+  }
+}
 
 data "aws_secretsmanager_secret" "superuser_db_password" {
   name = "/pace/superuser_db_password"
@@ -55,11 +63,6 @@ output "postgres-ip" {
   value = "${aws_db_instance.postgres.address}"
 }
 
-resource "aws_db_subnet_group" "postgres_subnet" {
-  name       = "pacedb-subnet"
-  subnet_ids = ["${var.db-subnet-id-1}", "${var.db-subnet-id-2}"]
-
-  tags {
-    Name = "db subnet groups"
-  }
+output "postgres-password" {
+  value = "${data.aws_secretsmanager_secret_version.superuser_db_password.secret_string}"
 }

@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" "ecs-pace-task-definition" {
     },
     {
       "name":"DATABASE_URL",
-      "value": "postgres://${var.postgres-ip}/pace"
+      "value": "postgres://root:${var.postgres-password}@${var.postgres-ip}/pacedb"
     }],
     "portMappings": [{
       "containerPort": 3000,

@@ -20,6 +20,10 @@ resource "aws_ecs_task_definition" "ecs-pace-task-definition" {
       "value": "${var.redis-ip}:6379"
     },
     {
+      "name":"NODE_ENV",
+      "value": "production"
+    },
+    {
       "name":"DATABASE_URL",
       "value": "postgres://root:${var.postgres-password}@${var.postgres-ip}/pacedb"
     }],
@@ -28,7 +32,7 @@ resource "aws_ecs_task_definition" "ecs-pace-task-definition" {
       "hostPort": 3000
     }],
     "essential": true,
-    "command": ["/usr/local/bin/npm", "start"]
+    "command": ["/bin/sh","-c","/usr/local/bin/node ./node_modules/db-migrate/bin/db-migrate up -e prod;/usr/local/bin/npm start"]
   }
 ]
 EOF

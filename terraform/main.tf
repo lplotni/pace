@@ -52,6 +52,7 @@ module "persistence" {
   app_name          = "${var.app_name}"
   security-group-id = "${module.vpc.security-group-id}"
   vpc-id            = "${module.vpc.id}"
+  config-bucket-name ="${var.domain_name}-config-bucket"
 }
 
 resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {

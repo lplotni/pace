@@ -64,6 +64,11 @@ resource "aws_iam_role_policy_attachment" "ecs-logs-role-attachment" {
   policy_arn = "${aws_iam_policy.allow_logs_policy.arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "s3-readonly-role-attachment" {
+  role = "${aws_iam_role.ecs-instance-role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+}
+
 output "ecs-instance-role-name" {
   value = "${aws_iam_role.ecs-instance-role.name}"
 }

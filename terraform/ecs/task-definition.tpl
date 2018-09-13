@@ -19,7 +19,7 @@
   ],
   "environment": [{
     "name": "REDISHOST",
-    "value": "${var.redis-ip}:6379"
+    "value": "${redis-ip}:6379"
   },
     {
       "name":"NODE_ENV",
@@ -27,7 +27,7 @@
     },
     {
       "name":"DATABASE_URL",
-      "value": "postgres://root:${var.postgres-password}@${var.postgres-ip}/pacedb"
+      "value": "postgres://root:${postgres-password}@${postgres-ip}/pacedb"
     }],
   "portMappings": [{
     "containerPort": 3000,

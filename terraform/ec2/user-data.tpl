@@ -59,3 +59,5 @@ mkdir /media/pace/
 aws s3 cp s3://${config-bucket-name}/config/local.json /media/pace/local.json
 chmod 755 /media/pace
 chmod 644 /media/pace/local.json
+echo "=============== DONE =============="
+ls -l /media/pace

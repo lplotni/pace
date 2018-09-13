@@ -23,6 +23,7 @@ module "ec2" {
   ecs-instance-role-arn     = "${module.iam.ecs-instance-role-arn}"
   ecs-service-role-arn      = "${module.iam.ecs-service-role-arn}"
   cert-arn                  = "${module.domain.cert-arn}"
+  config-bucket-name        = "${var.config-bucket-name}"
 }
 
 module "ecs" {
@@ -34,7 +35,7 @@ module "ecs" {
   ecs-service-role-arn   = "${module.iam.ecs-service-role-arn}"
   redis-ip               = "${module.persistence.redis-ip}"
   postgres-ip            = "${module.persistence.postgres-ip}"
-  postgres-password = "${module.persistence.postgres-password}"
+  postgres-password      = "${module.persistence.postgres-password}"
 }
 
 module "domain" {
@@ -45,14 +46,14 @@ module "domain" {
 }
 
 module "persistence" {
-  source            = "./persistence"
-  redis-subnet-id   = "${module.vpc.redis-subnet-id}"
-  db-subnet-id-1    = "${module.vpc.db-subnet-id-1}"
-  db-subnet-id-2    = "${module.vpc.db-subnet-id-2}"
-  app_name          = "${var.app_name}"
-  security-group-id = "${module.vpc.security-group-id}"
-  vpc-id            = "${module.vpc.id}"
-  config-bucket-name ="${var.domain_name}-config-bucket"
+  source             = "./persistence"
+  redis-subnet-id    = "${module.vpc.redis-subnet-id}"
+  db-subnet-id-1     = "${module.vpc.db-subnet-id-1}"
+  db-subnet-id-2     = "${module.vpc.db-subnet-id-2}"
+  app_name           = "${var.app_name}"
+  security-group-id  = "${module.vpc.security-group-id}"
+  vpc-id             = "${module.vpc.id}"
+  config-bucket-name = "${var.config-bucket-name}"
 }
 
 resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {

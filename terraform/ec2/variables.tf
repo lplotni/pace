@@ -7,8 +7,9 @@ variable "ecs-instance-role-name" {}
 variable "ecs-instance-role-arn" {}
 variable "ecs-instance-profile-name" {}
 variable "cert-arn" {}
-
 variable "ecs-service-role-arn" {}
+
+variable "config-bucket-name" {}
 
 variable "autoscaling-group-name" {
   default = "pace-ecs-asg"

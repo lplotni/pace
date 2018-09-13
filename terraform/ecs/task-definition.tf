@@ -15,6 +15,20 @@ resource "aws_ecs_task_definition" "ecs-pace-task-definition" {
         "awslogs-group": "pace-logs"
       }
     },
+    "volumes": [
+      {
+        "name": "pace-config",
+        "host": {
+           "sourcePath": "/etc/pace/"
+         }
+      }
+    ],
+    "mountPoints": [
+        {
+          "sourceVolume": "pace-config",
+          "containerPath": "/usr/src/app/config/"
+        }
+    ]
     "environment": [{
       "name": "REDISHOST",
       "value": "${var.redis-ip}:6379"

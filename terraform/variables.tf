@@ -9,3 +9,7 @@ variable "domain_name" {
 variable "app_name" {
   default = "pace"
 }
+
+variable "config-bucket-name" {
+  default = "stadtpark-marathon.de-config-bucket"
+}

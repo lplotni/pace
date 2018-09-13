@@ -55,5 +55,7 @@ EOF
 region=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
 sed -i -e "s/region = us-east-1/region = $region/g" /etc/awslogs/awscli.conf
 
-mkdir /etc/pace/
-aws s3 cp s3://${config-bucket-name}/config/local.json /etc/pace/local.json
+mkdir /media/pace/
+aws s3 cp s3://${config-bucket-name}/config/local.json /media/pace/local.json
+chmod 755 /media/pace
+chmod 644 /media/pace/local.json

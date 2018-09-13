@@ -4,6 +4,6 @@ resource "aws_ecs_task_definition" "ecs-pace-task-definition" {
 
   volume {
     name      = "pace-config"
-    host_path = "/etc/pace/"
+    host_path = "/media/pace/"
   }
 }

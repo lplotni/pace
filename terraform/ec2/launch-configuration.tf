@@ -28,7 +28,8 @@ data "template_file" "ecs-launch-configuration-user-data" {
   template = "${file("${path.module}/user-data.tpl")}"
 
   vars {
-    ecs-cluster-name = "${var.ecs-cluster-name}"
+    ecs-cluster-name   = "${var.ecs-cluster-name}"
+    config-bucket-name = "${var.config-bucket-name}"
   }
 }
 

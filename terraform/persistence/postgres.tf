@@ -42,6 +42,7 @@ resource "aws_security_group" "postgres-security-group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 resource "aws_db_subnet_group" "postgres_subnet" {
   name       = "pacedb-subnet"
   subnet_ids = ["${var.db-subnet-id-1}", "${var.db-subnet-id-2}"]

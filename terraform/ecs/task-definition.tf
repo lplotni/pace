@@ -1,39 +1,20 @@
 resource "aws_ecs_task_definition" "ecs-pace-task-definition" {
-  family = "pace-task-definition"
+  family                = "pace-task-definition"
+  container_definitions = "${data.template_file.ecs-task-definition-template.rendered}"
 
-  container_definitions = <<EOF
-[{
-    "name": "pace",
-    "image": "lplotni/pace-app",
-    "cpu": 1024,
-    "memory": 512,
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-region": "eu-central-1",
-        "awslogs-create-group": "true",
-        "awslogs-group": "pace-logs"
-      }
-    },
-    "environment": [{
-      "name": "REDISHOST",
-      "value": "${var.redis-ip}:6379"
-    },
-    {
-      "name":"NODE_ENV",
-      "value": "production"
-    },
-    {
-      "name":"DATABASE_URL",
-      "value": "postgres://root:${var.postgres-password}@${var.postgres-ip}/pacedb"
-    }],
-    "portMappings": [{
-      "containerPort": 3000,
-      "hostPort": 3000
-    }],
-    "essential": true,
-    "command": ["/bin/sh","-c","/usr/local/bin/node ./node_modules/db-migrate/bin/db-migrate up -e prod;/usr/local/bin/npm start"]
+  volume {
+    name      = "pace-config"
+    host_path = "/media/pace/"
   }
-]
-EOF
+}
+
+
+data "template_file" "ecs-task-definition-template" {
+  template = "${file("${path.module}/task-definition.tpl")}"
+
+  vars {
+    postgres-password = "${var.postgres-password}"
+    postgres-ip = "${var.postgres-ip}"
+    redis-ip = "${var.redis-ip}"
+  }
 }

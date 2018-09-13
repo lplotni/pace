@@ -66,9 +66,13 @@ app.use("/api", function(err, req, res, next){
   });
 });
 
-// authentication using passport needs to be initialized before the routing setup
-app.use(require('express-session')(
+
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+var redishost = process.env.REDISHOST || 'localhost';
+app.use(session(
     {
+        store: new RedisStore({host: redishost}),
         secret: config.get('cookie-secret'),
         signed: true,
         resave: false,

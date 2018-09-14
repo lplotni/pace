@@ -6,7 +6,6 @@ let express = require('express');
 let path = require('path');
 let favicon = require('serve-favicon');
 let logger = require('morgan');
-let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 let passport = require('passport');
 let LocalStrategy = require('passport-local').Strategy;
@@ -55,7 +54,6 @@ app.use(logger('tiny', {
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended': true}));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', apiRoute);

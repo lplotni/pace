@@ -19,7 +19,7 @@
   ],
   "environment": [{
     "name": "REDISHOST",
-    "value": "${redis-ip}:6379"
+    "value": "${redis-ip}"
   },
     {
       "name":"NODE_ENV",

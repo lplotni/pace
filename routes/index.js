@@ -5,8 +5,10 @@
 
 const router = require('express').Router();
 
-router.get('/', (req, res) =>
+router.get('/', (req, res) => {
   res.render('index', {})
+  console.log(res);
+}
 );
 
 module.exports = router;

@@ -23,6 +23,7 @@ let tokenValidator = function(req,res,next) {
 };
 
 router.post('/scan',tokenValidator, (req, res) => {
+  console.log('scanned %s', req.body.startnumber);
   participants.get.byStartnumber(req.body.startnumber)
     .then(participant => {
       return participants.updateTimeForParticipant(participant,req.body.time)
@@ -35,7 +36,6 @@ router.post('/scan',tokenValidator, (req, res) => {
               };
               websocket.updateAllClients(message);
               if (participant.start_block != 0) {
-                console.log('asking');
                 mail.askResultConfirmation(participant,seconds);
               };
               res.setHeader('Content-Type', 'application/json');

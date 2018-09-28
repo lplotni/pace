@@ -87,50 +87,27 @@ describe('pdfGeneration', () => {
 
 
   describe('createStartNumberPage', () => {
-    it('should add the barcode three times for easier scanning', () => {
-      let numberOfOtherImageCalls = 3;
+    it('should add the barcode two times for easier scanning', () => {
+      let numberOfOtherImageCalls = 2;
 
       pdfGeneration.createStartNumberPage(documentMock, startNumberData);
-      expect(documentMock.image).toHaveBeenCalledTimes(4 + numberOfOtherImageCalls);
+      expect(documentMock.image).toHaveBeenCalledTimes(3 + numberOfOtherImageCalls);
     });
 
     it('should add the background image and the logos', () => {
       pdfGeneration.createStartNumberPage(documentMock, startNumberData);
-
       expect(documentMock.image.calls.argsFor(0)[0]).toMatch(/pdf\/images\/background_light\.jpg/);
-      expect(documentMock.image.calls.argsFor(1)[0]).toMatch(/pdf\/images\/lauf_gegen_rechts_logo\.jpg/);
-      expect(documentMock.image.calls.argsFor(2)[0]).toMatch(/pdf\/images\/fc_st_pauli_marathon_logo\.png/);
     });
 
-    it('should add tshirt details', () => {
-      pdfGeneration.createStartNumberPage(documentMock, startNumberData);
-
-      expect(documentMock.text.calls.argsFor(4)).toEqual(['S unisex', 500, 315]);
-    });
-
-    it('should add a checkmark symbol only if the participant has payed', () => {
-      pdfGeneration.createStartNumberPage(documentMock, startNumberData);
-
-      expect(documentMock.stroke).toHaveBeenCalledTimes(1);
-    });
-
-    it('should add start number and name', () => {
+    it('should add start number', () => {
       pdfGeneration.createStartNumberPage(documentMock, startNumberData);
 
       expect(documentMock.text.calls.argsFor(0)).toEqual(['1234', 0, 130, {align: 'center'}]);
-      expect(documentMock.text.calls.argsFor(1)).toEqual(['Digital', 0, 300, {align: 'center'}]);
     });
 
     it('should add the team name if it exits', () => {
       pdfGeneration.createStartNumberPage(documentMock, startNumberData);
-
-      expect(documentMock.text.calls.argsFor(2)).toEqual(['Unicorns', 0, 350, {align: 'center'}]);
-    });
-
-    it('should add the startblock', () => {
-      pdfGeneration.createStartNumberPage(documentMock, startNumberData);
-
-      expect(documentMock.text.calls.argsFor(3)).toEqual(['Startblock: 1', 200, 20, {align: 'left'}]);
+      expect(documentMock.text.calls.argsFor(1)).toEqual(['Unicorns', 0, 300, {align: 'center'}]);
     });
 
     it('should add the QR code to the self-service link', () => {
@@ -138,13 +115,6 @@ describe('pdfGeneration', () => {
       pdfGeneration.createStartNumberPage(documentMock, startNumberData);
 
       expect(documentMock.fill).toHaveBeenCalledWith('black', 'even-odd');
-    });
-
-    it('should not add the payment checkmark if not payed', () => {
-      startNumberData.hasPayed = false;
-      pdfGeneration.createStartNumberPage(documentMock, startNumberData);
-
-      expect(documentMock.stroke).not.toHaveBeenCalled();
     });
   });
 

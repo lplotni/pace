@@ -18,7 +18,9 @@ pace-pdf:
     - data-volume:/pdf
   environment:
     - REDISHOST=redis
-pace-app:  
+  ports:
+    - "3001:3001"
+pace-app:
   build: .
   ports:
     - "3000:3000"

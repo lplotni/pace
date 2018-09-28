@@ -1,5 +1,5 @@
 [{
-  "name": "pace",
+  "name": "pace-pdf",
   "image": "lplotni/pace-pdf",
   "cpu": 1024,
   "memory": 512,
@@ -19,6 +19,10 @@
       "name":"NODE_ENV",
       "value": "production"
     }],
+  "portMappings": [{
+    "containerPort": 3001,
+    "hostPort": 3001
+  }],
   "essential": true,
   "command": ["/usr/local/bin/npm", "start"]
 }]

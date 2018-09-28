@@ -85,12 +85,12 @@ resource "aws_alb_listener" "alb-listener-http" {
 }
 
 resource "aws_lb_listener_rule" "pdf_listener" {
-  listener_arn = "${aws_alb_listener.alb-listener-https}"
+  listener_arn = "${aws_alb_listener.alb-listener-https.arn}"
   priority     = 100
 
   action {
     type             = "forward"
-    target_group_arn = "${aws_alb_target_group.pdf-target_group}"
+    target_group_arn = "${aws_alb_target_group.pdf-target_group.arn}"
   }
 
   condition {

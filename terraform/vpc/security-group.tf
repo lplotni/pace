@@ -2,13 +2,22 @@ resource "aws_security_group" "pace-vpc-security-group" {
   name   = "pace-vpc-security-group"
   vpc_id = "${aws_vpc.pace-vpc.id}"
 
-  // HTTP
+  // HTTP pace
   ingress {
     from_port   = 3000
     to_port     = 3000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  // HTTP pdf
+  ingress {
+    from_port   = 3001
+    to_port     = 3001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
 
   // HTTPS
   ingress {

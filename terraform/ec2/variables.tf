@@ -44,7 +44,7 @@ variable "launch-configuration-name" {
 }
 
 variable "image-id" {
-  default = "ami-03804565a6baf6d30"
+  default = "ami-0bb804e8cd910a664"
 }
 
 variable "instance-type" {

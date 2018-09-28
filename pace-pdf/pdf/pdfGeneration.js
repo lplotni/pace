@@ -16,12 +16,22 @@ const logger = new (winston.Logger)({
 
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const Q = require('q');
 const config = require('config');
+const AdmZip = require('adm-zip');
+var Archiver = require('archiver');
 
 const qr = require('qr-image');
 const barcode = require("rescode");
 
 let pdfGeneration = {};
+
+let createOutputDir = () => {
+  let dir = config.get('pdfPath');
+  if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+  }
+};
 
 const pathToBackgroundImage = '/images/background_light.jpg';
 
@@ -38,6 +48,7 @@ pdfGeneration.addQrCodeWithSelfServiceLink = (doc, selfServiceUrl) => {
 
 pdfGeneration.generate = (startNumberData) => {
   let doc = new PDFDocument({size: 'A5', layout: 'landscape', margin: 0});
+  createOutputDir();
   let pdfPath = `${config.get('pdfPath')}${startNumberData.startNumber}.pdf`;
   doc.pipe(fs.createWriteStream(pdfPath));
   pdfGeneration.createStartNumberPage(doc, startNumberData);
@@ -51,7 +62,6 @@ pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
 
   doc.font('Helvetica-Bold').fontSize(200).fillColor('saddlebrown').text(startNumberData.startNumber, 0, 130, {align: 'center'});
   doc.fontSize(30).fillColor('red').text(startNumberData.team.substring(0, 25), 0, 300, {align: 'center'});
-  console.log(startNumberData.startBlockColor);
 
   barcode.loadModules(["code128"], {'includetext': false, 'scaleX': 2});
   let barcodeSvg = barcode.create("code128", String(startNumberData.startNumber));
@@ -65,5 +75,16 @@ pdfGeneration.createStartNumberPage = (doc, startNumberData) => {
     pdfGeneration.addQrCodeWithSelfServiceLink(doc, startNumberData.secureUrl);
   }
 };
+
+pdfGeneration.zip = (res) => {
+    var zip = Archiver('zip');
+    createOutputDir();
+    zip.pipe(res);
+    zip.on('error', function(err) {
+      console.log(err)
+    })
+    zip.glob(`${config.get('pdfPath')}/*.pdf`);
+    zip.finalize();
+  }
 
 module.exports = pdfGeneration;

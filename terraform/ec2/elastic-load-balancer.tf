@@ -4,7 +4,7 @@ resource "aws_alb" "ecs-load-balancer" {
   subnets         = ["${var.subnet-id-1}", "${var.subnet-id-2}"]
 }
 
-resource "aws_alb_target_group" "ecs-target_group" {
+resource "aws_alb_target_group" "pace-target_group" {
   name     = "${var.target-group-name}"
   port     = "3000"
   protocol = "HTTP"
@@ -29,6 +29,32 @@ resource "aws_alb_target_group" "ecs-target_group" {
     timeout             = "5"
   }
 }
+resource "aws_alb_target_group" "pdf-target_group" {
+  name     = "${var.target-group-name}-pdf"
+  port     = "3001"
+  protocol = "HTTP"
+  vpc_id   = "${var.vpc-id}"
+
+  depends_on = [
+    "aws_alb.ecs-load-balancer",
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  health_check {
+    healthy_threshold   = "5"
+    unhealthy_threshold = "2"
+    interval            = "30"
+    matcher             = "200"
+    path                = "/"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = "5"
+  }
+}
+
 
 resource "aws_alb_listener" "alb-listener-https" {
   load_balancer_arn = "${aws_alb.ecs-load-balancer.arn}"
@@ -37,7 +63,7 @@ resource "aws_alb_listener" "alb-listener-https" {
   certificate_arn   = "${var.cert-arn}"
 
   default_action {
-    target_group_arn = "${aws_alb_target_group.ecs-target_group.arn}"
+    target_group_arn = "${aws_alb_target_group.pace-target_group.arn}"
     type             = "forward"
   }
 }
@@ -58,6 +84,22 @@ resource "aws_alb_listener" "alb-listener-http" {
   }
 }
 
+resource "aws_lb_listener_rule" "pdf_listener" {
+  listener_arn = "${aws_alb_listener.alb-listener-https}"
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = "${aws_alb_target_group.pdf-target_group}"
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["/pdf/*"]
+  }
+}
+
+
 output "ecs-load-balancer-dns-name" {
   value = "${aws_alb.ecs-load-balancer.dns_name}"
 }
@@ -66,6 +108,9 @@ output "ecs-load-balancer-name" {
   value = "${aws_alb.ecs-load-balancer.name}"
 }
 
-output "ecs-target-group-arn" {
-  value = "${aws_alb_target_group.ecs-target_group.arn}"
+output "pace-target-group-arn" {
+  value = "${aws_alb_target_group.pace-target_group.arn}"
+}
+output "pdf-target-group-arn" {
+  value = "${aws_alb_target_group.pdf-target_group.arn}"
 }

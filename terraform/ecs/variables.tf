@@ -1,4 +1,5 @@
-variable "ecs-target-group-arn" {}
+variable "pace-target-group-arn" {}
+variable "pdf-target-group-arn" {}
 
 variable "ecs-cluster-name" {
   default = "pace-ecs-cluster"
@@ -16,14 +17,21 @@ variable "ecs-load-balancer-name" {
   default = "pace-ecs-load-balancer"
 }
 
-variable "container-port" {
+variable "pace-container-port" {
   default = 3000
 }
 
-variable "container-name" {
+variable "pdf-container-port" {
+  default = 3000
+}
+
+variable "pace-container-name" {
   default = "pace"
 }
 
+variable "pdf-container-name" {
+  default = "pace-pdf"
+}
 variable "redis-ip" {
   default = "redis"
 }

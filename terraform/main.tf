@@ -31,7 +31,8 @@ module "ecs" {
 
   ecs-cluster-name       = "${var.ecs-cluster-name}"
   ecs-load-balancer-name = "${module.ec2.ecs-load-balancer-name}"
-  ecs-target-group-arn   = "${module.ec2.ecs-target-group-arn}"
+  pace-target-group-arn  = "${module.ec2.pace-target-group-arn}"
+  pdf-target-group-arn   = "${module.ec2.pdf-target-group-arn}"
   ecs-service-role-arn   = "${module.iam.ecs-service-role-arn}"
   redis-ip               = "${module.persistence.redis-ip}"
   postgres-ip            = "${module.persistence.postgres-ip}"

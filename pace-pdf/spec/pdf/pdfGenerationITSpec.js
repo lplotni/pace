@@ -6,10 +6,11 @@ const pdfGeneration = require('../../pdf/pdfGeneration');
 const config = require('config');
 const fs = require('fs');
 describe('pdfGeneration', () => {
+  const startnumber = '1234'
 
   it('writes pdf to disk', (done) => {
     pdfGeneration.generate({
-      startNumber: '1234',
+      startNumber: startnumber,
       firstname: 'Digital',
       team: 'Unicorns',
       startBlock: '1',
@@ -22,7 +23,7 @@ describe('pdfGeneration', () => {
       secureUrl: 'https://example.com/asjkd12234'
     });
 
-    fs.readFile('/etc/passwd', 'utf8', (err, data) => {
+    fs.readFile('/tmp/' + startnumber +'.pdf', 'utf8', (err, data) => {
       expect(data).toBeDefined();
       done();
     });

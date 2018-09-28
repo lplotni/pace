@@ -22,7 +22,7 @@ variable "pace-container-port" {
 }
 
 variable "pdf-container-port" {
-  default = 3000
+  default = 3001
 }
 
 variable "pace-container-name" {

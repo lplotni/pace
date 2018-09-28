@@ -18,7 +18,6 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const Q = require('q');
 const config = require('config');
-const AdmZip = require('adm-zip');
 var Archiver = require('archiver');
 
 const qr = require('qr-image');

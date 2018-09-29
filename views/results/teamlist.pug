@@ -1,0 +1,51 @@
+extends ../guestLayout.pug
+
+block content
+    .row
+      form#resultForm(method='GET', action='/results')
+        .row
+          .four.columns.padding
+            label(for='category') Damen/Herren/Mixed
+            select#category.u-full-width(name='category')
+                option(value='all') Gesamt
+                option(value='m') Herren
+                option(value='f') Damen
+                option(value='mixed') Mixed
+          .four.columns.padding
+    .row
+      table
+        thead
+          tr
+            th Platz
+            th Startnummer
+            th Vorname
+            th Team name
+            th Zeit
+            th Urkunde
+        tbody
+      script.
+        $(document).ready(function () {
+          var table = $('table').DataTable({
+            language: dataTableLanguage,
+              ajax: {
+                url: '/api/results',
+                data: function(d){
+                  d.category = $('#category').val();
+                  d.agegroup = $('#agegroup').val();
+                }
+              },
+              columns: [
+                    { data: 'place' },
+                    { data: 'start_number' },
+                    { data: 'firstname' },
+                    { data: 'team' },
+                    { data: 'timestring', searchable: false, orderable: false },
+                    { data: null, searchable: false, orderable: false, render: function(data, type, full) {
+                      return '<a href=/certificate/' + data.start_number + '>PDF Download</a>';
+                    }}
+                ],
+              serverSide: true,
+          });
+          $('#category').change (function () { table.ajax.reload(); });
+          $('#agegroup').change (function () { table.ajax.reload(); });
+        });

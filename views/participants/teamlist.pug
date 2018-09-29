@@ -1,0 +1,27 @@
+extends ../guestLayout.pug
+
+block content
+  .row
+    table
+      thead
+        tr
+          th Startnummer
+          th Namen
+          th Team
+      tbody
+  script.
+    $(document).ready(function () {
+      $('table').DataTable({
+        language: dataTableLanguage,
+        createdRow: function (row, data, index) {
+          $(row).addClass('participant-line');
+        },
+        ajax: '/api/participants',
+        columns: [
+          { data: 'start_number' },
+          { data: 'firstname' },
+          { data: 'team' },
+        ],
+        serverSide: true,
+      });
+    });

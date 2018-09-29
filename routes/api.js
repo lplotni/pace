@@ -88,7 +88,7 @@ router.get('/participants', (req, res) => {
 });
 
 function extractCategory(req) {
-  if (!_.isEmpty(req.query.category) && validator.isIn(req.query.category, ['m', 'f', 'all'])) {
+  if (!_.isEmpty(req.query.category) && validator.isIn(req.query.category, ['m', 'f', 'all','mixed'])) {
     return req.query.category;
   }
   return 'all';

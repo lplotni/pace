@@ -18,6 +18,7 @@ let logoutRoute = require('./routes/logout');
 let registrationRoute = require('./routes/participants/registration');
 let teamsRegistrationRoute = require('./routes/teams/registration');
 let participantsRoute = require('./routes/participants/participants');
+let teamsParticipantsRoute = require('./routes/teams/participants');
 let editParticipantRoute = require('./routes/participants/editParticipant');
 
 let adminRoute = require('./routes/admin/admin');
@@ -28,6 +29,7 @@ let adminAfterRoute = require('./routes/admin/after');
 let paymentValidationRoute = require('./routes/admin/paymentValidation');
 let couponcodeRoute = require('./routes/admin/couponcodes');
 let resultRoute = require('./routes/results/results');
+let teamsResultRoute = require('./routes/teams/results');
 let resultConfirmationRoute = require('./routes/results/confirm.js');
 let certificateRoute = require('./routes/certificate');
 
@@ -119,14 +121,16 @@ passport.use(new LocalStrategy(
     }
 ));
 
-if (config.get('displayTeamRegistration')) {
+if (config.get('teamEvent')) {
   app.use('/registration', teamsRegistrationRoute);
+  app.use('/results',teamsResultRoute);
+  app.use('/participants', teamsParticipantsRoute);
 } else {
   app.use('/registration', registrationRoute);
+  app.use('/results',resultRoute);
+  app.use('/participants', participantsRoute);
 }
 app.use('/', indexRoute);
-app.use('/participants', participantsRoute);
-app.use('/results',resultRoute);
 app.use('/certificate',certificateRoute);
 app.use('/paymentvalidation', paymentValidationRoute);
 app.use('/editparticipant', editParticipantRoute);

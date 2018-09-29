@@ -36,5 +36,5 @@
   "cookie-secret":"change this in your local config",
   "proxy":false,
   "https":false,
-  "displayTeamRegistration" : false
+  "teamEvent" : false
 }

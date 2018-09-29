@@ -36,7 +36,7 @@ describe('pdfGeneration', () => {
     });
   });
 
-  it('generates a zip file', (done) => {
+  xit('generates a zip file', (done) => {
     let output = fs.WriteStream(zipfile);
     pdfGeneration.generate({
       startNumber: startnumber,

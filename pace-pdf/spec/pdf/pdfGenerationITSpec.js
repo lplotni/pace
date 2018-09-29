@@ -5,14 +5,19 @@
 const pdfGeneration = require('../../pdf/pdfGeneration');
 const config = require('config');
 const fs = require('fs');
+
 describe('pdfGeneration', () => {
   const startnumber = '1234';
   let startnumberPath = `${config.get('pdfPath')}/${startnumber}.pdf`;
   let zipfile = `${config.get('pdfPath')}/startnumbers.zip`;
 
   afterAll( () => {
-   fs.unlinkSync(startnumberPath);
-   fs.unlinkSync(zipfile);
+    if (fs.existsSync(startnumberPath)){
+     fs.unlinkSync(startnumberPath);
+    }
+    if (fs.existsSync(zipfile)){
+     fs.unlinkSync(zipfile);
+    }
   });
 
   it('writes pdf to disk', (done) => {

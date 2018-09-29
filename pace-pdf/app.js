@@ -12,7 +12,7 @@ pdfRequests.setup(new Redis(6379, process.env.REDISHOST || 'localhost'));
 
 
 let app = express();
-app.use('/api', apiRoute);
+app.use('/pdf', apiRoute);
 app.use('/health',healthRoute);
 
 app.set('port', process.env.PORT || 3001);

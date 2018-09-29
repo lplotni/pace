@@ -6,7 +6,7 @@ const router = require('express').Router();
 const _ = require('lodash');
 const pdfGeneration = require('../pdf/pdfGeneration');
 
-router.get('/certificates', (req, res) => {
+router.get('/startnumbers', (req, res) => {
   res.setHeader('Content-Disposition', 'attachment');
   res.setHeader('Content-type', 'application/zip');
   pdfGeneration.zip(res);

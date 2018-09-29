@@ -4,15 +4,14 @@
 
 const Q = require('q');
 const _ = require('lodash');
+const config = require('config');
 
 const db = require('./util/dbHelper');
 const mails = require('./util/mails');
-const tshirts = require('./tshirts');
 const startNumbers = require('./startNumbers');
 const startBlocks = require('./startblocks');
 const editUrlHelper = require('../domain/editUrlHelper');
 const timeCalculator = require('../domain/timeCalculator');
-const race = require('./race');
 const queryHelper = require('./util/queryHelper');
 
 let participants = {
@@ -254,7 +253,11 @@ participants.markPayed = (participantId) => {
 participants.updateTimeForParticipant = (participant, finishtime) => {
   return startBlocks.times().then((startTimes) => {
     let seconds = timeCalculator.relativeSeconds(startTimes, finishtime, participant.start_block);
-    if ((finishtime <= participant.time ) || _.isEmpty(participant.time)) {
+    const isTeamEvent = config.get('teamEvent');
+    const fasterTimeInNonTeamEvents = !isTeamEvent &&  finishtime <= participant.time;
+    const slowerTimeInTeamEvents = isTeamEvent &&  finishtime >= participant.time;
+
+    if (_.isEmpty(participant.time) || fasterTimeInNonTeamEvents || slowerTimeInTeamEvents) {
       return db.update('update participants set time=$2,seconds=$3 where start_number=$1', [participant.start_number, finishtime, seconds])
         .then(() => {
           return seconds;

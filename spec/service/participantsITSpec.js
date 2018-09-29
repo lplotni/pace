@@ -6,12 +6,27 @@
 const _ = require('lodash');
 const moment = require('moment');
 const Q = require('q');
+const mockery = require('mockery');
 
 describe('participants service', () => {
 
   let aParticipantWithTshirt;
   let aParticipant;
   let aSecondParticipant;
+
+  const registerConfigMock = () => {
+    mockery.enable({
+      useCleanCache: true,
+      warnOnReplace: false,
+      warnOnUnregistered: false
+    });
+
+    mockery.resetCache();
+    mockery.registerMock('config', configMock);
+  };
+
+  const configMock = require("../mocks/config");
+  registerConfigMock();
 
   const participants = require('../../service/participants');
   const tshirts = require('../../service/tshirts');
@@ -88,11 +103,18 @@ describe('participants service', () => {
   };
 
   beforeEach((done) => {
+    configMock.mockValue('name', 'mocked config');
     initParticipants();
     helper.setupDbConnection(done);
   });
 
+  afterEach(() => {
+    configMock.reset();
+  });
+
   afterAll((done) => {
+    mockery.deregisterAll();
+    mockery.disable();
     helper.closeDbConnection(done);
   });
 
@@ -484,13 +506,13 @@ describe('participants service', () => {
     });
 
     it('should not save if time is slower than saved time', (done) => {
+      configMock.mockValue("teamEvent", false);
       let time = '10:32:32';
       let slower_time = '11:32:32';
 
       let nr = startNr++;
-      startBlocks.add('35000', 'startblock 1')
-        .then(() => startBlocks.add('36000', 'startblock 2'))
-        .then(() => participants.save(aParticipant.withStartNr(nr)))
+      startBlocks.add('36000', 'startblock 0')
+        .then(() => participants.save(aParticipant.withStartNr(nr).withStartBlock(0)))
         .then(() => participants.insertTime(nr, time))
         .then(() => participants.insertTime(nr, slower_time))
         .then(() => participants.get.byStartnumber(nr))
@@ -504,6 +526,30 @@ describe('participants service', () => {
         });
     });
 
+  });
+
+  describe('team event', () => {
+    it('should save if time is slower than saved time', (done) => {
+      configMock.mockValue("teamEvent", true);
+
+      let time = '10:32:32';
+      let slower_time = '11:32:32';
+
+      let nr = startNr++;
+      startBlocks.add('36000', 'startblock 0')
+        .then(() => participants.save(aParticipant.withStartNr(nr).withStartBlock(0)))
+        .then(() => participants.insertTime(nr, time))
+        .then(() => participants.insertTime(nr, slower_time))
+        .then(() => participants.get.byStartnumber(nr))
+        .then((participant) => {
+          expect(participant.time).toBe('41552');
+          expect(participant.seconds).toBe('5552');
+          done();
+        }).catch((err) => {
+        console.log("Err:", err);
+        done.fail();
+      });
+    });
   });
 
   describe('rank', () => {

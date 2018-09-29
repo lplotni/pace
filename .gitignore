@@ -48,6 +48,7 @@ version.sha
 /tags
 
 #Ignore Terraform files
+terraform/out.plan
 .terraform
 *.tfstate
 *.tfstate.*.backup

@@ -17,7 +17,7 @@
     "express": "^4.16.3",
     "ioredis": "^3.2.2",
     "jszip": "^3.1.5",
-    "lodash": "^4.17.0",
+    "lodash": "^4.17.11",
     "pdfkit": "~0.8.0",
     "q": "^1.4.1",
     "qr-image": "~3.2.0",
@@ -25,12 +25,12 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
+    "gulp": "^4.0.0",
     "gulp-jasmine": "^2.4.2",
     "gulp-jshint": "^2.0.3",
     "gulp-shell": "^0.6.1",
     "gulp-util": "^3.0.7",
-    "jshint": "^2.9.4",
+    "jshint": "^2.9.6",
     "jshint-stylish": "^2.2.1",
     "mockery": "^2.0.0",
     "yargs": "^7.0.1"

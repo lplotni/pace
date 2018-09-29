@@ -80,8 +80,8 @@ participants.get.byStartnumber = (number) => {
     .then(result => result[0]);
 };
 
-participants.get.bySecureId = (id) => {
-  return db.select('SELECT * FROM participants WHERE secureid = $1', [id])
+participants.get.bySecureId = (secureid) => {
+  return db.select('SELECT * FROM participants WHERE secureid = $1', [secureid])
     .then(result => {
       if (_.isEmpty(result)) {
         throw new Error('No participant found');
@@ -171,11 +171,11 @@ participants.delete = (participantid) => {
   return db.delete('delete from participants where id=$1', [participantid]);
 };
 
-participants.update = (participant, id) => {
+participants.update = (participant, secureid) => {
   return db.update(`UPDATE participants SET
-                    (firstname, lastname, email, category, birthyear, team, visibility, start_block, goal) =
-                    ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-                    WHERE secureid = $10`,
+                    (firstname, lastname, email, category, birthyear, team, visibility, goal) =
+                    ($1, $2, $3, $4, $5, $6, $7, $8)
+                    WHERE secureid = $9`,
     [participant.firstname,
       participant.lastname,
       participant.email,
@@ -183,17 +183,26 @@ participants.update = (participant, id) => {
       participant.birthyear,
       participant.team,
       participant.visibility,
-      participant.start_block,
       participant.goal,
-      id])
+      secureid])
     .then(() => {
-      participants.get.bySecureId(id).then(saved_participant => {
+      participants.get.bySecureId(secureid).then(saved_participant => {
         if (saved_participant.time > 0) {
           participants.updateTimeForParticipant(saved_participant, saved_participant.time);
         }
       });
     });
 };
+
+participants.updateStartblock = (startblock,secureid) => {
+  return participants.get.bySecureId(secureid)
+    .then( (participant) => {
+      if (participant.seconds) {
+        return db.update(`UPDATE participants SET start_block = $1 WHERE secureid = $2`,[startblock,secureid])
+      }
+    });
+
+}
 
 participants.distributeIntoStartblocks = (participants, blocks) => {
   let distribution = [];

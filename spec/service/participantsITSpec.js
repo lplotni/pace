@@ -241,7 +241,6 @@ describe('participants service', () => {
             category: 'Unicorn updated',
             birthyear: 1981,
             team: 'Crazy runners updated',
-            start_block: 2,
             goal: 'ambitious'
           };
           participants.get.byId(id)
@@ -256,7 +255,6 @@ describe('participants service', () => {
                       expect(participant.category).toBe('Unicorn updated');
                       expect(participant.birthyear).toBe(1981);
                       expect(participant.team).toBe('Crazy runners updated');
-                      expect(participant.start_block).toBe(2);
                       expect(participant.goal).toBe('ambitious');
                       done();
                     })
@@ -265,23 +263,61 @@ describe('participants service', () => {
             });
         });
     });
-
-    xit('should not update the start block before race', (done) => {
-
-      //TODO Fix test: Adding startBlock fails insertTime tests, because somehow the participants are reused at some point to calculate times,
-      // earlier always used to save '0' by default for start-block
-
+    it('should never update the start block', (done) => {
       participants.save(aParticipant.withStartNr(startNr++).withStartBlock(42))
         .then(function (id) {
           const updatedParticipant = aParticipant;
           updatedParticipant.start_block = 45;
           participants.get.byId(id)
             .then((p) => {
-              participants.update(aParticipant, p.secureid)
+              participants.update(updatedParticipant, p.secureid)
                 .then(() => {
                   participants.get.byId(id)
                     .then(function (participant) {
                       expect(participant.start_block).toBe(42);
+                      done();
+                    });
+                });
+            });
+        }).catch(done.fail);
+    });
+    it('should not update the start block before race', (done) => {
+      participants.save(aParticipant.withStartNr(startNr++).withStartBlock(42))
+        .then(function (id) {
+          let startBlock = 45;
+          participants.get.byId(id)
+            .then((p) => {
+              return participants.updateStartblock(startBlock, p.secureid)
+                .then(() => {
+                  return participants.get.byId(id)
+                    .then(function (participant) {
+                      expect(participant.start_block).toBe(42);
+                      done();
+                    });
+                });
+            });
+        }).catch(done.fail);
+    });
+    it('should update the start block after race', (done) => {
+      let time = '1479312647';
+      let color = '#CAFE00';
+      let name = 'forty two';
+      let id;
+      participants.save(aParticipant.withStartNr(startNr++).withStartBlock(0))
+        .then((savedid) => {
+          id= savedid;
+          return startBlocks.add(time,name, color)
+        })
+        .then(() => { return participants.updateTimeForParticipant(aParticipant,time); })
+        .then(() => {
+          let newStartBlock = 45;
+          participants.get.byId(id)
+            .then((p) => {
+              return participants.updateStartblock(newStartBlock, p.secureid)
+                .then(() => {
+                  return participants.get.byId(id)
+                    .then(function (participant) {
+                      expect(participant.start_block).toBe(newStartBlock);
                       done();
                     });
                 });

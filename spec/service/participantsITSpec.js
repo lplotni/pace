@@ -90,7 +90,6 @@ describe('participants service', () => {
   beforeEach((done) => {
     initParticipants();
     helper.setupDbConnection(done);
-
   });
 
   afterAll((done) => {
@@ -146,7 +145,7 @@ describe('participants service', () => {
     });
 
     it('should save multiple participants', function (done) {
-      startNr = startNr+5;
+      startNr = startNr + 5;
       participants.saveBlancParticipants(5)
         .then(participants.get.blancParticipants)
         .then(participants => {
@@ -210,7 +209,7 @@ describe('participants service', () => {
         }).catch(err => {
           expect(err.message).toEqual('No participant found');
           done();
-      });
+        });
     });
 
     it('should delete users with tshirts', (done) => {
@@ -267,26 +266,26 @@ describe('participants service', () => {
         });
     });
 
-    it('should not update the start block before race', (done) => {
+    xit('should not update the start block before race', (done) => {
 
       //TODO Fix test: Adding startBlock fails insertTime tests, because somehow the participants are reused at some point to calculate times,
       // earlier always used to save '0' by default for start-block
 
       participants.save(aParticipant.withStartNr(startNr++).withStartBlock(42))
         .then(function (id) {
-          // const updatedParticipant = aParticipant;
-          // updatedParticipant.start_block = 45;
-          // participants.get.byId(id)
-          //   .then((p) => {
-              // participants.update(aParticipant, p.secureid)
-              //   .then(() => {
-              //     participants.get.byId(id)
-              //       .then(function (participant) {
-                      // expect(participant.start_block).toBe(42);
+          const updatedParticipant = aParticipant;
+          updatedParticipant.start_block = 45;
+          participants.get.byId(id)
+            .then((p) => {
+              participants.update(aParticipant, p.secureid)
+                .then(() => {
+                  participants.get.byId(id)
+                    .then(function (participant) {
+                      expect(participant.start_block).toBe(42);
                       done();
-                    // });
-                // });
-            // });
+                    });
+                });
+            });
         }).catch(done.fail);
     });
   });
@@ -321,16 +320,16 @@ describe('participants service', () => {
       participants.save(aParticipant.withStartNr(startNr))
         .then(participants.saveBlanc)
         .then(participants.get.blancParticipants).then(function (data) {
-        expect(data.length).toBe(1);
-        done();
-      })
+          expect(data.length).toBe(1);
+          done();
+        })
         .catch(done.fail);
     });
   });
 
   describe('assign()', () => {
     it('uses provided block distribution to assign start blocks to participants', (done) => {
-      let blockDistribution = {0: {amount: 1, block: {color: '#123456'}}, 1: {amount: 2, block: {color: '#654321'}}};
+      let blockDistribution = { 0: { amount: 1, block: { color: '#123456' } }, 1: { amount: 2, block: { color: '#654321' } } };
       Q.all([
         participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
         participants.save(aParticipant.withStartNr(startNr++).withToken("2")),
@@ -350,7 +349,7 @@ describe('participants service', () => {
     });
 
     it('uses provided block distribution to assign start block colors to participants', (done) => {
-      let blockDistribution = {0: {amount: 1, block: {color: '#123456'}}, 1: {amount: 2, block: {color: '#654321'}}};
+      let blockDistribution = { 0: { amount: 1, block: { color: '#123456' } }, 1: { amount: 2, block: { color: '#654321' } } };
       Q.all([
         participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
         participants.save(aParticipant.withStartNr(startNr++).withToken("2")),
@@ -371,69 +370,65 @@ describe('participants service', () => {
   });
 
   describe('forDataTables()', () => {
-    let nr = startNr++;
-    let participantToBeHiddenByPageLimit;
+    let participantToBeHiddenByPageLimit, participantToBeFilteredByFirstName;
+    let participantToBeFilteredByLastName, participantToBeFilteredByTeam;
 
-    // const participantToBeFilteredByFirstName = participant.from(aParticipant)
-    //   .with({firstname: 'Filtered X'})
-    //   .withToken('ptoken 1')
-    //   .withStartNr(nr+1);
-    // const participantToBeFilteredByLastName = participant.from(aParticipant)
-    //   .with({lastname: 'Filtered X'})
-    //   .withToken('ptoken 2')
-    //   .withStartNr(nr+2);
-    // const participantToBeFilteredByTeam = participant.from(aParticipant)
-    //   .with({team: 'Filtered X'})
-    //   .withToken('ptoken 3')
-    //   .withStartNr(nr+3);
-
-    beforeEach(() => {
-      console.log("BeforeEach")
+    beforeEach((done) => {
       participantToBeHiddenByPageLimit = participant.from(aParticipant)
-        .with({team: 'Filtered X'})
-        .withToken('ptoken 4')
-        .withStartNr(nr);
-      // participants.save(aParticipant.withStartNr(startNr++).withToken('ptoken 10'))
-      //   .then(participants.markPayed)
-      //   .then(() => participants.save(participantToBeFilteredByFirstName))
-      //   .then(participants.markPayed)
-      //   .then(() => participants.save(participantToBeFilteredByLastName))
-      //   .then(participants.markPayed)
-      //   .then(() => participants.save(participantToBeFilteredByTeam))
-      //   .then(participants.markPayed)
-      //   .then(() => participants.save(participantToBeHiddenByPageLimit))
-      //   .then(participants.markPayed)
-      //   .then(done)
-      //   .catch((err) => {
-      //     console.log(err);
-      //     done.fail();
-      //   });
+        .with({ team: 'Filtered X' }).withToken('ptoken 4')
+        .withStartNr(startNr++);
+
+      participantToBeFilteredByFirstName = participant.from(aParticipant)
+        .with({ firstname: 'Filtered X' }).withToken('ptoken 1')
+        .withStartNr(startNr++);
+
+      participantToBeFilteredByLastName = participant.from(aParticipant)
+        .with({ lastname: 'Filtered X' }).withToken('ptoken 2')
+        .withStartNr(startNr++);
+
+      participantToBeFilteredByTeam = participant.from(aParticipant)
+        .with({ team: 'Filtered X' }).withToken('ptoken 3')
+        .withStartNr(startNr++);
+
+      participants.save(aParticipant.withStartNr(startNr++).withToken('ptoken 10'))
+        .then(participants.markPayed)
+        .then(() => participants.save(participantToBeFilteredByFirstName))
+        .then(participants.markPayed)
+        .then(() => participants.save(participantToBeFilteredByLastName))
+        .then(participants.markPayed)
+        .then(() => participants.save(participantToBeFilteredByTeam))
+        .then(participants.markPayed)
+        .then(() => participants.save(participantToBeHiddenByPageLimit))
+        .then(participants.markPayed)
+        .then(done)
+        .catch((err) => {
+          console.log(err);
+          done.fail();
+        });
     });
 
     it('returns only participants which match the filter', (done) => {
-      console.log("Starting test");
-      done();
-      // participants.get.forDataTables(0, 3, 'Filtered', 'START_NUMBER DESC')
-      //   .then(function (data) {
-      //     expect(data.numberOfAllRecords).toBe(5);
-      //     expect(data.numberOfRecordsAfterFilter).toBe(4);
-      //     expect(data.records.length).toBe(3);
-      //     expect(data.records[2].firstname).toBe('Filtered X');
-      //     expect(data.records[2].start_number).toBe(participantToBeFilteredByFirstName.start_number);
-      //     expect(data.records[1].lastname).toBe('Filtered X');
-      //     expect(data.records[1].start_number).toBe(participantToBeFilteredByLastName.start_number);
-      //     expect(data.records[0].team).toBe('Filtered X');
-      //     expect(data.records[0].start_number).toBe(participantToBeFilteredByTeam.start_number);
-      //     done();
-      //   })
-      //   .catch(err => {
-      //     console.log("Err:", err);
-      //     done.fail();
-      //   });
+      participants.get.forDataTables(0, 3, 'Filtered', 'START_NUMBER DESC')
+        .then(function (data) {
+          expect(data.numberOfAllRecords).toBe(5);
+          expect(data.numberOfRecordsAfterFilter).toBe(4);
+          expect(data.records.length).toBe(3);
+          expect(data.records[2].firstname).toBe('Filtered X');
+          expect(data.records[2].start_number).toBe(participantToBeFilteredByFirstName.start_number);
+          expect(data.records[1].lastname).toBe('Filtered X');
+          expect(data.records[1].start_number).toBe(participantToBeFilteredByLastName.start_number);
+          expect(data.records[0].team).toBe('Filtered X');
+          expect(data.records[0].start_number).toBe(participantToBeFilteredByTeam.start_number);
+          done();
+        })
+        .catch(err => {
+          console.log("Err:", err);
+          done.fail();
+        });
     });
   });
 
-  xdescribe('insertTime', () => {
+  describe('insertTime', () => {
     it('should add the time to a participant with given start number', (done) => {
       let time = '10:32:32';
       let nr = startNr++;
@@ -475,7 +470,7 @@ describe('participants service', () => {
 
   });
 
-  xdescribe('rank', () => {
+  describe('rank', () => {
     it('should return the rank of a participant with given start number', (done) => {
       let time = '10:32:32';
       let nr = startNr++;
@@ -508,7 +503,7 @@ describe('participants service', () => {
     });
   });
 
-  xdescribe('bulkmail()', () => {
+  describe('bulkmail()', () => {
     it('should send the correct email to every participant', (done) => {
       spyOn(mails, 'sendEmail');
       spyOn(mails, 'sendStatusEmail').and.callThrough();

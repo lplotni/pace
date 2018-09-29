@@ -50,21 +50,24 @@ function startSelenium() {
   return deferred.promise;
 }
 
+function runTests(allFilesPatterns) {
+  if (argv.singleT) {
+    return gulp.src([argv.singleT]).pipe(jasmine({verbose: true}));
+  } else {
+    return gulp.src(allFilesPatterns).pipe(jasmine({verbose: true}));
+  }
+}
 
 gulp.task('test', function () {
-  if (argv.single) {
-    return gulp.src([argv.single]).pipe(jasmine({verbose: true}));
-  } else {
-    return gulp.src(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*Journey.js']).pipe(jasmine({verbose: true}));
-  }
+  return runTests(['spec/**/*.js', '!spec/**/*IT*.js', '!spec/**/*Journey.js'])
+    .once('error', () => process.exit(1))
+    .once('end', () => process.exit(0));
 });
 
 gulp.task('test-integration', function () {
-  if (argv.single) {
-    return gulp.src([argv.single]).pipe(jasmine({verbose: true}));
-  } else {
-    return gulp.src('spec/**/*IT*.js').pipe(jasmine({verbose: true}));
-  }
+  return runTests('spec/**/*IT*.js')
+    .once('error', () => process.exit(1))
+    .once('end', () => process.exit(0));
 });
 
 gulp.task('selenium-install', function (done) {

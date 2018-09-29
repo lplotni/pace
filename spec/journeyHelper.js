@@ -54,8 +54,11 @@ journeyHelper.setupDbConnection = function (done) {
 };
 
 journeyHelper.closeDbConnection = function (done) {
-  pool.end();
-  done();
+  pool.end() .then(() => { if(done) done(); })
+  .catch((err) => {
+    console.error('DB Pool end not successful: ', err);
+    if(done) done.fail();
+  });
 };
 
 module.exports = journeyHelper;

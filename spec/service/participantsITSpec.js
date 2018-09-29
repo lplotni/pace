@@ -9,6 +9,10 @@ const Q = require('q');
 
 describe('participants service', () => {
 
+  let aParticipantWithTshirt;
+  let aParticipant;
+  let aSecondParticipant;
+
   const participants = require('../../service/participants');
   const tshirts = require('../../service/tshirts');
   const race = require('../../service/race');
@@ -23,8 +27,8 @@ describe('participants service', () => {
   const secureId = 'some_secure_id';
   const paymentToken = 'a token';
 
-  const aParticipant =
-    participant.from({
+  const initParticipants = () => {
+    aParticipant = participant.from({
       firstname: 'Hertha',
       lastname: 'Mustermann',
       email: 'h.mustermann@example.com',
@@ -38,32 +42,33 @@ describe('participants service', () => {
     })
       .withToken(paymentToken)
       .withSecureId(secureId)
-      .withStartBlock(0)
+      .withStartBlock(1)
       .withRegistrationTime(moment('2013-02-08 09:30'));
 
-  const aSecondParticipant = participant.from({
-    firstname: 'Michel',
-    lastname: 'Mueller',
-    email: 'm.mueller@example.com',
-    category: 'Unicorn',
-    birthyear: 1982,
-    visibility: 'no',
-    discount: 'no',
-    team: 'Crazy runners'
-  }).withToken(paymentToken).withSecureId(secureId);
+    aSecondParticipant = participant.from({
+      firstname: 'Michel',
+      lastname: 'Mueller',
+      email: 'm.mueller@example.com',
+      category: 'Unicorn',
+      birthyear: 1982,
+      visibility: 'no',
+      discount: 'no',
+      team: 'Crazy runners'
+    }).withToken(paymentToken).withSecureId(secureId);
 
-  const aParticipantWithTshirt = participant.from({
-    firstname: 'Hertha',
-    lastname: 'Mustermann',
-    email: 'h.mustermann@example.com',
-    birthyear: 1980,
-    category: 'Horse',
-    visibility: 'yes',
-    discount: 'no',
-    shirt: 'yes',
-    size: 'XS',
-    model: 'Crazy cool fit'
-  }).withToken(paymentToken).withSecureId(secureId);
+    aParticipantWithTshirt = participant.from({
+      firstname: 'Hertha',
+      lastname: 'Mustermann',
+      email: 'h.mustermann@example.com',
+      birthyear: 1980,
+      category: 'Horse',
+      visibility: 'yes',
+      discount: 'no',
+      shirt: 'yes',
+      size: 'XS',
+      model: 'Crazy cool fit'
+    }).withToken(paymentToken).withSecureId(secureId);
+  };
 
   const expectOnParticipantFields = function (participantFromDb, participantId) {
     expect(participantFromDb.id).toEqual(participantId);
@@ -79,9 +84,11 @@ describe('participants service', () => {
     expect(participantFromDb.has_payed).toEqual(false);
     expect(participantFromDb.secureid).toEqual(secureId);
     expect(participantFromDb.couponcode).toEqual(aParticipant.couponcode);
+    expect(participantFromDb.start_block).toEqual(aParticipant.start_block);
   };
 
   beforeEach((done) => {
+    initParticipants();
     helper.setupDbConnection(done);
   });
 
@@ -138,7 +145,7 @@ describe('participants service', () => {
     });
 
     it('should save multiple participants', function (done) {
-      startNr = startNr+5;
+      startNr = startNr + 5;
       participants.saveBlancParticipants(5)
         .then(participants.get.blancParticipants)
         .then(participants => {
@@ -160,7 +167,7 @@ describe('participants service', () => {
     });
   });
 
-  xdescribe('byId()', () => {
+  describe('byId()', () => {
     it('should return all information of the participant with given Id', (done) => {
       participants.save(aParticipant.withStartNr(startNr++))
         .then(function (participantId) {
@@ -174,7 +181,7 @@ describe('participants service', () => {
     });
   });
 
-  xdescribe('byStartnumber()', () => {
+  describe('byStartnumber()', () => {
     it('should return all information of the participant with given Startnumber', (done) => {
       let number = startNr++;
       participants.save(aParticipant.withStartNr(number))
@@ -189,16 +196,19 @@ describe('participants service', () => {
     });
   });
 
-  xdescribe('delete()', () => {
+  describe('delete()', () => {
     it('should delete a user', (done) => {
-      participants.save(aParticipant.withStartNr(startNr++))
-        .then((id) => {
-          participants.delete(id).then(() => {
-            participants.get.byId(id).then(() => {
-              fail('Participant has not been deleted');
-              done();
-            }).catch(done);
-          }).catch(done.fail);
+      let nr = startNr++;
+      let savedId;
+      participants.save(aParticipant.withStartNr(nr))
+        .then(id => savedId = id)
+        .then(() => participants.delete(savedId))
+        .then(() => participants.get.byId(savedId))
+        .then(() => {
+          done.fail('Participant has not been deleted');
+        }).catch(err => {
+          expect(err.message).toEqual('No participant found');
+          done();
         });
     });
 
@@ -216,17 +226,6 @@ describe('participants service', () => {
             });
           })
             .catch(done.fail);
-        });
-    });
-
-    it('should give error if accessing deleted user', (done) => {
-      participants.save(aParticipant.withStartNr(startNr++))
-        .then((id) => {
-          participants.delete(id).then(() => {
-            participants.get.byId(id).catch(() => {
-              done();
-            });
-          }).catch(done.fail);
         });
     });
   });
@@ -266,6 +265,29 @@ describe('participants service', () => {
             });
         });
     });
+
+    xit('should not update the start block before race', (done) => {
+
+      //TODO Fix test: Adding startBlock fails insertTime tests, because somehow the participants are reused at some point to calculate times,
+      // earlier always used to save '0' by default for start-block
+
+      participants.save(aParticipant.withStartNr(startNr++).withStartBlock(42))
+        .then(function (id) {
+          const updatedParticipant = aParticipant;
+          updatedParticipant.start_block = 45;
+          participants.get.byId(id)
+            .then((p) => {
+              participants.update(aParticipant, p.secureid)
+                .then(() => {
+                  participants.get.byId(id)
+                    .then(function (participant) {
+                      expect(participant.start_block).toBe(42);
+                      done();
+                    });
+                });
+            });
+        }).catch(done.fail);
+    });
   });
 
   describe('markPayed()', () => {
@@ -298,16 +320,16 @@ describe('participants service', () => {
       participants.save(aParticipant.withStartNr(startNr))
         .then(participants.saveBlanc)
         .then(participants.get.blancParticipants).then(function (data) {
-        expect(data.length).toBe(1);
-        done();
-      })
+          expect(data.length).toBe(1);
+          done();
+        })
         .catch(done.fail);
     });
   });
 
   describe('assign()', () => {
     it('uses provided block distribution to assign start blocks to participants', (done) => {
-      let blockDistribution = {0: {amount: 1, block: {color: '#123456'}}, 1: {amount: 2, block: {color: '#654321'}}};
+      let blockDistribution = { 0: { amount: 1, block: { color: '#123456' } }, 1: { amount: 2, block: { color: '#654321' } } };
       Q.all([
         participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
         participants.save(aParticipant.withStartNr(startNr++).withToken("2")),
@@ -327,7 +349,7 @@ describe('participants service', () => {
     });
 
     it('uses provided block distribution to assign start block colors to participants', (done) => {
-      let blockDistribution = {0: {amount: 1, block: {color: '#123456'}}, 1: {amount: 2, block: {color: '#654321'}}};
+      let blockDistribution = { 0: { amount: 1, block: { color: '#123456' } }, 1: { amount: 2, block: { color: '#654321' } } };
       Q.all([
         participants.save(aParticipant.withStartNr(startNr++).withToken("1")),
         participants.save(aParticipant.withStartNr(startNr++).withToken("2")),
@@ -348,26 +370,27 @@ describe('participants service', () => {
   });
 
   describe('forDataTables()', () => {
-    const participantToBeHiddenByPageLimit = participant.from(aParticipant)
-      .with({team: 'Filtered X'})
-      .withToken('ptoken 4')
-      .withStartNr(startNr++);
-    const participantToBeFilteredByFirstName = participant.from(aParticipant)
-      .with({firstname: 'Filtered X'})
-      .withToken('ptoken 1')
-      .withStartNr(startNr++);
-    const participantToBeFilteredByLastName = participant.from(aParticipant)
-      .with({lastname: 'Filtered X'})
-      .withToken('ptoken 2')
-      .withStartNr(startNr++);
-    const participantToBeFilteredByTeam = participant.from(aParticipant)
-      .with({team: 'Filtered X'})
-      .withToken('ptoken 3')
-      .withStartNr(startNr++);
+    let participantToBeHiddenByPageLimit, participantToBeFilteredByFirstName;
+    let participantToBeFilteredByLastName, participantToBeFilteredByTeam;
 
     beforeEach((done) => {
-      participants
-        .save(aParticipant.withStartNr(startNr++).withToken('ptoken 10'))
+      participantToBeHiddenByPageLimit = participant.from(aParticipant)
+        .with({ team: 'Filtered X' }).withToken('ptoken 4')
+        .withStartNr(startNr++);
+
+      participantToBeFilteredByFirstName = participant.from(aParticipant)
+        .with({ firstname: 'Filtered X' }).withToken('ptoken 1')
+        .withStartNr(startNr++);
+
+      participantToBeFilteredByLastName = participant.from(aParticipant)
+        .with({ lastname: 'Filtered X' }).withToken('ptoken 2')
+        .withStartNr(startNr++);
+
+      participantToBeFilteredByTeam = participant.from(aParticipant)
+        .with({ team: 'Filtered X' }).withToken('ptoken 3')
+        .withStartNr(startNr++);
+
+      participants.save(aParticipant.withStartNr(startNr++).withToken('ptoken 10'))
         .then(participants.markPayed)
         .then(() => participants.save(participantToBeFilteredByFirstName))
         .then(participants.markPayed)
@@ -378,7 +401,10 @@ describe('participants service', () => {
         .then(() => participants.save(participantToBeHiddenByPageLimit))
         .then(participants.markPayed)
         .then(done)
-        .catch(done.fail);
+        .catch((err) => {
+          console.log(err);
+          done.fail();
+        });
     });
 
     it('returns only participants which match the filter', (done) => {
@@ -395,7 +421,10 @@ describe('participants service', () => {
           expect(data.records[0].start_number).toBe(participantToBeFilteredByTeam.start_number);
           done();
         })
-        .catch(done.fail);
+        .catch(err => {
+          console.log("Err:", err);
+          done.fail();
+        });
     });
   });
 
@@ -403,40 +432,39 @@ describe('participants service', () => {
     it('should add the time to a participant with given start number', (done) => {
       let time = '10:32:32';
       let nr = startNr++;
-      participants.save(aParticipant.withStartNr(nr))
-        .then((participantid) => {
-          startBlocks.add('36000', 'startblock 1')
-            .then(() => participants.insertTime(nr, time))
-            .then(() => participants.get.byId(participantid))
-            .then((participant) => {
-              expect(participant.time).toBe('37952');
-              expect(participant.seconds).toBe('1952');
-              done();
-            })
-            .catch(done.fail);
+      startBlocks.add('35000', 'startblock 1')
+        .then(() => startBlocks.add('36000', 'startblock 2'))
+        .then(() => participants.save(aParticipant.withStartNr(nr)))
+        .then(() => participants.insertTime(nr, time))
+        .then(() => participants.get.byStartnumber(nr))
+        .then((participant) => {
+          expect(participant.time).toBe('37952');
+          expect(participant.seconds).toBe('1952');
+          done();
+        }).catch((err) => {
+          console.log("Err:", err);
+          done.fail();
         });
     });
 
     it('should not save if time is slower than saved time', (done) => {
       let time = '10:32:32';
       let slower_time = '11:32:32';
+
       let nr = startNr++;
-      participants.save(aParticipant.withStartNr(nr))
-        .then((participantid) => {
-          startBlocks.add('36000', 'startblock 1')
-            .then(() => participants.insertTime(nr, time))
-            .then(() => participants.get.byId(participantid))
-            .then((participant) => {
-              let saved_time = participant.time;
-              participants.insertTime(nr, slower_time)
-                .then(() => participants.get.byId(participantid))
-                .then((new_participant) => {
-                  expect(saved_time).toBe(new_participant.time);
-                  done();
-                })
-                .catch(done.fail);
-            })
-            .catch(done.fail);
+      startBlocks.add('35000', 'startblock 1')
+        .then(() => startBlocks.add('36000', 'startblock 2'))
+        .then(() => participants.save(aParticipant.withStartNr(nr)))
+        .then(() => participants.insertTime(nr, time))
+        .then(() => participants.insertTime(nr, slower_time))
+        .then(() => participants.get.byStartnumber(nr))
+        .then((participant) => {
+          expect(participant.time).toBe('37952');
+          expect(participant.seconds).toBe('1952');
+          done();
+        }).catch((err) => {
+          console.log("Err:", err);
+          done.fail();
         });
     });
 
@@ -475,7 +503,7 @@ describe('participants service', () => {
     });
   });
 
-  xdescribe('bulkmail()', () => {
+  describe('bulkmail()', () => {
     it('should send the correct email to every participant', (done) => {
       spyOn(mails, 'sendEmail');
       spyOn(mails, 'sendStatusEmail').and.callThrough();

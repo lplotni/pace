@@ -3,10 +3,12 @@
 'use strict';
 
 const Pool = require('pg').Pool;
+const pgTypes = require('pg').types;
 const Q = require('q');
-
+const moment = require('moment');
 const connectionString = process.env.DATABASE_URL || 'tcp://pgtester:pgtester@localhost/pace';
 
+pgTypes.setTypeParser(1114, str => moment.utc(str).format());
 let db = {};
 let pool = new Pool({
     connectionString: connectionString

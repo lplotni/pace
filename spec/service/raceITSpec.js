@@ -5,7 +5,6 @@
 
 describe('race service', () => {
 
-  const moment = require('moment');
   const helper = require('../journeyHelper');
   const race = require('../../service/race');
   const participant = require('../../domain/participant');
@@ -70,9 +69,9 @@ describe('race service', () => {
         team: 'Slow team'
       })
       .withToken('sectoken 5')
+      .withSecureId('14-secureid')
       .withStartBlock(1)
-      .withStartNr(14)
-      .withConfirmedResult(true);
+      .withStartNr(14);
 
 
     beforeAll((done) => {
@@ -96,15 +95,19 @@ describe('race service', () => {
           '10:36:00'))
         .then(() => participants.save(aConfirmedParticipantWithDifferentStartblock))
         .then(() => participants.insertTime(aConfirmedParticipantWithDifferentStartblock.start_number,
-          '10:36:30'))
+          '10:56:30'))
+        .then(() => participants.confirm_result(aConfirmedParticipantWithDifferentStartblock.secureID))
         .then(done)
-        .catch(done.fail);
+        .catch((err) => {
+          console.log("err", err);
+          done.fail();
+        });
     });
 
     it('should show the first', (done) => {
       race.results('Unicorn', 1970, 1990)
         .then((result) => {
-          expect(result.length).toBe(5);
+          expect(result.length).toBe(4);
           expect(result[0].timestring).toBe('00:32:02');
           done();
         })
@@ -115,7 +118,7 @@ describe('race service', () => {
       race.resultsForDataTables(0, 2, 'Crazy runn', 'START_NUMBER ASC', 'Unicorn', 1975,
           1985)
         .then((result) => {
-          expect(result.numberOfAllRecords).toBe(4);
+          expect(result.numberOfAllRecords).toBe(3);
           expect(result.numberOfRecordsAfterFilter).toBe(1);
           expect(result.records[0].firstname).toBe('Hertha');
           expect(result.records[0].team).toBe('Crazy runners');

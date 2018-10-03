@@ -115,7 +115,7 @@ describe('admin page', () => {
 
   it('should redirect to the start page after logout', (done) => {
     helper.setUpClient().url(helper.paceUrl + 'logout')
-      .isVisible('h3*=Online-Anmeldung')
+      .isVisible('h3*=Stadtpark-Staffelmarathon')
       .then((isVisible) => {
         expect(isVisible).toBe(true);
       })

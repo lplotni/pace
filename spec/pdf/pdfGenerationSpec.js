@@ -224,7 +224,7 @@ describe('pdfGeneration', () => {
   describe('generateCertificate', () => {
     it('should generate one certificate', (done) => {
       pdfGeneration.generateCertificateDownload(res, documentMock, '1').then(() => {
-        expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte Person', 0, 300, {align: 'center'});
+        expect(documentMock.text).toHaveBeenCalledWith('Bestaetigte', 0, 300, {align: 'center'});
         expect(documentMock.text).toHaveBeenCalledWith('00:32:02', 0, 530, {align: 'center'});
         done();
       });

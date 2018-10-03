@@ -76,7 +76,7 @@ pdfGeneration.createCertificatePage = (doc, participant) => {
         } else {
           let timestring = moment.duration(_.toNumber(participant.seconds), 'seconds').format("hh:mm:ss", {trim: false});
           doc.image(__dirname + pathToCertificateBackgroundImage, {fit: [595, 842]});
-          doc.fontSize(25).fillColor('black').text(participant.firstname.replace(/\|/g, '\n') + ' ' + participant.lastname.substring(0, 30), 0, 300, {align: 'center'});
+          doc.fontSize(25).fillColor('black').text(participant.firstname.replace(/\|/g, '\n') , 0, 300, {align: 'center'});
           doc.fontSize(15).fillColor('black').text('Team', 0, 450, {align: 'center'});
           doc.fontSize(35).fillColor('black').text(participant.team.substring(0, 60), 0, 465, {align: 'center'});
           doc.fontSize(15).fillColor('black').text('Zeit', 0, 515, {align: 'center'});

@@ -76,11 +76,15 @@ pdfGeneration.createCertificatePage = (doc, participant) => {
         } else {
           let timestring = moment.duration(_.toNumber(participant.seconds), 'seconds').format("hh:mm:ss", {trim: false});
           doc.image(__dirname + pathToCertificateBackgroundImage, {fit: [595, 842]});
-          doc.fontSize(30).fillColor('black').text(participant.firstname.substring(0, 30) + ' ' + participant.lastname.substring(0, 30), 0, 365, {align: 'center'});
-          doc.fontSize(25).fillColor('black').text(participant.team.substring(0, 60), 0, 400, {align: 'center'});
-          doc.fontSize(30).fillColor('black').text(timestring, 0, 487, {align: 'center'});
-          doc.fontSize(30).fillColor('black').text(rank, 0, 558, {align: 'center'});
-          doc.fontSize(30).fillColor('black').text(category_rank, 0, 628, {align: 'center'});
+          doc.fontSize(25).fillColor('black').text(participant.firstname.replace(/\|/g, '\n') + ' ' + participant.lastname.substring(0, 30), 0, 300, {align: 'center'});
+          doc.fontSize(15).fillColor('black').text('Team', 0, 450, {align: 'center'});
+          doc.fontSize(35).fillColor('black').text(participant.team.substring(0, 60), 0, 465, {align: 'center'});
+          doc.fontSize(15).fillColor('black').text('Zeit', 0, 515, {align: 'center'});
+          doc.fontSize(30).fillColor('black').text(timestring, 0, 530, {align: 'center'});
+          doc.fontSize(15).fillColor('black').text('Platz gesamt', 0, 580, {align: 'center'});
+          doc.fontSize(40).fillColor('black').text(rank, 0, 600, {align: 'center'});
+          doc.fontSize(15).fillColor('black').text('Platz ('+ participant.category + ')', 0, 640, {align: 'center'});
+          doc.fontSize(40).fillColor('black').text(category_rank, 0, 660, {align: 'center'});
           deferred.resolve();
         }
         ;

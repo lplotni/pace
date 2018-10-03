@@ -52,6 +52,13 @@ block content
         button#generate-start-numbers.primary.button-primary.pace(type='submit') Generieren
       .two.columns
         a(href='/pdf/startnumbers') download
+  form(method='POST', action='admin/clear-times')
+    .row
+      .eight.columns
+        input(type='hidden', name='_csrf', value=_csrf)
+        h4 Alle Zeiten löschen
+      .two.columns
+        button#clear-times.primary.button-primary.pace(type='submit') Löschen
 
 
   script(src='/javascript/usageChart.js')

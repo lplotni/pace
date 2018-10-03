@@ -287,6 +287,18 @@ participants.getTime = (startnumber) => {
   return deferred.promise;
 };
 
+participants.clearTimes = () => {
+  const deferred = Q.defer();
+  db.select('update participants set time = NULL, seconds = NULL')
+    .then((result) => {
+      deferred.resolve();
+    })
+    .catch(deferred.reject);
+  return deferred.promise;
+};
+
+
+
 participants.rank = (startnumber) => {
   const deferred = Q.defer();
   db.select("select pos from (select seconds,start_number,rank() over (order by seconds) as pos from participants where visibility='yes') as ss where start_number=$1;", [startnumber])

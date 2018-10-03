@@ -504,7 +504,24 @@ describe('participants service', () => {
           done.fail();
         });
     });
-
+    it('should clear all times', (done) => {
+      let time = '10:32:32';
+      let nr = startNr++;
+      startBlocks.add('35000', 'startblock 1')
+        .then(() => startBlocks.add('36000', 'startblock 2'))
+        .then(() => participants.save(aParticipant.withStartNr(nr)))
+        .then(() => participants.insertTime(nr, time))
+        .then(() => participants.clearTimes())
+        .then(() => participants.get.byStartnumber(nr))
+        .then((participant) => {
+          expect(participant.time).toBeNull();
+          expect(participant.seconds).toBeNull();
+          done();
+        }).catch((err) => {
+          console.log("Err:", err);
+          done.fail();
+        });
+    });
     it('should not save if time is slower than saved time', (done) => {
       configMock.mockValue("teamEvent", false);
       let time = '10:32:32';
@@ -525,8 +542,7 @@ describe('participants service', () => {
           done.fail();
         });
     });
-
-  });
+   });
 
   describe('team event', () => {
     it('should save if time is slower than saved time', (done) => {
@@ -603,5 +619,7 @@ describe('participants service', () => {
         .catch(done.fail);
     });
   });
+
+
 
 });

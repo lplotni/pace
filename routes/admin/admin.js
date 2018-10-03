@@ -103,4 +103,14 @@ router.post('/reopen-registration', isAuthenticated, (req, res) => {
   }
 });
 
+router.post('/clear-times', isAuthenticated, (req, res) => {
+  if (canViewAdminPage(req.user.role)) {
+    participants.clearTimes().then(() =>
+      res.redirect('/admin')
+    );
+  }
+});
+
+
+
 module.exports = router;
